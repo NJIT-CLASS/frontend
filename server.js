@@ -2,6 +2,8 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const mysql = require('mysql');
 
+const translator = require('./translate/translate');
+
 const baseRoutes = require('./routes/base')
 
 const app = express();
@@ -28,6 +30,8 @@ app.use((req, res, next) => {
 	connection.connect()
 
 	req.App.mysql = connection;
+
+	req.App.Translate = translator(req.App.mysql, 'english');
 
 	// end connection once the res
 	res.on('finish', ((req) => () => {
