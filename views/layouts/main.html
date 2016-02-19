@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    
+    {{#each scripts}}
+    	<script src="{{this}}"></script>
+    {{/each}}
+
+    {{#each stylesheets}}
+    	<link rel="stylesheet" type="text/css" href="{{this}}">
+    {{/each}}
+</head>
+<body>
+ 
+    {{{body}}}
+ 
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "class_learning_system",
+  "version": "1.0.0",
+  "description": "Collaborative Learning Through Assessment",
+  "main": "server.js",
+  "engine": "node 5.6.0",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "dependencies": {
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "mysql": "^2.10.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.8.1"
+  }
+}
