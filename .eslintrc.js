@@ -16,23 +16,23 @@ module.exports = {
     ],
     "rules": {
         "indent": [
-            2,
+            1,
             4
         ],
         "linebreak-style": [
-            2,
+            1,
             "unix"
         ],
         "quotes": [
-            2,
+            1,
             "single"
         ],
         "semi": [
-            2,
+            1,
             "always"
         ],
-        "no-alert": 2,
-        "no-debugger": 2,
+        "no-alert": 1,
+        "no-debugger": 1,
         "no-dupe-args": 1,
         "no-dupe-keys": 1,
         "no-unreachable": 1

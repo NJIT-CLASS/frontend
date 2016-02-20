@@ -6,8 +6,9 @@
   "engine": "node 5.6.0",
   "scripts": {
     "start": "nodemon server.js",
-    "lint": "eslint . --fix; exit 0;"
+    "lint": "eslint . --fix"
   },
+  "pre-commit": ["lint"],
   "author": "",
   "dependencies": {
     "express": "^4.13.4",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "eslint-plugin-react": "^4.0.0",
-    "nodemon": "^1.8.1"
+    "nodemon": "^1.8.1",
+    "pre-commit": "^1.1.2"
   }
 }
