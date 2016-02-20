@@ -8,7 +8,6 @@
     "start": "sleep 1 && open http://localhost:3000/ & nodemon server.js",
     "lint": "eslint . --fix"
   },
-  "pre-commit": ["lint"],
   "author": "",
   "dependencies": {
     "express": "^4.13.4",
