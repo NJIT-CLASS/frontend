@@ -18,29 +18,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// setup MySQL
-app.use((req, res, next) => {
-    const connection = mysql.createConnection({
-        host     : process.env.CLASS_DB_HOST,
-        user     : process.env.CLASS_DB_USER,
-        password : process.env.CLASS_DB_PASSWORD,
-        database : process.env.CLASS_DB_DATABASE
-    });
-
-    connection.connect();
-
-    req.App.mysql = connection;
-
-    req.App.Translate = translator(req.App.mysql, 'english');
-
-    // end connection once the res
-    res.on('finish', ((req) => () => {
-        return req.App.mysql.end();
-    })(req));
-
-    next();
-});
-
 // routes
 app.use('/', baseRoutes);
 
