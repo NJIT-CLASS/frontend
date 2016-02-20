@@ -2,6 +2,8 @@
 
 ##Getting Setup
 
+If you've never used github before [set your ssh key](#github-setup)
+
 1. Clone the repo using git: `git clone git@github.com:NJIT-CLASS/frontend.git`.
 2. cd into the cloned directory.
 3. run `npm install` which will install all the third-party packages the project depends on.
@@ -14,3 +16,17 @@
 - [Express.js](http://expressjs.com/en/4x/api.html): web server framework
 - [React.js](https://facebook.github.io/react/index.html): frontend framework
 - [Handlebars.js](http://handlebarsjs.com/expressions.html): templating engine
+
+##Github Setup
+
+1. Create an SSH key. Run `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+2. [Add the new SSH key to Github](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-mac)
+
+##Git Quickstart
+
+Here are the git commands that you can use to get by for now (if you don't know how to use it)
+
+When you want to send your code to Github. Then these three commands will get you by for now.
+- `git add -A` will stage all the files you changed so that you can commit them (next command).
+- `git commit -m 'summary of what you changed'` will save the changes.
+- `git push origin master` will send your changes to Github.
