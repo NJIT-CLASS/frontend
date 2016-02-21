@@ -8,6 +8,7 @@ const app = express();
 // use handlebars for templates
 app.engine('.html', handlebars({defaultLayout: 'main', extname: '.html'}));
 app.set('view engine', '.html');
+app.use(express.static(__dirname + '/css'));
 
 app.use((req, res, next) => {
     // dictionary of request global variables
