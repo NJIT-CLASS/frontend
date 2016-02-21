@@ -2,13 +2,17 @@
 <html>
 <head>
     <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link rel="stylesheet" rel="stylesheet/less" href="/static/styles.css">
     
     {{#each scripts}}
     	<script src="{{this}}"></script>
     {{/each}}
 
     {{#each stylesheets}}
-    	<link rel="stylesheet" type="text/css" href="{{this}}">
+    	<link rel="stylesheet" rel="stylesheet/less" href="{{this}}">
     {{/each}}
 </head>
 <body>

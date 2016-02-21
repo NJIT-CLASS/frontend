@@ -15,6 +15,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/static', express.static('static'));
+
 // routes
 app.use('/', baseRoutes);
 
