@@ -7,8 +7,7 @@
   "scripts": {
     "start": "sleep 1 && open http://localhost:3000/ & nodemon server.js",
     "lint": "eslint . --fix",
-    "compile-css": "x=`npm bin`; y=`${x}/lessc styles/main.less static/styles.css`; eval $y",
-    "less": "lessc styles/main.less static/styles.css"
+    "compile-css": "lessc styles/main.less static/styles.css"
   },
   "author": "",
   "dependencies": {
@@ -19,9 +18,11 @@
     "i18n": "^0.7.0"
   },
   "devDependencies": {
+    "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.0.0",
     "nodemon": "^1.8.1",
     "pre-commit": "^1.1.2",
     "watch-lessc": "0.0.2"
-  }
+  },
+  "pre-commit": ["lint"]
 }

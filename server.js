@@ -1,7 +1,7 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const cookieParser = require('cookie-parser');
-const cryptoJS = require("crypto-js");
+const cryptoJS = require('crypto-js');
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
@@ -11,10 +11,10 @@ const i18n = require('i18n');
 
 //transalting power is present here
 i18n.configure({
-  locales: ['en', 'es'],
-  defaultLocale: 'en',
-  cookie: 'lang',
-  directory: __dirname+'/locales'
+    locales: ['en', 'es'],
+    defaultLocale: 'en',
+    cookie: 'lang',
+    directory: __dirname+'/locales'
 });
 
 app.use(cookieParser());
