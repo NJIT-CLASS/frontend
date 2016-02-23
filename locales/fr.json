@@ -1,3 +1,12 @@
 {
-	"Please Sign In": "Se Connecter"
+	"Please Sign In": "S'il vous plaît vous connecter",
+	"Remember Me": "Souviens-toi de moi",
+	"Email": "Email",
+	"Password": "Mot de passe",
+	"Login": "S'identifier",
+	"Forgot your password?": "Mot de passe oublié?",
+	"Click here to reset it.": "Cliquez ici pour le réinitialiser.",
+	"CLASS Home": "CLASS Casa",
+	"New Password": " nouveau mot de passe",
+
 }

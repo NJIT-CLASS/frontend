@@ -1,4 +1,9 @@
 {
+	"New Password": "New Password",
+	"Confrim Password": "Confrim Password",
+	"Change Password": "Change Password",
+	"Reset": "Reset",
+	"CLASS Home": "CLASS Home",
 	"Please Sign In": "Please Sign In",
 	"Email": "Email",
 	"Password": "Password",
@@ -6,7 +11,6 @@
 	"Login": "Login",
 	"Forgot your password?": "Forgot your password?",
 	"Click here to reset it.": "Click here to reset it.",
-	"CLASS Home": "CLASS Home",
-	"Reset": "Reset",
-	"Forgot Your Password ? ": "Forgot Your Password ? "
+	"Forgot Your Password ? ": "Forgot Your Password ? ",
+	"Forgot Your Password ?": "Forgot Your Password ?"
 }
