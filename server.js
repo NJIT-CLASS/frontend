@@ -11,10 +11,17 @@ const i18n = require('i18n');
 
 //transalting power is present here
 i18n.configure({
+<<<<<<< HEAD
     locales: ['en', 'es'],
     defaultLocale: 'en',
     cookie: 'lang',
     directory: __dirname+'/locales'
+=======
+  locales: ['en', 'es',"fr"],
+  defaultLocale: 'en',
+  cookie: 'lang',
+  directory: __dirname+'/locales'
+>>>>>>> 0103618... added some changes to login html for lang. functionality, Also i added the reset page allowing the user to reset their password, and added navbar into the dashboard page however icons are not showing, will look into more later
 });
 
 app.use(cookieParser());

@@ -33,4 +33,12 @@ router.get('/dashboard', (req, res) => {
     });
 });
 
+router.get('/reset', (req, res) => {
+    res.render('reset', {
+        title: res.__('Reset'),
+        message: res.__('Forgot Your Password ? ')
+
+    });
+});
+
 module.exports = router;
