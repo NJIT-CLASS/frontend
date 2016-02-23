@@ -11,7 +11,7 @@ router.route('/')
     .get((req, res) => {
         res.render('home', {
             title: 'CLASS Home',
-            message: res.__('Class Home')
+            message: res.__('Please Sign In')
         });
     })
     .post((req, res) => {

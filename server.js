@@ -12,21 +12,32 @@ const i18n = require('i18n');
 //transalting power is present here
 i18n.configure({
   locales: ['en', 'es'],
-  cookie: 'yourcookiename',
+  defaultLocale: 'en',
+  cookie: 'lang',
   directory: __dirname+'/locales'
 });
-app.use(i18n.init);
 
 app.use(cookieParser());
+
+app.use(i18n.init);
 
 // use handlebars for templates
 app.engine('.html', handlebars({defaultLayout: 'main', extname: '.html'}));
 app.set('view engine', '.html');
 
-
 app.use((req, res, next) => {
     // dictionary of request global variables
     req.App = {};
+    next();
+});
+
+// set the language cookie if it has a lang query param
+app.use((req, res, next) => {
+    if ('lang' in req.query) {
+        res.cookie('lang', req.query.lang);
+        res.locale = req.query.lang;
+    }
+
     next();
 });
 
