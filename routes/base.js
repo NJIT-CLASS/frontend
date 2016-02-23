@@ -10,8 +10,7 @@ const router = express.Router();
 router.route('/')
     .get((req, res) => {
         res.render('home', {
-            title: 'CLASS Home',
-            message: res.__('Please Sign In')
+            title: res.__('CLASS Home')
         });
     })
     .post((req, res) => {

@@ -21,8 +21,19 @@ app.use(cookieParser());
 
 app.use(i18n.init);
 
+var hbs = handlebars.create({
+    defaultLayout: 'main',
+    extname: '.html',
+    // Specify helpers which are only registered on this instance.
+    helpers: {
+        __: function () {
+            return i18n.__.apply(this, arguments);
+        }
+    }
+});
+
 // use handlebars for templates
-app.engine('.html', handlebars({defaultLayout: 'main', extname: '.html'}));
+app.engine('.html', hbs.engine);
 app.set('view engine', '.html');
 
 app.use((req, res, next) => {
@@ -35,7 +46,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if ('lang' in req.query) {
         res.cookie('lang', req.query.lang);
-        res.locale = req.query.lang;
+        i18n.setLocale(res, req.query.lang);
     }
 
     next();

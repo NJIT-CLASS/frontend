@@ -1,3 +1,9 @@
 {
-	"Please Sign In": "Please Sign In"
+	"Please Sign In": "Please Sign In",
+	"Remember Me": "Remember Me",
+	"Email": "Email",
+	"Password": "Password",
+	"Login": "Login",
+	"Forgot your password?": "Forgot your password?",
+	"Click here to reset it.": "Click here to reset it."
 }

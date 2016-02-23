@@ -1,3 +1,10 @@
 {
-    "Please Sign In": "Por Favor regístrese"
+	"Please Sign In": "Por Favor regístrese",
+	"Remember Me": "Recuérdame",
+	"Email": "Email",
+	"Password": "Contraseña",
+	"Login": "Iniciar sesión",
+	"Forgot your password?": "¿Olvidaste tu contraseña?",
+	"Click here to reset it.": "Haga clic aquí para restablecerla.",
+	"CLASS Home": "CLASS Casa"
 }
