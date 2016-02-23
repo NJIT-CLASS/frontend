@@ -1,11 +1,12 @@
 {
 	"Please Sign In": "Please Sign In",
-	"Remember Me": "Remember Me",
 	"Email": "Email",
 	"Password": "Password",
+	"Remember Me": "Remember Me",
 	"Login": "Login",
 	"Forgot your password?": "Forgot your password?",
-	"Click here to reset it.": "Click here to reset it."
-	"Reset" : "Reset",
+	"Click here to reset it.": "Click here to reset it.",
+	"CLASS Home": "CLASS Home",
+	"Reset": "Reset",
 	"Forgot Your Password ? ": "Forgot Your Password ? "
 }
