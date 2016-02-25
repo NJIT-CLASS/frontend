@@ -49,6 +49,16 @@ app.use((req, res, next) => {
         i18n.setLocale(res, req.query.lang);
     }
 
+    if (res.locale === 'en') {
+        req.App.lang = 'English';
+    }
+    else if (res.locale === 'es') {
+        req.App.lang = 'Español';
+    }
+    else if (res.locale === 'fr') {
+        req.App.lang = 'Français';
+    }
+
     next();
 });
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ title }}</title>
+    <title>{{ __ title }}</title>
 
     <link rel="stylesheet" type="text/css" href="/static/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/font-awesome.min.css">
@@ -20,20 +20,16 @@
  
     {{{body}}}
 
-    <div class="row">
-        <div class="col-md-2 col-md-offset-10">
-            <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Language
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="?lang=en">EN</a></li>
-                    <li><a href="?lang=es">ES</a></li>
-                    <li><a href="?lang=fr">FR</a></li>
-                  </ul>
-            </div>
-        </div>
+    <div class="dropup language-dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            {{ language }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="?lang=en">English</a></li>
+            <li><a href="?lang=es">Español</a></li>
+            <li><a href="?lang=fr">Français</a></li>
+          </ul>
     </div>
  
 <script src="/static/bootstrap.min.js" type="text/javascript" charset="utf-8" async defer></script>
