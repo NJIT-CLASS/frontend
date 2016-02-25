@@ -9,7 +9,7 @@ const baseRoutes = require('./routes/base');
 const app = express();
 const i18n = require('i18n');
 
-//transalting power is present here
+//translating power is present here
 i18n.configure({
   locales: ['en', 'es',"fr"],
   defaultLocale: 'en',

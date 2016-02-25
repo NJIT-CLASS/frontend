@@ -1,7 +1,8 @@
 function fetchCredentials() {
 	//alert("Starting fetchCredentials()");
-	//var userId = req.App.userId;		// TODO: get userId from local info
-	var userId = "1234";					// TODO: delete this
+	//var userId = req.App.userId;			// TODO: get userId from local info
+	//var userId = "1234";
+	//alert(userId);
 	
 }
 
