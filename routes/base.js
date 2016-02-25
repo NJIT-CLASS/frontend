@@ -10,7 +10,7 @@ const router = express.Router();
 router.route('/')
     .get((req, res) => {
         res.render('home', {
-            title: res.__('CLASS Home')
+            title: 'CLASS Home'
         });
     })
     .post((req, res) => {
@@ -29,13 +29,12 @@ router.route('/logout')
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
         title: 'CLASS Dashboard'
-
     });
 });
 
 router.get('/reset', (req, res) => {
     res.render('reset', {
-        title: res.__('Reset Password')
+        title: 'Reset Password'
     });
 });
 
