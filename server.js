@@ -11,10 +11,10 @@ const i18n = require('i18n');
 
 //transalting power is present here
 i18n.configure({
-  locales: ['en', 'es',"fr"],
-  defaultLocale: 'en',
-  cookie: 'lang',
-  directory: __dirname+'/locales'
+    locales: ['en', 'es','fr'],
+    defaultLocale: 'en',
+    cookie: 'lang',
+    directory: __dirname+'/locales'
 });
 
 app.use(cookieParser());
