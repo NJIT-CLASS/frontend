@@ -10,7 +10,8 @@ const router = express.Router();
 router.route('/')
     .get((req, res) => {
         res.render('home', {
-            title: res.__('CLASS Home')
+            title: 'CLASS Home',
+            language: req.App.lang
         });
     })
     .post((req, res) => {
@@ -28,16 +29,15 @@ router.route('/logout')
 
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
-        title: 'CLASS Dashboard'
-
+        title: 'CLASS Dashboard',
+        language: req.App.lang
     });
 });
 
 router.get('/reset', (req, res) => {
     res.render('reset', {
-        title: res.__('Reset'),
-        message: res.__('Forgot Your Password ? ')
-
+        title: 'Reset Password',
+        language: req.App.lang
     });
 });
 

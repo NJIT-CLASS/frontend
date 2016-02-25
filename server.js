@@ -11,10 +11,10 @@ const i18n = require('i18n');
 
 //translating power is present here
 i18n.configure({
-  locales: ['en', 'es',"fr"],
-  defaultLocale: 'en',
-  cookie: 'lang',
-  directory: __dirname+'/locales'
+    locales: ['en', 'es','fr'],
+    defaultLocale: 'en',
+    cookie: 'lang',
+    directory: __dirname+'/locales'
 });
 
 app.use(cookieParser());
@@ -47,6 +47,16 @@ app.use((req, res, next) => {
     if ('lang' in req.query) {
         res.cookie('lang', req.query.lang);
         i18n.setLocale(res, req.query.lang);
+    }
+
+    if (res.locale === 'en') {
+        req.App.lang = 'English';
+    }
+    else if (res.locale === 'es') {
+        req.App.lang = 'Español';
+    }
+    else if (res.locale === 'fr') {
+        req.App.lang = 'Français';
     }
 
     next();
