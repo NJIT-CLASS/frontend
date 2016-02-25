@@ -7,5 +7,10 @@
 	"Forgot your password?": "¿Olvidaste tu contraseña?",
 	"Click here to reset it.": "Haga clic aquí para restablecerla.",
 	"CLASS Home": "CLASS Casa",
-	"New Password": " Nueva Contraseña",
+	"New Password": "Nueva Contraseña",
+	"Confrim Password": "Confirmar Contraseña",
+	"Change Password": "Cambia la Contraseña",
+	"Confirm Password": "Confirmar Contraseña",
+	"Forgot Your Password?": "¿Olvidaste Tu Contraseña?",
+	"Reset Password": "Restablecer la contraseña"
 }

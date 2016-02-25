@@ -1,12 +1,15 @@
 {
-	"Please Sign In": "S'il vous plaît vous connecter",
-	"Remember Me": "Souviens-toi de moi",
+	"Please Sign In": "Se Connecter",
+	"Reset Password": "Réinitialiser le Mot de Passe",
+	"Forgot Your Password?": "Mot de Passe Oublié?",
+	"New Password": "Nouveau Mot de Passe",
+	"Confirm Password": "Confirmez le Mot de Passe",
+	"Change Password": "Changer le Mot de Passe",
+	"CLASS Home": "CLASS Accueil",
 	"Email": "Email",
-	"Password": "Mot de passe",
+	"Password": "Mot de Passe",
+	"Remember Me": "Souviens-toi de Moi",
 	"Login": "S'identifier",
 	"Forgot your password?": "Mot de passe oublié?",
-	"Click here to reset it.": "Cliquez ici pour le réinitialiser.",
-	"CLASS Home": "CLASS Casa",
-	"New Password": " nouveau mot de passe",
-
+	"Click here to reset it.": "Cliquez ici pour le réinitialiser."
 }

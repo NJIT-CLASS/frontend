@@ -1,8 +1,4 @@
 {
-	"New Password": "New Password",
-	"Confrim Password": "Confrim Password",
-	"Change Password": "Change Password",
-	"Reset": "Reset",
 	"CLASS Home": "CLASS Home",
 	"Please Sign In": "Please Sign In",
 	"Email": "Email",
@@ -11,6 +7,9 @@
 	"Login": "Login",
 	"Forgot your password?": "Forgot your password?",
 	"Click here to reset it.": "Click here to reset it.",
-	"Forgot Your Password ? ": "Forgot Your Password ? ",
-	"Forgot Your Password ?": "Forgot Your Password ?"
+	"Reset Password": "Reset Password",
+	"Forgot Your Password?": "Forgot Your Password?",
+	"New Password": "New Password",
+	"Confirm Password": "Confirm Password",
+	"Change Password": "Change Password"
 }
