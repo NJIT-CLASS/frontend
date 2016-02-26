@@ -2,6 +2,7 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const cookieParser = require('cookie-parser');
 const cryptoJS = require('crypto-js');
+const request = require('request');
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
@@ -39,6 +40,61 @@ app.set('view engine', '.html');
 app.use((req, res, next) => {
     // dictionary of request global variables
     req.App = {};
+
+    req.App.api ={
+        get: function(endpoint, queryParameters, cb) {
+            if (arguments.length === 2) {
+                var cb = queryParameters;
+                queryParameters = {};
+            }
+
+            const options = {
+                method: 'GET',
+                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                qs: queryParameters,
+                json: true
+            };
+
+            request(options, function(err, response, body) {
+                return cb(err, response.statusCode, body);
+            });
+        },
+        post: function(endpoint, body, cb) {
+            if (arguments.length === 2) {
+                var cb = body;
+                body = {};
+            }
+
+            const options = {
+                method: 'GET',
+                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                json: true,
+                body: body
+            };
+
+            request(options, function(err, response, body) {
+                return cb(err, response.statusCode, body);
+            });
+        },
+        put: function(endpoint, body, cb) {
+            if (arguments.length === 2) {
+                var cb = body;
+                body = {};
+            }
+
+            const options = {
+                method: 'PUT',
+                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                json: true,
+                body: body
+            };
+
+            request(options, function(err, response, body) {
+                return cb(err, response.statusCode, body);
+            });
+        }
+    };
+
     next();
 });
 
