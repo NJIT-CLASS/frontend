@@ -66,7 +66,7 @@ app.use((req, res, next) => {
             }
 
             const options = {
-                method: 'GET',
+                method: 'POST',
                 uri: `http://192.241.189.38:8080/api${endpoint}`,
                 json: true,
                 body: body
