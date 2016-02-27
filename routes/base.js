@@ -44,6 +44,19 @@ router.get('/dashboard', (req, res) => {
     });
 });
 
+router.get('/myclasses', (req, res) => {
+    res.render('myclasses', {
+        title: 'My Classes'
+    });
+});
+
+router.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About'
+    });
+});
+
+
 router.get('/reset', (req, res) => {
     res.render('reset', {
         title: 'Reset Password'
