@@ -8,15 +8,15 @@ function fetchCredentials() {
 
 function validate_changePassword() {
 	//var currPwd=document.forms["form_changePassword"]["field_currentPassword"].value;
-	                var newPwd=document.forms['form_changePassword']['field_newPassword'].value;
-	                var newPwdConf=document.forms['form_changePassword']['field_confirmNewPassword'].value;
+	                    var newPwd=document.forms['form_changePassword']['field_newPassword'].value;
+	                    var newPwdConf=document.forms['form_changePassword']['field_confirmNewPassword'].value;
 	
-	                if(newPwd=='' || newPwd!=newPwdConf) {
-		                alert('\'New password\' and \'confirmed password\' fields do not match.');
-		                return false;
+	                    if(newPwd=='' || newPwd!=newPwdConf) {
+		                    alert('\'New password\' and \'confirmed password\' fields do not match.');
+		                    return false;
 	}
 	
-	                return true;
+	                    return true;
 }
 
 

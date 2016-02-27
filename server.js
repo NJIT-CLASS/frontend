@@ -136,7 +136,7 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
 
-        render.call(this, template, options, cbs);
+        render.call(this, template, options, cb);
     };
 
     next();
