@@ -41,4 +41,24 @@ router.get('/reset', (req, res) => {
     });
 });
 
+//logging the user in
+router.route('/login')
+    .post((req,res)=>{
+        req.App.api.post('/login', {emailaddress: req.body.email,password:req.body.password}, (err, statusCode, body) => {
+            // send response here stuff here
+
+            if(body.UserID.length > 0 && body.Message == 'Success'){
+                const id = body.UserID[0].UserID;
+                const encryptedUserId = cryptoJS.AES.encrypt(id, consts.USER_SECRET).toString();
+                res.cookie('user', encryptedUserId);
+                res.redirect('/dashboard');
+            }else{
+                res.render('home',{
+                    error: true
+                });
+            }
+            
+        });
+    })
+
 module.exports = router;

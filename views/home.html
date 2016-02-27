@@ -6,8 +6,15 @@
                         <h3 class="panel-title">{{__ "Please Sign In"}}</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" method="POST">
+                        <form role="form" method="POST" action="login">
                             <fieldset>
+                                {{#if error }}
+                                        <div class="alert alert-danger" role="alert">
+                                          <i class="fa fa-exclamation-circle"></i>
+                                          <span class="sr-only">Error:</span>
+                                            Wrong Email Address / Password
+                                        </div>
+                                {{/if}}
                                 <div class="form-group">
                                     <input class="form-control" placeholder="{{ __ "Email" }}" name="email" type="email" autofocus>
                                 </div>
