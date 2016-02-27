@@ -13,7 +13,7 @@ router.route('/')
             return res.redirect('/dashboard');
         }
 
-        res.renderTemplate('home', {
+        res.render('home', {
             title: 'CLASS Home'
         });
     })
@@ -26,7 +26,7 @@ router.route('/')
                 return res.redirect('/dashboard');
             }
 
-            res.renderTemplate('home',{
+            res.render('home',{
                 error: true
             });
         });
@@ -39,13 +39,13 @@ router.route('/logout')
     });
 
 router.get('/dashboard', (req, res) => {
-    res.renderTemplate('dashboard', {
+    res.render('dashboard', {
         title: 'CLASS Dashboard'
     });
 });
 
 router.get('/reset', (req, res) => {
-    res.renderTemplate('reset', {
+    res.render('reset', {
         title: 'Reset Password'
     });
 });

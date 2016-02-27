@@ -121,8 +121,9 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+    const render = res.render;
 
-    res.renderTemplate = function(template, options) {
+    res.render = function(template, options, cb) {
         const loggedOutTemplates = {
             reset: true,
             home: true
@@ -132,10 +133,10 @@ app.use((req, res, next) => {
             options.layout = 'logged_out';
             options.language = req.App.lang;
 
-            return res.render(template, options);
+            return render.call(this, template, options, cb);;
         }
 
-        res.render(...arguments);
+        render.call(this, template, options, cbs);
     };
 
     next();
