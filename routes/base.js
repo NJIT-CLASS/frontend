@@ -9,6 +9,10 @@ const router = express.Router();
 
 router.route('/')
     .get((req, res) => {
+        if (req.App.userId) {
+            return res.redirect('/dashboard');
+        }
+
         res.render('home', {
             title: 'CLASS Home',
             language: req.App.lang
@@ -20,7 +24,6 @@ router.route('/')
             console.log(body);
             if(body.UserID.length > 0 && body.Message == 'Success'){
                 const id = body.UserID[0].UserID;
-                console.log(id);
                 const encryptedUserId = cryptoJS.AES.encrypt(id.toString(), consts.USER_SECRET).toString();
                 res.cookie('user', encryptedUserId);
                 res.redirect('/dashboard');
