@@ -15,10 +15,21 @@ router.route('/')
         });
     })
     .post((req, res) => {
-        // once API is working replace 'fake_user_id' with real user id
-        const encryptedUserId = cryptoJS.AES.encrypt('fake_user_id', consts.USER_SECRET).toString();
-        res.cookie('user', encryptedUserId);
-        res.redirect('/dashboard');
+        req.App.api.post('/login', {emailaddress: req.body.email,password:req.body.password}, (err, statusCode, body) => {
+            // send response here stuff here
+            console.log(body);
+            if(body.UserID.length > 0 && body.Message == 'Success'){
+                const id = body.UserID[0].UserID;
+                console.log(id);
+                const encryptedUserId = cryptoJS.AES.encrypt(id.toString(), consts.USER_SECRET).toString();
+                res.cookie('user', encryptedUserId);
+                res.redirect('/dashboard');
+            }else{
+                res.render('home',{
+                    error: true
+                });
+            }
+        });
     });
 
 router.route('/logout')
@@ -40,25 +51,5 @@ router.get('/reset', (req, res) => {
         language: req.App.lang
     });
 });
-
-//logging the user in
-router.route('/login')
-    .post((req,res)=>{
-        req.App.api.post('/login', {emailaddress: req.body.email,password:req.body.password}, (err, statusCode, body) => {
-            // send response here stuff here
-
-            if(body.UserID.length > 0 && body.Message == 'Success'){
-                const id = body.UserID[0].UserID;
-                const encryptedUserId = cryptoJS.AES.encrypt(id, consts.USER_SECRET).toString();
-                res.cookie('user', encryptedUserId);
-                res.redirect('/dashboard');
-            }else{
-                res.render('home',{
-                    error: true
-                });
-            }
-            
-        });
-    })
 
 module.exports = router;
