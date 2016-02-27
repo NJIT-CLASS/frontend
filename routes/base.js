@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.route('/')
     .get((req, res) => {
-        if (req.App.userId) {
+        if (req.App.user && req.App.user.userId) {
             return res.redirect('/dashboard');
         }
 

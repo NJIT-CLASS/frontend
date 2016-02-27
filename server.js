@@ -122,8 +122,9 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
     if ('user' in req.cookies) {
+        req.App.user = {};
         const decryptedUserBytes = cryptoJS.AES.decrypt(req.cookies.user, consts.USER_SECRET);
-        req.App.userId = decryptedUserBytes.toString(cryptoJS.enc.Utf8);
+        req.App.user.userId = parseInt(decryptedUserBytes.toString(cryptoJS.enc.Utf8));
     }
     next();
 });
@@ -144,12 +145,33 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
 
-        if (!req.App.userId) {
+        if (!req.App.user || !req.App.user.userId) {
             return res.sendStatus(404);
         }
 
         render.call(this, template, options, cb);
     };
+
+    next();
+});
+
+app.use((req, res, next) => {
+    if (req.App.user && req.App.user.userId) {
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`, (err, statusCode, body) => {
+            if (err || statusCode !== 200) {
+                res.clearCookie('user');
+                res.redirect('/');
+            }
+
+            const user = body.User[0];
+            req.App.user.email = user.EmailAddress;
+            req.App.user.firstName = user.FirstName;
+            req.App.user.lastName = user.LastName;
+            req.App.user.type = user.UserType;
+
+            next();
+        });
+    }
 
     next();
 });
