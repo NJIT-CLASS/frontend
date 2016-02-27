@@ -133,7 +133,7 @@ app.use((req, res, next) => {
             options.layout = 'logged_out';
             options.language = req.App.lang;
 
-            return render.call(this, template, options, cb);;
+            return render.call(this, template, options, cb);
         }
 
         render.call(this, template, options, cbs);
