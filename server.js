@@ -1,6 +1,7 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser')
 const cryptoJS = require('crypto-js');
 const request = require('request');
 
@@ -19,6 +20,7 @@ i18n.configure({
 });
 
 app.use(cookieParser());
+app.use(bodyParser());
 
 app.use(i18n.init);
 
