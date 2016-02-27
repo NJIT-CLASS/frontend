@@ -50,6 +50,12 @@ router.get('/myclasses', (req, res) => {
     });
 });
 
+router.get('/instructormanagement', (req, res) => {
+    res.render('instructormanagement', {
+        title: 'Instructor Management'
+    });
+});
+
 router.get('/about', (req, res) => {
     res.render('about', {
         title: 'About'
