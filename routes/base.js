@@ -13,25 +13,22 @@ router.route('/')
             return res.redirect('/dashboard');
         }
 
-        res.render('home', {
-            title: 'CLASS Home',
-            language: req.App.lang
+        res.renderTemplate('home', {
+            title: 'CLASS Home'
         });
     })
     .post((req, res) => {
-        req.App.api.post('/login', {emailaddress: req.body.email,password:req.body.password}, (err, statusCode, body) => {
-            // send response here stuff here
-            console.log(body);
-            if(body.UserID.length > 0 && body.Message == 'Success'){
+        req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
+            if(body && body.UserID && body.UserID.length > 0 && body.Message == 'Success'){
                 const id = body.UserID[0].UserID;
                 const encryptedUserId = cryptoJS.AES.encrypt(id.toString(), consts.USER_SECRET).toString();
                 res.cookie('user', encryptedUserId);
-                res.redirect('/dashboard');
-            }else{
-                res.render('home',{
-                    error: true
-                });
+                return res.redirect('/dashboard');
             }
+
+            res.renderTemplate('home',{
+                error: true
+            });
         });
     });
 
@@ -42,16 +39,14 @@ router.route('/logout')
     });
 
 router.get('/dashboard', (req, res) => {
-    res.render('dashboard', {
-        title: 'CLASS Dashboard',
-        language: req.App.lang
+    res.renderTemplate('dashboard', {
+        title: 'CLASS Dashboard'
     });
 });
 
 router.get('/reset', (req, res) => {
-    res.render('reset', {
-        title: 'Reset Password',
-        language: req.App.lang
+    res.renderTemplate('reset', {
+        title: 'Reset Password'
     });
 });
 

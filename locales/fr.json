@@ -11,5 +11,20 @@
 	"Remember Me": "Souviens-toi de Moi",
 	"Login": "S'identifier",
 	"Forgot your password?": "Mot de passe oublié?",
-	"Click here to reset it.": "Cliquez ici pour le réinitialiser."
+	"Click here to reset it.": "Cliquez ici pour le réinitialiser.",
+	"Pending": "Pending",
+	"Completed": "Completed",
+	"All": "All",
+	"Grades": "Grades",
+	"Your Pending Tasks": "Your Pending Tasks",
+	"Your Completed Work": "Your Completed Work",
+	"CLASS Dashboard": "CLASS Dashboard",
+	"NJIT CLASS System": "NJIT CLASS System",
+	"User Profile": "User Profile",
+	"Settings": "Settings",
+	"Logout": "Logout",
+	"Dashboard": "Dashboard",
+	"My Classes": "My Classes",
+	"Instructor Management": "Instructor Management",
+	"About": "About"
 }

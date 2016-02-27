@@ -13,5 +13,19 @@
 	"Confirm Password": "Confirmar Contraseña",
 	"Forgot Your Password?": "¿Olvidaste Tu Contraseña?",
 	"Reset Password": "Restablecer la contraseña",
-	"CLASS Dashboard": "CLASS Dashboard"
+	"CLASS Dashboard": "CLASS Dashboard",
+	"Pending": "Pending",
+	"Completed": "Completed",
+	"All": "All",
+	"Grades": "Grades",
+	"Your Pending Tasks": "Your Pending Tasks",
+	"Your Completed Work": "Your Completed Work",
+	"NJIT CLASS System": "NJIT CLASS System",
+	"User Profile": "User Profile",
+	"Settings": "Settings",
+	"Logout": "Logout",
+	"Dashboard": "Dashboard",
+	"My Classes": "My Classes",
+	"Instructor Management": "Instructor Management",
+	"About": "About"
 }

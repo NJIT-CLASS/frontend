@@ -1,7 +1,7 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const cryptoJS = require('crypto-js');
 const request = require('request');
 
@@ -25,7 +25,7 @@ app.use(bodyParser());
 app.use(i18n.init);
 
 var hbs = handlebars.create({
-    defaultLayout: 'main',
+    defaultLayout: 'logged_in',
     extname: '.html',
     // Specify helpers which are only registered on this instance.
     helpers: {
@@ -116,6 +116,27 @@ app.use((req, res, next) => {
     else if (res.locale === 'fr') {
         req.App.lang = 'Français';
     }
+
+    next();
+});
+
+app.use((req, res, next) => {
+
+    res.renderTemplate = function(template, options) {
+        const loggedOutTemplates = {
+            reset: true,
+            home: true
+        };
+
+        if (template in loggedOutTemplates) {
+            options.layout = 'logged_out';
+            options.language = req.App.lang;
+
+            return res.render(template, options);
+        }
+
+        res.render(...arguments);
+    };
 
     next();
 });
