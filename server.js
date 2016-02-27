@@ -121,6 +121,14 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+    if ('user' in req.cookies) {
+        const decryptedUserBytes = cryptoJS.AES.decrypt(req.cookies.user, consts.USER_SECRET);
+        req.App.userId = decryptedUserBytes.toString(cryptoJS.enc.Utf8);
+    }
+    next();
+});
+
+app.use((req, res, next) => {
     const render = res.render;
 
     res.render = function(template, options, cb) {
@@ -136,17 +144,13 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
 
+        if (!req.App.userId) {
+            return res.sendStatus(404);
+        }
+
         render.call(this, template, options, cb);
     };
 
-    next();
-});
-
-app.use((req, res, next) => {
-    if ('user' in req.cookies) {
-        const decryptedUserBytes = cryptoJS.AES.decrypt(req.cookies.user, consts.USER_SECRET);
-        req.App.userId = decryptedUserBytes.toString(cryptoJS.enc.Utf8);
-    }
     next();
 });
 
