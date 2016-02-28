@@ -7,7 +7,8 @@
   "scripts": {
     "start": "sleep 1 && open http://localhost:3000/ & nodemon server.js",
     "lint": "eslint . --fix",
-    "compile-css": "lessc styles/main.less static/styles.css"
+    "compile-css": "lessc styles/main.less static/shared_styles.css",
+    "compilejs-cc": "browserify react/create-course/main.js -t babelify --outfile static/create_course.js"
   },
   "author": "",
   "dependencies": {
@@ -17,16 +18,19 @@
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "i18n": "^0.7.0",
+    "lodash": "^4.5.1",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
     "request": "^2.69.0"
   },
   "devDependencies": {
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.0.0",
     "nodemon": "^1.8.1",
     "pre-commit": "^1.1.2",
     "watch-lessc": "0.0.2"
-  },
-  "pre-commit": [
-    "lint"
-  ]
+  }
 }

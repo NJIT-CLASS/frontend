@@ -36,6 +36,10 @@
 	"Grades": "Grades",
 	"Your Pending Tasks": "Your Pending Tasks",
 	"Your Completed Work": "Your Completed Work",
+<<<<<<< HEAD
 	"Everyone's Work": "Everyone's Work",
 	"About CLASS": "About CLASS"
+=======
+	"Create Course": "Create Course"
+>>>>>>> fca6e84... get initial react page setup
 }

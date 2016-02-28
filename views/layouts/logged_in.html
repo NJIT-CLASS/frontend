@@ -5,11 +5,7 @@
 
     <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
-    <link rel="stylesheet" rel="stylesheet/less" href="/static/styles.css">
-
-    {{#each scripts}}
-        <script src="{{this}}"></script>
-    {{/each}}
+    <link rel="stylesheet" rel="stylesheet/less" href="/static/shared_styles.css">
 
     {{#each stylesheets}}
         <link rel="stylesheet" rel="stylesheet/less" href="{{this}}">
@@ -96,7 +92,11 @@
           </ul>
     </div>
  
-    <script src="/static/vendor/jquery-2.2.1.min.js" type="text/javascript" charset="utf-8" async defer></script>
-    <script src="/static/vendor/bootstrap.min.js" type="text/javascript" charset="utf-8" async defer></script>
+    <script src="/static/vendor/jquery-2.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/vendor/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+
+    {{#each scripts}}
+        <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
+    {{/each}}
 </body>
 </html>
