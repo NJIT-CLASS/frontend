@@ -48,6 +48,13 @@ router.get('/reset', (req, res) => {
     });
 });
 
+router.get('/accountmanagement', (req, res) => {
+    res.render('account_management', {
+        title: 'Account Management',
+        scripts: ['/static/account_management.js']
+    });
+});
+
 // dashboard
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
