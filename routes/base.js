@@ -14,8 +14,10 @@ router.route('/')
         }
 
         res.render('home', {
-            title: 'CLASS Home'
+            title: 'CLASS Home'	
         });
+	
+		
     })
     .post((req, res) => {
         req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
@@ -40,25 +42,30 @@ router.route('/logout')
 
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
-        title: 'CLASS Dashboard'
+        title: 'CLASS Dashboard',
+		pageHeader: 'Dashboard'
     });
 });
 
 router.get('/myclasses', (req, res) => {
     res.render('myclasses', {
-        title: 'My Classes'
+        title: 'My Classes',
+		pageHeader: 'My Classes'
     });
 });
 
 router.get('/instructormanagement', (req, res) => {
     res.render('instructormanagement', {
-        title: 'Instructor Management'
+        title: 'Instructor Management',
+		pageHeader: 'Instructor Management'
     });
 });
 
 router.get('/about', (req, res) => {
     res.render('about', {
-        title: 'About'
+        title: 'About',
+		pageHeader: 'About'
+		
     });
 });
 
