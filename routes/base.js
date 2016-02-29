@@ -7,6 +7,7 @@ const cryptoJS = require('crypto-js');
 const consts = require('../utils/constants');
 const router = express.Router();
 
+// login
 router.route('/')
     .get((req, res) => {
         if (req.App.user && req.App.user.userId) {
@@ -34,12 +35,20 @@ router.route('/')
         });
     });
 
-router.route('/logout')
-    .get((req, res) => {
-        res.clearCookie('user');
-        res.redirect('/');
-    });
+// logout
+router.get('/logout', (req, res) => {
+    res.clearCookie('user');
+    res.redirect('/');
+});
 
+// reset password
+router.get('/reset', (req, res) => {
+    res.render('reset', {
+        title: 'Reset Password'
+    });
+});
+
+// dashboard
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
         title: 'CLASS Dashboard',
@@ -61,6 +70,7 @@ router.get('/instructormanagement', (req, res) => {
     });
 });
 
+// about
 router.get('/about', (req, res) => {
     res.render('about', {
         title: 'About',
@@ -69,10 +79,11 @@ router.get('/about', (req, res) => {
     });
 });
 
-
-router.get('/reset', (req, res) => {
-    res.render('reset', {
-        title: 'Reset Password'
+// create course
+router.get('/create-course', (req, res) => {
+    res.render('create_course', {
+        title: 'Create Course',
+        scripts: ['/static/create_course.js']
     });
 });
 
