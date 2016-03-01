@@ -1,17 +1,12 @@
 <html>
-<head>
-<script type="text/javascript" src="../utils/account_management.js"></script>
-</head>
-
-<body onload="fetchCredentials()">  
   <div class="container">
         <div class="column">
         <h2>{{__ "Account Management"}}</h2>
         </br>
         
-                <div class="panel panel-default">
+                <div class="panel panel-default">  <!-- Start of 'change email' panel -->
                 	<div class="form-horizontal" class="panel-body">
-                        <form name="form_changeEmail" role="form">
+                        <form name="form_changeEmail" role="form" onsubmit="return validate_changeEmail()" method="post">
                             <fieldset>
                             <h3>{{__ "Change Your Email Address"}}</h3>
                                 <div class="form-group">
@@ -33,7 +28,7 @@
                     </div> 
                 </div>  <!-- End of 'change email' panel -->
                     
-                <div class="panel panel-default">       
+                <div class="panel panel-default">  <!-- Start of 'change password' panel -->   
                     <div class="form-horizontal" class="panel-body">
                         <form name="form_changePassword" role="form" onsubmit="return validate_changePassword()" method="post">
                             <fieldset>
@@ -56,8 +51,6 @@
                                     	<input class="form-control" id="field_confirmNewPassword" type="password" required>
                                 	</div>
                                 </div>
-                                <!-- TODO: Change this to a button or input when using this as a form -->
-                                <!-- TODO: Check if confirm field matches new field before submitting -->
                                 <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
                             </fieldset>
                         </form>
@@ -65,7 +58,7 @@
                 </div>  <!-- End of 'change password' panel -->
             </br>
                        
-                <div class="panel panel-default">   
+                <div class="panel panel-default">  <!-- Start of 'change name' panel --> 
                     <div class="form-horizontal" class="panel-body">
                         <form name="form_changeName" role="form">
                             <fieldset>
@@ -82,14 +75,12 @@
                                     	<input class="form-control" id="field_lastName" type="text" required>
                                 	</div>
                                 </div>
-                                <!-- TODO: Change this to a button or input when using this as a form -->
                                 <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
                             </fieldset>
                         </form>
                     </div> 
-                </div> <!-- End of 'change name' panel -->
+                </div>  <!-- End of 'change name' panel -->
             
         </div>
     </div>
- </body>
  </html>

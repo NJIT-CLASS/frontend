@@ -1,22 +1,25 @@
-function fetchCredentials() {
-	//alert("Starting fetchCredentials()");
-	//var userId = req.App.userId;			// TODO: get userId from local info
-	//var userId = "1234";
-	//alert(userId);
+function validate_changeEmail() {
+	
+}
+
+function validate_changeName() {
 	
 }
 
 function validate_changePassword() {
-	//var currPwd=document.forms["form_changePassword"]["field_currentPassword"].value;
-	                                var newPwd=document.forms['form_changePassword']['field_newPassword'].value;
-	                                var newPwdConf=document.forms['form_changePassword']['field_confirmNewPassword'].value;
+	alert("Testing.");
+	var userId = req.App.user.userId;
+	alert(userId);
+	var currPwd=document.forms["form_changePassword"]["field_currentPassword"].value;
+	var newPwd=document.forms['form_changePassword']['field_newPassword'].value;
+	var newPwdConf=document.forms['form_changePassword']['field_confirmNewPassword'].value;
 	
-	                                if(newPwd=='' || newPwd!=newPwdConf) {
-		                                alert('\'New password\' and \'confirmed password\' fields do not match.');
-		                                return false;
+	if(newPwd=='' || newPwd!=newPwdConf) {
+		alert('\'New password\' and \'confirmed password\' fields do not match.');
+		return false;
 	}
 	
-	                                return true;
+	return true;
 }
 
 

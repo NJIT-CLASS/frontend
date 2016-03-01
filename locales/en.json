@@ -13,5 +13,17 @@
 	"My Classes": "My Classes",
 	"Instructor Management": "Instructor Management",
 	"About": "About",
-	"Pending": "Pending"
+	"Pending": "Pending",
+	"Account Management": "Account Management",
+	"Change Your Email Address": "Change Your Email Address",
+	"New Email Address": "New Email Address",
+	"Password": "Password",
+	"Submit": "Submit",
+	"Change Password": "Change Password",
+	"Current Password": "Current Password",
+	"New Password": "New Password",
+	"Confirm Password": "Confirm Password",
+	"Change Name": "Change Name",
+	"First Name": "First Name",
+	"Last Name": "Last Name"
 }
