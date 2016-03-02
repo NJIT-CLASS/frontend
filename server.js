@@ -144,18 +144,18 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-
+/*// TODO: uncomment this
         if (!req.App.user || !req.App.user.userId) {
             return res.sendStatus(404);
         }
-
+*/
         render.call(this, template, options, cb);
     };
 
     next();
 });
 
-app.use((req, res, next) => {
+app.use((req, res, next) => {/*		// TODO: uncomment this
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`, (err, statusCode, body) => {
             if (err || statusCode !== 200) {
@@ -172,7 +172,7 @@ app.use((req, res, next) => {
             next();
         });
     }
-
+*/
     next();
 });
 

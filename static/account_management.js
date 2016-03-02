@@ -1,15 +1,4 @@
-function validate_changeEmail() {
-	
-}
-
-function validate_changeName() {
-	
-}
-
 function validate_changePassword() {
-	alert("Testing.");
-	var userId = req.App.user.userId;
-	alert(userId);
 	var currPwd=document.forms["form_changePassword"]["field_currentPassword"].value;
 	var newPwd=document.forms['form_changePassword']['field_newPassword'].value;
 	var newPwdConf=document.forms['form_changePassword']['field_confirmNewPassword'].value;

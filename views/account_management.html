@@ -1,86 +1,110 @@
 <html>
+
+
+<body onload="fetchCredentials()">  
   <div class="container">
-        <div class="column">
-        <h2>{{__ "Account Management"}}</h2>
-        </br>
+  
+  		{{#if passwordchangefailed }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+   			<span class="sr-only">Error:</span>
+			{{__ "Incorrect credentials. Password was NOT updated! Try again." }}
+			</div>
+		{{/if}}
+		
+		{{#if passwordchangesucceeded }}
+			<div class="alert alert-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+   			<span class="sr-only">Error:</span>
+			{{__ "Password was successfully updated!" }}
+			</div>
+		{{/if}}
+		
+        <div class="row">
+        <h1>{{__ "Account Management"}}</h1>
         
-                <div class="panel panel-default">  <!-- Start of 'change email' panel -->
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                
                 	<div class="form-horizontal" class="panel-body">
-                        <form name="form_changeEmail" role="form" onsubmit="return validate_changeEmail()" method="post">
+                        <form name="form_changeEmail" role="form" method="POST" action="/accountmanagement/changeemail">
                             <fieldset>
-                            <h3>{{__ "Change Your Email Address"}}</h3>
+                            <h2>{{__ "Change Your Email Address"}}</h2>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_newEmail">{{__ "New Email Address"}}</label>
-                                	<div class="col-sm-6">
-                                    	<input class="form-control" id="field_newEmail" type="text" required>
+                                	<div class="col-sm-10">
+                                    	<input class="form-control" name="field_newEmail" id="field_newEmail" type="password" required>
                                 	</div>
                                 </div>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_password">{{__ "Password"}}</label>
-                                    <div class="col-sm-6">
-                                    	<input class="form-control" id="field_password" type="password" required>
+                                    <div class="col-sm-10">
+                                    	<input class="form-control" name="field_password" id="field_password" type="password" required>
                                 	</div>
                                 </div>
                                 <!-- TODO: Change this to a button or input when using this as a form -->
                                 <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
                             </fieldset>
                         </form>
-                    </div> 
-                </div>  <!-- End of 'change email' panel -->
+                    </div> <!-- End of 'change email' panel -->
                     
-                <div class="panel panel-default">  <!-- Start of 'change password' panel -->   
+                    
                     <div class="form-horizontal" class="panel-body">
-                        <form name="form_changePassword" role="form" onsubmit="return validate_changePassword()" method="post">
+                        <form name="form_changePassword" role="form" method="POST" action="/accountmanagement/changepassword">
                             <fieldset>
-                            <h3>{{__ "Change Password"}}</h3>
+                            <h2>{{__ "Change Password"}}</h2>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_currentPassword">{{__ "Current Password"}}</label>
-                                	<div class="col-sm-6">
-                                    	<input class="form-control" id="field_currentPassword" type="password" required>
+                                	<div class="col-sm-10">
+                                    	<input class="form-control" name="field_currentPassword" id="field_currentPassword" type="password" required>
                                 	</div>
                                 </div>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_newPassword">{{__ "New Password"}}</label>
-                                    <div class="col-sm-6">
-                                    	<input class="form-control" id="field_newPassword" type="password" required>
+                                    <div class="col-sm-10">
+                                    	<input class="form-control" name="field_newPassword" id="field_newPassword" type="password" required>
                                 	</div>
                                 </div>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_confirmNewPassword">{{__ "Confirm Password"}}</label>
-                                    <div class="col-sm-6">
-                                    	<input class="form-control" id="field_confirmNewPassword" type="password" required>
+                                    <div class="col-sm-10">
+                                    	<input class="form-control" name="field_confirmNewPassword" id="field_confirmNewPassword" type="password" required>
                                 	</div>
                                 </div>
+                                <!-- TODO: Change this to a button or input when using this as a form -->
+                                <!-- TODO: Check if confirm field matches new field before submitting -->
                                 <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
                             </fieldset>
                         </form>
-                    </div> 
-                </div>  <!-- End of 'change password' panel -->
-            </br>
-                       
-                <div class="panel panel-default">  <!-- Start of 'change name' panel --> 
+                    </div> <!-- End of 'change password' panel -->
+                    
+                    
                     <div class="form-horizontal" class="panel-body">
                         <form name="form_changeName" role="form">
                             <fieldset>
-                            <h3>{{__ "Change Name"}}</h3>
+                            <h2>{{__ "Change Name"}}</h2>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_firstName">{{__ "First Name"}}</label>
-                                	<div class="col-sm-6">
-                                    	<input class="form-control" id="field_firstName" type="text" required>
+                                	<div class="col-sm-10">
+                                    	<input class="form-control" name="field_firstName" id="field_firstName" type="text" required>
                                 	</div>
                                 </div>
                                 <div class="form-group">
                                 	<label class="control-label col-sm-2" for="field_lastName">{{__ "Last Name"}}</label>
-                                	<div class="col-sm-6">
-                                    	<input class="form-control" id="field_lastName" type="text" required>
+                                	<div class="col-sm-10">
+                                    	<input class="form-control" name="field_lastName" id="field_lastName" type="text" required>
                                 	</div>
                                 </div>
+                                <!-- TODO: Change this to a button or input when using this as a form -->
                                 <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
                             </fieldset>
                         </form>
-                    </div> 
-                </div>  <!-- End of 'change name' panel -->
-            
+                    </div> <!-- End of 'change name' panel -->
+                    
+                    
+                </div>
+            </div>
         </div>
     </div>
+ </body>
  </html>

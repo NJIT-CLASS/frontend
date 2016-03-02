@@ -48,12 +48,65 @@ router.get('/reset', (req, res) => {
     });
 });
 
+
 router.get('/accountmanagement', (req, res) => {
     res.render('account_management', {
         title: 'Account Management',
+        userId: 1,
+        //userId: req.App.user.userId,		//TODO: uncomment this and delete hardcoded line
         scripts: ['/static/account_management.js']
     });
 });
+
+router.post('/accountmanagement/changeemail', (req, res) => {
+	console.log(req.body);   // TODO: uncomment below and delete this line (untested below)
+    req.App.api.post('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
+        if(statusCode==401) {	// error
+        	res.render('accountmanagement',{
+                emailchangefailed: true
+            });
+        }
+        else {					// success
+        	res.render('accountmanagement',{
+                emailchangesucceeded: true,
+                newemail: body.EmailAddress
+            });
+        }
+    }); 
+});
+
+router.post('/accountmanagement/changepassword', (req, res) => {
+	console.log(req.body);   // TODO: delete this line?
+    req.App.api.post('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
+        if(statusCode==401) {	// error
+        	res.render('accountmanagement',{
+                passwordchangefailed: true
+            });
+        }
+        else {					// success, status code 200
+        	res.render('accountmanagement',{
+                passwordchangesucceeded: true
+            });
+        }
+    });
+});
+
+router.post('/accountmanagement/changename', (req, res) => {
+	console.log(req.body);  // TODO: uncomment below and delete this line (untested below)
+    req.App.api.post('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
+        if(statusCode==401) {	// error
+        	res.render('accountmanagement',{
+                passwordchangefailed: true
+            });
+        }
+        else {					// success, status code 200
+        	res.render('accountmanagement',{
+                passwordchangesucceeded: true
+            });
+        }
+    });
+});
+
 
 // dashboard
 router.get('/dashboard', (req, res) => {
