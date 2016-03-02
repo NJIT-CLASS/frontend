@@ -29,5 +29,12 @@
 	"CLASS System": "CLASS System",
 	"Admin Tools": "Admin Tools",
 	"My Account": "My Account",
-	"Log out": "Log out"
+	"Log out": "Log out",
+	"Please Sign In": "Please Sign In",
+	"Email": "Email",
+	"Remember Me": "Remember Me",
+	"Login": "Login",
+	"Forgot your password?": "Forgot your password?",
+	"Click here to reset it.": "Click here to reset it.",
+	"CLASS Home": "CLASS Home"
 }

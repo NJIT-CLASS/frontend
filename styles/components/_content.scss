@@ -1,10 +1,10 @@
 .content {
     flex: 1 1 500px;
-    min-height: 800px;
     background-color: #F3F3F4;
+    overflow: auto;
 
     .page-header {
-        padding: 20px 20px;
+        padding: 20px;
         background-color: #ffffff;
         border-bottom: 1px solid #e7eaec;
     }
@@ -16,6 +16,8 @@
     }
 
     >.container {
-        margin: 20px;
+        margin: 10px;
+        display: flex;
+        flex-wrap: wrap;
     }
 }
