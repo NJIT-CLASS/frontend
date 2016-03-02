@@ -18,5 +18,16 @@
 	"Dashboard": "Dashboard",
 	"My Classes": "My Classes",
 	"Instructor Management": "Instructor Management",
-	"About": "About"
+	"About": "About",
+	"Pending": "Pending",
+	"Completed": "Completed",
+	"All": "All",
+	"Grades": "Grades",
+	"Your Pending Tasks": "Your Pending Tasks",
+	"Your Completed Work": "Your Completed Work",
+	"Class Home": "Class Home",
+	"CLASS System": "CLASS System",
+	"Admin Tools": "Admin Tools",
+	"My Account": "My Account",
+	"Log out": "Log out"
 }

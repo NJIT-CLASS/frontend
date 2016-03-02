@@ -5,7 +5,7 @@
   "main": "server.js",
   "engine": "node 5.6.0",
   "scripts": {
-    "start": "nodemon ./server.js",
+    "start": "gulp",
     "lint": "eslint . --fix",
     "compilejs-cc": "browserify react/create-course/main.js -t babelify --outfile static/create_course.js"
   },
@@ -28,6 +28,9 @@
     "browserify": "^13.0.0",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.0.0",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.0.6",
+    "gulp-sass": "^2.2.0",
     "nodemon": "^1.9.1",
     "pre-commit": "^1.1.2",
     "watch-lessc": "0.0.2"
