@@ -1,6 +1,0 @@
-{
-  "events": {
-    "start": "npm run compile-css",
-    "restart": "npm run compile-css"
-  }
-}

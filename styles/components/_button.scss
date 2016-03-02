@@ -1,0 +1,15 @@
+button {
+    border: 0;
+    background-color: #00AB8D;
+    border-radius: 3px;
+    border-color: #1ab394;
+    float: right;
+    color: #ffffff;
+    font-size: 18px;
+    padding: 8px;
+    font-weight: 300;
+
+    .error {
+        border-color: #ed5565;
+    }
+}

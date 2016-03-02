@@ -52,6 +52,7 @@ router.get('/reset', (req, res) => {
 router.get('/accountmanagement', (req, res) => {
     res.render('account_management', {
         title: 'Account Management',
+        pageHeader: 'Account Management',
         userId: 1,
         //userId: req.App.user.userId,		//TODO: uncomment this and delete hardcoded line
         scripts: ['/static/account_management.js']

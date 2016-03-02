@@ -1,13 +1,12 @@
-@import "variables.less";
-@import "mixins.less";
-
-// Global Styles
+/*!
+ * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
 
 body {
-    background-color: @gray-lightest;
+    background-color: #f8f8f8;
 }
-
-// Wrappers
 
 #wrapper {
     width: 100%;
@@ -16,7 +15,7 @@ body {
 #page-wrapper {
     padding: 0 15px;
     min-height: 568px;
-    background-color: white;
+    background-color: #fff;
 }
 
 @media(min-width:768px) {
@@ -24,13 +23,9 @@ body {
         position: inherit;
         margin: 0 0 0 250px;
         padding: 0 30px;
-        border-left: 1px solid darken(@gray-lightest, 6.5%);
+        border-left: 1px solid #e7e7e7;
     }
 }
-
-// Navigation
-
-// --Topbar
 
 .navbar-top-links {
     margin-right: 0;
@@ -90,13 +85,9 @@ body {
     left: auto;
 }
 
-// --Sidebar
-
-.sidebar {
-    .sidebar-nav.navbar-collapse {
-        padding-left: 0;
-        padding-right: 0;
-    }
+.sidebar .sidebar-nav.navbar-collapse {
+    padding-right: 0;
+    padding-left: 0;
 }
 
 .sidebar .sidebar-search {
@@ -104,12 +95,11 @@ body {
 }
 
 .sidebar ul li {
-    border-bottom: 1px solid darken(@gray-lightest, 6.5%);
-    a {
-        &.active {
-            background-color: @gray-lighter;
-        }
-    }
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.sidebar ul li a.active {
+    background-color: #eee;
 }
 
 .sidebar .arrow {
@@ -120,13 +110,13 @@ body {
     content: "\f104";
 }
 
-.sidebar .active > a > .fa.arrow:before {
+.sidebar .active>a>.fa.arrow:before {
     content: "\f107";
 }
 
 .sidebar .nav-second-level li,
 .sidebar .nav-third-level li {
-    border-bottom: none !important;
+    border-bottom: 0!important;
 }
 
 .sidebar .nav-second-level li a {
@@ -152,8 +142,6 @@ body {
     }
 }
 
-// Buttons
-
 .btn-outline {
     color: inherit;
     background-color: transparent;
@@ -161,23 +149,23 @@ body {
 }
 
 .btn-primary.btn-outline {
-    color: @brand-primary;
+    color: #428bca;
 }
 
 .btn-success.btn-outline {
-    color: @brand-success;
+    color: #5cb85c;
 }
 
 .btn-info.btn-outline {
-    color: @brand-info;
+    color: #5bc0de;
 }
 
 .btn-warning.btn-outline {
-    color: @brand-warning;
+    color: #f0ad4e;
 }
 
 .btn-danger.btn-outline {
-    color: @brand-danger;
+    color: #d9534f;
 }
 
 .btn-primary.btn-outline:hover,
@@ -185,10 +173,8 @@ body {
 .btn-info.btn-outline:hover,
 .btn-warning.btn-outline:hover,
 .btn-danger.btn-outline:hover {
-    color: white;
+    color: #fff;
 }
-
-// Chat Widget
 
 .chat {
     margin: 0;
@@ -199,7 +185,7 @@ body {
 .chat li {
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 1px dotted @gray-light;
+    border-bottom: 1px dotted #999;
 }
 
 .chat li.left .chat-body {
@@ -224,13 +210,9 @@ body {
     overflow-y: scroll;
 }
 
-// Login Page
-
 .login-panel {
     margin-top: 25%;
 }
-
-// Flot Charts Containers
 
 .flot-chart {
     display: block;
@@ -242,14 +224,17 @@ body {
     height: 100%;
 }
 
-// DataTables Overrides
+.dataTables_wrapper {
+    position: relative;
+    clear: both;
+}
 
 table.dataTable thead .sorting,
 table.dataTable thead .sorting_asc,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-    background: transparent;
+    background: 0 0;
 }
 
 table.dataTable thead .sorting_asc:after {
@@ -270,8 +255,6 @@ table.dataTable thead .sorting:after {
     font-family: fontawesome;
     color: rgba(50,50,50,.5);
 }
-
-// Circle Buttons 
 
 .btn-circle {
     width: 30px;
@@ -301,66 +284,71 @@ table.dataTable thead .sorting:after {
     line-height: 1.33;
 }
 
-// Grid Demo Elements
-
-.show-grid [class^="col-"] {
+.show-grid [class^=col-] {
     padding-top: 10px;
     padding-bottom: 10px;
     border: 1px solid #ddd;
-    background-color: #eee !important;
+    background-color: #eee!important;
 }
 
 .show-grid {
     margin: 15px 0;
 }
 
-// Custom Colored Panels
-
 .huge {
     font-size: 40px;
 }
 
 .panel-green {
-    border-color: @brand-success;
-    .panel-heading {
-        border-color: @brand-success;
-        color: white;
-        background-color: @brand-success;
-    }
-    a {
-        color: @brand-success;
-        &:hover {
-            color: darken(@brand-success, 15%);
-        }
-    }
+    border-color: #5cb85c;
+}
+
+.panel-green .panel-heading {
+    border-color: #5cb85c;
+    color: #fff;
+    background-color: #5cb85c;
+}
+
+.panel-green a {
+    color: #5cb85c;
+}
+
+.panel-green a:hover {
+    color: #3d8b3d;
 }
 
 .panel-red {
-    border-color: @brand-danger;
-    .panel-heading {
-        border-color: @brand-danger;
-        color: white;
-        background-color: @brand-danger;
-    }
-    a {
-        color: @brand-danger;
-        &:hover {
-            color: darken(@brand-danger, 15%);
-        }
-    }
+    border-color: #d9534f;
+}
+
+.panel-red .panel-heading {
+    border-color: #d9534f;
+    color: #fff;
+    background-color: #d9534f;
+}
+
+.panel-red a {
+    color: #d9534f;
+}
+
+.panel-red a:hover {
+    color: #b52b27;
 }
 
 .panel-yellow {
-    border-color: @brand-warning;
-    .panel-heading {
-        border-color: @brand-warning;
-        color: white;
-        background-color: @brand-warning;
-    }
-    a {
-        color: @brand-warning;
-        &:hover {
-            color: darken(@brand-warning, 15%);
-        }
-    }
+    border-color: #f0ad4e;
+}
+
+.panel-yellow .panel-heading {
+    border-color: #f0ad4e;
+    color: #fff;
+    background-color: #f0ad4e;
+}
+
+.panel-yellow a {
+    color: #f0ad4e;
+}
+
+.panel-yellow a:hover {
+    color: #df8a13;
 }

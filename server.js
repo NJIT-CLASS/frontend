@@ -19,6 +19,8 @@ i18n.configure({
     directory: __dirname+'/locales'
 });
 
+app.use('/static', express.static('static'));
+
 app.use(cookieParser());
 app.use(bodyParser());
 
@@ -175,8 +177,6 @@ app.use((req, res, next) => {
 
     next();
 });
-
-app.use('/static', express.static('static'));
 
 // routes
 app.use('/', baseRoutes);

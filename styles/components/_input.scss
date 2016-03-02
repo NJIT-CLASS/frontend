@@ -1,0 +1,20 @@
+input {
+    &[type=text],
+    &[type=password] {
+        width: 400px;
+        font-size: 18px;
+        box-sizing: border-box;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #e5e6e7;
+
+        &:focus {
+            outline: none;
+            border-color: #00AB8D;
+        }
+
+        &:disabled {
+            background-color: #eee;
+        }
+    }
+}

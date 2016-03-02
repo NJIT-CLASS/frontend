@@ -1,0 +1,43 @@
+@import 'meyer_reset';
+@import 'variables';
+
+// components
+@import 'components/sidebar';
+@import 'components/navbar';
+@import 'components/content';
+@import 'components/section';
+@import 'components/input';
+@import 'components/button';
+@import 'components/secondary_nav';
+@import 'components/link';
+
+// pages
+@import 'pages/sign_up';
+
+body {
+    font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    &.logged-in {
+        background-color: #2E4051;
+    }
+
+    &.logged-out {
+        background-color: #F3F3F4;
+    }
+}
+
+.main-container {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    &.center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+}

@@ -1,102 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{{ __ title }}</title>
+    <head>
+        <title>{{ __ "Class Home" }}</title>
 
-    <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
-    <link rel="stylesheet" rel="stylesheet/less" href="/static/shared_styles.css">
-
-    {{#each stylesheets}}
-        <link rel="stylesheet" rel="stylesheet/less" href="{{this}}">
-    {{/each}}
-</head>
-<body>
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html">{{__ "NJIT CLASS System"}}</a>
-        </div>
-
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> {{__ "User Profile"}}</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> {{__ "Settings"}}</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> {{__ "Logout"}}</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
-        <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-                <ul class="nav" id="side-menu">
-
-                    <li>
-                        <a href="/dashboard"><i class="fa fa-dashboard fa-fw"></i> {{__ "Dashboard"}}</a>
-                    </li>
-                    
-                    <li>
-                        <a href="/myclasses"><i class="fa fa-bar-chart-o fa-fw"></i> {{__ "My Classes"}}</a>
-                    </li>
-
-                    <li>
-                        <a href="#"><i class="fa fa-table fa-fw"></i> Everyone's Work</a>
+        <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
+        <link rel="stylesheet" rel="stylesheet/less" href="/static/main.css">
+    </head>
+    <body class="logged-in">
+        <div class="main-container">
+            <div class="sidebar">
+                <h2><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
+                <ul>
+                    <li class="selected">
+                        <a href="/dashboard">
+                            <i class="fa fa-dashboard fa-fw"></i>
+                            <span>{{ __ "Dashboard" }}</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="/instructormanagement"><i class="fa fa-edit fa-fw"></i> {{__ "Instructor Management"}}</a>
+                        <a href="/admin">
+                            <i class="fa fa-bar-chart-o fa-fw"></i>
+                            <span>{{ __ "Admin Tools" }}</span>
+                            <span class="fa arrow fa-fw"></span>
+                        </a>
                     </li>
                     <li>
-                        <a href="/about"><i class="fa fa-files-o fa-fw"></i> {{__ "About"}}</a>
+                        <a href="/accountmanagement" class="link">
+                            <i class="fa fa-cog fa-fw"></i>
+                            <span>{{ __ "My Account" }}</span>
+                        </a>
                     </li>
-
+                    <li>
+                        <a href="/about">
+                            <i class="fa fa-files-o fa-fw"></i>
+                            <span>{{ __ "About" }}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
-        </div>
-    </nav>
-  
-    <div id="page-wrapper" style="min-height: 1264px;">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">{{__ pageHeader }}</h1>
+            <div class="content">
+                <div class="secondary-nav">
+                    <a class="hamburger" href="#" onclick="document.getElementsByClassName('sidebar')[0].classList.toggle('collapsed')"><i class="fa fa-bars"></i></a>
+                    <div class="left-nav">
+                        <a href="/logout" class="link">
+                            <i class="fa fa-sign-out"></i>
+                            {{ __ "Log out" }}
+                        </a>
+                    </div>
+                </div>
+                <div class="page-header">
+                    <h2>{{__ pageHeader }}</h2>
+                </div>
+                <div class="container">
+
+                    {{{body}}}
+
                 </div>
             </div>
         </div>
 
-        {{{body}}}
-
-    </div>
-
-    <div class="dropup language-dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {{ language }}
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="?lang=en">English</a></li>
-            <li><a href="?lang=es">Español</a></li>
-            <li><a href="?lang=fr">Français</a></li>
-          </ul>
-    </div>
- 
-    <script src="/static/vendor/jquery-2.2.1.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/vendor/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-
-    {{#each scripts}}
-        <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
-    {{/each}}
-</body>
+        {{#each scripts}}
+            <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
+        {{/each}}
+    </body>
 </html>

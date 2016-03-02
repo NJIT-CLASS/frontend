@@ -5,9 +5,8 @@
   "main": "server.js",
   "engine": "node 5.6.0",
   "scripts": {
-    "start": "sleep 1 && open http://localhost:3000/ & nodemon server.js",
+    "start": "nodemon ./server.js",
     "lint": "eslint . --fix",
-    "compile-css": "lessc styles/main.less static/shared_styles.css",
     "compilejs-cc": "browserify react/create-course/main.js -t babelify --outfile static/create_course.js"
   },
   "author": "",
@@ -29,7 +28,7 @@
     "browserify": "^13.0.0",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.0.0",
-    "nodemon": "^1.8.1",
+    "nodemon": "^1.9.1",
     "pre-commit": "^1.1.2",
     "watch-lessc": "0.0.2"
   }

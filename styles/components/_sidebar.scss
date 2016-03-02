@@ -1,0 +1,85 @@
+.sidebar {
+    flex: 0 0 200px;
+
+    h2 {
+        font-size: 25px;
+        text-align: center;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        color: #DFE4ED;
+        background: url("http://localhost:3000/static/images/logo_background.png") no-repeat;
+    }
+
+    h2 i {
+        display: block;
+        font-size: 40px;
+        margin: auto;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    a {
+        color: #a7b1c2;
+        font-size: 15px;
+        font-weight: 400;
+        display: block;
+        padding: 15px 15px 15px 16px;
+        border-left: 4px solid #2E4051;
+    }
+
+    li i {
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    a:hover {
+        background-color: #293847;
+        border-color: #293847;
+        cursor: pointer;
+        color: #ffffff;
+    }
+
+    li.selected a {
+        background-color: #293847;
+        border-left: 4px solid #00AB8D;
+        color: #ffffff;
+    }
+
+    &.collapsed {
+        flex: 0 0 50px;
+
+        a {
+            font-size: 25px;
+            padding-left: 11px;
+        }
+
+        i {
+            margin-right: 0;
+        }
+
+        a span {
+            display: none;
+        }
+
+        h2 {
+            padding-top: 15px;
+            padding-bottom: 15px;
+
+            i {
+                margin-bottom: 0;
+            }
+
+            span {
+                display: none;
+            }
+        }
+    }
+
+    .fa.arrow {
+        float: right;
+
+        &:before {
+            content: "\f104";
+        }
+    }
+}
