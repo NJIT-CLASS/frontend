@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 
             const options = {
                 method: 'GET',
-                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                uri: `http://162.243.45.215:8080/api${endpoint}`,
                 qs: queryParameters,
                 json: true
             };
@@ -69,7 +69,7 @@ app.use((req, res, next) => {
 
             const options = {
                 method: 'POST',
-                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                uri: `http://162.243.45.215:8080/api${endpoint}`,
                 json: true,
                 body: body
             };
@@ -86,7 +86,7 @@ app.use((req, res, next) => {
 
             const options = {
                 method: 'PUT',
-                uri: `http://192.241.189.38:8080/api${endpoint}`,
+                uri: `http://162.243.45.215:8080/api${endpoint}`,
                 json: true,
                 body: body
             };
