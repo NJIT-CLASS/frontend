@@ -1,6 +1,7 @@
 input {
     &[type=text],
-    &[type=password] {
+    &[type=password],
+    &[type=email] {
         width: 400px;
         font-size: 18px;
         box-sizing: border-box;

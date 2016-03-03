@@ -1,0 +1,9 @@
+.error {
+    color: #ed5565;
+    
+    &.form-error {
+        border: 1px solid #ed5565;
+        padding: 10px;
+        border-radius: 3px;
+    }
+}

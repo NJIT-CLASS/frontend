@@ -1,37 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{{ __ title }}</title>
+    <head>
+        <title>{{ __ title }}</title>
 
-    <link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
-    <link rel="stylesheet" rel="stylesheet/less" href="/static/sb-admin-2.css">
+        <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
+        <link rel="stylesheet" rel="stylesheet/less" href="/static/main.css">
 
-    {{#each stylesheets}}
-    	<link rel="stylesheet" rel="stylesheet/less" href="{{this}}">
-    {{/each}}
-</head>
-<body class="logged-out">
- 
-    {{{body}}}
+    </head>
+    <body class="logged-out">
+        <div class="main-container center">
 
-    <div class="dropup language-dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {{ language }}
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="?lang=en">English</a></li>
-            <li><a href="?lang=es">Español</a></li>
-            <li><a href="?lang=fr">Français</a></li>
-          </ul>
-    </div>
- 
-    <script src="/static/vendor/jquery-2.2.1.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/vendor/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+                {{{body}}}
 
-    {{#each scripts}}
-        <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
-    {{/each}}
-</body>
+        </div>
+    </body>
 </html>

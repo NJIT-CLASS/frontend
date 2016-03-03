@@ -1,42 +1,33 @@
-  <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="login-panel panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{__ "Please Sign In"}}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <form role="form" method="POST" action="/">
-                            <fieldset>
-                                {{#if error }}
-                                        <div class="alert alert-danger" role="alert">
-                                          <i class="fa fa-exclamation-circle"></i>
-                                          <span class="sr-only">Error:</span>
-                                            Wrong Email Address / Password
-                                        </div>
-                                {{/if}}
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="{{ __ "Email" }}" name="email" type="email" autofocus>
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control" placeholder="{{ __ "Password" }}" name="password" type="password" value="">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">{{ __ "Remember Me" }}
-                                    </label>
-                                </div>
-                                <!-- Change this to a button or input when using this as a form -->
-                                <button type="submit" class="btn btn-lg btn-success btn-block">{{ __ "Login" }}</a>
-                            </fieldset>
-                        </form>
-                    </div>
+<div class="login-container">
+    <h2>
+        <i class="fa fa-graduation-cap"></i>
+        <span>{{ __ "CLASS System" }}</span>
+    </h2>
+    <form role="form" class="section" method="POST" action="/">
+        <h3 class="title">{{__ "Please Sign In"}}</h3>
+        <div class="section-content">
+            {{#if error }}
+                <div class="error form-error">
+                  <i class="fa fa-exclamation-circle"></i>
+                  <span>Error: Wrong Email Address / Password</span>
                 </div>
-                <div>
-      <p>{{ __ "Forgot your password?" }} <a href="reset">{{ __ "Click here to reset it." }}</a></p>
-    </div>
+            {{/if}}
+            <div class="form-group">
+                <input class="form-control" placeholder="{{ __ "Email" }}" name="email" type="email" autofocus>
+            </div>
+            <div class="form-group">
+                <input class="form-control" placeholder="{{ __ "Password" }}" name="password" type="password" value="">
+            </div>
+            <div class="row">
+                <div class="checkbox">
+                    <label>
+                        <input name="remember" type="checkbox" value="Remember Me">{{ __ "Remember Me" }}
+                    </label>
+                </div>
+                <!-- Change this to a button or input when using this as a form -->
+                <button type="submit" class="btn btn-lg btn-success btn-block">{{ __ "Login" }}</a>
             </div>
         </div>
-        
-
-    </div>
+    </form>
+    <p>{{ __ "Forgot your password?" }} <a href="/reset" class="link">{{ __ "Click here to reset it." }}</a></p>
+</div>

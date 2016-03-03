@@ -30,6 +30,7 @@ router.route('/')
             }
 
             res.render('home',{
+                title: 'CLASS Home',
                 error: true
             });
         });
