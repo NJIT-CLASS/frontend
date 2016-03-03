@@ -57,4 +57,6 @@ gulp.task('start', function () {
   });
 });
 
+gulp.task('compile-assets', ['sass', 'create:compile']);
+
 gulp.task('default', ['sass', 'sass:watch', 'create:watch', 'start']);

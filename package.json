@@ -6,7 +6,8 @@
   "engine": "node 5.6.0",
   "scripts": {
     "start": "gulp",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "compile-assets": "gulp compile-assets"
   },
   "author": "",
   "dependencies": {
