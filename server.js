@@ -26,7 +26,11 @@ app.use(bodyParser());
 
 app.use(i18n.init);
 
+app.set('views', `${__dirname}/views/`);
+
 var hbs = handlebars.create({
+    layoutsDir: `${__dirname}/views/layouts/`,
+    partialsDir: `${__dirname}/views/`,
     defaultLayout: 'logged_in',
     extname: '.html',
     // Specify helpers which are only registered on this instance.
@@ -183,9 +187,6 @@ app.use((req, res, next) => {
 // routes
 app.use('/', baseRoutes);
 
-// start server
-const port = process.env.CLASS_PORT || 3000;
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(consts.FRONTEND_PORT, () => {
+    console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
 });
