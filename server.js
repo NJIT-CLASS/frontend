@@ -16,10 +16,10 @@ i18n.configure({
     locales: ['en', 'es','fr'],
     defaultLocale: 'en',
     cookie: 'lang',
-    directory: __dirname+'/locales'
+    directory: `${__dirname}/locales`
 });
 
-app.use('/static', express.static('static'));
+app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
 app.use(bodyParser());
@@ -136,8 +136,9 @@ app.use((req, res, next) => {
 
     res.render = function(template, options, cb) {
         const loggedOutTemplates = {
-            reset: true,
-            home: true
+            password_reset: true,
+            home: true,
+            create_account: true
         };
 
         if (template in loggedOutTemplates) {
@@ -147,6 +148,7 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
 
+        // only allow logged out users access to pages that are meant for logged out users
         if (!req.App.user || !req.App.user.userId) {
             return res.sendStatus(404);
         }

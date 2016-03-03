@@ -1,0 +1,33 @@
+<div class="create-account-container">
+    <h2>
+        <i class="fa fa-graduation-cap"></i>
+        <span>{{ __ "CLASS System" }}</span>
+    </h2>
+    <form role="form" class="section" method="POST" action="/sign-up">
+        <h3 class="title">{{__ "Create Account"}}</h3>
+        <div class="section-content">
+            {{#if error }}
+                <div class="error form-error">
+                  <i class="fa fa-exclamation-circle"></i>
+                  <span>Error: Details not valid.</span>
+                </div>
+            {{/if}}
+            <div class="form-group">
+                <input placeholder="{{ __ "Email" }}" name="email" type="email" disabled>
+            </div>
+            <div class="form-group">
+                <input placeholder="{{ __ "First Name" }}" name="first-name" type="text" autofocus>
+            </div>
+            <div class="form-group">
+                <input placeholder="{{ __ "Last Name" }}" name="last-name" type="text">
+            </div>
+            <div class="form-group">
+                <input placeholder="{{ __ "Password" }}" name="password" type="password">
+            </div>
+            <div class="form-group">
+                <input placeholder="{{ __ "Confirm Password" }}" name="password" type="password">
+            </div>
+            <button type="submit">{{ __ "Create Account" }}</a>
+        </div>
+    </form>
+</div>

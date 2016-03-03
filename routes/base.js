@@ -44,7 +44,7 @@ router.get('/logout', (req, res) => {
 
 // reset password
 router.get('/reset', (req, res) => {
-    res.render('reset', {
+    res.render('password_reset', {
         title: 'Reset Password'
     });
 });
@@ -148,5 +148,11 @@ router.get('/create-course', (req, res) => {
         scripts: ['/static/create_course.js']
     });
 });
+
+router.get('/create-account/:id', (req, res) => {
+    res.render('create_account', {
+        title: 'Create CLASS Account'
+    });
+})
 
 module.exports = router;
