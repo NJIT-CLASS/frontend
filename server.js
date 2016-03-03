@@ -26,7 +26,11 @@ app.use(bodyParser());
 
 app.use(i18n.init);
 
+app.set('views', `${__dirname}/views/`);
+
 var hbs = handlebars.create({
+    layoutsDir: `${__dirname}/views/layouts/`,
+    partialsDir: `${__dirname}/views/`,
     defaultLayout: 'logged_in',
     extname: '.html',
     // Specify helpers which are only registered on this instance.
