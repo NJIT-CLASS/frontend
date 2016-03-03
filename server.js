@@ -187,9 +187,6 @@ app.use((req, res, next) => {
 // routes
 app.use('/', baseRoutes);
 
-// start server
-const port = process.env.CLASS_PORT || 3000;
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(consts.FRONTEND_PORT, () => {
+    console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
 });
