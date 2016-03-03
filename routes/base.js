@@ -54,56 +54,73 @@ router.get('/accountmanagement', (req, res) => {
     res.render('account_management', {
         title: 'Account Management',
         pageHeader: 'Account Management',
-        userId: 1,
-        //userId: req.App.user.userId,		//TODO: uncomment this and delete hardcoded line
+        userId: req.App.user.userId,
         scripts: ['/static/account_management.js']
     });
 });
 
-router.post('/accountmanagement/changeemail', (req, res) => {
-	console.log(req.body);   // TODO: uncomment below and delete this line (untested below)
-    req.App.api.post('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
-        if(statusCode==401) {	// error
-        	res.render('accountmanagement',{
-                emailchangefailed: true
+router.post('/accountmanagement/changename', (req, res) => {
+    req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
+    	if(statusCode==200) {		// success
+        	res.render('account_management',{
+                namechangesucceeded: true
             });
         }
-        else {					// success
-        	res.render('accountmanagement',{
+        else {					// error
+        	res.render('account_management',{
+                namechangefailed: true
+            });
+        }
+    }); 
+});
+
+router.post('/accountmanagement/changeemail', (req, res) => {
+    req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
+    	console.log(body);
+    	if(statusCode==200) {		// success
+    		res.render('account_management',{
                 emailchangesucceeded: true,
-                newemail: body.EmailAddress
+                newemail: body.EmailAddress,
+                statuscode: statusCode
+            });
+        }
+        else {						// success
+        	res.render('account_management',{
+                emailchangefailed: true,
+                statuscode: statusCode
             });
         }
     }); 
 });
 
 router.post('/accountmanagement/changepassword', (req, res) => {
-	console.log(req.body);   // TODO: delete this line?
-    req.App.api.post('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-        if(statusCode==401) {	// error
-        	res.render('accountmanagement',{
-                passwordchangefailed: true
+    req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
+    	if(statusCode==200) {		// success
+        	res.render('account_management',{
+                passwordchangesucceeded: true
             });
         }
-        else {					// success, status code 200
-        	res.render('accountmanagement',{
-                passwordchangesucceeded: true
+        else {						// error
+        	res.render('account_management',{
+                passwordchangefailed: true,
+                statuscode: statusCode
             });
         }
     });
 });
 
 router.post('/accountmanagement/changename', (req, res) => {
-	console.log(req.body);  // TODO: uncomment below and delete this line (untested below)
     req.App.api.post('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-        if(statusCode==401) {	// error
+        if(statusCode==200) {	// success
         	res.render('accountmanagement',{
-                passwordchangefailed: true
+        		passwordchangesucceeded: true
+                
             });
         }
-        else {					// success, status code 200
+        else {					// error
         	res.render('accountmanagement',{
-                passwordchangesucceeded: true
+                passwordchangefailed: true,
+                statuscode: statusCode
             });
         }
     });

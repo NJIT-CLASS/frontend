@@ -42,5 +42,7 @@
 	"Reset Password": "Reset Password",
 	"Sign Up": "Sign Up",
 	"Create CLASS Account": "Create CLASS Account",
-	"Create Account": "Create Account"
+	"Create Account": "Create Account",
+	"Password was successfully updated!": "Password was successfully updated!",
+	"Password was NOT updated! Check your entered values and try again.": "Password was NOT updated! Check your entered values and try again."
 }
