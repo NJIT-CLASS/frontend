@@ -16,6 +16,10 @@
 @import 'pages/create_account';
 @import 'pages/home';
 @import 'pages/password_reset';
+@import 'pages/create_course';
+
+// vendor
+@import 'vendor/react-select/default';
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;

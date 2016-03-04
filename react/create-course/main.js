@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Container from './container';
+import CourseContainer from './course-container';
 
-ReactDOM.render(<Container />, document.getElementById('create-course-container'));
+ReactDOM.render(<CourseContainer />, document.getElementById('create-course-container'));
