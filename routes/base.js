@@ -48,27 +48,46 @@ router.get('/reset', (req, res) => {
         title: 'Reset Password'
     });
 });
-
-
+	
 router.get('/accountmanagement', (req, res) => {
-    res.render('account_management', {
-        title: 'Account Management',
-        pageHeader: 'Account Management',
-        userId: req.App.user.userId,
-        scripts: ['/static/account_management.js']
-    });
+	var backendscr = '/generalUser/' + req.App.user.userId;
+	req.App.api.get(backendscr, {userid:req.App.user.userId}, (err, statusCode, body) => {
+    	if(body.Message=="Success") {		// success
+    		res.render('account_management', {
+    	        title: 'Account Management',
+    	        pageHeader: 'Account Management',
+    	        userId: req.App.user.userId,
+    	        userEmail: body.User[0].EmailAddress,
+    	        userFirstName: body.User[0].FirstName,
+    	        userLastName: body.User[0].LastName,
+    	        scripts: ['/static/account_management.js']
+    	    });
+        }
+        else {					// error
+        	res.render('account_management', {
+                title: 'Account Management',
+                pageHeader: 'Account Management',
+                userId: req.App.user.userId,
+                scripts: ['/static/account_management.js']
+            });
+        }
+    }); 
+    
 });
 
 router.post('/accountmanagement/changename', (req, res) => {
     req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
-    	if(statusCode==200) {		// success
+    	if(body.Message=="Success") {		// success
+    		// TODO: check contents of reply to see if name change actually succeeded
         	res.render('account_management',{
-                namechangesucceeded: true
+                namechangesucceeded: true,
+                statuscode: statusCode
             });
         }
         else {					// error
         	res.render('account_management',{
-                namechangefailed: true
+                namechangefailed: true,
+                statuscode: statusCode
             });
         }
     }); 
@@ -77,7 +96,7 @@ router.post('/accountmanagement/changename', (req, res) => {
 router.post('/accountmanagement/changeemail', (req, res) => {
     req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
     	console.log(body);
-    	if(statusCode==200) {		// success
+    	if(body.Message=="Success") {		// success
     		res.render('account_management',{
                 emailchangesucceeded: true,
                 newemail: body.EmailAddress,
@@ -97,7 +116,8 @@ router.post('/accountmanagement/changepassword', (req, res) => {
     req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
     	if(statusCode==200) {		// success
         	res.render('account_management',{
-                passwordchangesucceeded: true
+                passwordchangesucceeded: true,
+                statuscode: statusCode
             });
         }
         else {						// error
