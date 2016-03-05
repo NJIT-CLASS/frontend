@@ -43,12 +43,24 @@ router.get('/logout', (req, res) => {
 });
 
 // reset password
-router.get('/reset', (req, res) => {
+router.get('/password_reset', (req, res) => {
     res.render('password_reset', {
         title: 'Reset Password'
     });
 });
-	
+
+router.post('/resetConfrim',(req,res)=>{
+    if(req.body.password == req.body.confrimpassword){
+        req.App.api.put('/update/password',{password:req.body.password,userid:req.body.userid} (err, statusCode, body) => {
+           return res.redirect('/'); 
+        });
+    }else{
+        res.render('home',{
+                error: true
+            });
+    }
+});
+
 router.post('/accountmanagement', (req, res) => {
 	if (req.body.what_was_changed=="name") {
 		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
