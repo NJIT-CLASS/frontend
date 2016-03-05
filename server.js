@@ -37,7 +37,18 @@ var hbs = handlebars.create({
     helpers: {
         __: function () {
             return i18n.__.apply(this, arguments);
-        }
+        }, 
+		
+		sidebarHighlighter: function(template, sidebarItem, options){
+		if (template === sidebarItem){
+			return options.fn(this);
+			
+			
+		}
+		
+			
+		}
+		
     }
 });
 
@@ -139,6 +150,7 @@ app.use((req, res, next) => {
     const render = res.render;
 
     res.render = function(template, options, cb) {
+		options.template=template;
         const loggedOutTemplates = {
             password_reset: true,
             home: true,

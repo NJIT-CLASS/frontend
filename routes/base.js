@@ -151,7 +151,8 @@ router.post('/accountmanagement/changename', (req, res) => {
 router.get('/dashboard', (req, res) => {
     res.render('dashboard', {
         title: 'CLASS Dashboard',
-		pageHeader: 'Dashboard'
+		pageHeader: 'Dashboard',
+
     });
 });
 
@@ -173,9 +174,8 @@ router.get('/instructormanagement', (req, res) => {
 router.get('/about', (req, res) => {
     res.render('about', {
         title: 'About',
-		pageHeader: 'About'
-		
-    });
+		pageHeader: 'About'				
+    });	
 });
 
 // create course
