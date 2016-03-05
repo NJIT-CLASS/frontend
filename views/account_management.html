@@ -3,7 +3,15 @@
 	<i class="fa fa-exclamation-circle"></i>
 		<span class="sr-only">Error:</span>
 	{{__ "Password was NOT updated! Check your entered values and try again." }}
-	</br>[DEBUG] Error status code: {{statuscode}}
+	</br>Error status code: {{statuscode}}
+	</div>
+{{/if}}
+
+{{#if passwordchangemismatch }}
+	<div class="alert alert-danger" role="alert">
+	<i class="fa fa-exclamation-circle"></i>
+		<span class="sr-only">Error:</span>
+	The new password you entered does not match the contents of the confirmation field. Try again.
 	</div>
 {{/if}}
 
@@ -12,7 +20,6 @@
 	<i class="fa fa-exclamation-circle"></i>
 		<span class="sr-only">Success:</span>
 	{{__ "Password was successfully updated!" }}
-	</br>[DEBUG] Error status code: {{statuscode}}
 	</div>
 {{/if}}
 
@@ -21,7 +28,7 @@
 	<i class="fa fa-exclamation-circle"></i>
 		<span class="sr-only">Error:</span>
 	Email was NOT updated! Check your entered values and try again.
-	</br>[DEBUG] Error status code: {{statuscode}}
+	</br>Error status code: {{statuscode}}
 	</div>
 {{/if}}
 
@@ -31,7 +38,6 @@
 		<span class="sr-only">Success:</span>
 	Email address was successfully updated!
 	</br>New email address: {{newemail}}
-	</br>[DEBUG] Error status code: {{statuscode}}
 	</div>
 {{/if}}
 
@@ -40,7 +46,7 @@
 	<i class="fa fa-exclamation-circle"></i>
 		<span class="sr-only">Error:</span>
 	Name was NOT updated! There may have been a connection issue. Try again in a few minutes.
-	</br>[DEBUG] Error status code: {{statuscode}}
+	</br>Error status code: {{statuscode}}
 	</div>
 {{/if}}
 
@@ -49,12 +55,12 @@
 	<i class="fa fa-exclamation-circle"></i>
 		<span class="sr-only">Success:</span>
 	Name was successfully updated!
-	</br>[DEBUG] Error status code: {{statuscode}}
 	</div>
 {{/if}}
 </br>
 
-<form name="form_changeName" role="form" class="section" method="POST" action="/accountmanagement/changename">
+<form name="form_changeName" role="form" class="section" method="POST" action="/accountmanagement">
+	<input type="hidden" name="what_was_changed" value="name">
     <h2 class="title">{{__ "Change Name"}}</h2>
     <div class="section-content">
         <div class="form-group">
@@ -74,7 +80,8 @@
     </div>
 </form> <!-- End of 'change name' panel -->
 
-<form name="form_changeEmail" role="form" class="section" method="POST" action="/accountmanagement/changeemail">
+<form name="form_changeEmail" role="form" class="section" method="POST" action="/accountmanagement">
+	<input type="hidden" name="what_was_changed" value="email">
     <h2 class="title">{{__ "Change Your Email Address"}}</h2>
     <div class="section-content">
         <div class="form-group">
@@ -94,7 +101,8 @@
     </div>
 </form> <!-- End of 'change email' panel -->
 
-<form name="form_changePassword" role="form" class="section" method="POST" action="/accountmanagement/changepassword">
+<form name="form_changePassword" role="form" class="section" method="POST" action="/accountmanagement">
+	<input type="hidden" name="what_was_changed" value="password">
     <h2 class="title">{{__ "Change Password"}}</h2>
     <div class="section-content">
         <div class="form-group">
