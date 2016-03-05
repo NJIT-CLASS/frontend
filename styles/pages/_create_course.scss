@@ -18,12 +18,9 @@
         }
     }
 
-    .course-details {
-        max-height: 316px;
-    }
-
     .course-sections {
         display: flex;
+        align-items: flex-start;
     }
 
     .member {
@@ -37,6 +34,17 @@
         .Select {
             width: 120px;
             margin-left: 5px;
+        }
+    }
+
+    li {
+        padding: 0;
+
+        a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px 30px;
         }
     }
 }

@@ -16,7 +16,20 @@
         overflow: hidden;
     }
 
-    ul {
+    li {
+        display: flex;
+        align-items: center;
+        width: 460px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #EFF3F5;
+        padding: 10px 30px;
 
+        .right {
+            margin-left: auto;
+
+            &.small {
+                font-size: 13px;
+            }
+        }
     }
 }
