@@ -17,4 +17,8 @@ textarea {
     &:disabled {
         background-color: #eee;
     }
+
+    &.error {
+        border-color: #ed5565;
+    }
 }

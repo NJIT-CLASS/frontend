@@ -15,7 +15,7 @@ class CourseContainer extends React.Component {
 
     createCourse(courseName, courseNumber) {
         this.setState({
-            courseId: 5,
+            courseId: 5, // TODO: make an API request here to create the course. Placeholder for now.
             courseName: courseName,
             courseNumber: courseNumber
         });

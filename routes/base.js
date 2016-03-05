@@ -43,12 +43,116 @@ router.get('/logout', (req, res) => {
 });
 
 // reset password
-router.get('/reset', (req, res) => {
+router.get('/password_reset', (req, res) => {
     res.render('password_reset', {
         title: 'Reset Password'
     });
 });
-	
+
+router.post('/resetConfrim',(req,res)=>{
+    if(req.body.password == req.body.confrimpassword){
+        req.App.api.put('/update/password',{password:req.body.password,userid:req.body.userid}, (err, statusCode, body) => {
+           return res.redirect('/'); 
+        });
+    }else{
+        res.render('home',{
+            error: true
+        });
+    }
+});
+
+router.post('/accountmanagement', (req, res) => {
+	if (req.body.what_was_changed=="name") {
+		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
+	    	if(body.Message=="Success") {		// success
+	    		// TODO: check contents of reply to see if name change actually succeeded
+	        	res.render('account_management',{
+	                namechangesucceeded: true,
+	                statuscode: statusCode
+	            });
+	        }
+	        else {					// error
+	        	res.render('account_management',{
+	                namechangefailed: true,
+	                statuscode: statusCode
+	            });
+	        }
+	    }); 
+	}
+	else if (req.body.what_was_changed=="email") {
+		req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
+	    	console.log(body);
+	    	if(body.Message=="Success") {		// success
+	    		res.render('account_management',{
+	                emailchangesucceeded: true,
+	                newemail: body.EmailAddress,
+	                statuscode: statusCode
+	            });
+	        }
+	        else {						// success
+	        	res.render('account_management',{
+	                emailchangefailed: true,
+	                statuscode: statusCode
+	            });
+	        }
+	    }); 
+	}
+	else if (req.body.what_was_changed=="password") {
+		
+		// If the "confirm password" doesn't match the new password entered,
+		// then alert the user and abort the operation
+		if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
+			console.log("PASSWORD MISMATCH");
+			// TODO: alert user that the password didn't match
+			res.render('account_management',{
+                passwordchangemismatch: true
+            });
+			return;
+		}
+		
+		console.log("PAST MISMATCH CHECK");
+		
+		req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
+	    	if(statusCode==200) {		// success
+	        	res.render('account_management',{
+	                passwordchangesucceeded: true,
+	                statuscode: statusCode
+	            });
+	        }
+	        else {						// error
+	        	res.render('account_management',{
+	                passwordchangefailed: true,
+	                statuscode: statusCode
+	            });
+	        }
+	    });
+	}
+	else {
+		var backendscr = '/generalUser/' + req.App.user.userId;
+		req.App.api.get(backendscr, {userid:req.App.user.userId}, (err, statusCode, body) => {
+	    	if(body.Message=="Success") {		// success
+	    		res.render('account_management', {
+	    	        title: 'Account Management',
+	    	        pageHeader: 'Account Management',
+	    	        userId: req.App.user.userId,
+	    	        userEmail: body.User[0].EmailAddress,
+	    	        userFirstName: body.User[0].FirstName,
+	    	        userLastName: body.User[0].LastName,
+	    	        scripts: ['/static/account_management.js']
+	    	    });
+	        }
+	        else {					// error
+	        	res.render('account_management', {
+	                title: 'Account Management',
+	                pageHeader: 'Account Management',
+	                userId: req.App.user.userId,
+	                scripts: ['/static/account_management.js']
+	            });
+	        }
+	    });
+	}
+});
+
 router.get('/accountmanagement', (req, res) => {
 	var backendscr = '/generalUser/' + req.App.user.userId;
 	req.App.api.get(backendscr, {userid:req.App.user.userId}, (err, statusCode, body) => {
@@ -75,6 +179,7 @@ router.get('/accountmanagement', (req, res) => {
     
 });
 
+/*
 router.post('/accountmanagement/changename', (req, res) => {
     req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
     	if(body.Message=="Success") {		// success
@@ -145,7 +250,7 @@ router.post('/accountmanagement/changename', (req, res) => {
         }
     });
 });
-
+*/
 
 // dashboard
 router.get('/dashboard', (req, res) => {

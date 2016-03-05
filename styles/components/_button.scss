@@ -12,4 +12,13 @@ button {
     .error {
         border-color: #ed5565;
     }
+
+    &.success {
+        background-color: inherit;
+        color: #00AB8D;
+    }
+
+    i {
+        margin-right: 5px;
+    }
 }
