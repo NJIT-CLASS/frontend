@@ -56,8 +56,8 @@ router.post('/resetConfrim',(req,res)=>{
         });
     }else{
         res.render('home',{
-                error: true
-            });
+            error: true
+        });
     }
 });
 
