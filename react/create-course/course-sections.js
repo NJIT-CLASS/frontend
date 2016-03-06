@@ -11,18 +11,35 @@ class CourseSections extends React.Component {
 
         this.state = {
             sections: props.sections,
-            sectionShowingIndex: null
+            sectionShowingIndex: null,
+            newSectionShowing: true
         };
     }
 
-    selectSection(sectionIndex) {
-        this.setState({sectionShowingIndex: sectionIndex});
+    selectSection(sectionIndex=null) {
+        this.setState({
+            sectionShowingIndex: sectionIndex,
+            newSectionShowing: true
+        });
+    }
+
+    createSection(section) {
+        this.props.createSection(this.state.sectionShowingIndex, section);
+
+        this.setState({
+            sectionShowingIndex: null,
+            newSectionShowing: false
+        });
     }
 
     render() {
-        debugger;
-        if (this.state.sectionShowingIndex !== null || this.state.sections.length === 0) {
-            return <CourseSection section={this.state.sections[this.state.sectionShowingIndex]} members={this.state.sections[this.state.sectionShowingIndex].members}/>;
+        if ((this.state.sectionShowingIndex === null && this.state.newSectionShowing) || this.state.sectionShowingIndex !== null || this.state.sections.length === 0) {
+            return (
+                <CourseSection 
+                    section={this.state.sections[this.state.sectionShowingIndex]}
+                    createSection={this.createSection.bind(this)}
+                />
+            );
         }
 
         return <CourseSectionList sections={this.state.sections} selectSection={this.selectSection.bind(this)}/>;
@@ -30,19 +47,7 @@ class CourseSections extends React.Component {
 }
 
 CourseSections.defaultProps = {
-    sections: [{
-        name: '101',
-        description: 'this is a test description',
-        members: [
-        {
-            email: 'srm56@njit.edu',
-            role: 'individual'
-        },
-        {
-            email: 'srmorrisonjit@gmail.com',
-            role: 'student'
-        }]
-    }]
+    sections: []
 };
 
 export default CourseSections;

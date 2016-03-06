@@ -12,7 +12,13 @@ class Container extends React.Component {
         let courseSectionsEl = null;
 
         if (this.props.displaySections) {
-            courseSectionsEl = <CourseSections displaySections={this.props.displaySections}/>;
+            courseSectionsEl = (
+                <CourseSections
+                    displaySections={this.props.displaySections}
+                    sections={this.props.sections}
+                    createSection={this.props.createSection}
+                />
+            );
         }
 
         return (

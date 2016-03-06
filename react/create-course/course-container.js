@@ -9,7 +9,8 @@ class CourseContainer extends React.Component {
         this.state = {
             courseId: null,
             courseName: '',
-            courseNumber: ''
+            courseNumber: '',
+            sections: []
         };
     }
 
@@ -21,6 +22,24 @@ class CourseContainer extends React.Component {
         });
     }
 
+    createSection(index, section) {
+        if (index !== null) {
+            return this.setState((previousState) => {
+                let sections = previousState.sections;
+                sections[index] = section;
+
+                return sections;
+            });
+        }
+
+        this.setState((previousState) => {
+            let sections = previousState.sections;
+            sections.push(section);
+
+            return sections;
+        });
+    }
+
     render() {
         return (
             <Container
@@ -29,6 +48,8 @@ class CourseContainer extends React.Component {
                 displaySections={this.state.courseId !== null}
                 courseName={this.state.courseName}
                 courseNumber={this.state.courseNumber}
+                createSection={this.createSection.bind(this)}
+                sections={this.state.sections}
             />
         );
     }

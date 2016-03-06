@@ -9,7 +9,10 @@ class CourseSection extends React.Component {
         super(props);
 
         this.state = {
-            members: props.members
+            name: props.section.name || '',
+            description: props.section.description || '',
+            semesterId: props.section.semesterId || null,
+            members: props.section.members || []
         };
     }
 
@@ -32,10 +35,35 @@ class CourseSection extends React.Component {
         });
     }
 
+    createSection(e) {
+        e.preventDefault();
+
+        let section = {
+            name: this.state.name,
+            description: this.state.description,
+            semesterId: this.state.semesterId,
+            members: this.state.members
+        };
+
+        return this.props.createSection(section);
+    }
+
+    onNameChange(e) {
+        this.setState({name: e.target.value});
+    }
+
+    onDescriptionChange(e) {
+        this.setState({description: e.target.value});
+    }
+
+    onSemesterChange(semesterId) {
+        this.setState({semesterId: semesterId});
+    }
+
     render() {
-        var options = [
-            { value: 's16', label: 'Spring 2016' },
-            { value: 'f15', label: 'Fall 2015' }
+        var semesters = [
+            { value: 1, label: 'Spring 2016' },
+            { value: 2, label: 'Fall 2015' }
         ];
 
         let lastIndex = 0;
@@ -60,25 +88,26 @@ class CourseSection extends React.Component {
                 <div className="section-content">
                     <label>Section Name</label>
                     <div>
-                        <input type="text"></input>
+                        <input type="text" value={this.state.name} onChange={this.onNameChange.bind(this)}></input>
                     </div>
                     <label>Section Description</label>
                     <div>
-                        <textarea></textarea>
+                        <textarea value={this.state.description} onChange={this.onDescriptionChange.bind(this)}></textarea>
                     </div>
                     <label>Semester</label>
                     <Select
                         name="semester"
-                        value="s16"
-                        options={options}
+                        value={this.state.semesterId}
+                        options={semesters}
                         clearable={false}
                         searchable={false}
+                        onChange={this.onSemesterChange.bind(this)}
                     />
                     <label>Course Members</label>
                     <div>
                         {members}
                     </div>
-                    <button type="submit">Create Section</button>
+                    <button type="submit" onClick={this.createSection.bind(this)}>{this.props.section.name ? 'Update Section' : 'Create Section'}</button>
                 </div>
             </div>
         );
@@ -86,7 +115,6 @@ class CourseSection extends React.Component {
 }
 
 CourseSection.defaultProps = {
-    members: [],
     section: {}
 };
 
