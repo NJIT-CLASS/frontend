@@ -42,12 +42,20 @@ gulp.task('sass:watch', () => {
   gulp.watch('./styles/**/*.scss', ['sass']);
 });
 
-gulp.task('create:compile', () => {
+gulp.task('create_course:compile', () => {
     compileReact('/create-course/main.js', 'create_course');
 });
 
-gulp.task('create:watch', () => {
+gulp.task('create_course:watch', () => {
     watchReact('/create-course/main.js', 'create_course');
+});
+
+gulp.task('create_assgn:compile', () => {
+    compileReact('/create-assignment/main.js', 'create_assignment');
+});
+
+gulp.task('create_assgn:watch', () => {
+    watchReact('/create-assignment/main.js', 'create_assignment');
 });
 
 gulp.task('start', function () {
@@ -57,6 +65,6 @@ gulp.task('start', function () {
   });
 });
 
-gulp.task('compile-assets', ['sass', 'create:compile']);
+gulp.task('compile-assets', ['sass', 'create_course:compile', 'create_assgn:compile']);
 
-gulp.task('default', ['sass', 'sass:watch', 'create:watch', 'start']);
+gulp.task('default', ['sass', 'sass:watch', 'create_course:watch', 'create_assgn:watch', 'start']);

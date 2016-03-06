@@ -298,4 +298,12 @@ router.get('/create-account/:id', (req, res) => {
     });
 })
 
+router.get('/create-assignment', (req, res) => {
+    res.render('create_assignment', {
+        title: 'Create Assignment',
+        showHeader: false,
+        scripts: ['/static/create_assignment.js']
+    });
+})
+
 module.exports = router;

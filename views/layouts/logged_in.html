@@ -33,6 +33,16 @@
                         </a>
                     </li>
                     <li 
+                        {{#sidebarHighlighter template "create_assignment" }}
+                        class="selected"
+                        {{/sidebarHighlighter}}
+                        >
+                        <a href="/create-assignment">
+                            <i class="fa fa-file-text fa-fw"></i>
+                            <span>{{ __ "Create Assignment" }}</span>
+                        </a>
+                    </li>
+                    <li 
 						{{#sidebarHighlighter template "admin" }}
 						class="selected"
 						{{/sidebarHighlighter}}
@@ -75,14 +85,18 @@
                         </a>
                     </div>
                 </div>
-                <div class="page-header">
-                    <h2>{{__ pageHeader }}</h2>
-                </div>
-                <div class="container">
+                {{#showHTMLBasedOnBoolean showHeader}}
+                    <div class="page-header">
+                        <h2>{{__ pageHeader }}</h2>
+                    </div>
+                    <div class="container">
+                {{/showHTMLBasedOnBoolean}}
 
                     {{{body}}}
 
-                </div>
+                {{#showHTMLBasedOnBoolean showHeader}}
+                    </div>
+                {{/showHTMLBasedOnBoolean}}
             </div>
         </div>
 
