@@ -66,18 +66,32 @@ router.post('/accountmanagement', (req, res) => {
 		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
 	    	if(body.Message=="Success") {		// success
 	    		// TODO: check contents of reply to see if name change actually succeeded
-	        	res.render('account_management',{
-	                namechangesucceeded: true,
-	                statuscode: statusCode
-	            });
+	        	res.render('account_management', {
+                    title: 'Account Management',
+                    pageHeader: 'Account Management',
+                    userId: req.App.user.userId,
+                    userEmail: req.App.user.email,
+                    userFirstName: req.App.user.firstName,
+                    userLastName: req.App.user.lastName,
+                    scripts: ['/static/account_management.js'],
+                    namechangesucceeded: true,
+                    statuscode: statusCode
+                });
 	        }
 	        else {					// error
-	        	res.render('account_management',{
-	                namechangefailed: true,
-	                statuscode: statusCode
-	            });
+                res.render('account_management', {
+                    title: 'Account Management',
+                    pageHeader: 'Account Management',
+                    userId: req.App.user.userId,
+                    userEmail: req.App.user.email,
+                    userFirstName: req.App.user.firstName,
+                    userLastName: req.App.user.lastName,
+                    scripts: ['/static/account_management.js'],
+                    namechangefailed: true,
+                    statuscode: statusCode
+                });
 	        }
-	    }); 
+	    });
 	}
 	else if (req.body.what_was_changed=="email") {
 		req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
@@ -128,55 +142,28 @@ router.post('/accountmanagement', (req, res) => {
 	    });
 	}
 	else {
-		var backendscr = '/generalUser/' + req.App.user.userId;
-		req.App.api.get(backendscr, {userid:req.App.user.userId}, (err, statusCode, body) => {
-	    	if(body.Message=="Success") {		// success
-	    		res.render('account_management', {
-	    	        title: 'Account Management',
-	    	        pageHeader: 'Account Management',
-	    	        userId: req.App.user.userId,
-	    	        userEmail: body.User[0].EmailAddress,
-	    	        userFirstName: body.User[0].FirstName,
-	    	        userLastName: body.User[0].LastName,
-	    	        scripts: ['/static/account_management.js']
-	    	    });
-	        }
-	        else {					// error
-	        	res.render('account_management', {
-	                title: 'Account Management',
-	                pageHeader: 'Account Management',
-	                userId: req.App.user.userId,
-	                scripts: ['/static/account_management.js']
-	            });
-	        }
-	    });
+        res.render('account_management', {
+            title: 'Account Management',
+            pageHeader: 'Account Management',
+            userId: req.App.user.userId,
+            userEmail: req.App.user.email,
+            userFirstName: req.App.user.firstName,
+            userLastName: req.App.user.lastName,
+            scripts: ['/static/account_management.js']
+        });
 	}
 });
 
 router.get('/accountmanagement', (req, res) => {
-	var backendscr = '/generalUser/' + req.App.user.userId;
-	req.App.api.get(backendscr, {userid:req.App.user.userId}, (err, statusCode, body) => {
-    	if(body.Message=="Success") {		// success
-    		res.render('account_management', {
-    	        title: 'Account Management',
-    	        pageHeader: 'Account Management',
-    	        userId: req.App.user.userId,
-    	        userEmail: body.User[0].EmailAddress,
-    	        userFirstName: body.User[0].FirstName,
-    	        userLastName: body.User[0].LastName,
-    	        scripts: ['/static/account_management.js']
-    	    });
-        }
-        else {					// error
-        	res.render('account_management', {
-                title: 'Account Management',
-                pageHeader: 'Account Management',
-                userId: req.App.user.userId,
-                scripts: ['/static/account_management.js']
-            });
-        }
-    }); 
-    
+	res.render('account_management', {
+        title: 'Account Management',
+        pageHeader: 'Account Management',
+        userId: req.App.user.userId,
+        userEmail: req.App.user.email,
+        userFirstName: req.App.user.firstName,
+        userLastName: req.App.user.lastName,
+        scripts: ['/static/account_management.js']
+    });
 });
 
 /*
