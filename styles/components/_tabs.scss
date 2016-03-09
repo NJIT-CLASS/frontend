@@ -1,0 +1,38 @@
+$break-small: 320px;
+$break-large: 1200px;
+
+.tab{
+	background-color: #ffffff;;
+	ul {
+	    list-style-type: none;
+	    margin: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    
+
+	    li {
+	    	display: block;
+	    	list-style:none;
+	    	@media screen and (max-width: $break-small){
+	    		float: none;
+	    	}
+	    	@media screen and (min-width: $break-large) {
+    			float: left;
+  			}
+
+	    	a{
+	    		display: block;
+			    padding: 8px 90px;
+				text-decoration: none;
+				font-weight: bold;
+				color: #069;
+				border-right: 1px solid #ccc;
+	    	}
+	    	.lastO{
+					border-right:0;					
+				}
+		}
+	}
+}
+
+
