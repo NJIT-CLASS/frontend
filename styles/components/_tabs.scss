@@ -2,14 +2,12 @@ $break-small: 320px;
 $break-large: 1200px;
 
 .tab{
-	background-color: #ffffff;;
+	background-color: #f3f3f4;;
 	ul {
 	    list-style-type: none;
 	    margin: 0;
 	    padding: 0;
 	    overflow: hidden;
-	    
-
 	    li {
 	    	display: block;
 	    	list-style:none;
@@ -19,18 +17,14 @@ $break-large: 1200px;
 	    	@media screen and (min-width: $break-large) {
     			float: left;
   			}
-
 	    	a{
 	    		display: block;
-			    padding: 8px 90px;
+			    //padding: 8px 90px;
+			    padding: 0.5em 5em 0.5em 5em;
 				text-decoration: none;
 				font-weight: bold;
-				color: #069;
-				border-right: 1px solid #ccc;
+				color: #676A6C;
 	    	}
-	    	.lastO{
-					border-right:0;					
-				}
 		}
 	}
 }
