@@ -47,6 +47,11 @@ var hbs = handlebars.create({
             if (bool) {
                 return options.fn(this);
             }
+        },
+        ifEqual: function(arg1, arg2, options) {
+            if (arg1 === arg2) {
+                return options.fn(this);
+            }
         }
     }
 });
@@ -146,40 +151,6 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    const render = res.render;
-
-    res.render = function(template, options, cb) {
-		options.template = template;
-
-        if (!('showHeader' in options)) {
-            options.showHeader = true;
-        }
-
-        const loggedOutTemplates = {
-            password_reset: true,
-            home: true,
-            create_account: true
-        };
-
-        if (template in loggedOutTemplates) {
-            options.layout = 'logged_out';
-            options.language = req.App.lang;
-
-            return render.call(this, template, options, cb);
-        }
-
-        // only allow logged out users access to pages that are meant for logged out users
-        if (!req.App.user || !req.App.user.userId) {
-            return res.sendStatus(404);
-        }
-
-        render.call(this, template, options, cb);
-    };
-
-    next();
-});
-
-app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`, (err, statusCode, body) => {
             if (err || statusCode !== 200) {
@@ -196,6 +167,101 @@ app.use((req, res, next) => {
             next();
         });
     }
+
+    next();
+});
+
+app.use((req, res, next) => {
+    const render = res.render;
+
+    const sidebarNavItems = [
+        {
+            text: 'Dashboard',
+            link: '/dashboard',
+            template: 'dashboard',
+            onlyInstructors: false,
+            icon: 'dashboard'
+        },
+        {
+            text: 'Create Course',
+            link: '/create-course',
+            template: 'create_course',
+            onlyInstructors: true,
+            icon: 'plus'
+        },
+        {
+            text: 'Create Assignment',
+            link: '/create-assignment',
+            template: 'create_assignment',
+            onlyInstructors: true,
+            icon: 'file-text'
+        },
+        {
+            text: 'My Account',
+            link: '/accountmanagement',
+            template: 'account_management',
+            onlyInstructors: false,
+            icon: 'cog'
+        },
+        {
+            text: 'About',
+            link: '/about',
+            template: 'about',
+            onlyInstructors: false,
+            icon: 'files-o'
+        }
+    ];
+
+    res.render = function(template, options, cb) {
+		options.template = template;
+
+        if (!('showHeader' in options)) {
+            options.showHeader = true;
+        }
+
+        const loggedOutTemplates = {
+            password_reset: true,
+            home: true,
+            create_account: true
+        };
+
+        const studentTemplates = {
+            dashboard: true,
+            account_management: true,
+            about: true
+        };
+
+        if (template in loggedOutTemplates) {
+            options.layout = 'logged_out';
+            options.language = req.App.lang;
+
+            return render.call(this, template, options, cb);
+        }
+
+        if (req.App.user.type === 'student' && !(template in studentTemplates)) {
+            return res.sendStatus(404);
+        }
+
+        sidebarNavItems.forEach((sidebarItem, index) => {
+            if (sidebarItem.onlyInstructors) {
+                sidebarItem.showInNav = req.App.user.type === 'student' ? false : true;
+            }
+            else {
+                sidebarItem.showInNav = true;
+            }
+
+            sidebarNavItems[index] = sidebarItem;
+        });
+
+        options.sidebarNavItems = sidebarNavItems;
+
+        // only allow logged out users access to pages that are meant for logged out users
+        if (!req.App.user || !req.App.user.userId) {
+            return res.sendStatus(404);
+        }
+
+        render.call(this, template, options, cb);
+    };
 
     next();
 });

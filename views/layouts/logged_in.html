@@ -13,38 +13,21 @@
             <div class="sidebar">
                 <h2><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
                 <ul>
-
-                    <li 
-						{{#sidebarHighlighter template "dashboard" }}
-						class="selected"
-						{{/sidebarHighlighter}}
-						>
-                        <a href="/dashboard">
-                            <i class="fa fa-dashboard fa-fw"></i>
-                            <span>{{ __ "Dashboard" }}</span>
-                        </a>
-                    </li>
-                    <li 
-						{{#sidebarHighlighter template "create_course" }}
-						class="selected"
-						{{/sidebarHighlighter}}
-						>
-                        <a href="/create-course">
-                            <i class="fa fa-plus fa-fw"></i>
-                            <span>{{ __ "Create Course" }}</span>
-                        </a>
-                    </li>
-                    <li 
-                        {{#sidebarHighlighter template "create_assignment" }}
-                        class="selected"
-                        {{/sidebarHighlighter}}
-                        >
-                        <a href="/create-assignment">
-                            <i class="fa fa-file-text fa-fw"></i>
-                            <span>{{ __ "Create Assignment" }}</span>
-                        </a>
-                    </li>
-                    <li 
+                    {{#each sidebarNavItems}}
+                        {{#if showInNav}}
+                            <li 
+                                {{#sidebarHighlighter ../template template }}
+                                class="selected"
+                                {{/sidebarHighlighter}}
+                                >
+                                <a href="{{ link }}">
+                                    <i class="fa fa-{{ icon }} fa-fw"></i>
+                                    <span>{{ __ text }}</span>
+                                </a>
+                            </li>
+                        {{/if}}
+                    {{/each}}
+                    <!--<li 
 						{{#sidebarHighlighter template "admin" }}
 						class="selected"
 						{{/sidebarHighlighter}}
@@ -54,27 +37,7 @@
                             <span>{{ __ "Admin Tools" }}</span>
                             <span class="fa arrow fa-fw"></span>
                         </a>
-                    </li>
-                    <li
-						{{#sidebarHighlighter template "account_management" }}
-						class="selected"
-						{{/sidebarHighlighter}}
-						>
-                        <a href="/accountmanagement">
-                            <i class="fa fa-cog fa-fw"></i>
-                            <span>{{ __ "My Account" }}</span>
-                        </a>
-                    </li>
-                    <li
-						{{#sidebarHighlighter template "about" }}
-						class="selected"
-						{{/sidebarHighlighter}}
-						>
-                        <a href="/about">
-                            <i class="fa fa-files-o fa-fw"></i>
-                            <span>{{ __ "About" }}</span>
-                        </a>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
             <div class="content">
