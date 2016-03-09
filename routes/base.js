@@ -49,6 +49,13 @@ router.get('/password_reset', (req, res) => {
     });
 });
 
+// semester management
+router.get('/semestermanagement', (req, res) => {
+    res.render('semester_management', {
+        title: 'Semester Management'
+    });
+});
+
 router.post('/resetConfrim',(req,res)=>{
     if(req.body.password == req.body.confrimpassword){
         req.App.api.put('/update/password',{password:req.body.password,userid:req.body.userid}, (err, statusCode, body) => {
