@@ -56,6 +56,36 @@ router.get('/semestermanagement', (req, res) => {
     });
 });
 
+router.post('/semestermanagement', (req, res) => {
+	// Check to make sure start date comes before end date
+	if (req.body.field_endDate < req.body.field_startDate) {
+		res.render('semester_management', {
+	        title: 'Semester Management',
+	        startenddateimpossible: true,
+	        namefillin: req.body.field_semesterName,
+	        startdatefillin: req.body.field_startDate,
+	        enddatefillin: req.body.field_endDate
+	    });
+	}
+	else {
+		// Currently, the only two responses are a 401 error or a message with just the semester ID
+		req.App.api.post('/CreateSemester', {semesterName: req.body.field_semesterName, startDate: req.body.field_startDate, endDate: req.body.field_endDate}, (err, statusCode, body) => {
+			if(statusCode==401) {
+				res.render('semester_management', {
+			        title: 'Semester Management',
+			        semestercreationfailed: true
+			    });
+			}
+			else {
+				res.render('semester_management', {
+			        title: 'Semester Management',
+			        semestercreationsucceeded: true
+			    });
+			}
+		});
+	}
+});
+
 router.post('/resetConfrim',(req,res)=>{
     if(req.body.password == req.body.confrimpassword){
         req.App.api.put('/update/password',{password:req.body.password,userid:req.body.userid}, (err, statusCode, body) => {
@@ -80,7 +110,6 @@ router.post('/accountmanagement', (req, res) => {
                     userEmail: req.App.user.email,
                     userFirstName: req.App.user.firstName,
                     userLastName: req.App.user.lastName,
-                    scripts: ['/static/account_management.js'],
                     namechangesucceeded: true,
                     statuscode: statusCode
                 });
@@ -93,7 +122,6 @@ router.post('/accountmanagement', (req, res) => {
                     userEmail: req.App.user.email,
                     userFirstName: req.App.user.firstName,
                     userLastName: req.App.user.lastName,
-                    scripts: ['/static/account_management.js'],
                     namechangefailed: true,
                     statuscode: statusCode
                 });
@@ -130,8 +158,6 @@ router.post('/accountmanagement', (req, res) => {
             });
 			return;
 		}
-		
-		console.log("PAST MISMATCH CHECK");
 		
 		req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
 	    	if(statusCode==200) {		// success
@@ -172,79 +198,6 @@ router.get('/accountmanagement', (req, res) => {
         scripts: ['/static/account_management.js']
     });
 });
-
-/*
-router.post('/accountmanagement/changename', (req, res) => {
-    req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
-    	if(body.Message=="Success") {		// success
-    		// TODO: check contents of reply to see if name change actually succeeded
-        	res.render('account_management',{
-                namechangesucceeded: true,
-                statuscode: statusCode
-            });
-        }
-        else {					// error
-        	res.render('account_management',{
-                namechangefailed: true,
-                statuscode: statusCode
-            });
-        }
-    }); 
-});
-
-router.post('/accountmanagement/changeemail', (req, res) => {
-    req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
-    	console.log(body);
-    	if(body.Message=="Success") {		// success
-    		res.render('account_management',{
-                emailchangesucceeded: true,
-                newemail: body.EmailAddress,
-                statuscode: statusCode
-            });
-        }
-        else {						// success
-        	res.render('account_management',{
-                emailchangefailed: true,
-                statuscode: statusCode
-            });
-        }
-    }); 
-});
-
-router.post('/accountmanagement/changepassword', (req, res) => {
-    req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-    	if(statusCode==200) {		// success
-        	res.render('account_management',{
-                passwordchangesucceeded: true,
-                statuscode: statusCode
-            });
-        }
-        else {						// error
-        	res.render('account_management',{
-                passwordchangefailed: true,
-                statuscode: statusCode
-            });
-        }
-    });
-});
-
-router.post('/accountmanagement/changename', (req, res) => {
-    req.App.api.post('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-        if(statusCode==200) {	// success
-        	res.render('accountmanagement',{
-        		passwordchangesucceeded: true
-                
-            });
-        }
-        else {					// error
-        	res.render('accountmanagement',{
-                passwordchangefailed: true,
-                statuscode: statusCode
-            });
-        }
-    });
-});
-*/
 
 // dashboard
 router.get('/dashboard', (req, res) => {
