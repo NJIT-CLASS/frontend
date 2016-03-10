@@ -69,7 +69,7 @@ router.post('/semestermanagement', (req, res) => {
 	}
 	else {
 		// Currently, the only two responses are a 401 error or a message with just the semester ID
-		req.App.api.post('/CreateSemester', {semesterName: req.body.field_semesterName, startDate: req.body.field_startDate, endDate: req.body.field_endDate}, (err, statusCode, body) => {
+		req.App.api.post('/CreateSemester',{semesterName:req.body.field_semesterName,startDate:req.body.field_startDate,endDate:req.body.field_endDate}, (err, statusCode, body) => {
 			if(statusCode==401) {
 				res.render('semester_management', {
 			        title: 'Semester Management',

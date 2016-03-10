@@ -1,31 +1,35 @@
-{{#if semestercreationfailed }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	Semester was NOT created. Try again in a few minutes.
-	</div>
-{{/if}}
-
-{{#if semestercreationsucceeded }}
-	<div class="alert alert-success" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Success:</span>
-	Semester was successfully created.
-	</br>New email address: {{newemail}}
-	</div>
-{{/if}}
-
-{{#if startenddateimpossible }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	The end date must come after the start date. Try again.
-	</div>
-{{/if}}
-
 <form name="form_createSemester" role="form" class="section" method="POST" action>
     <h2 class="title">{{__ "Create New Semester"}}</h2>
     <div class="section-content">
+    	
+    	{{#if semestercreationfailed }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Semester was NOT created. Try again in a few minutes.
+			</br></br>
+			</div>
+		{{/if}}
+
+		{{#if semestercreationsucceeded }}
+			<div class="alert alert-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Semester was successfully created.
+			</br>New email address: {{newemail}}
+			</br></br>
+			</div>
+		{{/if}}
+
+		{{#if startenddateimpossible }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			The end date must come after the start date. Try again.
+			</br></br>
+			</div>
+		{{/if}}
+		    	
         <div class="form-group">
             <label class="control-label col-sm-2" for="field_semesterName">{{__ "Semester Name"}}</label>
             <div class="col-sm-10">

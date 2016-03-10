@@ -1,68 +1,25 @@
-{{#if passwordchangefailed }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	{{__ "Password was NOT updated! Check your entered values and try again." }}
-	</br>Error status code: {{statuscode}}
-	</div>
-{{/if}}
-
-{{#if passwordchangemismatch }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	The new password you entered does not match the contents of the confirmation field. Try again.
-	</div>
-{{/if}}
-
-{{#if passwordchangesucceeded }}
-	<div class="alert alert-success" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Success:</span>
-	{{__ "Password was successfully updated!" }}
-	</div>
-{{/if}}
-
-{{#if emailchangefailed }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	Email was NOT updated! Check your entered values and try again.
-	</br>Error status code: {{statuscode}}
-	</div>
-{{/if}}
-
-{{#if emailchangesucceeded }}
-	<div class="alert alert-success" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Success:</span>
-	Email address was successfully updated!
-	</br>New email address: {{newemail}}
-	</div>
-{{/if}}
-
-{{#if namechangefailed }}
-	<div class="alert alert-danger" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Error:</span>
-	Name was NOT updated! There may have been a connection issue. Try again in a few minutes.
-	</br>Error status code: {{statuscode}}
-	</div>
-{{/if}}
-
-{{#if namechangesucceeded }}
-	<div class="alert alert-success" role="alert">
-	<i class="fa fa-exclamation-circle"></i>
-		<span class="sr-only">Success:</span>
-	Name was successfully updated!
-	</div>
-{{/if}}
-</br>
-
 <form name="form_changeName" role="form" class="section" method="POST" action="/accountmanagement">
 	<input type="hidden" name="what_was_changed" value="name">
     <h2 class="title">{{__ "Change Name"}}</h2>
     <div class="section-content">
+    	
+    	{{#if namechangefailed }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Name was NOT updated! There may have been a connection issue. Try again in a few minutes.
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+
+		{{#if namechangesucceeded }}
+			<div class="alert alert-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Name was successfully updated!
+			</div>
+		{{/if}}
+    	
         <div class="form-group">
             <label class="control-label col-sm-2" for="field_firstName">{{__ "First Name"}}</label>
             <div class="col-sm-10">
@@ -84,6 +41,25 @@
 	<input type="hidden" name="what_was_changed" value="email">
     <h2 class="title">{{__ "Change Your Email Address"}}</h2>
     <div class="section-content">
+    
+    	{{#if emailchangefailed }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Email was NOT updated! Check your entered values and try again.
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+		
+		{{#if emailchangesucceeded }}
+			<div class="alert alert-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Email address was successfully updated!
+			</br>New email address: {{newemail}}
+			</div>
+		{{/if}}
+    
         <div class="form-group">
         	<label class="control-label col-sm-2" for="field_newEmail">{{__ "New Email Address"}}</label>
         	<div class="col-sm-10">
@@ -105,6 +81,32 @@
 	<input type="hidden" name="what_was_changed" value="password">
     <h2 class="title">{{__ "Change Password"}}</h2>
     <div class="section-content">
+    
+    	{{#if passwordchangefailed }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			{{__ "Password was NOT updated! Check your entered values and try again." }}
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+		
+		{{#if passwordchangemismatch }}
+			<div class="alert alert-danger" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			The new password you entered does not match the contents of the confirmation field. Try again.
+			</div>
+		{{/if}}
+		
+		{{#if passwordchangesucceeded }}
+			<div class="alert alert-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			{{__ "Password was successfully updated!" }}
+			</div>
+		{{/if}}
+    
         <div class="form-group">
         	<label class="control-label col-sm-2" for="field_currentPassword">{{__ "Current Password"}}</label>
         	<div class="col-sm-10">
