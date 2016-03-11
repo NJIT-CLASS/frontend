@@ -4,7 +4,7 @@
     <div class="section-content">
     	
     	{{#if namechangefailed }}
-			<div class="alert alert-danger" role="alert">
+			<div class="error form-error" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Error:</span>
 			Name was NOT updated! There may have been a connection issue. Try again in a few minutes.
@@ -13,7 +13,7 @@
 		{{/if}}
 
 		{{#if namechangesucceeded }}
-			<div class="alert alert-success" role="alert">
+			<div class="success form-success" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Success:</span>
 			Name was successfully updated!
@@ -43,7 +43,7 @@
     <div class="section-content">
     
     	{{#if emailchangefailed }}
-			<div class="alert alert-danger" role="alert">
+			<div class="error form-error" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Error:</span>
 			Email was NOT updated! Check your entered values and try again.
@@ -52,7 +52,7 @@
 		{{/if}}
 		
 		{{#if emailchangesucceeded }}
-			<div class="alert alert-success" role="alert">
+			<div class="success form-success" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Success:</span>
 			Email address was successfully updated!
@@ -83,7 +83,7 @@
     <div class="section-content">
     
     	{{#if passwordchangefailed }}
-			<div class="alert alert-danger" role="alert">
+			<div class="error form-error" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Error:</span>
 			{{__ "Password was NOT updated! Check your entered values and try again." }}
@@ -92,7 +92,7 @@
 		{{/if}}
 		
 		{{#if passwordchangemismatch }}
-			<div class="alert alert-danger" role="alert">
+			<div class="error form-error" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Error:</span>
 			The new password you entered does not match the contents of the confirmation field. Try again.
@@ -100,7 +100,7 @@
 		{{/if}}
 		
 		{{#if passwordchangesucceeded }}
-			<div class="alert alert-success" role="alert">
+			<div class="success form-success" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
 				<span class="sr-only">Success:</span>
 			{{__ "Password was successfully updated!" }}
