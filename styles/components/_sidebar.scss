@@ -1,5 +1,6 @@
 .sidebar {
     flex: 0 0 200px;
+    transition: flex-basis ease .3s;
 
     h2 {
         font-size: 25px;
@@ -42,10 +43,10 @@
     li.selected a {
         background-color: #293847;
         border-left: 4px solid #00AB8D;
-        color: #ffffff;
+        color: #fff;
     }
 
-    &.collapsed {
+    &.collapsed:not(.transition) {
         flex: 0 0 50px;
 
         a {

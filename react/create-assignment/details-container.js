@@ -1,14 +1,105 @@
 import React from 'react';
 
-// import Details from './details';
-// import WorkflowList from './workflows';
+import { TASK_TYPES } from '../shared/constants';
+
+import Modal from './modal';
 
 class DetailsContainer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            newWorkFlowName: '',
+            showNewWorkflowModal: false
+        };
+    }
+
+    createWorkflow() {
+        let task = {
+            type: TASK_TYPES.CREATE_PROBLEM,
+            parent: null,
+            subtasks: []
+        };
+
+        let subtask1 = {
+            type: TASK_TYPES.GRADE_PROBLEM,
+            parent: task,
+            subtasks: []
+        };
+
+        let subtask2 = {
+            type: TASK_TYPES.CREATE_PROBLEM,
+            parent: task,
+            subtasks: []
+        };
+
+        task.subtasks.push(subtask1);
+        task.subtasks.push(subtask2);
+
+        let newWorkflowIndex = this.props.createWorkflow({
+            name: this.state.newWorkFlowName,
+            task: task
+        });
+        this.props.selectWorkflow(newWorkflowIndex);
+    }
+
     addWorkflow() {
-        this.props.selectWorkflow();
+        this.setState({
+            showNewWorkflowModal: true
+        });
+    }
+
+    updateWorkflowName(e) {
+        this.setState({
+            newWorkFlowName: e.target.value
+        });
+    }
+
+    closeModal() {
+        this.setState({
+            showNewWorkflowModal: false,
+            newWorkFlowName: ''
+        });
+    }
+
+    updateAssignmentName(e) {
+        this.props.updateAssignmentDetails(e.target.value);
+    }
+
+    updateAssignmentDescription(e) {
+        this.props.updateAssignmentDetails(null, e.target.value);
     }
 
     render() {
+        let modal = null;
+
+        if (this.state.showNewWorkflowModal) {
+            modal = (
+                <Modal
+                    title="Create New Workflow"
+                    close={this.closeModal.bind(this)}
+                >
+                    <div>
+                        <label>Workflow Name</label>
+                    </div>
+                    <input
+                        type="text"
+                        autoFocus={true}
+                        value={this.state.newWorkFlowName}
+                        onChange={this.updateWorkflowName.bind(this)}
+                    >
+                    </input>
+                    <div className="row">
+                        <button onClick={this.createWorkflow.bind(this)}>Create</button>
+                    </div>
+                </Modal>
+            );
+        }
+
+        let workflows = this.props.workflows.map((workflow, index) => {
+            return <li key={index}>{workflow.name}</li>;
+        });
+
         return (
             <div className="container">
                 <div className="section">
@@ -16,23 +107,32 @@ class DetailsContainer extends React.Component {
                     <div className="section-content">
                         <label>Name</label>
                         <div>
-                            <input type="text"></input>
+                            <input
+                                type="text"
+                                value={this.props.assignmentDetails.name}
+                                onChange={this.updateAssignmentName.bind(this)}
+                            >
+                            </input>
                         </div>
 
                         <label>Description</label>
                         <div>
-                            <textarea></textarea>
+                            <textarea
+                                value={this.props.assignmentDetails.description}
+                                onChange={this.updateAssignmentDescription.bind(this)}
+                            >
+                            </textarea>
                         </div>
                     </div>
                 </div>
                 <div className="section">
                     <h3 className="title">Workflows</h3>
                     <ul>
-                        <li>Workflow 1</li>
-                        <li>Workflow 2</li>
+                        {workflows}
                         <li onClick={this.addWorkflow.bind(this)}>Add New Workflow</li>
                     </ul>
                 </div>
+                { modal }
             </div>
         );
     }

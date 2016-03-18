@@ -19,6 +19,7 @@
     "i18n": "^0.7.0",
     "lodash": "^4.5.1",
     "react": "^0.14.7",
+    "react-datepicker": "^0.24.0",
     "react-dom": "^0.14.7",
     "react-select": "^0.9.1",
     "request": "^2.69.0"

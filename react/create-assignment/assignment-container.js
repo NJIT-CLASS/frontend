@@ -24,22 +24,39 @@ class AssignmentContainer extends React.Component {
     }
 
     createWorkflow(index, workflow) {
-        this.setState((previousState) => {
-            let workflows = previousState.workflows;
+        let workflows = this.state.workflows;
 
-            if (index !== null) {
-                workflows[index] = workflow;
-            }
-            else {
-                workflows.push(workflow);
-            }
+        let newWorkflowIndex = index;
 
-            return {
-                workflows: workflows,
-                visibleWorkflowIndex: null,
-                newWorkflowShowing: false
-            };
+        if (index !== null) {
+            workflows[index] = workflow;
+        }
+        else {
+            let newLength = workflows.push(workflow);
+            newWorkflowIndex = newLength - 1;
+        }
+
+        this.setState({
+            workflows: workflows,
+            visibleWorkflowIndex: null,
+            newWorkflowShowing: false
         });
+
+        return newWorkflowIndex;
+    }
+
+    updateAssignmentDetails(name, description) {
+        let newAssignmentDetails = this.state.assignmentDetails;
+
+        if (name !== null) {
+            newAssignmentDetails.name = name;
+        }
+
+        if (description !== null) {
+            newAssignmentDetails.description = description;
+        }
+
+        this.setState({assignmentDetails: newAssignmentDetails});
     }
 
     render() {
@@ -51,6 +68,8 @@ class AssignmentContainer extends React.Component {
                     assignmentDetails={this.state.assignmentDetails}
                     workflows={this.state.workflows}
                     selectWorkflow={this.selectWorkflow.bind(this)}
+                    createWorkflow={this.createWorkflow.bind(this, null)}
+                    updateAssignmentDetails={this.updateAssignmentDetails.bind(this)}
                 />
             );
         }
