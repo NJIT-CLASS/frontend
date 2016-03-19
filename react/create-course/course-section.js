@@ -57,12 +57,12 @@ class CourseSection extends React.Component {
 
 		const sectionNameError = name.length === 0 ? true : false;
 		const sectionDescriptionError = description.length === 0 ? true : false;		
-		const semesterError = semesterID.value < 1 ? true : false;
+		const semesterError = semesterId === null ? true : false;
 		
 		if(sectionNameError || sectionDescriptionError || semesterError) {			
 			return this.setState({				
 				sectionNameError: sectionNameError,
-				sectionDescriptionError: sectionDescriptionError
+				sectionDescriptionError: sectionDescriptionError,
 				semesterError: semesterError	
 			});
 		}
@@ -70,7 +70,7 @@ class CourseSection extends React.Component {
 		else{
 			this.setState({
 				sectionNameError: false,
-				sectionDescriptionError: false
+				sectionDescriptionError: false,
 				semesterError: false
 			});
 			

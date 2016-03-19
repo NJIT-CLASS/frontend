@@ -9,7 +9,7 @@ class WorkflowDetailContainer extends React.Component {
 
         this.state = {
             previousTask: null,
-            currentTask: this.props.workflow.task
+            currentTask: this.props.workflow.task,
             currentTaskIndex: 0
         };
     }
