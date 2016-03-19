@@ -12,7 +12,11 @@ class CourseSection extends React.Component {
             name: props.section.name || '',
             description: props.section.description || '',
             semesterId: props.section.semesterId || null,
-            members: props.section.members || []
+            members: props.section.members || [],
+			sectionNameError: false,	
+			sectionDescriptionError: false,	
+			//semesterError: false,	
+			//courseMembers: false	
         };
     }
 
@@ -37,13 +41,40 @@ class CourseSection extends React.Component {
 
     createSection(e) {
         e.preventDefault();
-
+	
+        const name = this.state.name;	
+		const description = this.state.description;
+		const semesterId = this.state.semesterId;
+		
+		
         let section = {
             name: this.state.name,
             description: this.state.description,
             semesterId: this.state.semesterId,
             members: this.state.members
-        };
+        };		
+		
+
+		const sectionNameError = name.length === 0 ? true : false;
+		const sectionDescriptionError = description.length === 0 ? true : false;		
+		const semesterError = semesterID.value < 1 ? true : false;
+		
+		if(sectionNameError || sectionDescriptionError || semesterError) {			
+			return this.setState({				
+				sectionNameError: sectionNameError,
+				sectionDescriptionError: sectionDescriptionError
+				semesterError: semesterError	
+			});
+		}
+		
+		else{
+			this.setState({
+				sectionNameError: false,
+				sectionDescriptionError: false
+				semesterError: false
+			});
+			
+		}		
 
         return this.props.createSection(section);
     }
@@ -88,11 +119,11 @@ class CourseSection extends React.Component {
                 <div className="section-content">
                     <label>Section Name</label>
                     <div>
-                        <input type="text" value={this.state.name} onChange={this.onNameChange.bind(this)}></input>
+                        <input type="text" value={this.state.name} onChange={this.onNameChange.bind(this)} className={ this.state.sectionNameError ? 'error' : '' }></input>
                     </div>
                     <label>Section Description</label>
                     <div>
-                        <textarea value={this.state.description} onChange={this.onDescriptionChange.bind(this)}></textarea>
+                        <textarea value={this.state.description} onChange={this.onDescriptionChange.bind(this)} className={ this.state.sectionDescriptionError ? 'error' : '' }></textarea>
                     </div>
                     <label>Semester</label>
                     <Select
@@ -102,6 +133,7 @@ class CourseSection extends React.Component {
                         clearable={false}
                         searchable={false}
                         onChange={this.onSemesterChange.bind(this)}
+						className={ this.state.semesterError ? 'error' : '' } 
                     />
                     <label>Course Members</label>
                     <div>

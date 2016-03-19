@@ -1,0 +1,82 @@
+
+<form name="form_addInstructor" role="form" class="section" method="POST" action="#">
+	<input type="hidden" name="what_was_changed" value="email">
+    <h2 class="title">{{__ "Add New Instructor"}}</h2>
+    <div class="section-content">
+    
+    	{{#if emailchangefailed }}
+			<div class="error form-error" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Email was NOT updated! Check your entered values and try again.
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+		
+		{{#if emailchangesucceeded }}
+			<div class="success form-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Email address was successfully updated!
+			</br>New email address: {{newemail}}
+			</div>
+		{{/if}}
+    
+        <div class="form-group">
+        	<label class="control-label col-sm-2" for="field_newEmail">{{__ "Instructor Email Address"}}</label>
+        	<div class="col-sm-10">
+            	<input class="form-control" name="field_newEmail" id="field_newEmail" type="text" value="{{userEmail}}" required>
+        	</div>
+        </div>
+        <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+    </div>
+</form> <!-- End of 'change email' panel -->
+
+<form name="form_promoteInstructorToAdmin" role="form" class="section" method="POST" action="#">
+	<input type="hidden" name="what_was_changed" value="password">
+    <h2 class="title">{{__ "Promote Instructor"}}</h2>
+    <div class="section-content">
+    
+
+
+<div class="col-xs-6">
+
+	<div>
+      	<h1 align="right" class="statusPadding">Status</h1> 
+	</div>
+         
+        		<ul>
+                  <li class="list-group-item" style="cursor: pointer;">Joe Smith
+					<div class="toggle-switch true right">
+						<div class="bubble"></div>
+						<div class="text-true">Yes</div>
+						<div class="text-false">No</div>
+					</div>
+				</li>
+					
+                  <li class="list-group-item" style="cursor: pointer;">Amy Jones
+				  	<div class="toggle-switch true right">
+						<div class="bubble"></div>
+						<div class="text-true">Yes</div>
+						<div class="text-false">No</div>
+					</div>
+				</li>
+                  <li class="list-group-item" style="cursor: pointer;">Arthur Brown
+				  	<div class="toggle-switch true right">
+						<div class="bubble"></div>
+						<div class="text-true">Yes</div>
+						<div class="text-false">No</div>
+					</div>
+				</li>
+
+ 
+                </ul>
+          
+        </div>
+	
+
+	
+
+       
+    </div>
+</form> <!-- End of 'change password' panel -->

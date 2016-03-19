@@ -204,6 +204,13 @@ app.use((req, res, next) => {
             icon: 'cog'
         },
         {
+            text: 'Administrator',
+            link: '/admin',
+            template: 'admin',
+            onlyInstructors: true,
+            icon: 'user'
+        },		
+        {
             text: 'About',
             link: '/about',
             template: 'about',

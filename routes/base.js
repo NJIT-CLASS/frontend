@@ -230,6 +230,15 @@ router.get('/about', (req, res) => {
     });	
 });
 
+
+// admin
+router.get('/admin', (req, res) => {
+    res.render('admin', {
+        title: 'Administrator Page',
+		pageHeader: 'Administrator Page'				
+    });	
+});
+
 // create course
 router.get('/create-course', (req, res) => {
     res.render('create_course', {
