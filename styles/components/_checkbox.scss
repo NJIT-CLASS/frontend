@@ -1,0 +1,28 @@
+.checkbox {
+    padding: 4px;
+    display: inline-block;
+    border: 1px solid #e5e6e7;
+    transition: border-color ease .3s;
+
+    &:hover {
+        border-color: #00AB8D;
+        cursor: pointer;
+    }
+
+    &.checked {
+        border-color: #00AB8D;
+        background-color: #00AB8D;
+    }
+
+    &:after {
+        width: 12px;
+        display: inline-block;
+        content: '';
+        transform: rotate(135deg);
+        border-top: 2px solid #fff;
+        border-right: 2px solid #fff;
+        height: 6px;
+        position: relative;
+        top: -4px;
+    }
+}

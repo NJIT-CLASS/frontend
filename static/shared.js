@@ -22,4 +22,18 @@ document.onload = function() {
         el.addEventListener('click', js.toggle.switch.bind(el))
         el.dataset.value = el.classList.contains('true') ? true : false;
     });
+
+    js.checkbox = {
+        switch: function() {
+            this.classList.toggle('checked');
+            this.dataset.checked = this.dataset.checked === 'true' ? false : true;
+        }
+    }
+
+    var checkboxEls = document.getElementsByClassName('checkbox');
+
+    [].forEach.call(checkboxEls, function (el) {
+        el.addEventListener('click', js.checkbox.switch.bind(el))
+        el.dataset.checked = el.classList.contains('checked') ? true : false;
+    });
 }();
