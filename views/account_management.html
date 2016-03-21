@@ -130,3 +130,52 @@
         <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
     </div>
 </form> <!-- End of 'change password' panel -->
+
+<!-- TODO: need a way to prevent user from submitting form if they're not an admin in the first place -->
+<form name="form_userStatus" role="form" class="section" method="POST" action="/accountmanagement">
+	<input type="hidden" name="what_was_changed" value="status">
+    <h2 class="title">{{__ "Your Account Status"}}</h2>
+    <div class="section-content">
+    
+    	{{#if adminoptoutfailed }}
+			<div class="error form-error" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Failed to opt out of admin status. Check your entered password and try again.
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+		
+		{{#if adminoptoutsucceeded }}
+			<div class="success form-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Successfully opted out of admin privileges.
+			</div>
+		{{/if}}
+    
+   		<!-- TODO: add other statuses here -->
+        <div class="form-group">{{__ "Current Status"}}: 
+        {{#if userIsAdmin}}
+        	Administrator
+        {{/if}}
+        </div>
+        
+        <!-- TODO: fill in boolean variable that indicates admin status here -->
+        <!-- TODO: how do we make that text bold? -->
+        {{#if userIsAdmin }}
+        	To opt out of being an administrator, enter your password here and click Submit.</br>
+        	<b>This change can not be reversed!</b></br>
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_statusPassword">{{__ "Password"}}</label>
+	            <div class="col-sm-10">
+	            	<input class="form-control" name="field_statusPassword" id="field_statusPassword" type="password" required>
+	        	</div>
+	        </div>
+	        
+	        <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+        {{/if}}
+
+        
+    </div>
+</form> <!-- End of 'account status' panel -->

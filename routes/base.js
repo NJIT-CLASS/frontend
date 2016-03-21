@@ -130,7 +130,6 @@ router.post('/accountmanagement', (req, res) => {
 	}
 	else if (req.body.what_was_changed=="email") {
 		req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
-	    	console.log(body);
 	    	if(body.Message=="Success") {		// success
 	    		res.render('account_management',{
 	                emailchangesucceeded: true,
@@ -146,13 +145,31 @@ router.post('/accountmanagement', (req, res) => {
 	        }
 	    }); 
 	}
+	else if (req.body.what_was_changed=="status") {
+		
+		// TODO: fill in API endpoints here once they're available
+		/*
+		req.App.api.put('/path/to/backend', {userid: req.App.user.userId, password:req.body.field_statusPassword}, (err, statusCode, body) => {
+	    	if(statusCode==200) {		// success
+	        	res.render('account_management',{
+	                adminoptoutsucceeded: true,
+	                statuscode: statusCode
+	            });
+	        }
+	        else {						// error
+	        	res.render('account_management',{
+	                adminoptoutfailed: true,
+	                statuscode: statusCode
+	            });
+	        }
+	    });
+	    */
+	}
 	else if (req.body.what_was_changed=="password") {
 		
 		// If the "confirm password" doesn't match the new password entered,
 		// then alert the user and abort the operation
 		if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
-			console.log("PASSWORD MISMATCH");
-			// TODO: alert user that the password didn't match
 			res.render('account_management',{
                 passwordchangemismatch: true
             });
@@ -181,12 +198,13 @@ router.post('/accountmanagement', (req, res) => {
             userId: req.App.user.userId,
             userEmail: req.App.user.email,
             userFirstName: req.App.user.firstName,
-            userLastName: req.App.user.lastName,
-            scripts: ['/static/account_management.js']
+            userLastName: req.App.user.lastName
         });
 	}
 });
 
+// TODO: once the endpoint is available, seed correct values for user status (e.g. admin)
+// for now it's hardcoded as true so we can see the corresponding UI on the acct mgmt page
 router.get('/accountmanagement', (req, res) => {
 	res.render('account_management', {
         title: 'Account Management',
@@ -195,7 +213,7 @@ router.get('/accountmanagement', (req, res) => {
         userEmail: req.App.user.email,
         userFirstName: req.App.user.firstName,
         userLastName: req.App.user.lastName,
-        scripts: ['/static/account_management.js']
+        userIsAdmin: true
     });
 });
 
