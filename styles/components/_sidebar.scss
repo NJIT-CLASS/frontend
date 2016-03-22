@@ -1,6 +1,9 @@
 .sidebar {
-    flex: 0 0 200px;
+    flex: 0 0 210px;
     transition: flex-basis ease .3s;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
 
     h2 {
         font-size: 25px;
@@ -19,18 +22,24 @@
         text-align: center;
     }
 
-    a {
-        color: #a7b1c2;
-        font-size: 15px;
-        font-weight: 400;
-        display: block;
-        padding: 15px 15px 15px 16px;
-        border-left: 4px solid #2E4051;
+    ul {
+        flex-grow: 1;
     }
 
-    li i {
-        display: inline-block;
-        margin-right: 8px;
+    li {
+        i {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        a {
+            color: #a7b1c2;
+            font-size: 15px;
+            font-weight: 400;
+            display: block;
+            padding: 15px 15px 15px 16px;
+            border-left: 4px solid #2E4051;
+        }
     }
 
     a:hover {
@@ -47,7 +56,7 @@
     }
 
     &.collapsed:not(.transition) {
-        flex: 0 0 50px;
+        flex: 0 0 60px;
 
         a {
             font-size: 25px;
@@ -74,6 +83,10 @@
                 display: none;
             }
         }
+
+        #language-picker {
+            display: none;
+        }
     }
 
     .fa.arrow {
@@ -82,5 +95,58 @@
         &:before {
             content: "\f104";
         }
+    }
+
+    #language-picker {
+        color: #a7b1c2;
+        margin: 10px;
+        align-self: center;
+        background-color: #fff;
+        border-radius: 3px;
+
+        &.hidden {
+            background-color: #2D4052;
+
+            & > a {
+                background-color: #2D4052;
+
+                &:not(.selected) {
+                    visibility: hidden;
+                    height: 0;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                }
+
+                &.selected:hover {
+                    background-color: #2D4052;
+                }
+            }
+        }
+
+        & > a {
+            padding: 8px;
+            display: block;
+            color: #a7b1c2;
+
+            &:hover {
+                background: #00AB8D;
+                cursor: pointer;
+                color: white;
+            }
+
+            &:first-child {
+                border-radius: 3px 3px 0 0;
+            }
+
+            &:last-child {
+                border-radius: 0 0 3px 3px;
+            }
+
+            &:not(.selected) i {
+                color: rgba(255,255,255,0);
+            }
+        }
+
+
     }
 }

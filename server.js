@@ -130,12 +130,36 @@ app.use((req, res, next) => {
 
     if (res.locale === 'en') {
         req.App.lang = 'English';
+        req.App.langOptions = [{
+            language: 'Español',
+            locale: 'es'
+        },
+        {
+            language: 'Français',
+            locale: 'fr'
+        }];
     }
     else if (res.locale === 'es') {
         req.App.lang = 'Español';
+        req.App.langOptions = [{
+            language: 'English',
+            locale: 'en'
+        },
+        {
+            language: 'Français',
+            locale: 'fr'
+        }];
     }
     else if (res.locale === 'fr') {
         req.App.lang = 'Français';
+        req.App.langOptions = [{
+            language: 'English',
+            locale: 'en'
+        },
+        {
+            language: 'Español',
+            locale: 'es'
+        }];
     }
 
     next();
@@ -176,42 +200,42 @@ app.use((req, res, next) => {
 
     const sidebarNavItems = [
         {
-            text: 'Dashboard',
+            text: i18n.__('Dashboard'),
             link: '/dashboard',
             template: 'dashboard',
             onlyInstructors: false,
             icon: 'dashboard'
         },
         {
-            text: 'Create Course',
+            text: i18n.__('Create Course'),
             link: '/create-course',
             template: 'create_course',
             onlyInstructors: true,
             icon: 'plus'
         },
         {
-            text: 'Create Assignment',
+            text: i18n.__('Create Assignment'),
             link: '/create-assignment',
             template: 'create_assignment',
             onlyInstructors: true,
             icon: 'file-text'
         },
         {
-            text: 'My Account',
+            text: i18n.__('My Account'),
             link: '/accountmanagement',
             template: 'account_management',
             onlyInstructors: false,
             icon: 'cog'
         },
         {
-            text: 'Administrator',
+            text: i18n.__('Administrator'),
             link: '/admin',
             template: 'admin',
             onlyInstructors: true,
             icon: 'user'
         },		
         {
-            text: 'About',
+            text: i18n.__('About'),
             link: '/about',
             template: 'about',
             onlyInstructors: false,
@@ -238,9 +262,11 @@ app.use((req, res, next) => {
             about: true
         };
 
+        options.language = req.App.lang;
+        options.languageOptions = req.App.langOptions;
+
         if (template in loggedOutTemplates) {
             options.layout = 'logged_out';
-            options.language = req.App.lang;
 
             return render.call(this, template, options, cb);
         }

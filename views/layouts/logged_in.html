@@ -22,7 +22,7 @@
                                 >
                                 <a href="{{ link }}">
                                     <i class="fa fa-{{ icon }} fa-fw"></i>
-                                    <span>{{ __ text }}</span>
+                                    <span>{{ text }}</span>
                                 </a>
                             </li>
                         {{/if}}
@@ -39,6 +39,18 @@
                         </a>
                     </li>-->
                 </ul>
+                <div id="language-picker" class="hidden" onclick="document.getElementById('language-picker').classList.toggle('hidden')">
+                    {{#each languageOptions}}
+                        <a href="?lang={{ locale }}">
+                            <i class="fa fa-globe"></i>
+                            {{ language }}
+                        </a>
+                    {{/each}}
+                    <a class="selected">
+                        <i class="fa fa-globe"></i>
+                        {{ language }}
+                    </a>
+                </div>
             </div>
             <div class="content">
                 <div class="secondary-nav">

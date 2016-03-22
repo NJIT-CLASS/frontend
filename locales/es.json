@@ -24,8 +24,12 @@
 	"User Profile": "User Profile",
 	"Settings": "Settings",
 	"Logout": "Logout",
-	"Dashboard": "Dashboard",
+	"Dashboard": "Tablero",
 	"My Classes": "My Classes",
 	"Instructor Management": "Instructor Management",
-	"About": "About"
+	"About": "About",
+	"CLASS System": "CLASS System",
+	"Admin Tools": "Admin Tools",
+	"Log out": "Log out",
+	"Create Course": "Create Course"
 }

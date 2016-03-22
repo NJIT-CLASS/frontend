@@ -23,8 +23,18 @@
 	"User Profile": "User Profile",
 	"Settings": "Settings",
 	"Logout": "Logout",
-	"Dashboard": "Dashboard",
+	"Dashboard": "Tableau de bord",
 	"My Classes": "My Classes",
 	"Instructor Management": "Instructor Management",
-	"About": "About"
+	"About": "About",
+	"CLASS System": "CLASS System",
+	"Admin Tools": "Admin Tools",
+	"Log out": "Log out",
+	"Add New Instructor": "Add New Instructor",
+	"Instructor Email Address": "Instructor Email Address",
+	"Submit": "Submit",
+	"Promote Instructor": "Promote Instructor",
+	"Administrator Page": "Administrator Page",
+	"Create Assignment": "Create Assignment",
+	"Create Course": "Create Course"
 }
