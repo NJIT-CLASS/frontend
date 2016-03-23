@@ -13,6 +13,10 @@ document.onload = function() {
                 this.classList.remove('false');
                 this.classList.add('true');
             }
+
+            if (this.dataset.onClick) {
+                this.dataset.onClick(this.dataset.value);
+            }
         }
     }
 
@@ -27,6 +31,10 @@ document.onload = function() {
         switch: function() {
             this.classList.toggle('checked');
             this.dataset.checked = this.dataset.checked === 'true' ? false : true;
+
+            if (this.dataset.onClick) {
+                this.dataset.onClick(this.dataset.checked);
+            }
         }
     }
 
