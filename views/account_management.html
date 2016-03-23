@@ -164,8 +164,10 @@
         <!-- TODO: fill in boolean variable that indicates admin status here -->
         <!-- TODO: how do we make that text bold? -->
         {{#if userIsAdmin }}
-        	To opt out of being an administrator, enter your password here and click Submit.</br>
-        	<b>This change can not be reversed!</b></br>
+            <p>
+            	To opt out of being an administrator, enter your password here and click Submit.</br>
+            	<b>This change can not be reversed!</b>
+            </p>
 	        <div class="form-group">
 	        	<label class="control-label col-sm-2" for="field_statusPassword">{{__ "Password"}}</label>
 	            <div class="col-sm-10">
