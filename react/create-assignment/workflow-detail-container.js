@@ -1,7 +1,7 @@
 import React from 'react';
 import TaskDetails from './task-details';
 import SubTasksSidebarContainer from './sub-tasks-sidebar-container';
-import Modal from './modal';
+import Modal from '../shared/modal';
 
 class WorkflowDetailContainer extends React.Component {
     constructor(props) {

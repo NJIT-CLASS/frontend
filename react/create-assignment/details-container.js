@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TASK_TYPES } from '../shared/constants';
 
-import Modal from './modal';
+import Modal from '../shared/modal';
 
 class DetailsContainer extends React.Component {
     constructor(props) {
