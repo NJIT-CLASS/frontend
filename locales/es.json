@@ -31,5 +31,20 @@
 	"CLASS System": "CLASS System",
 	"Admin Tools": "Admin Tools",
 	"Log out": "Log out",
-	"Create Course": "Create Course"
+	"Create Course": "Create Course",
+	"Create Assignment": "Create Assignment",
+	"Change Name": "Change Name",
+	"First Name": "First Name",
+	"Last Name": "Last Name",
+	"Submit": "Submit",
+	"Change Your Email Address": "Change Your Email Address",
+	"New Email Address": "New Email Address",
+	"Current Password": "Current Password",
+	"Your Account Status": "Your Account Status",
+	"Current Status": "Current Status",
+	"Account Management": "Account Management",
+	"Add New Instructor": "Add New Instructor",
+	"Instructor Email Address": "Instructor Email Address",
+	"Promote Instructor": "Promote Instructor",
+	"Administrator Page": "Administrator Page"
 }

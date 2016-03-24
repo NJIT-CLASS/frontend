@@ -1,6 +1,10 @@
 .login-container {
     margin-top: 60px;
     color: #676a6c;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    flex-grow: 1;
 
     h2 {
         font-size: 40px;

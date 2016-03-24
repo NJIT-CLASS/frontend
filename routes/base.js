@@ -99,20 +99,21 @@ router.post('/resetConfrim',(req,res)=>{
 });
 
 router.post('/accountmanagement', (req, res) => {
-	if (req.body.what_was_changed=="name") {
-		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
-	    	if(body.Message=="Success") {		// success
-	    		// TODO: check contents of reply to see if name change actually succeeded
-	        	res.render('account_management', {
+    var options = {
                     title: 'Account Management',
                     pageHeader: 'Account Management',
                     userId: req.App.user.userId,
                     userEmail: req.App.user.email,
                     userFirstName: req.App.user.firstName,
-                    userLastName: req.App.user.lastName,
-                    namechangesucceeded: true,
-                    statuscode: statusCode
-                });
+                    userLastName: req.App.user.lastName
+                }
+	if (req.body.what_was_changed=="name") {
+		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
+	    	if(body.Message=="Success") {		// success
+	    		// TODO: check contents of reply to see if name change actually succeeded
+                options.statuscode = statusCode;
+                options.namechangesucceeded = true;
+	        	res.render('account_management', options);
 	        }
 	        else {					// error
                 res.render('account_management', {
@@ -223,20 +224,6 @@ router.get('/dashboard', (req, res) => {
         title: 'CLASS Dashboard',
 		pageHeader: 'Dashboard',
 
-    });
-});
-
-router.get('/myclasses', (req, res) => {
-    res.render('myclasses', {
-        title: 'My Classes',
-		pageHeader: 'My Classes'
-    });
-});
-
-router.get('/instructormanagement', (req, res) => {
-    res.render('instructormanagement', {
-        title: 'Instructor Management',
-		pageHeader: 'Instructor Management'
     });
 });
 

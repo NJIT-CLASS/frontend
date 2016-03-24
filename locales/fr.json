@@ -36,5 +36,14 @@
 	"Promote Instructor": "Promote Instructor",
 	"Administrator Page": "Administrator Page",
 	"Create Assignment": "Create Assignment",
-	"Create Course": "Create Course"
+	"Create Course": "Create Course",
+	"Change Name": "Change Name",
+	"First Name": "First Name",
+	"Last Name": "Last Name",
+	"Change Your Email Address": "Change Your Email Address",
+	"New Email Address": "New Email Address",
+	"Current Password": "Current Password",
+	"Your Account Status": "Your Account Status",
+	"Current Status": "Current Status",
+	"Account Management": "Account Management"
 }

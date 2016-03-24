@@ -1,0 +1,25 @@
+.loggedout-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    #language-picker {
+        align-self: flex-end;
+
+        &.hidden {
+            background-color: #F3F3F4;
+
+            & > a.selected {
+                background-color: #F3F3F4;
+                
+                &:hover {
+                    color: #00AB8D;
+                }
+            }
+        }
+    }
+}

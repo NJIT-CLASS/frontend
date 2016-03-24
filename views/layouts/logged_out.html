@@ -11,9 +11,22 @@
     </head>
     <body class="logged-out">
         <div class="main-container center">
+                <div class="loggedout-container">
+                    {{{body}}}
 
-                {{{body}}}
-
+                    <div id="language-picker" class="hidden" onclick="document.getElementById('language-picker').classList.toggle('hidden')">
+                        {{#each languageOptions}}
+                            <a href="?lang={{ locale }}">
+                                <i class="fa fa-globe"></i>
+                                {{ language }}
+                            </a>
+                        {{/each}}
+                        <a class="selected">
+                            <i class="fa fa-globe"></i>
+                            {{ language }}
+                        </a>
+                    </div>
+                </div>
         </div>
 
         <script src="/static/shared.js" type="text/javascript" charset="utf-8"></script>
