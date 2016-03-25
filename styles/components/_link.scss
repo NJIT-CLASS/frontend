@@ -1,6 +1,10 @@
 a {
     text-decoration: none;
 
+    &:visited {
+        color: inherit;
+    }
+
     &.link:hover {
         color: #00AB8D;
         cursor: pointer;

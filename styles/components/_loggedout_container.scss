@@ -9,6 +9,9 @@
 
     #language-picker {
         align-self: flex-end;
+        position: absolute;
+        bottom: 0;
+        right: 0;
 
         &.hidden {
             background-color: #F3F3F4;

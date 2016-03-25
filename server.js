@@ -270,7 +270,8 @@ app.use((req, res, next) => {
         const loggedOutTemplates = {
             password_reset: true,
             home: true,
-            create_account: true
+            create_account: true,
+            not_found: true
         };
 
         const studentTemplates = {
@@ -288,7 +289,7 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
 
-        if (req.App.user.type === 'student' && !(template in studentTemplates)) {
+        if (req.App.user && req.App.user.type === 'student' && !(template in studentTemplates)) {
             return res.sendStatus(404);
         }
 
