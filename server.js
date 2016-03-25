@@ -7,6 +7,7 @@ const request = require('request');
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templateConfig = require('./server-middleware/templates').config;
+const apiMethods = require('./server-middleware/api').apiMethods;
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
@@ -25,68 +26,13 @@ const __ = translation.translate;
 const setTranslationLocale = translation.setTranslationLocale;
 
 app.set('views', `${__dirname}/views/`);
-
-// use handlebars for templates
 app.engine('.html', templateConfig.engine);
 app.set('view engine', '.html');
 
 app.use((req, res, next) => {
-    // dictionary of request global variables
     req.App = {};
 
-    req.App.api ={
-        get: function(endpoint, queryParameters, cb) {
-            if (arguments.length === 2) {
-                var cb = queryParameters;
-                queryParameters = {};
-            }
-
-            const options = {
-                method: 'GET',
-                uri: `http://162.243.45.215:8080/api${endpoint}`,
-                qs: queryParameters,
-                json: true
-            };
-
-            request(options, function(err, response, body) {
-                return cb(err, response.statusCode, body);
-            });
-        },
-        post: function(endpoint, body, cb) {
-            if (arguments.length === 2) {
-                var cb = body;
-                body = {};
-            }
-
-            const options = {
-                method: 'POST',
-                uri: `http://162.243.45.215:8080/api${endpoint}`,
-                json: true,
-                body: body
-            };
-
-            request(options, function(err, response, body) {
-                return cb(err, response.statusCode, body);
-            });
-        },
-        put: function(endpoint, body, cb) {
-            if (arguments.length === 2) {
-                var cb = body;
-                body = {};
-            }
-
-            const options = {
-                method: 'PUT',
-                uri: `http://162.243.45.215:8080/api${endpoint}`,
-                json: true,
-                body: body
-            };
-
-            request(options, function(err, response, body) {
-                return cb(err, response.statusCode, body);
-            });
-        }
-    };
+    req.App.api = apiMethods;
 
     next();
 });
