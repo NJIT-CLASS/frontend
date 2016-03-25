@@ -1,6 +1,4 @@
 const express = require('express');
-//custom translation script
-var i18n = require('i18n');
 
 const cryptoJS = require('crypto-js');
 

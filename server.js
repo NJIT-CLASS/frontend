@@ -1,76 +1,33 @@
 const express = require('express');
-const handlebars = require('express-handlebars');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cryptoJS = require('crypto-js');
 const request = require('request');
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+
+const session = require('./server-middleware/session');
+const translation = require('./server-middleware/translation');
+const templateConfig = require('./server-middleware/templates').config;
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
 
 const app = express();
 
-const sessionOptions = {
-    host: consts.REDIS_HOST,
-    port: consts.REDIS_PORT,
-    disableTTL: true
-};
-
-app.use(session({
-    store: new RedisStore(sessionOptions),
-    secret: consts.REDIS_SECRET
-}));
-
-const i18n = require('i18n');
-
-//translating power is present here
-i18n.configure({
-    locales: ['en', 'es','fr'],
-    defaultLocale: 'en',
-    directory: `${__dirname}/locales`
-});
-
 app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
 app.use(bodyParser());
 
-app.use(i18n.init);
+app.use(session);
+
+app.use(translation.middleware);
+const __ = translation.translate;
+const setTranslationLocale = translation.setTranslationLocale;
 
 app.set('views', `${__dirname}/views/`);
 
-var hbs = handlebars.create({
-    layoutsDir: `${__dirname}/views/layouts/`,
-    partialsDir: `${__dirname}/views/`,
-    defaultLayout: 'logged_in',
-    extname: '.html',
-    // Specify helpers which are only registered on this instance.
-    helpers: {
-        __: function () {
-            return i18n.__.apply(this, arguments);
-        },
-		sidebarHighlighter: function(template, sidebarItem, options){
-    		if (template === sidebarItem){
-    			return options.fn(this);
-    		}
-		},
-        showHTMLBasedOnBoolean: function(bool, options) {
-            if (bool) {
-                return options.fn(this);
-            }
-        },
-        ifEqual: function(arg1, arg2, options) {
-            if (arg1 === arg2) {
-                return options.fn(this);
-            }
-        }
-    }
-});
-
 // use handlebars for templates
-app.engine('.html', hbs.engine);
+app.engine('.html', templateConfig.engine);
 app.set('view engine', '.html');
 
 app.use((req, res, next) => {
@@ -138,12 +95,12 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if ('lang' in req.query) {
         req.session.lang = req.query.lang;
-        i18n.setLocale(res, req.query.lang);
+        setTranslationLocale(res, req.query.lang);
     }
 
     if ('lang' in req.session) {
-        i18n.setLocale(req.session.lang);
-        i18n.setLocale([req, res, res.locals], req.session.lang);
+        setTranslationLocale(req.session.lang);
+        setTranslationLocale([req, res, res.locals], req.session.lang);
     }
 
     if (res.locale === 'en') {
@@ -217,42 +174,42 @@ app.use((req, res, next) => {
 
     const sidebarNavItems = [
         {
-            text: i18n.__('Dashboard'),
+            text: __('Dashboard'),
             link: '/dashboard',
             template: 'dashboard',
             onlyInstructors: false,
             icon: 'dashboard'
         },
         {
-            text: i18n.__('Create Course'),
+            text: __('Create Course'),
             link: '/create-course',
             template: 'create_course',
             onlyInstructors: true,
             icon: 'plus'
         },
         {
-            text: i18n.__('Create Assignment'),
+            text: __('Create Assignment'),
             link: '/create-assignment',
             template: 'create_assignment',
             onlyInstructors: true,
             icon: 'file-text'
         },
         {
-            text: i18n.__('My Account'),
+            text: __('My Account'),
             link: '/accountmanagement',
             template: 'account_management',
             onlyInstructors: false,
             icon: 'cog'
         },
         {
-            text: i18n.__('Administrator'),
+            text: __('Administrator'),
             link: '/admin',
             template: 'admin',
             onlyInstructors: true,
             icon: 'user'
         },		
         {
-            text: i18n.__('About'),
+            text: __('About'),
             link: '/about',
             template: 'about',
             onlyInstructors: false,
