@@ -4,18 +4,31 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cryptoJS = require('crypto-js');
 const request = require('request');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
 
 const app = express();
+
+const sessionOptions = {
+    host: consts.REDIS_HOST,
+    port: consts.REDIS_PORT,
+    disableTTL: true
+};
+
+app.use(session({
+    store: new RedisStore(sessionOptions),
+    secret: consts.REDIS_SECRET
+}));
+
 const i18n = require('i18n');
 
 //translating power is present here
 i18n.configure({
     locales: ['en', 'es','fr'],
     defaultLocale: 'en',
-    cookie: 'lang',
     directory: `${__dirname}/locales`
 });
 
@@ -124,8 +137,13 @@ app.use((req, res, next) => {
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
     if ('lang' in req.query) {
-        res.cookie('lang', req.query.lang);
+        req.session.lang = req.query.lang;
         i18n.setLocale(res, req.query.lang);
+    }
+
+    if ('lang' in req.session) {
+        i18n.setLocale(req.session.lang);
+        i18n.setLocale([req, res, res.locals], req.session.lang);
     }
 
     if (res.locale === 'en') {
@@ -166,10 +184,9 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    if ('user' in req.cookies) {
+    if ('userId' in req.session) {
         req.App.user = {};
-        const decryptedUserBytes = cryptoJS.AES.decrypt(req.cookies.user, consts.USER_SECRET);
-        req.App.user.userId = parseInt(decryptedUserBytes.toString(cryptoJS.enc.Utf8));
+        req.App.user.userId = req.session.userId;
     }
     next();
 });
@@ -178,7 +195,7 @@ app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`, (err, statusCode, body) => {
             if (err || statusCode !== 200) {
-                res.clearCookie('user');
+                delete req.session.userId;
                 res.redirect('/');
             }
 

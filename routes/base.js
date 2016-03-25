@@ -23,9 +23,7 @@ router.route('/')
     .post((req, res) => {
         req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
             if(body && body.UserID && body.UserID.length > 0 && body.Message == 'Success'){
-                const id = body.UserID[0].UserID;
-                const encryptedUserId = cryptoJS.AES.encrypt(id.toString(), consts.USER_SECRET).toString();
-                res.cookie('user', encryptedUserId);
+                req.session.userId = body.UserID[0].UserID;
                 return res.redirect('/dashboard');
             }
 
@@ -38,7 +36,7 @@ router.route('/')
 
 // logout
 router.get('/logout', (req, res) => {
-    res.clearCookie('user');
+    delete req.session.userId;
     res.redirect('/');
 });
 
