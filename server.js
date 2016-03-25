@@ -320,6 +320,13 @@ app.use((req, res, next) => {
 // routes
 app.use('/', baseRoutes);
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(404).render('not_found', {
+        title: 'Not Found'
+    });
+});
+
 app.listen(consts.FRONTEND_PORT, () => {
     console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
 });

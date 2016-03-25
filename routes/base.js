@@ -265,10 +265,4 @@ router.get('/create-assignment', (req, res) => {
     });
 })
 
-router.get('/404', (req, res) => {
-    res.render('not_found', {
-        title: 'sjid'
-    });
-})
-
 module.exports = router;
