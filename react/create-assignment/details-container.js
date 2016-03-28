@@ -21,21 +21,6 @@ class DetailsContainer extends React.Component {
             subtasks: []
         };
 
-        let subtask1 = {
-            type: TASK_TYPES.GRADE_PROBLEM,
-            parent: task,
-            subtasks: []
-        };
-
-        let subtask2 = {
-            type: TASK_TYPES.CREATE_PROBLEM,
-            parent: task,
-            subtasks: []
-        };
-
-        task.subtasks.push(subtask1);
-        task.subtasks.push(subtask2);
-
         let newWorkflowIndex = this.props.createWorkflow({
             name: this.state.newWorkFlowName,
             task: task

@@ -1,19 +1,19 @@
 import React from 'react';
 
 class TaskDetails extends React.Component {
-	
 	render(){
+
 		return (
 			<div className="container">
             	<div className="section">
-                	<h3 className="title">Create Problem</h3>
+                    <h3 className="title">{this.props.task.name}</h3>
             		<div className="section-content">
                         <label>Task Name</label>
                         <div>
                             <input type="text"></input>
                         </div>
 
-                    	<a className="link">Advanced Options</a>
+                        <a className="link" onClick={this.props.showAdvancedOptions}>Advanced Options</a>
                      </div>
             	</div>
             	<div className="section">
