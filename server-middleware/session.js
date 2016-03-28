@@ -6,7 +6,8 @@ const consts = require('../utils/constants');
 const sessionOptions = {
     host: consts.REDIS_HOST,
     port: consts.REDIS_PORT,
-    disableTTL: true
+    disableTTL: true,
+    pass: consts.REDIS_AUTH
 };
 
 const newSession = session({
