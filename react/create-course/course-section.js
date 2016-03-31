@@ -133,8 +133,8 @@ class CourseSection extends React.Component {
         }
         let semesterCopy = this.state.semesters;
         let newSemesterValue = semesterCopy.length + 1;
-        semesterCopy.push({value: newSemesterValue, label:this.refs.field_semesterName.value});     // add the new semester on to the copied array
-        this.setState({semesters: semesterCopy, semesterId: newSemesterValue}); // Update the semester list, and set the selector to the new value
+        semesterCopy.push({value: newSemesterValue, label:this.refs.field_semesterName.value});  // add the new semester on to the copied array
+        this.setState({semesters: semesterCopy, semesterId: newSemesterValue});  // Update the semester list, and set the selector to the new value
         this.closeModal();
     }
 
@@ -145,10 +145,43 @@ class CourseSection extends React.Component {
         let semestersList = clone(this.state.semesters);      // using lodash here
         semestersList.push({ value: "create", label: 'Create new semester...' });
 
+        let semesterNameErrorText = null;
+        if (this.state.semesterNameError == true) {
+            semesterNameErrorText = (
+                <div class="error form-error" role="alert">
+                <i class="fa fa-exclamation-circle"></i>
+                    <span class="sr-only">Error: Please enter a name for the semester.</span>
+                </div>
+            );
+        }
+
+        let semesterDateEmptyErrorText = null;
+        if (this.state.semesterDateEmptyError == true) {
+            semesterDateEmptyErrorText = (
+                <div class="error form-error" role="alert">
+                <i class="fa fa-exclamation-circle"></i>
+                    <span class="sr-only">Error: Please select a start date and end date for the semester.</span>
+                </div>
+            );
+        }
+
+        let semesterDateOrderErrorText = null;
+        if (this.state.semesterDateOrderError == true) {
+            semesterDateOrderErrorText = (
+                <div class="error form-error" role="alert">
+                <i class="fa fa-exclamation-circle"></i>
+                    <span class="sr-only">Error: The end date must come after the start date.</span>
+                </div>
+            );
+        }
+
         let createSemesterModal = null;
         if (this.state.showCreateSemesterModal) {
             createSemesterModal = (
                 <Modal title="Create a Semester" close={this.closeModal.bind(this)}>
+                    {semesterNameErrorText}
+                    {semesterDateEmptyErrorText}
+                    {semesterDateOrderErrorText}
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="field_semesterName">Semester Name</label>
                         <div class="col-sm-10">
