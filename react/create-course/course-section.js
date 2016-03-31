@@ -148,7 +148,7 @@ class CourseSection extends React.Component {
         let semesterNameErrorText = null;
         if (this.state.semesterNameError == true) {
             semesterNameErrorText = (
-                <div class="error form-error" role="alert">
+                <div class="success form-success" role="alert">
                 <i class="fa fa-exclamation-circle"></i>
                     <span class="sr-only">Error: Please enter a name for the semester.</span>
                 </div>
