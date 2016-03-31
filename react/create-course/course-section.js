@@ -21,7 +21,10 @@ class CourseSection extends React.Component {
 			sectionDescriptionError: false,	
             showCreateSemesterModal: false,
             semesters: [{ value: 1, label: 'Spring 2016' },
-                        { value: 2, label: 'Fall 2015' }]
+                        { value: 2, label: 'Fall 2015' }],
+            semesterNameError: false,
+            semesterDateEmptyError: false,
+            semesterDateOrderError: false
 			//semesterError: false,	
 			//courseMembers: false	
         };
@@ -95,12 +98,11 @@ class CourseSection extends React.Component {
     }
 
     onSemesterChange(semesterId) {
-        // Check if it's the "create semester" option then...
-        if (semesterId == "create") {
-            // Change state to show a "create semester" modal
+        if (semesterId == "create") {   // If it's the "create semester" option...
+            // Change state to show a "create semester" modal but don't actually change the dropdown selection
             this.setState({showCreateSemesterModal: true});
         }
-        else {
+        else {                          // Otherwise change the dropdown selection as expected
             this.setState({semesterId: semesterId});
         }
     }
@@ -109,7 +111,26 @@ class CourseSection extends React.Component {
         this.setState({showCreateSemesterModal: false});
     }
 
+    submitCreateSemesterValidation() {
+        if (this.refs.field_semesterName.value.length == 0) {   // Name field is empty
+            this.setState({semesterNameError: true});
+            return false;
+        }
+        if (this.refs.field_startDate.value == "" || this.refs.field_endDate.value == "") {  // Date fields not complete
+            this.setState({semesterDateEmptyError: true});
+            return false;
+        }
+        if (this.refs.field_endDate.value < this.refs.field_startDate.value) {  // End date comes before start date
+            this.setState({semesterDateOrderError: true});
+            return false;
+        }
+        return true;
+    }
+
     submitCreateSemester() {
+        if (this.submitCreateSemesterValidation() === false) {
+            return false;
+        }
         let semesterCopy = this.state.semesters;
         let newSemesterValue = semesterCopy.length + 1;
         semesterCopy.push({value: newSemesterValue, label:this.refs.field_semesterName.value});     // add the new semester on to the copied array
