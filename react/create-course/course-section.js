@@ -4,6 +4,10 @@ import Select from 'react-select';
 
 import SectionMember from './section-member';
 
+import Modal from '../shared/modal';
+
+import {clone} from 'lodash';   // this imports the _.clone() function, it can be used later as just clone()
+
 class CourseSection extends React.Component {
     constructor(props) {
         super(props);
@@ -15,6 +19,9 @@ class CourseSection extends React.Component {
             members: props.section.members || [],
 			sectionNameError: false,	
 			sectionDescriptionError: false,	
+            showCreateSemesterModal: false,
+            semesters: [{ value: 1, label: 'Spring 2016' },
+                        { value: 2, label: 'Fall 2015' }]
 			//semesterError: false,	
 			//courseMembers: false	
         };
@@ -88,16 +95,64 @@ class CourseSection extends React.Component {
     }
 
     onSemesterChange(semesterId) {
-        this.setState({semesterId: semesterId});
+        // Check if it's the "create semester" option then...
+        if (semesterId == "create") {
+            // Change state to show a "create semester" modal
+            this.setState({showCreateSemesterModal: true});
+        }
+        else {
+            this.setState({semesterId: semesterId});
+        }
+    }
+
+    closeModal() {
+        this.setState({showCreateSemesterModal: false});
+    }
+
+    submitCreateSemester() {
+        let semesterCopy = this.state.semesters;
+        let newSemesterValue = semesterCopy.length + 1;
+        semesterCopy.push({value: newSemesterValue, label:this.refs.field_semesterName.value});     // add the new semester on to the copied array
+        this.setState({semesters: semesterCopy, semesterId: newSemesterValue}); // Update the semester list, and set the selector to the new value
+        this.closeModal();
     }
 
     render() {
-        var semesters = [
-            { value: 1, label: 'Spring 2016' },
-            { value: 2, label: 'Fall 2015' }
-        ];
 
         let lastIndex = 0;
+
+        let semestersList = clone(this.state.semesters);      // using lodash here
+        semestersList.push({ value: "create", label: 'Create new semester...' });
+        console.log("AFTER PUSHING: ", semestersList);
+        console.log("STATE: ", this.state.semesters);
+
+        let createSemesterModal = null;
+        if (this.state.showCreateSemesterModal) {
+            createSemesterModal = (
+                <Modal title="Create a Semester" close={this.closeModal.bind(this)}>
+                    <p>text</p>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="field_semesterName">Semester Name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="field_semesterName" ref="field_semesterName" id="field_semesterName" type="text"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="field_startDate">Start Date</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="field_startDate" ref="field_startDate" id="field_startDate" type="date"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="field_endDate">End Date</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="field_endDate" ref="field_endDate" id="field_endDate" type="date"></input>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-lg" onClick={this.submitCreateSemester.bind(this)}>Submit</button>
+                </Modal>
+            );
+        }
 
         let members = this.state.members.map((member) => {
             return (
@@ -110,11 +165,14 @@ class CourseSection extends React.Component {
             );
         });
 
+
+
         // always have one extra member field
         members.push(<SectionMember updateMember={this.updateMember.bind(this, lastIndex)} key={lastIndex++}/>);
 
         return (
             <div className="section">
+                {createSemesterModal}
                 <h2 className="title">Create Section</h2>
                 <div className="section-content">
                     <label>Section Name</label>
@@ -129,7 +187,7 @@ class CourseSection extends React.Component {
                     <Select
                         name="semester"
                         value={this.state.semesterId}
-                        options={semesters}
+                        options={semestersList}
                         clearable={false}
                         searchable={false}
                         onChange={this.onSemesterChange.bind(this)}
