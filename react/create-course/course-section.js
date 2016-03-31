@@ -123,14 +123,11 @@ class CourseSection extends React.Component {
 
         let semestersList = clone(this.state.semesters);      // using lodash here
         semestersList.push({ value: "create", label: 'Create new semester...' });
-        console.log("AFTER PUSHING: ", semestersList);
-        console.log("STATE: ", this.state.semesters);
 
         let createSemesterModal = null;
         if (this.state.showCreateSemesterModal) {
             createSemesterModal = (
                 <Modal title="Create a Semester" close={this.closeModal.bind(this)}>
-                    <p>text</p>
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="field_semesterName">Semester Name</label>
                         <div class="col-sm-10">
