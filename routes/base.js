@@ -113,6 +113,8 @@ router.post('/accountmanagement', (req, res) => {
 	    		// TODO: check contents of reply to see if name change actually succeeded
                 options.statuscode = statusCode;
                 options.namechangesucceeded = true;
+                options.userFirstName = body.FirstName;
+                options.userLastName = body.LastName;
                 res.render('account_management', options);
 	        }
 	        else {					// error
