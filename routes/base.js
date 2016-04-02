@@ -102,101 +102,83 @@ router.post('/accountmanagement', (req, res) => {
                     userEmail: req.App.user.email,
                     userFirstName: req.App.user.firstName,
                     userLastName: req.App.user.lastName
-                }
+                };
+
+	// I would have liked to just have one res.render() call at the very end rather than having to repeat it for each case
+	// But the variable passing doesn't seem to play nice with that, so...
+
 	if (req.body.what_was_changed=="name") {
 		req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
 	    	if(body.Message=="Success") {		// success
 	    		// TODO: check contents of reply to see if name change actually succeeded
                 options.statuscode = statusCode;
                 options.namechangesucceeded = true;
-	        	res.render('account_management', options);
+                options.userFirstName = body.FirstName;
+                options.userLastName = body.LastName;
+                res.render('account_management', options);
 	        }
 	        else {					// error
-                res.render('account_management', {
-                    title: 'Account Management',
-                    pageHeader: 'Account Management',
-                    userId: req.App.user.userId,
-                    userEmail: req.App.user.email,
-                    userFirstName: req.App.user.firstName,
-                    userLastName: req.App.user.lastName,
-                    namechangefailed: true,
-                    statuscode: statusCode
-                });
+	        	options.statuscode = statusCode;
+	        	options.namechangefailed = true;
+                res.render('account_management', options);
 	        }
 	    });
 	}
 	else if (req.body.what_was_changed=="email") {
 		req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
 	    	if(body.Message=="Success") {		// success
-	    		res.render('account_management',{
-	                emailchangesucceeded: true,
-	                newemail: body.EmailAddress,
-	                statuscode: statusCode
-	            });
+	    		options.emailchangesucceeded = true;
+	    		options.newemail = body.EmailAddress;
+	    		options.statuscode = statusCode;
+                res.render('account_management', options);
 	        }
-	        else {						// success
-	        	res.render('account_management',{
-	                emailchangefailed: true,
-	                statuscode: statusCode
-	            });
+	        else {						// error
+	        	options.emailchangefailed = true;
+	        	options.statuscode = statusCode;
+                res.render('account_management', options);
 	        }
 	    }); 
 	}
-	else if (req.body.what_was_changed=="status") {
-		
-		// TODO: fill in API endpoints here once they're available
+	else if (req.body.what_was_changed=="status") {		// TODO: fill in API endpoints here once they're available
 		/*
 		req.App.api.put('/path/to/backend', {userid: req.App.user.userId, password:req.body.field_statusPassword}, (err, statusCode, body) => {
 	    	if(statusCode==200) {		// success
-	        	res.render('account_management',{
-	                adminoptoutsucceeded: true,
-	                statuscode: statusCode
-	            });
+	    		options.adminoptoutsucceeded = true;
+	    		options.statuscode = statusCode;
+                res.render('account_management', options);
 	        }
 	        else {						// error
-	        	res.render('account_management',{
-	                adminoptoutfailed: true,
-	                statuscode: statusCode
-	            });
+	        	options.adminoptoutfailed = true;
+	        	statuscode = statusCode;
+                res.render('account_management', options);
 	        }
 	    });
 	    */
 	}
 	else if (req.body.what_was_changed=="password") {
 		
-		// If the "confirm password" doesn't match the new password entered,
-		// then alert the user and abort the operation
+		// If the "confirm password" doesn't match the new password entered, then alert the user and abort the operation
 		if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
-			res.render('account_management',{
-                passwordchangemismatch: true
-            });
+			options.passwordchangemismatch = true;
+			res.render('account_management', options);
 			return;
 		}
 		
 		req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
 	    	if(statusCode==200) {		// success
-	        	res.render('account_management',{
-	                passwordchangesucceeded: true,
-	                statuscode: statusCode
-	            });
+	    		options.passwordchangesucceeded = true;
+	    		options.statuscode = statusCode;
+                res.render('account_management', options);
 	        }
 	        else {						// error
-	        	res.render('account_management',{
-	                passwordchangefailed: true,
-	                statuscode: statusCode
-	            });
+	        	options.passwordchangefailed = true;
+	    		options.statuscode = statusCode;
+                res.render('account_management', options);
 	        }
 	    });
 	}
 	else {
-        res.render('account_management', {
-            title: 'Account Management',
-            pageHeader: 'Account Management',
-            userId: req.App.user.userId,
-            userEmail: req.App.user.email,
-            userFirstName: req.App.user.firstName,
-            userLastName: req.App.user.lastName
-        });
+		res.render('account_management', options);
 	}
 });
 
