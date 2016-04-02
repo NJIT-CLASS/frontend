@@ -29,10 +29,6 @@ class SubTasksSidebarContainer extends React.Component {
                 </div>
                 <div className="subtask-list">
                     { subtasks }
-                    <div className="subtask create-subtask">
-                        <i className="fa fa-plus fa-fw"></i>
-                        Create Subtask
-                    </div>
                 </div>
             </div>
         );

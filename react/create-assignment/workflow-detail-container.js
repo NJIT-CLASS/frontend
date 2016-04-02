@@ -70,6 +70,7 @@ class WorkflowDetailContainer extends React.Component {
         return (
             <div className="assignment-workflow-details">
                 { previousTaskSidebar }
+                <SubTasksSidebarContainer/>
                 <TaskDetails
                     task={this.state.currentTask.subtasks[0]}
                     showAdvancedOptions={this.showAdvancedOptions.bind(this)}
