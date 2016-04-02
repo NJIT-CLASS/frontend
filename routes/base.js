@@ -213,6 +213,14 @@ router.get('/about', (req, res) => {
     });	
 });
 
+// course page
+router.get('/course_page', (req, res) => {
+    res.render('course_page', {
+        title: 'Course Page',
+		pageHeader: 'Course Page'				
+    });	
+});
+
 
 // admin
 router.get('/admin', (req, res) => {
