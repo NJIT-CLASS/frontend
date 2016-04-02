@@ -1,6 +1,7 @@
 input[type=text],
 input[type=password],
 input[type=email],
+input[type=date],
 textarea {
     width: 400px;
     font-size: 18px;
@@ -8,6 +9,7 @@ textarea {
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #e5e6e7;
+    font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
     &:focus {
         outline: none;

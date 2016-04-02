@@ -1,0 +1,56 @@
+// modal
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(4,4,4,0.2);
+    z-index: 1;
+
+    .modal-overlay-container {
+        display: flex;
+        justify-content: center;
+        padding-top: 30px;
+    }
+
+    .modal {
+        min-width: 400px;
+        background: white;
+    }
+
+    .modal-header {
+        box-sizing: border-box;
+        padding: 5px 20px;
+        border-bottom: 1px solid #e7eaec;
+        display: flex;
+        align-items: center;
+        color: #676a6c;
+
+        div {
+            font-size: 20px;
+            font-weight: 200;
+        }
+
+        .close-icon {
+            font-size: 40px;
+            font-weight: lighter;
+            margin-left: auto;
+            padding: 0 0 10px 0;
+
+            &:hover {
+                cursor: pointer;
+                color: #00AB8D;
+            }
+        }
+    }
+
+    .modal-content {
+        max-height: 700px;
+        overflow: auto;
+        padding: 20px;
+    }
+
+
+}
+
