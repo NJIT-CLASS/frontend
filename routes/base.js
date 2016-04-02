@@ -132,7 +132,7 @@ router.post('/accountmanagement', (req, res) => {
 	    		options.statuscode = statusCode;
                 res.render('account_management', options);
 	        }
-	        else {						// success
+	        else {						// error
 	        	options.emailchangefailed = true;
 	        	options.statuscode = statusCode;
                 res.render('account_management', options);
