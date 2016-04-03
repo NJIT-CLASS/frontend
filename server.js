@@ -103,7 +103,7 @@ app.use((req, res, next) => {
             }
 
             const user = body.User[0];
-            req.App.user.email = user.EmailAddress;
+            req.App.user.email = user.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
             req.App.user.type = user.UserType;

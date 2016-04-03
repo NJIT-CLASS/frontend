@@ -20,8 +20,8 @@ router.route('/')
     })
     .post((req, res) => {
         req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
-            if(body && body.UserID && body.UserID.length > 0 && body.Message == 'Success'){
-                req.session.userId = body.UserID[0].UserID;
+            if(body && body.UserID && body.Message == 'Success'){
+                req.session.userId = body.UserID;
                 return res.redirect('/dashboard');
             }
 
