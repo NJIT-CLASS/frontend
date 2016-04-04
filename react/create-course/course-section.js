@@ -108,20 +108,37 @@ class CourseSection extends React.Component {
     }
 
     closeModal() {
-        this.setState({showCreateSemesterModal: false});
+        this.setState({
+            showCreateSemesterModal: false,
+            semesterNameError: false,
+            semesterDateEmptyError: false,
+            semesterDateOrderError: false
+        });
     }
 
     submitCreateSemesterValidation() {
         if (this.refs.field_semesterName.value.length == 0) {   // Name field is empty
-            this.setState({semesterNameError: true});
+            this.setState({
+                semesterNameError: true,
+                semesterDateEmptyError: false,
+                semesterDateOrderError: false
+            });
             return false;
         }
         if (this.refs.field_startDate.value == "" || this.refs.field_endDate.value == "") {  // Date fields not complete
-            this.setState({semesterDateEmptyError: true});
+            this.setState({
+                semesterNameError: false,
+                semesterDateEmptyError: true,
+                semesterDateOrderError: false
+            });
             return false;
         }
         if (this.refs.field_endDate.value < this.refs.field_startDate.value) {  // End date comes before start date
-            this.setState({semesterDateOrderError: true});
+            this.setState({
+                semesterNameError: false,
+                semesterDateEmptyError: false,
+                semesterDateOrderError: true
+            });
             return false;
         }
         return true;
@@ -148,9 +165,9 @@ class CourseSection extends React.Component {
         let semesterNameErrorText = null;
         if (this.state.semesterNameError == true) {
             semesterNameErrorText = (
-                <div class="success form-success" role="alert">
-                <i class="fa fa-exclamation-circle"></i>
-                    <span class="sr-only">Error: Please enter a name for the semester.</span>
+                <div className="error form-error">
+                <i className="fa fa-exclamation-circle"></i>
+                    <span>Error: Please enter a name for the semester.</span>
                 </div>
             );
         }
@@ -158,9 +175,9 @@ class CourseSection extends React.Component {
         let semesterDateEmptyErrorText = null;
         if (this.state.semesterDateEmptyError == true) {
             semesterDateEmptyErrorText = (
-                <div class="error form-error" role="alert">
-                <i class="fa fa-exclamation-circle"></i>
-                    <span class="sr-only">Error: Please select a start date and end date for the semester.</span>
+                <div className="error form-error">
+                <i className="fa fa-exclamation-circle"></i>
+                    <span>Error: Please select a start date and end date for the semester.</span>
                 </div>
             );
         }
@@ -168,9 +185,9 @@ class CourseSection extends React.Component {
         let semesterDateOrderErrorText = null;
         if (this.state.semesterDateOrderError == true) {
             semesterDateOrderErrorText = (
-                <div class="error form-error" role="alert">
-                <i class="fa fa-exclamation-circle"></i>
-                    <span class="sr-only">Error: The end date must come after the start date.</span>
+                <div className="error form-error">
+                <i className="fa fa-exclamation-circle"></i>
+                    <span>Error: The end date must come after the start date.</span>
                 </div>
             );
         }
