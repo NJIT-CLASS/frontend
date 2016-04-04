@@ -128,7 +128,7 @@ router.post('/accountmanagement', (req, res) => {
 		req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
 	    	if(body.Message=="Success") {		// success
 	    		options.emailchangesucceeded = true;
-	    		options.newemail = body.EmailAddress;
+	    		options.userEmail = body.EmailAddress;
 	    		options.statuscode = statusCode;
                 res.render('account_management', options);
 	        }
