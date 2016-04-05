@@ -1,6 +1,8 @@
 import React from 'react';
 import request from 'request';
 
+import {clone} from 'lodash';
+
 import Container from './container';
 
 class CourseContainer extends React.Component {
@@ -54,7 +56,22 @@ class CourseContainer extends React.Component {
         request(options, (err, res, body) => {
             const courseSectionId = body.result[0]['LAST_INSERT_ID()'];
 
-            
+            const memberOptions = {
+                method: 'PUT',
+                uri: this.props.apiUrl + '/api/course/adduser',
+                body: {
+                    sectionid: courseSectionId
+                },
+                json: true
+            }
+
+            for (let i = 0; i < section.members.length; i++) {
+                let newMemberOptions = clone(memberOptions);
+                newMemberOptions.body.email = section.members[i].email;
+
+                request(newMemberOptions);
+            }
+
             // TODO get the courseSectionID and set it in the state
             if (index !== null) {
                 return this.setState((previousState) => {

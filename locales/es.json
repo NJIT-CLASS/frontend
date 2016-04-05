@@ -51,6 +51,7 @@
 	"Administrator": "Administrator",
 	"Dead End.": "Callejón sin salida.",
 	"Not Found": "Extraviado",
-	"To opt out of being an administrator, enter your password here and click Submit" :"Para dejar de ser un administrador, introduzca la contraseña aquí y haga clic en Enviar.",
-	"This change can not be reversed!":"Este cambio no se puede deshacer !"
+	"To opt out of being an administrator, enter your password here and click Submit": "Para dejar de ser un administrador, introduzca la contraseña aquí y haga clic en Enviar.",
+	"This change can not be reversed!": "Este cambio no se puede deshacer !",
+	"Course Page": "Course Page"
 }
