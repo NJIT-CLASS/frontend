@@ -1,4 +1,5 @@
 const express = require('express');
+const async = require('async');
 
 const cryptoJS = require('crypto-js');
 
@@ -198,9 +199,21 @@ router.get('/accountmanagement', (req, res) => {
 
 // dashboard
 router.get('/dashboard', (req, res) => {
+    req.App.api.get('/getCourseCreated/' + req.App.user.userId, (err, statusCode, body) => {
+			
+	console.log (body);	
+	var courseList = [];
+	for(var i=0; i<body.Courses.length; i++){
+		courseList.push(body.Courses[i]);
+		
+	}
+	
     res.render('dashboard', {
         title: 'CLASS Dashboard',
 		pageHeader: 'Dashboard',
+		courseList: courseList 
+		
+	});
 
     });
 });
@@ -214,12 +227,77 @@ router.get('/about', (req, res) => {
 });
 
 // course page
-router.get('/course_page', (req, res) => {
-    res.render('course_page', {
-        title: 'Course Page',
-		pageHeader: 'Course Page'				
-    });	
+router.get('/course_page/:Id', (req, res) => {
+	 req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{	
+	 
+
+	 var sectionList = [];
+	 var apiCalls = {};
+	 for (var i=0; i<body.Sections.length; i++){
+		 
+		 sectionList.push(body.Sections[i]);
+
+		 apiCalls[body.Sections[i].SectionID] = ((Sections) =>{
+			return (callback)=>	{
+			
+ 
+				req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, body) =>{
+				
+					var sectionMembers = body.Section;	
+					var sectionMembersApiCalls = [];	
+					for (var q=0; q<sectionMembers.length; q++){
+						sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
+			 
+					}
+			 
+					async.parallel(sectionMembersApiCalls, (err, memberResults) =>{
+
+						var members = [];
+						for (var w=0; w<memberResults.length; w++){
+							members.push (memberResults[w][1].User[0]);
+						}
+						//console.log(members);
+						callback(members);
+			 
+					});	 
+				});				
+			
+			
+			} 
+		 
+			})(body.Sections[i]);
+
+		 
+	 }	 
+	 console.log(apiCalls);
+/* 	 apiCalls[1]((members)=>{
+		 console.log(members);
+		 res.end();
+	 }); */
+	 async.parallel(apiCalls, (err, results)=>{
+	//	 console.log(' results', results);
+		 
+	//console.log('section list length', sectionList.length);
+	//for(var i=0; i<sectionList.length; i++){
+		console.log(results);
+			res.render('course_page', {
+				title: 'Course Page',
+				pageHeader: 'Course Page',	
+				sectionList: sectionList,	
+				courseID: req.params.Id,
+				courseTitle: body.Course[0].Title
+				});			
+			
+	
+	//}
+	
+			 
+	});
+	 
+
+  });
 });
+
 
 
 // admin

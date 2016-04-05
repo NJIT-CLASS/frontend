@@ -1,34 +1,22 @@
-
+{{#each sectionList}}
 <form name="display_course_info" role="form" class="section" method="POST" action="#">
-    <h2 class="title">Marketing 102 - Section 2 - Spring 2016 </h2>
+    <h2 class="title"> {{../courseTitle}} - {{Name}} </h2>
     <div class="section-content">
 	
 
     
 
 				 <div name="course_page_description">
-				 Description for Marketing 102 Section 2. 
+				 {{Description}}
 				 </div>
 				 <br>
 				 
 					<ul>
-						  <li class="list-group-item">Joe Smith
-						</li>
-							
-						  <li class="list-group-item">Amy Jones
-						</li>
-						
-						  <li class="list-group-item">Arthur Brown
-						</li>
-												
-						  <li class="list-group-item">Janet Hayes
-						</li>
-							
-						  <li class="list-group-item">Frank Fisher
-						</li>
-						
-						  <li class="list-group-item">Eric Thomas
-						</li>						
+					{{#each members}}
+					<li class="list-group-item">{{FirstName}} {{LastName}}
+					</li>
+					{{/each}}	
+					
 						
 
 		 
@@ -37,39 +25,6 @@
 		</div>
 </form>
 
+{{/each}}
 
-
-<form name="display_course_info_2" role="form" class="section" method="POST" action="#">
-    <h2 class="title">Marketing 102 - Section 3 - Fall 2016 </h2>
-    <div class="section-content">
-	
-
-
-				 <div name="course_page_description">
-				 Description for Marketing 102 Section 3. 
-				 </div>
-				 <br>
-				 
-					<ul>
-						  <li class="list-group-item">Gregory Mason
-						</li>
-							
-						  <li class="list-group-item">Linda Henderson
-						</li>
-						
-						  <li class="list-group-item">George Weaver
-						</li>
-												
-						  <li class="list-group-item">Rachel Hayes
-						</li>
-							
-						  <li class="list-group-item">Michael Wilson
-						</li>
-
-
-		 
-					 </ul>
-			</div>
-	
-</form>
 	      
