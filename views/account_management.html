@@ -132,7 +132,7 @@
 </form> <!-- End of 'change password' panel -->
 
 <!-- TODO: need a way to prevent user from submitting form if they're not an admin in the first place -->
-<form name="form_userStatus" role="form" class="section tooltip" method="POST" action="/accountmanagement">
+<!--<form name="form_userStatus" role="form" class="section tooltip" method="POST" action="/accountmanagement">
 	<input type="hidden" name="what_was_changed" value="status">
     <h2 class="title">{{__ "Your Account Status"}}</h2>
     <div class="section-content">
@@ -152,18 +152,18 @@
 				<span class="sr-only">Success:</span>
 			Successfully opted out of admin privileges.
 			</div>
-		{{/if}}
+		{{/if}}-->
     
    		<!-- TODO: add other statuses here -->
-        <div class="form-group">{{__ "Current Status"}}: 
+        <!-- <div class="form-group">{{__ "Current Status"}}: 
         {{#if userIsAdmin}}
         	Administrator
         {{/if}}
-        </div>
+        </div>-->
         
         <!-- TODO: fill in boolean variable that indicates admin status here -->
         <!-- TODO: how do we make that text bold? -->
-        {{#if userIsAdmin }}
+        <!-- {{#if userIsAdmin }}
             
 	        <div class="form-group">
 	        	<label class="control-label col-sm-2" for="field_statusPassword">{{__ "Password"}}</label>
@@ -180,5 +180,5 @@
         {{/if}}
 
         
-    </div>
-</form> <!-- End of 'account status' panel -->
+    </div> -->
+<!--</form> --><!-- End of 'account status' panel -->
