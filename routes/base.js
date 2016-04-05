@@ -257,7 +257,7 @@ router.get('/course_page/:Id', (req, res) => {
 							members.push (memberResults[w][1].User[0]);
 						}
 						//console.log(members);
-						callback(members);
+						callback(null, members);
 			 
 					});	 
 				});				
@@ -269,28 +269,26 @@ router.get('/course_page/:Id', (req, res) => {
 
 		 
 	 }	 
-	 console.log(apiCalls);
-/* 	 apiCalls[1]((members)=>{
-		 console.log(members);
-		 res.end();
-	 }); */
+	
 	 async.parallel(apiCalls, (err, results)=>{
-	//	 console.log(' results', results);
-		 
-	//console.log('section list length', sectionList.length);
-	//for(var i=0; i<sectionList.length; i++){
-		console.log(results);
-			res.render('course_page', {
+	console.log(results);
+	for(var i=0; i<sectionList.length; i++){
+		
+		var currentSectionId = sectionList[i].SectionID;
+		sectionList[i].members=results[currentSectionId];
+	
+			
+	
+		}
+		
+		console.log(sectionList);
+				res.render('course_page', {
 				title: 'Course Page',
 				pageHeader: 'Course Page',	
 				sectionList: sectionList,	
 				courseID: req.params.Id,
 				courseTitle: body.Course[0].Title
-				});			
-			
-	
-	//}
-	
+				});		
 			 
 	});
 	 
