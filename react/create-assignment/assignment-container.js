@@ -11,39 +11,57 @@ class AssignmentContainer extends React.Component {
         this.state = {
             assignmentDetails: {},
             workflows: [],
-            visibleWorkflowIndex: null,
-            newWorkflowShowing: false
+            visibleWorkflowIndex: null
         };
     }
-
-    selectWorkflow(index=null) {
-        this.setState({
-            visibleWorkflowIndex: index,
-            newWorkflowShowing: true
-        });
-    }
-
-    createWorkflow(index, workflow) {
+    createWorkflow(workflow){
         let workflows = this.state.workflows;
-
-        let newWorkflowIndex = index;
-
-        if (index !== null) {
-            workflows[index] = workflow;
-        }
-        else {
-            let newLength = workflows.push(workflow);
-            newWorkflowIndex = newLength - 1;
-        }
-
+        const len = workflows.length
+        workflows.push(workflow);
         this.setState({
-            workflows: workflows,
-            visibleWorkflowIndex: null,
-            newWorkflowShowing: false
-        });
-
-        return newWorkflowIndex;
+            workflows : workflows,
+            visibleWorkflowIndex: len            
+        })
     }
+    addTask(task){
+        this.setState
+    }
+
+    changeWorkflow(index,workflow){
+        let workflows = this.state.workflows;
+        workflows[index] = workflow;
+        this.setState({
+            workflows:workflows
+        });
+    }
+    // selectWorkflow(index=null) {
+    //     this.setState({
+    //         visibleWorkflowIndex: index,
+    //         newWorkflowShowing: true
+    //     });
+    // }
+
+    // createWorkflow(index, workflow) {
+    //     let workflows = this.state.workflows;
+
+    //     let newWorkflowIndex = index;
+
+    //     if (index !== null) {
+    //         workflows[index] = workflow;
+    //     }
+    //     else {
+    //         let newLength = workflows.push(workflow);
+    //         newWorkflowIndex = newLength - 1;
+    //     }
+
+    //     this.setState({
+    //         workflows: workflows,
+    //         visibleWorkflowIndex: null,
+    //         newWorkflowShowing: false
+    //     });
+
+    //     return newWorkflowIndex;
+    // }
 
     updateAssignmentDetails(name, description) {
         let newAssignmentDetails = this.state.assignmentDetails;
@@ -62,13 +80,13 @@ class AssignmentContainer extends React.Component {
     render() {
         let content = null;
 
-        if (this.state.visibleWorkflowIndex === null && !this.state.newWorkflowShowing) {
+        if (this.state.visibleWorkflowIndex === null) {
             content = (
                 <DetailsContainer
                     assignmentDetails={this.state.assignmentDetails}
                     workflows={this.state.workflows}
-                    selectWorkflow={this.selectWorkflow.bind(this)}
-                    createWorkflow={this.createWorkflow.bind(this, null)}
+                    //selectWorkflow={this.selectWorkflow.bind(this)}
+                    createWorkflow={this.createWorkflow.bind(this)}
                     updateAssignmentDetails={this.updateAssignmentDetails.bind(this)}
                 />
             );
@@ -78,6 +96,7 @@ class AssignmentContainer extends React.Component {
                 <WorkflowDetailContainer
                     workflow={this.state.workflows[this.state.visibleWorkflowIndex]}
                     createWorkflow={this.createWorkflow.bind(this, this.state.visibleWorkflowIndex)}
+                    changeWorkflow = {this.changeWorkflow.bind(this,this.state.visibleWorkflowIndex)}
                 />
             );
         }

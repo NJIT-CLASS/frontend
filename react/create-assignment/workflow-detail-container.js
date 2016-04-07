@@ -13,8 +13,9 @@ class WorkflowDetailContainer extends React.Component {
         this.state = {
             previousTask: null,
             currentTask: this.props.workflow.task,
-            currentTaskIndex: 0,
-            showAdvancedOptions: false
+            showAdvancedOptions: false,
+            depth:this.props.workflow.task.depth,
+            subtaskIndex: 0
         };
     }
 
@@ -24,6 +25,34 @@ class WorkflowDetailContainer extends React.Component {
 
     closeAdvancedOptionsModal() {
         this.setState({showAdvancedOptions: false});
+    }
+
+    addTask(task){
+        debugger
+        let depth = 0;
+        let index = 0;
+        let workflow = this.props.workflow;
+        if(workflow.task.depth === this.state.depth){
+            workflow.task.subtasks.push(task);
+            depth=1;
+        }else{
+            let parentTask = workflow.task;
+            let currentTask = workflow.task.subtasks[0];
+            while(currentTask.depth != this.state.depth){
+                parentTask = currentTask;
+                currentTask = currentTask.subtasks[0];
+            }
+            depth = currentTask.depth;
+            index = parentTask.subtasks[this.state.subtaskIndex].subtasks.length
+            parentTask.subtasks[this.state.subtaskIndex].subtasks.push(task);
+        }
+        this.props.changeWorkflow(workflow);
+        debugger
+        this.setState({
+            currentTask:task,
+            depth : depth,
+            subtaskIndex : index
+        });
     }
 
     render() {
@@ -70,10 +99,11 @@ class WorkflowDetailContainer extends React.Component {
         return (
             <div className="assignment-workflow-details">
                 { previousTaskSidebar }
-                <SubTasksSidebarContainer/>
+                
                 <TaskDetails
-                    task={this.state.currentTask.subtasks[0]}
+                    task={this.state.currentTask}
                     showAdvancedOptions={this.showAdvancedOptions.bind(this)}
+                    addTask = {this.addTask.bind(this)}
                 />
                 { advancedOptions }
             </div>
