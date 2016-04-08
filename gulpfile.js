@@ -106,7 +106,8 @@ gulp.task('create_assgn:watch', () => {
 gulp.task('start', ['node-babel'], function () {
   nodemon({
     script: '.build/server.js',
-    ext: 'js html'
+    ext: 'js html',
+    ignore: ['react/*', 'styles/*']
   });
 });
 
