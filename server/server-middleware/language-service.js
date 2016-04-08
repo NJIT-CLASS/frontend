@@ -1,4 +1,4 @@
-// @flow
+/* @flow */
 
 const redis = require('redis');
 const async = require('async');
@@ -23,11 +23,11 @@ const stringExists = (str) => {
     client.exists(key, redis.print);
 };
 
-exports.addTranslation = (language, str, translatedStr) => {
+exports.addTranslation = (language: string, str: string, translatedStr: string) => {
     addString(str);
 };
 
-const getTranslation = (language, str, cb) => {
+const getTranslation = (language, str, cb: (err: ?string, result: string) => any) => {
     const key = `${languageKeyPrefix}${str}`;
     client.hget(key, language, (err, result) => {
         const resultStr = result !== null ? result : str;
@@ -35,10 +35,10 @@ const getTranslation = (language, str, cb) => {
     });
 };
 
-exports.getAllStringsInLanguage = (language, cb) => {
+exports.getAllStringsInLanguage = (language: string, cb: (err: string, results: {}) => any) => {
     const key = `${languageKeyPrefix}*`;
     client.keys(key, (err, keys) => {
-        var keyTranslationFuncs = {};
+        var keyTranslationFuncs: { [key: string]: string } = {};
 
         for (var key of keys) {
             const keyPieces = key.split('lang::');
