@@ -200,21 +200,16 @@ router.get('/accountmanagement', (req, res) => {
 // dashboard
 router.get('/dashboard', (req, res) => {
     req.App.api.get('/getCourseCreated/' + req.App.user.userId, (err, statusCode, body) => {
-			
-	console.log (body);	
-	var courseList = [];
-	for(var i=0; i<body.Courses.length; i++){
-		courseList.push(body.Courses[i]);
-		
-	}
-	
-    res.render('dashboard', {
-        title: 'CLASS Dashboard',
-		pageHeader: 'Dashboard',
-		courseList: courseList 
-		
-	});
+    	var courseList = [];
+    	for(var i=0; i<body.Courses.length; i++){
+    		courseList.push(body.Courses[i]);
+    	}
 
+        res.render('dashboard', {
+            title: 'CLASS Dashboard',
+    		pageHeader: 'Dashboard',
+    		courseList: courseList 
+    	});
     });
 });
 
@@ -222,81 +217,55 @@ router.get('/dashboard', (req, res) => {
 router.get('/about', (req, res) => {
     res.render('about', {
         title: 'About',
-		pageHeader: 'About'				
+		pageHeader: 'About'
     });	
 });
 
 // course page
 router.get('/course_page/:Id', (req, res) => {
-	 req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{	
-	 
+	req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{	
+        var sectionList = [];
+        var apiCalls = {};
+        for (var i=0; i<body.Sections.length; i++){
+            sectionList.push(body.Sections[i]);
 
-	 var sectionList = [];
-	 var apiCalls = {};
-	 for (var i=0; i<body.Sections.length; i++){
-		 
-		 sectionList.push(body.Sections[i]);
-
-		 apiCalls[body.Sections[i].SectionID] = ((Sections) =>{
-			return (callback)=>	{
-			
- 
-				req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, body) =>{
-				
-					var sectionMembers = body.Section;	
-					var sectionMembersApiCalls = [];	
-					for (var q=0; q<sectionMembers.length; q++){
-						sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
+            apiCalls[body.Sections[i].SectionID] = ((Sections) => {
+                return (callback)=>	{
+                    req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, body) =>{
+                        var sectionMembers = body.Section;	
+                        var sectionMembersApiCalls = [];	
+                        for (var q=0; q<sectionMembers.length; q++){
+                            sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
+                        }
 			 
-					}
-			 
-					async.parallel(sectionMembersApiCalls, (err, memberResults) =>{
-
-						var members = [];
-						for (var w=0; w<memberResults.length; w++){
-							members.push (memberResults[w][1].User[0]);
-						}
-						//console.log(members);
-						callback(null, members);
-			 
-					});	 
-				});				
-			
-			
-			} 
-		 
-			})(body.Sections[i]);
-
-		 
-	 }	 
+    					async.parallel(sectionMembersApiCalls, (err, memberResults) => {
+    						var members = [];
+    						for (var w=0; w<memberResults.length; w++){
+    							members.push (memberResults[w][1].User[0]);
+    						}
+    						callback(null, members);
+    					});
+    				});
+    			}
+    		})(body.Sections[i]);
+        }
 	
-	 async.parallel(apiCalls, (err, results)=>{
-	console.log(results);
-	for(var i=0; i<sectionList.length; i++){
+        async.parallel(apiCalls, (err, results)=>{
+            for(var i=0; i<sectionList.length; i++){
+                var currentSectionId = sectionList[i].SectionID;
+                sectionList[i].members=results[currentSectionId];
+    		}
 		
-		var currentSectionId = sectionList[i].SectionID;
-		sectionList[i].members=results[currentSectionId];
-	
-			
-	
-		}
-		
-		console.log(sectionList);
-				res.render('course_page', {
-				title: 'Course Page',
-				pageHeader: 'Course Page',	
-				sectionList: sectionList,	
-				courseID: req.params.Id,
-				courseTitle: body.Course[0].Title
-				});		
-			 
-	});
-	 
-
-  });
+            res.render('course_page', {
+                title: 'Course Page',
+                pageHeader: 'Course Page',	
+                sectionList: sectionList,	
+                courseID: req.params.Id,
+                courseTitle: body.Course[0].Title
+            });
+        });
+    });
 });
-
-
 
 // admin
 router.get('/admin', (req, res) => {
