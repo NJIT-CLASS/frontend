@@ -15,7 +15,7 @@ const compileReact = (rootFile, outputName, watch) => {
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source(`${outputName}.js`))
       .pipe(buffer())
-      .pipe(gulp.dest('./static'));
+      .pipe(gulp.dest('./server/static'));
   }
 
   if (watch) {
@@ -35,7 +35,7 @@ const watchReact = function() {
 gulp.task('sass', () => {
   return gulp.src('./styles/**/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./static'));
+    .pipe(gulp.dest('./server/static'));
 });
  
 gulp.task('sass:watch', () => {
@@ -60,7 +60,7 @@ gulp.task('create_assgn:watch', () => {
 
 gulp.task('start', function () {
   nodemon({
-    script: 'server.js',
+    script: 'server/server.js',
     ext: 'js html'
   });
 });

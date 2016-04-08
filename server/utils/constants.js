@@ -3,7 +3,7 @@ const path = require('path');
 var fallbackSettings;
 
 try {
-    fallbackSettings = require('../fallback_settings');
+    fallbackSettings = require('../../fallback_settings');
 } catch (e) {}
 
 exports.FRONTEND_PORT = process.env.CLASS_PORT || fallbackSettings.FRONTEND_PORT;
