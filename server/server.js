@@ -6,7 +6,7 @@ const request = require('request');
 
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
-const templateConfig = require('./server-middleware/templates').config;
+const templates = require('./server-middleware/templates');
 const apiMethods = require('./server-middleware/api').apiMethods;
 
 const consts = require('./utils/constants');
@@ -21,14 +21,6 @@ app.use(bodyParser());
 
 app.use(session);
 
-app.use(translation.middleware);
-const __ = translation.translate;
-const setTranslationLocale = translation.setTranslationLocale;
-
-app.set('views', `${__dirname}/views/`);
-app.engine('.html', templateConfig.engine);
-app.set('view engine', '.html');
-
 app.use((req, res, next) => {
     req.App = {};
 
@@ -41,12 +33,11 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if ('lang' in req.query) {
         req.session.lang = req.query.lang;
-        setTranslationLocale(res, req.query.lang);
+        res.locale = req.query.lang;
     }
 
     if ('lang' in req.session) {
-        setTranslationLocale(req.session.lang);
-        setTranslationLocale([req, res, res.locals], req.session.lang);
+        res.locale = req.session.lang
     }
 
     if (res.locale === 'en') {
@@ -84,6 +75,20 @@ app.use((req, res, next) => {
     }
 
     next();
+});
+
+var __;
+
+app.use((req, res, next) => {
+    translation.setupTranslations(res.locale, (translateFunc) => {
+        __ = translateFunc;
+
+        app.set('views', `${__dirname}/views/`);
+        app.engine('.html', templates.setup(__).engine);
+        app.set('view engine', '.html');
+
+        next();
+    });
 });
 
 app.use((req, res, next) => {

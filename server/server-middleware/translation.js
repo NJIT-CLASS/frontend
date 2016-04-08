@@ -1,15 +1,19 @@
-const i18n = require('i18n');
+/* @flow */
 
-const consts = require('../utils/constants');
+const languageService = require('./language-service');
 
-i18n.configure({
-    locales: ['en', 'es','fr'],
-    defaultLocale: 'en',
-    directory: `${consts.ROOT_DIRECTORY_PATH}/locales`
-});
+type Language = 'en' | 'fr' | 'es';
 
-exports.middleware = i18n.init;
+exports.setupTranslations = (language: Language, cb: (translateFunc: (str: string) => string) => any) => {
+    languageService.getAllStringsInLanguage(language, (err: ?string, strs: { [key: string]: string }) => {
+        cb(function() {
+            return function (str: string) {
+                if (!(str in strs)) {
+                    languageService.getTranslation(language, str, () => {});
+                }
 
-exports.translate = i18n.__;
-
-exports.setTranslationLocale = i18n.setLocale;
+                return strs[str];
+            }
+        }());
+    });
+};

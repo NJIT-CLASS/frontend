@@ -31,6 +31,10 @@ const addTranslation = function
     str: string,
     translatedStr: string
 ) {
+    if (!str) {
+        return '';
+    }
+
     const key = `${languageKeyPrefix}${str}`;
     client.exists(key, (err, result) => {
         // if the english version of the string doesn't exist yet add it
