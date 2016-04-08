@@ -8,6 +8,7 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
+const flow = require('gulp-flowtype')
 
 const compileReact = (rootFile, outputName, watch) => {
   const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
@@ -15,7 +16,7 @@ const compileReact = (rootFile, outputName, watch) => {
   function rebundle() {
     bundler.bundle()
       .on('error', function(err) {
-        console.error(err);
+        gutil.log(err);
         gutil.beep();
         this.emit('end');
       })
@@ -72,6 +73,15 @@ gulp.task('sass', () => {
     }))
     .pipe(gulp.dest('./.build/static'));
 });
+
+gulp.task('flowtype', () => {
+  return gulp.src(['server/**/*.js', '!server/{static,static/**/*}'])
+    .pipe(flow());
+});
+
+gulp.task('flowtype:watch', () => {
+  gulp.watch(['server/**/*.js', '!server/{static,static/**/*}'], ['flowtype'])
+})
  
 gulp.task('sass:watch', () => {
   gulp.watch('./styles/**/*.scss', ['sass']);
@@ -104,4 +114,14 @@ gulp.task('build-server', ['node-babel', 'build-views', 'setup-static'])
 
 gulp.task('compile-assets', ['sass', 'create_course:compile', 'create_assgn:compile']);
 
-gulp.task('default', ['build-server', 'compile-assets', 'node-babel:watch', 'build-views:watch', 'sass:watch', 'create_course:watch', 'create_assgn:watch', 'start']);
+gulp.task('default', [
+  'build-server',
+  'compile-assets',
+  'node-babel:watch',
+  'build-views:watch',
+  'sass:watch',
+  'create_course:watch',
+  'create_assgn:watch',
+  'flowtype:watch',
+  'start'
+]);

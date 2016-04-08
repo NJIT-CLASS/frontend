@@ -1,0 +1,12 @@
+[include]
+./server/*.js
+./server/**/*.js
+
+[ignore]
+.*/node_modules/babel-core/lib/api/register/cache.js
+.*/node_modules/babel-core/lib/api/register/node.js
+.*/node_modules/fbjs/lib/PromiseMap.js.flow
+.*/node_modules/fbjs/lib/fetchWithRetries.js.flow
+.*/node_modules/config-chain/test/broken.json
+.*/node_modules/npmconf/test/fixtures/package.json
+.*/node_modules/gulp-flowtype/test/.*

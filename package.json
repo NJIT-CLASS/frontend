@@ -41,6 +41,7 @@
     "flow-bin": "^0.22.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-flowtype": "^0.4.9",
     "gulp-nodemon": "^2.0.6",
     "gulp-sass": "^2.2.0",
     "nodemon": "^1.9.1",
