@@ -88,19 +88,27 @@ gulp.task('sass:watch', () => {
 });
 
 gulp.task('create_course:compile', () => {
-    compileReact('/create-course/main.js', 'create_course');
+  compileReact('/create-course/main.js', 'create_course');
 });
 
 gulp.task('create_course:watch', () => {
-    watchReact('/create-course/main.js', 'create_course');
+  watchReact('/create-course/main.js', 'create_course');
 });
 
 gulp.task('create_assgn:compile', () => {
-    compileReact('/create-assignment/main.js', 'create_assignment');
+  compileReact('/create-assignment/main.js', 'create_assignment');
 });
 
 gulp.task('create_assgn:watch', () => {
-    watchReact('/create-assignment/main.js', 'create_assignment');
+  watchReact('/create-assignment/main.js', 'create_assignment');
+});
+
+gulp.task('translation:compile', () => {
+  compileReact('/translation/main.js', 'translation');
+});
+
+gulp.task('translation:watch', () => {
+  watchReact('/translation/main.js', 'translation');
 });
 
 gulp.task('start', ['node-babel'], function () {
@@ -113,7 +121,7 @@ gulp.task('start', ['node-babel'], function () {
 
 gulp.task('build-server', ['node-babel', 'build-views', 'setup-static'])
 
-gulp.task('compile-assets', ['sass', 'create_course:compile', 'create_assgn:compile']);
+gulp.task('compile-assets', ['sass', 'create_course:compile', 'create_assgn:compile', 'translation:compile']);
 
 gulp.task('default', [
   'build-server',
@@ -123,6 +131,7 @@ gulp.task('default', [
   'sass:watch',
   'create_course:watch',
   'create_assgn:watch',
-  // 'flowtype:watch',
+  'translation:watch',
+  'flowtype:watch',
   'start'
 ]);

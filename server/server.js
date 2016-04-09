@@ -9,6 +9,7 @@ const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
 const apiMethods = require('./server-middleware/api').apiMethods;
+const languageService = require('./server-middleware/language-service');
 
 const consts = require('./utils/constants');
 const baseRoutes = require('./routes/base');
@@ -34,6 +35,28 @@ app.use((req, res, next) => {
     req.App.api = apiMethods;
 
     next();
+});
+
+app.get('/api/translations', (req, res) => {
+    languageService(redisClient).getAllStringsInLanguage(req.query.lang ? req.query.lang : 'en', (err, results) => {
+        res.json(results);
+
+        res.end();
+    });
+});
+
+app.post('/api/translations', (req, res) => {
+    if (!(language in req.body)) {
+        res.status(400).end();
+    }
+
+    const language = req.body.language;
+
+    for (let str in req.body.strs) {
+        languageService(redisClient).addTranslation(language, str, req.body.strs[str]);
+    }
+
+    res.status(200).end()
 });
 
 // set the language cookie if it has a lang query param
@@ -167,7 +190,14 @@ app.use((req, res, next) => {
             template: 'admin',
             onlyInstructors: true,
             icon: 'user'
-        },		
+        },
+        {
+            text: __('Translation Manager'),
+            link: '/translation-manager',
+            template: 'translation_management',
+            onlyInstructors: true,
+            icon: 'globe'
+        },
         {
             text: __('About'),
             link: '/about',

@@ -18,8 +18,6 @@
 @import 'components/loggedout_container';
 @import 'components/modal';
 
-
-
 // pages
 @import 'pages/create_account';
 @import 'pages/home';
@@ -29,6 +27,7 @@
 @import 'pages/admin';
 @import 'pages/not_found';
 @import 'pages/course_page';
+@import 'pages/manage_translations';
 
 // vendor
 @import 'vendor/react-select/default';

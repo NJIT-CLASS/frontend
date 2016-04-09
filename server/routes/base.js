@@ -298,6 +298,14 @@ router.get('/create-assignment', (req, res) => {
         showHeader: false,
         scripts: ['/static/create_assignment.js']
     });
-})
+});
+
+router.get('/translation-manager', (req, res) => {
+    res.render('translation_management', {
+        title: 'Translation manager',
+        showHeader: false,
+        scripts: ['/static/translation.js']
+    });
+});
 
 module.exports = router;

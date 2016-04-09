@@ -6,7 +6,7 @@ const consts = require('../utils/constants');
 
 type Language = 'en' | 'fr' | 'es';
 
-module.exports = function(redisClient) {
+module.exports = function(redisClient: any): {} {
     return function(client) {
         const languageKeyPrefix = 'lang::';
 
@@ -42,6 +42,7 @@ module.exports = function(redisClient) {
                 client.hexists(key, 'en', (err, result) => {
                     if (result === 0) {
                         return client.hset(key, 'en', str, (err, result) => {
+                            console.log('here2');
                             client.hset(key, language, translatedStr);
                         });
                     }
