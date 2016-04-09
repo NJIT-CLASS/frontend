@@ -123,6 +123,6 @@ gulp.task('default', [
   'sass:watch',
   'create_course:watch',
   'create_assgn:watch',
-  'flowtype:watch',
+  // 'flowtype:watch',
   'start'
 ]);
