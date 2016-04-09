@@ -1,103 +1,106 @@
 /* @flow */
 
-const redis = require('redis');
 const async = require('async');
 
 const consts = require('../utils/constants');
 
 type Language = 'en' | 'fr' | 'es';
 
-const client = redis.createClient({
-    host: consts.REDIS_HOST,
-    port: consts.REDIS_PORT,
-    password: consts.REDIS_AUTH
-});
+module.exports = function(redisClient) {
+    return function(client) {
+        const languageKeyPrefix = 'lang::';
 
-const languageKeyPrefix = 'lang::';
+        const addString = (str) => {
+            const key = `${languageKeyPrefix}${str}`;
+            client.hset(key, 'en', str);
+        };
 
-const addString = (str) => {
-    const key = `${languageKeyPrefix}${str}`;
-    client.hset(key, 'en', str);
-};
+        const stringExists = (str) => {
+            const key = `${languageKeyPrefix}${str}`;
+            client.exists(key);
+        };
 
-const stringExists = (str) => {
-    const key = `${languageKeyPrefix}${str}`;
-    client.exists(key, redis.print);
-};
-
-const addTranslation = function
-(
-    language: Language,
-    str: string,
-    translatedStr: string
-) {
-    if (!str) {
-        return '';
-    }
-
-    const key = `${languageKeyPrefix}${str}`;
-    client.exists(key, (err, result) => {
-        // if the english version of the string doesn't exist yet add it
-        if (result === 0) {
-            return client.hset(key, 'en', str, (err, result) => {
-                client.hset(key, language, translatedStr);
-            });
-        }
-
-        client.hexists(key, 'en', (err, result) => {
-            if (result === 0) {
-                return client.hset(key, 'en', str, (err, result) => {
-                    client.hset(key, language, translatedStr);
-                });
+        const addTranslation = function
+        (
+            language: Language,
+            str: string,
+            translatedStr: string
+        ) {
+            if (str == null) {
+                return;
             }
 
-            client.hset(key, language, translatedStr);
-        });
-    });
-};
+            const key = `${languageKeyPrefix}${str}`;
+            client.exists(key, (err, result) => {
+                // if the english version of the string doesn't exist yet add it
+                if (result === 0) {
+                    return client.hset(key, 'en', str, (err, result) => {
+                        client.hset(key, language, translatedStr);
+                    });
+                }
 
-exports.addTranslation = addTranslation;
+                client.hexists(key, 'en', (err, result) => {
+                    if (result === 0) {
+                        return client.hset(key, 'en', str, (err, result) => {
+                            client.hset(key, language, translatedStr);
+                        });
+                    }
 
-const getTranslation = function
-(
-    language: Language,
-    str: string,
-    cb: (err: ?string, translation: string) => any
-) {
-    const key = `${languageKeyPrefix}${str}`;
-    client.exists(key, (err, result) => {
-        // if the string isn't in the db yet then add the english string
-        if (result === 0) {
-            addTranslation('en', str, str);
-            return cb(null, str);
-        }
+                    client.hset(key, language, translatedStr);
+                });
+            });
+        };
 
-        client.hget(key, language, (err, result) => {
-            const resultStr = result !== null ? result : str;
-            cb(null, resultStr);
-        });
-    });
-};
+        const getTranslation = function
+        (
+            language: Language,
+            str: string,
+            cb: (err: ?string, translation: string) => any
+        ) {
+            if (str == null) {
+                cb(null, '');
+            }
 
-exports.getTranslation = getTranslation;
+            const key = `${languageKeyPrefix}${str}`;
+            client.exists(key, (err, result) => {
+                // if the string isn't in the db yet then add the english string
+                if (result === 0) {
+                    addTranslation('en', str, str);
+                    return cb(null, str);
+                }
 
-exports.getAllStringsInLanguage = function
-(
-    language: Language,
-    cb: (err: string, results: {}) => any
-) {
-    const key = `${languageKeyPrefix}*`;
-    client.keys(key, (err, keys) => {
-        var keyTranslationFuncs: { [key: string]: string } = {};
+                client.hget(key, language, (err, result) => {
+                    const resultStr = result !== null ? result : str;
+                    cb(null, resultStr);
+                });
+            });
+        };
 
-        for (var key of keys) {
-            const keyPieces = key.split('lang::');
-            keyPieces.shift();
-            const str = keyPieces.join('');
+        const getAllStringsInLanguage = function
+        (
+            language: Language,
+            cb: (err: string, results: {}) => any
+        ) {
+            const key = `${languageKeyPrefix}*`;
+            client.keys(key, (err, keys) => {
+                var keyTranslationFuncs: { [key: string]: string } = {};
 
-            keyTranslationFuncs[str] = getTranslation.bind(this, language, str);
-        }
+                for (var key of keys) {
+                    const keyPieces = key.split('lang::');
+                    keyPieces.shift();
+                    const str = keyPieces.join('');
 
-        async.parallel(keyTranslationFuncs, cb);
-    });
-};
+                    keyTranslationFuncs[str] = getTranslation.bind(this, language, str);
+                }
+
+                async.parallel(keyTranslationFuncs, cb);
+            });
+        };
+
+        return {
+            getAllStringsInLanguage: getAllStringsInLanguage,
+            getTranslation: getTranslation,
+            addTranslation: addTranslation
+        };
+    }(redisClient);
+}

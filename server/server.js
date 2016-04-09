@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cryptoJS = require('crypto-js');
 const request = require('request');
+const redis = require('redis');
 
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
@@ -14,12 +15,18 @@ const baseRoutes = require('./routes/base');
 
 const app = express();
 
+const redisClient = redis.createClient({
+    host: consts.REDIS_HOST,
+    port: consts.REDIS_PORT,
+    password: consts.REDIS_AUTH
+});
+
 app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
 app.use(bodyParser());
 
-app.use(session);
+app.use(session(redisClient));
 
 app.use((req, res, next) => {
     req.App = {};
@@ -31,6 +38,8 @@ app.use((req, res, next) => {
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
+    res.locale = 'en';
+
     if ('lang' in req.query) {
         req.session.lang = req.query.lang;
         res.locale = req.query.lang;
@@ -80,7 +89,7 @@ app.use((req, res, next) => {
 var __;
 
 app.use((req, res, next) => {
-    translation.setupTranslations(res.locale, (translateFunc) => {
+    translation(redisClient).setupTranslations(res.locale, (translateFunc) => {
         __ = translateFunc;
 
         app.set('views', `${__dirname}/views/`);

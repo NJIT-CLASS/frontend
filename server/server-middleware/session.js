@@ -3,16 +3,16 @@ const RedisStore = require('connect-redis')(session);
 
 const consts = require('../utils/constants');
 
-const sessionOptions = {
-    host: consts.REDIS_HOST,
-    port: consts.REDIS_PORT,
-    disableTTL: true,
-    pass: consts.REDIS_AUTH
-};
-
-const newSession = session({
-    store: new RedisStore(sessionOptions),
-    secret: consts.REDIS_SECRET
-});
+const newSession = function() {
+    return function(redisClient) {
+        return session({
+            store: new RedisStore({
+                client: redisClient,
+                disableTTL: true
+            }),
+            secret: consts.REDIS_SECRET
+        });
+    };
+}();
 
 module.exports = newSession;
