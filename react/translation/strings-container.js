@@ -10,8 +10,6 @@ class StringsContainer extends React.Component {
             return null;
         }
 
-        console.log(this.props.serverStrings);
-
         const strings = Object.keys(this.props.strings).map((key) => {
             const value = this.props.strings[key];
 

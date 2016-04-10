@@ -6,8 +6,8 @@ import StringsContainer from './strings-container';
 import PageHeader from './page-header';
 
 class TranslationContainer extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
 
         this.state = {
             strings: {},
@@ -24,7 +24,7 @@ class TranslationContainer extends React.Component {
     getStrings(language) {
         const options = {
             method: 'GET',
-            uri: 'http://localhost:3000/api/translations',
+            uri: `${this.context.frontendApiUrl}/api/translations`,
             qs: {
                 lang: language
             },
@@ -66,7 +66,7 @@ class TranslationContainer extends React.Component {
 
         const options = {
             method: 'POST',
-            uri: 'http://localhost:3000/api/translations',
+            uri: `${this.context.frontendApiUrl}/api/translations`,
             body: {
                 language: this.state.language,
                 strs: strs
@@ -119,5 +119,10 @@ class TranslationContainer extends React.Component {
         );
     }
 }
+
+TranslationContainer.contextTypes = {
+    backendApiUrl: React.PropTypes.string,
+    frontendApiUrl: React.PropTypes.string
+};
 
 export default TranslationContainer;

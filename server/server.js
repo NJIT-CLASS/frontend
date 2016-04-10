@@ -229,6 +229,7 @@ app.use((req, res, next) => {
 
         options.language = req.App.lang;
         options.languageOptions = req.App.langOptions;
+        options.apiUrl = consts.API_URL;
 
         if (template in loggedOutTemplates) {
             options.layout = 'logged_out';
