@@ -12,7 +12,8 @@ class TranslationContainer extends React.Component {
         this.state = {
             strings: {},
             language: 'es',
-            serverStrings: {}
+            serverStrings: {},
+            saving: false
         };
     }
 
@@ -60,6 +61,7 @@ class TranslationContainer extends React.Component {
     }
 
     saveChanges() {
+        this.setState({saving: true});
         let strs = this.stringDiffsFromServer();
 
         const options = {
@@ -74,7 +76,8 @@ class TranslationContainer extends React.Component {
 
         request(options, (err, result) => {
             this.setState({
-                serverStrings: clone(this.state.strings)
+                serverStrings: clone(this.state.strings),
+                saving: false
             });
         });
     }
@@ -103,6 +106,7 @@ class TranslationContainer extends React.Component {
                     saveChanges={this.saveChanges.bind(this)}
                     changeLanguage={this.changeLanguage.bind(this)}
                     areUnsavedChanges={this.areUnsavedChanges()}
+                    saving={this.state.saving}
                 />
                 <div className="container">
                     <StringsContainer

@@ -13,6 +13,13 @@ class PageHeader extends React.Component {
         ];
 
         const disableLanguageSwitcher = this.props.areUnsavedChanges ? true : false;
+        const buttonUnsavedState = this.props.areUnsavedChanges ? true : false;
+
+        let buttonContent = 'Save';
+
+        if (this.props.saving) {
+            buttonContent = <i className="fa fa-circle-o-notch fa-spin"></i>;
+        }
 
         return (
             <div className="page-header">
@@ -27,7 +34,10 @@ class PageHeader extends React.Component {
                         onChange={this.changeLanguage.bind(this)}
                         disabled={disableLanguageSwitcher}
                     />
-                    <button onClick={this.props.saveChanges}>Save</button>
+                    <button
+                        onClick={this.props.saveChanges}
+                        className={buttonUnsavedState ? 'unsaved' : ''}
+                    >{buttonContent}</button>
                 </div>
             </div>
         );

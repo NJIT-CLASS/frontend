@@ -5,6 +5,16 @@
 
         button {
             margin-left: 10px;
+            border: 1px solid #1ab394;
+
+            &.unsaved {
+                border-color: #D3927E;
+                background-color: #D3927E;
+            }
+
+            &:focus {
+                outline: none;
+            }
         }
 
         .Select {
