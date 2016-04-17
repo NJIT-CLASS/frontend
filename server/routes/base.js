@@ -286,6 +286,36 @@ router.get('/create-course', (req, res) => {
     });
 });
 
+//task page
+router.get('/task', (req, res) => {
+    res.render('task', {
+        title: 'Completed Task',
+		pageHeader: 'Completed Task Score'
+    });
+})
+
+router.get('/createproblem', (req, res) => {
+    res.render('createproblem', {
+        title: 'Create Problem',
+		pageHeader: 'Create Problem'
+    });
+})
+
+router.get('/solveproblem', (req, res) => {
+    res.render('solveproblem', {
+        title: 'Solve Problem',
+		pageHeader: 'Solve Problem'
+    });
+})
+
+router.get('/editproblem', (req, res) => {
+    res.render('editproblem', {
+        title: 'Edit Problem',
+		pageHeader: 'Edit Problem'
+    });
+})
+
+
 router.get('/create-account/:id', (req, res) => {
     res.render('create_account', {
         title: 'Create CLASS Account'

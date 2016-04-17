@@ -17,6 +17,9 @@
 @import 'components/language_select';
 @import 'components/loggedout_container';
 @import 'components/modal';
+@import 'components/sectionTable';
+@import 'components/sectionTask';
+@import 'components/subBox';
 
 // pages
 @import 'pages/create_account';
@@ -28,6 +31,11 @@
 @import 'pages/not_found';
 @import 'pages/course_page';
 @import 'pages/manage_translations';
+@import 'pages/dashboard';
+@import 'pages/task';
+@import 'pages/solveproblem';
+
+
 
 // vendor
 @import 'vendor/react-select/default';

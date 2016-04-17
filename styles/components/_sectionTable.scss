@@ -1,0 +1,49 @@
+.sectionTable {
+    background-color: #ffffff;
+    box-sizing: border-box;
+    margin: 10px;
+    width: auto;
+    min-width: 700px;
+    max-width:1200px;
+
+	
+    .title {
+        border-bottom: 1px solid #e7eaec;
+        font-size: 20px;
+        font-weight: 400px;
+        padding: 20px 30px 20px 30px;
+        color: #676a6c;
+        
+        
+    }
+	
+    p {
+        max-width: 600px;
+        
+    }
+
+    .section-content {
+        padding: 20px 30px;
+		max-height: 400px;
+        overflow: auto;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+        width: 460px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #EFF3F5;
+        padding: 15px 30px;
+
+        .right {
+            margin-left: auto;
+
+            &.small {
+                font-size: 13px;
+            }
+        }
+    }
+	
+	
+}
