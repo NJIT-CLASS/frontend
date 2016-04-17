@@ -6,6 +6,7 @@
   "engine": "node 5.6.0",
   "scripts": {
     "start": "gulp",
+    "create-route": "gulp create-route",
     "lint": "eslint . --fix",
     "compile-assets": "gulp compile-assets",
     "babel-node": "babel-node --plugins transform-flow-strip-types"
@@ -45,6 +46,7 @@
     "gulp-flowtype": "^0.4.9",
     "gulp-nodemon": "^2.0.6",
     "gulp-sass": "^2.2.0",
+    "inquirer": "^1.0.0",
     "nodemon": "^1.9.1",
     "pre-commit": "^1.1.2",
     "vinyl-buffer": "^1.0.0",

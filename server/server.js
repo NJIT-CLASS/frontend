@@ -10,9 +10,9 @@ const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
 const apiMethods = require('./server-middleware/api').apiMethods;
 const languageService = require('./server-middleware/language-service');
+const routes = require('./routes/routes');
 
 const consts = require('./utils/constants');
-const baseRoutes = require('./routes/base');
 
 const app = express();
 
@@ -179,14 +179,14 @@ app.use((req, res, next) => {
         },
         {
             text: __('My Account'),
-            link: '/accountmanagement',
+            link: '/my-account',
             template: 'account_management',
             onlyInstructors: false,
             icon: 'cog'
         },
         {
             text: __('Administrator'),
-            link: '/admin',
+            link: '/administrator',
             template: 'admin',
             onlyInstructors: true,
             icon: 'user'
@@ -266,7 +266,18 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use('/', baseRoutes);
+app.use(function(req, res, next) {
+    const allowedRouteMethods = ['get', 'post', 'put', 'head', 'delete', 'options', 'trace', 'copy', 'lock', 'mkcol', 'move', 'purge', 'propfind', 'proppatch', 'unlock', 'report', 'mkactivity', 'checkout', 'merge', 'm-search', 'notify', 'subscribe', 'unsubscribe', 'patch', 'search', 'connect'];
+    for (const route of routes) {
+        for (const method in route.routeHandler) {
+            // if the method is allowed then bind the route to it
+            if (allowedRouteMethods.indexOf(method) !== -1) {
+                app[method](route.route, route.routeHandler[method]);
+            }
+        }
+    }
+    next();
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

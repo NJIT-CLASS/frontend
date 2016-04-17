@@ -8,7 +8,9 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
-const flow = require('gulp-flowtype')
+const flow = require('gulp-flowtype');
+const inquirer = require('inquirer');
+const fs = require('fs');
 
 const compileReact = (rootFile, outputName, watch) => {
   const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
@@ -38,6 +40,138 @@ const compileReact = (rootFile, outputName, watch) => {
 const watchReact = function() {
   return compileReact(...arguments, true);
 };
+
+gulp.task('create-route', () => {
+  const askOnlyIfNotAccessibleLoggedOut = (answers) => {
+    if (answers['logged-out-access']) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const questions = [
+    {
+      type: 'input',
+      name: 'route-endpoint',
+      message: 'route endpoint:',
+      validate: (response) => {
+        if (response.length <= 0) {
+          return 'endpoint needs to be set';
+        }
+
+        if (response[0] !== '/') {
+          return 'endpoint needs to start with a /';
+        }
+
+        return true;
+      }
+    },
+    {
+      type: 'input',
+      name: 'page-title',
+      message: 'page title:',
+      validate: (response) => {
+        if (response.length <= 0) {
+          return 'page title needs to be set';
+        }
+
+        return true;
+      }
+    },
+    {
+      type: 'confirm',
+      name: 'logged-out-access',
+      message: 'Should this page be accessible when a user is logged out?:',
+      default: false
+    },
+    {
+      type: 'confirm',
+      name: 'admin-access',
+      message: 'Should admins be allowed access to this page?:',
+      default: true,
+      when: askOnlyIfNotAccessibleLoggedOut
+    },
+    {
+      type: 'confirm',
+      name: 'instructor-access',
+      message: 'Should instructors be allowed access to this page?:',
+      default: true,
+      when: askOnlyIfNotAccessibleLoggedOut
+    },
+    {
+      type: 'confirm',
+      name: 'student-access',
+      message: 'Should students be allowed access to this page?:',
+      default: true,
+      when: askOnlyIfNotAccessibleLoggedOut
+    },
+    {
+      type: 'input',
+      name: 'icon',
+      message: 'Font Awesome icon name (e.g. cog):',
+      default: ''
+    },
+    {
+      type: 'confirm',
+      name: 'show-in-sidebar',
+      message: 'Should this page be shown in the sidebar?',
+      default: false
+    }
+  ];
+
+  return inquirer.prompt(questions).then((answers) => {
+    var routeFileName = answers['page-title'].toLowerCase().split(' ').join('-');
+
+    const routeConfigFilePath = `${__dirname}/server/routes/route-configs/${routeFileName}.js`;
+    const routeHandlerFilePath = `${__dirname}/server/routes/route-handlers/${routeFileName}.js`;
+
+    const configContents =
+`const handler = require('../route-handlers/${routeFileName}');
+
+module.exports = {
+    route: '${answers['route-endpoint']}',
+    title: '${answers['page-title']}',
+    routeHandler: handler,
+    access: {
+        admins: ${answers['admin-access']},
+        instructors: ${answers['instructor-access']},
+        students: ${answers['student-access']},
+        loggedOut: ${answers['logged-out-access']}
+    },
+    icon: '${answers['icon']}',
+    sidebar: ${answers['show-in-sidebar']}
+};
+`;
+
+    const routeContents =
+`exports.get = (req, res) => {
+    res.status(405).end();
+};
+`;
+
+    fs.writeFileSync(routeConfigFilePath, configContents);
+    fs.writeFileSync(routeHandlerFilePath, routeContents);
+
+    const routesFileName = `${__dirname}/server/routes/routes.js`;
+
+    const currentRoutesContents = fs.readFileSync(routesFileName);
+    var initialPieces = currentRoutesContents.toString().split('const pages = [');
+    var secondPiecesPieces = initialPieces[1].split('\n]');
+
+    const newPagesArrayContents =
+`${secondPiecesPieces[0]},
+    '${routeFileName}'`
+
+    secondPiecesPieces[0] = newPagesArrayContents;
+    initialPieces[1] = secondPiecesPieces.join('\n]');
+    const routesWithNewRoute = initialPieces.join('const pages = [');
+
+    fs.writeFileSync(routesFileName, routesWithNewRoute);
+
+    gutil.log(`Endpoint created. Handler at ${routeHandlerFilePath}`);
+  });
+});
 
 gulp.task('node-babel', () => {
   return gulp.src(['server/**/*.js', '!server/{views,views/**,static,static/**/*}'])
