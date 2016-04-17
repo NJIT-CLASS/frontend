@@ -174,7 +174,7 @@ module.exports = {
 });
 
 gulp.task('node-babel', () => {
-  return gulp.src(['server/**/*.js', '!server/{views,views/**,static,static/**/*}'])
+  return gulp.src(['server/**/*.js', '!server/{views,views/**}'])
     .pipe(babel({
       plugins: ['transform-flow-strip-types']
     }))
@@ -182,7 +182,7 @@ gulp.task('node-babel', () => {
 });
 
 gulp.task('node-babel:watch', () => {
-  gulp.watch(['server/**/*.js', '!server/{views,views/**,static,static/**/*}'], ['node-babel']);
+  gulp.watch(['server/**/*.js', '!server/{views,views/**}'], ['node-babel']);
 });
 
 gulp.task('build-views', () => {
@@ -195,7 +195,7 @@ gulp.task('build-views:watch', () => {
 });
 
 gulp.task('setup-static', () => {
-  return gulp.src('server/static/**/*')
+  return gulp.src('static/**/*')
     .pipe(gulp.dest('.build/static'));
 });
 
@@ -209,12 +209,12 @@ gulp.task('sass', () => {
 });
 
 gulp.task('flowtype', () => {
-  return gulp.src(['server/**/*.js', '!server/{static,static/**/*}'])
+  return gulp.src(['server/**/*.js'])
     .pipe(flow());
 });
 
 gulp.task('flowtype:watch', () => {
-  gulp.watch(['server/**/*.js', '!server/{static,static/**/*}'], ['flowtype'])
+  gulp.watch(['server/**/*.js'], ['flowtype'])
 })
  
 gulp.task('sass:watch', () => {
