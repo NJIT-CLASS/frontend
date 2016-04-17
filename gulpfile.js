@@ -221,28 +221,12 @@ gulp.task('sass:watch', () => {
   gulp.watch('./styles/**/*.scss', ['sass']);
 });
 
-gulp.task('create_course:compile', () => {
-  compileReact('/create-course/main.js', 'create_course');
+gulp.task('react:compile', () => {
+  compileReact('/main.js', 'react_apps');
 });
 
-gulp.task('create_course:watch', () => {
-  watchReact('/create-course/main.js', 'create_course');
-});
-
-gulp.task('create_assgn:compile', () => {
-  compileReact('/create-assignment/main.js', 'create_assignment');
-});
-
-gulp.task('create_assgn:watch', () => {
-  watchReact('/create-assignment/main.js', 'create_assignment');
-});
-
-gulp.task('translation:compile', () => {
-  compileReact('/translation/main.js', 'translation');
-});
-
-gulp.task('translation:watch', () => {
-  watchReact('/translation/main.js', 'translation');
+gulp.task('react:watch', () => {
+  watchReact('/main.js', 'react_apps');
 });
 
 gulp.task('start', ['node-babel'], function () {
@@ -255,7 +239,7 @@ gulp.task('start', ['node-babel'], function () {
 
 gulp.task('build-server', ['node-babel', 'build-views', 'setup-static'])
 
-gulp.task('compile-assets', ['sass', 'create_course:compile', 'create_assgn:compile', 'translation:compile']);
+gulp.task('compile-assets', ['sass', 'react:compile']);
 
 gulp.task('default', [
   'build-server',
@@ -263,9 +247,7 @@ gulp.task('default', [
   'node-babel:watch',
   'build-views:watch',
   'sass:watch',
-  'create_course:watch',
-  'create_assgn:watch',
-  'translation:watch',
+  'react:watch',
   'flowtype:watch',
   'start'
 ]);
