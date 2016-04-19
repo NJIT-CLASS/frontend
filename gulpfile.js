@@ -253,11 +253,11 @@ gulp.task('start', ['node-babel'], function () {
 
 gulp.task('build-server', ['node-babel', 'build-views', 'setup-static'])
 
-gulp.task('compile-assets', ['sass', 'react:compile']);
+gulp.task('build-assets', ['sass', 'react:compile']);
 
 gulp.task('default', [
   'build-server',
-  'compile-assets',
+  'build-assets',
   'node-babel:watch',
   'build-views:watch',
   'sass:watch',
