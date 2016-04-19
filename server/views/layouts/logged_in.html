@@ -14,18 +14,16 @@
                 <h2><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
                 <ul>
                     {{#each sidebarNavItems}}
-                        {{#if showInNav}}
-                            <li 
-                                {{#sidebarHighlighter ../template template }}
-                                class="selected"
-                                {{/sidebarHighlighter}}
-                                >
-                                <a href="{{ link }}">
-                                    <i class="fa fa-{{ icon }} fa-fw"></i>
-                                    <span>{{ text }}</span>
-                                </a>
-                            </li>
-                        {{/if}}
+                        <li
+                            {{#if selected }}
+                            class="selected"
+                            {{/if}}
+                            >
+                            <a href="{{ route }}">
+                                <i class="fa fa-{{ icon }} fa-fw"></i>
+                                <span>{{ title }}</span>
+                            </a>
+                        </li>
                     {{/each}}
                     <!--<li 
 						{{#sidebarHighlighter template "admin" }}

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cryptoJS = require('crypto-js');
 const request = require('request');
 const redis = require('redis');
+const _ = require('lodash');
 
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
@@ -143,7 +144,7 @@ app.use((req, res, next) => {
             req.App.user.email = user.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
-            req.App.user.type = user.UserType;
+            req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
 
             next();
         });
@@ -155,58 +156,6 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     const render = res.render;
 
-    const sidebarNavItems = [
-        {
-            text: __('Dashboard'),
-            link: '/dashboard',
-            template: 'dashboard',
-            onlyInstructors: false,
-            icon: 'dashboard'
-        },
-        {
-            text: __('Create Course'),
-            link: '/create-course',
-            template: 'create_course',
-            onlyInstructors: true,
-            icon: 'plus'
-        },
-        {
-            text: __('Create Assignment'),
-            link: '/create-assignment',
-            template: 'create_assignment',
-            onlyInstructors: true,
-            icon: 'file-text'
-        },
-        {
-            text: __('My Account'),
-            link: '/my-account',
-            template: 'account_management',
-            onlyInstructors: false,
-            icon: 'cog'
-        },
-        {
-            text: __('Administrator'),
-            link: '/administrator',
-            template: 'admin',
-            onlyInstructors: true,
-            icon: 'user'
-        },
-        {
-            text: __('Translation Manager'),
-            link: '/translation-manager',
-            template: 'translation_management',
-            onlyInstructors: true,
-            icon: 'globe'
-        },
-        {
-            text: __('About'),
-            link: '/about',
-            template: 'about',
-            onlyInstructors: false,
-            icon: 'files-o'
-        }
-    ];
-
     res.render = function(template, options, cb) {
 		options.template = template;
 
@@ -214,43 +163,49 @@ app.use((req, res, next) => {
             options.showHeader = true;
         }
 
-        const loggedOutTemplates = {
-            password_reset: true,
-            home: true,
-            create_account: true,
-            not_found: true
-        };
-
-        const studentTemplates = {
-            dashboard: true,
-            account_management: true,
-            about: true
-        };
-
         options.language = req.App.lang;
         options.languageOptions = req.App.langOptions;
         options.apiUrl = consts.API_URL;
 
-        if (template in loggedOutTemplates) {
+        if (options.loggedOut) {
             options.layout = 'logged_out';
 
             return render.call(this, template, options, cb);
         }
 
-        if (req.App.user && req.App.user.type === 'student' && !(template in studentTemplates)) {
+        if (req.App.user && req.App.user.type === 'student' && !options.studentAccessible) {
             return res.sendStatus(404);
         }
 
-        sidebarNavItems.forEach((sidebarItem, index) => {
-            if (sidebarItem.onlyInstructors) {
-                sidebarItem.showInNav = req.App.user.type === 'student' ? false : true;
-            }
-            else {
-                sidebarItem.showInNav = true;
+        var sidebarNavItems = [];
+
+        for (const route in routes) {
+            var currentRoute = _.clone(routes[route]);
+            if (!currentRoute.sidebar) {
+                continue;
             }
 
-            sidebarNavItems[index] = sidebarItem;
-        });
+            if (currentRoute.route === options.route) {
+                currentRoute.selected = true;
+            }
+            else {
+                currentRoute.selected = false;
+            }
+
+            currentRoute.title = __(currentRoute.title);
+
+            if (req.App.user.type === 'student') {
+                if (currentRoute.access.students) {
+                    sidebarNavItems.push(currentRoute);
+                }
+                else {
+                    continue;
+                }
+            }
+            else {
+                sidebarNavItems.push(currentRoute);
+            }
+        }
 
         options.sidebarNavItems = sidebarNavItems;
 
@@ -272,7 +227,18 @@ app.use(function(req, res, next) {
         for (const method in route.routeHandler) {
             // if the method is allowed then bind the route to it
             if (allowedRouteMethods.indexOf(method) !== -1) {
-                app[method](route.route, route.routeHandler[method]);
+                app[method](route.route, function() { return (req, res, next) => {
+                    const previousRender = res.render;
+                    res.render = function() {
+                        return function(template, options, cb) {
+                            options.loggedOut = route.access.loggedOut;
+                            options.route = route.route;
+                            options.studentAccessible = route.access.students;
+                            previousRender.call(this, template, options, cb);
+                        };
+                    }();
+                    next();
+                } }(), route.routeHandler[method]);
             }
         }
     }
