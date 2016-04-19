@@ -62,6 +62,7 @@ app.post('/api/translations', (req, res) => {
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
+    // default language
     res.locale = 'en';
 
     if ('lang' in req.query) {
@@ -73,38 +74,22 @@ app.use((req, res, next) => {
         res.locale = req.session.lang
     }
 
-    if (res.locale === 'en') {
-        req.App.lang = 'English';
-        req.App.langOptions = [{
-            language: 'Español',
-            locale: 'es'
-        },
-        {
-            language: 'Français',
-            locale: 'fr'
-        }];
-    }
-    else if (res.locale === 'es') {
-        req.App.lang = 'Español';
-        req.App.langOptions = [{
-            language: 'English',
-            locale: 'en'
-        },
-        {
-            language: 'Français',
-            locale: 'fr'
-        }];
-    }
-    else if (res.locale === 'fr') {
-        req.App.lang = 'Français';
-        req.App.langOptions = [{
-            language: 'English',
-            locale: 'en'
-        },
-        {
-            language: 'Español',
-            locale: 'es'
-        }];
+    // language options
+    const languages = [
+        {language: 'English', locale: 'en'},
+        {language: 'Español', locale: 'es'},
+        {language: 'Français', locale: 'fr'}
+    ];
+
+    req.App.langOptions = [];
+
+    for (const lang of languages) {
+        if (lang.locale === res.locale) {
+            req.App.lang = lang.language;
+        }
+        else {
+            req.App.langOptions.push(lang);
+        }
     }
 
     next();
