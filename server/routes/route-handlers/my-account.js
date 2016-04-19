@@ -10,18 +10,18 @@ exports.get = (req, res) => {
 
 exports.post = (req, res) => {
     var options = {
-                    userId: req.App.user.userId,
-                    userEmail: req.App.user.email,
-                    userFirstName: req.App.user.firstName,
-                    userLastName: req.App.user.lastName
-                };
+        userId: req.App.user.userId,
+        userEmail: req.App.user.email,
+        userFirstName: req.App.user.firstName,
+        userLastName: req.App.user.lastName
+    };
 
     // I would have liked to just have one res.render() call at the very end rather than having to repeat it for each case
     // But the variable passing doesn't seem to play nice with that, so...
 
-    if (req.body.what_was_changed=="name") {
+    if (req.body.what_was_changed=='name') {
         req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
-            if(body.Message=="Success") {       // success
+            if(body.Message=='Success') {       // success
                 // TODO: check contents of reply to see if name change actually succeeded
                 options.statuscode = statusCode;
                 options.namechangesucceeded = true;
@@ -36,9 +36,9 @@ exports.post = (req, res) => {
             }
         });
     }
-    else if (req.body.what_was_changed=="email") {
+    else if (req.body.what_was_changed=='email') {
         req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
-            if(body.Message=="Success") {       // success
+            if(body.Message=='Success') {       // success
                 options.emailchangesucceeded = true;
                 options.userEmail = body.EmailAddress;
                 options.statuscode = statusCode;
@@ -51,7 +51,7 @@ exports.post = (req, res) => {
             }
         }); 
     }
-    else if (req.body.what_was_changed=="status") {     // TODO: fill in API endpoints here once they're available
+    else if (req.body.what_was_changed=='status') {     // TODO: fill in API endpoints here once they're available
         /*
         req.App.api.put('/path/to/backend', {userid: req.App.user.userId, password:req.body.field_statusPassword}, (err, statusCode, body) => {
             if(statusCode==200) {       // success
@@ -67,7 +67,7 @@ exports.post = (req, res) => {
         });
         */
     }
-    else if (req.body.what_was_changed=="password") {
+    else if (req.body.what_was_changed=='password') {
         
         // If the "confirm password" doesn't match the new password entered, then alert the user and abort the operation
         if (req.body.field_newPassword != req.body.field_confirmNewPassword) {

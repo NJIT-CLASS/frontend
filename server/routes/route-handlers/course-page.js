@@ -24,7 +24,7 @@ exports.get = (req, res) => {
                             callback(null, members);
                         });
                     });
-                }
+                };
             })(body.Sections[i]);
         }
     

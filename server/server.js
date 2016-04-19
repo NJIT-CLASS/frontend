@@ -57,7 +57,7 @@ app.post('/api/translations', (req, res) => {
         languageService(redisClient).addTranslation(language, str, req.body.strs[str]);
     }
 
-    res.status(200).end()
+    res.status(200).end();
 });
 
 // set the language cookie if it has a lang query param
@@ -71,7 +71,7 @@ app.use((req, res, next) => {
     }
 
     if ('lang' in req.session) {
-        res.locale = req.session.lang
+        res.locale = req.session.lang;
     }
 
     // language options
@@ -144,7 +144,7 @@ app.use((req, res, next) => {
     res.render = function(template, options, cb) {
         options = options ? options : {};
         
-		options.template = template;
+		        options.template = template;
 
         if (!('showHeader' in options)) {
             options.showHeader = true;
@@ -237,7 +237,7 @@ app.use(function(req, res, next) {
                         };
                     }();
                     next();
-                } }(), route.routeHandler[method]);
+                }; }(), route.routeHandler[method]);
             }
         }
     }
