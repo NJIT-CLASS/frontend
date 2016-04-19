@@ -5,9 +5,9 @@ module.exports = {
     title: 'Create Account',
     routeHandler: handler,
     access: {
-        admins: undefined,
-        instructors: undefined,
-        students: undefined,
+        admins: true,
+        instructors: true,
+        students: true,
         loggedOut: true
     },
     icon: '',

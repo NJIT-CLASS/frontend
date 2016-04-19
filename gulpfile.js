@@ -121,6 +121,20 @@ gulp.task('create-route', () => {
   ];
 
   return inquirer.prompt(questions).then((answers) => {
+
+    // if logged-out-access is true then student, instructor, and admin access should default to true
+    if (answers['student-access'] == null) {
+      answers['student-access'] = true;
+    }
+
+    if (answers['instructor-access'] == null) {
+      answers['instructor-access'] = true;
+    }
+
+    if (answers['admin-access'] == null) {
+      answers['admin-access'] = true;
+    }
+
     var routeFileName = answers['page-title'].toLowerCase().split(' ').join('-');
 
     const routeConfigFilePath = `${__dirname}/server/routes/route-configs/${routeFileName}.js`;
