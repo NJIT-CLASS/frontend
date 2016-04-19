@@ -6,8 +6,6 @@ exports.get = (req, res) => {
         }
 
         res.render('dashboard', {
-            title: 'CLASS Dashboard',
-            pageHeader: 'Dashboard',
             courseList: courseList 
         });
     });

@@ -3,9 +3,7 @@ exports.get = (req, res) => {
         return res.redirect('/dashboard');
     }
 
-    res.render('home', {
-        title: 'CLASS Home' 
-    });
+    res.render('home');
 };
 
 exports.post = (req, res) => {
@@ -16,7 +14,6 @@ exports.post = (req, res) => {
         }
 
         res.render('home',{
-            title: 'CLASS Home',
             error: true
         });
     });

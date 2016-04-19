@@ -142,6 +142,8 @@ app.use((req, res, next) => {
     const render = res.render;
 
     res.render = function(template, options, cb) {
+        options = options ? options : {};
+        
 		options.template = template;
 
         if (!('showHeader' in options)) {
@@ -216,9 +218,21 @@ app.use(function(req, res, next) {
                     const previousRender = res.render;
                     res.render = function() {
                         return function(template, options, cb) {
+                            options = options ? options : {};
                             options.loggedOut = route.access.loggedOut;
                             options.route = route.route;
                             options.studentAccessible = route.access.students;
+
+                            // if the render doesn't set the title then set it by the route
+                            if (!('title' in options)) {
+                                options.title = `${route.title} | CLASS Learning System`;
+                            }
+
+                            // set the page header to be the route title if the pageHeader is not set
+                            if (!('pageHeader' in options)) {
+                                options.pageHeader = route.title;
+                            }
+
                             previousRender.call(this, template, options, cb);
                         };
                     }();

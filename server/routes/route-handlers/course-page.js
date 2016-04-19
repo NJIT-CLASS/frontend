@@ -34,9 +34,7 @@ exports.get = (req, res) => {
                 sectionList[i].members=results[currentSectionId];
             }
         
-            res.render('course_page', {
-                title: 'Course Page',
-                pageHeader: 'Course Page',  
+            res.render('course_page', { 
                 sectionList: sectionList,   
                 courseID: req.params.Id,
                 courseTitle: body.Course[0].Title

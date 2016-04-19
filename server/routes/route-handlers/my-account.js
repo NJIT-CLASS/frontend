@@ -1,7 +1,5 @@
 exports.get = (req, res) => {
     res.render('account_management', {
-        title: 'Account Management',
-        pageHeader: 'Account Management',
         userId: req.App.user.userId,
         userEmail: req.App.user.email,
         userFirstName: req.App.user.firstName,
@@ -12,8 +10,6 @@ exports.get = (req, res) => {
 
 exports.post = (req, res) => {
     var options = {
-                    title: 'Account Management',
-                    pageHeader: 'Account Management',
                     userId: req.App.user.userId,
                     userEmail: req.App.user.email,
                     userFirstName: req.App.user.firstName,
