@@ -6,6 +6,7 @@ import {clone} from 'lodash';
 import Container from './container';
 
 class CourseContainer extends React.Component {
+
     constructor(props) {
         super(props);
 
@@ -17,7 +18,9 @@ class CourseContainer extends React.Component {
         };
     }
 
+
     createCourse(courseName, courseNumber) {
+
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/course/create',
@@ -101,6 +104,7 @@ class CourseContainer extends React.Component {
                 courseNumber={this.state.courseNumber}
                 createSection={this.createSection.bind(this)}
                 sections={this.state.sections}
+                apiUrl={this.props.apiUrl}
             />
         );
     }

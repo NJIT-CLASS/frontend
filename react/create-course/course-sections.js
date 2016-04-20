@@ -38,6 +38,7 @@ class CourseSections extends React.Component {
                 <CourseSection 
                     section={this.state.sections[this.state.sectionShowingIndex]}
                     createSection={this.createSection.bind(this)}
+                    apiUrl={this.props.apiUrl}
                 />
             );
         }

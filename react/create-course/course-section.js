@@ -1,4 +1,5 @@
 import React from 'react';
+import request from 'request';
 
 import Select from 'react-select';
 
@@ -20,14 +21,41 @@ class CourseSection extends React.Component {
 			sectionNameError: false,	
 			sectionDescriptionError: false,	
             showCreateSemesterModal: false,
-            semesters: [{ value: 1, label: 'Spring 2016' },
-                        { value: 2, label: 'Fall 2015' }],
+            semesters: [],
             semesterNameError: false,
             semesterDateEmptyError: false,
             semesterDateOrderError: false
 			//semesterError: false,	
 			//courseMembers: false	
         };
+
+/*
+[{ value: 1, label: 'Spring 2016' },
+                        { value: 2, label: 'Fall 2015' }]
+                        */
+
+
+
+    }
+
+    // Will call before section is initially rendered and only then
+    componentWillMount() {
+        // Fetch the list of semesters.
+        const semFetchOptions = {
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/semester',
+            json: true
+        };
+
+        request(semFetchOptions, (err, res, body) => {
+            let semList = [];
+            for (let sem of body.Semesters) {
+                semList.push({ value: sem.SemesterID, label: sem.Name});
+            }
+            this.setState({
+                semesters: semList
+            });
+        });
     }
 
     updateMember(index, member) {
@@ -50,6 +78,11 @@ class CourseSection extends React.Component {
     }
 
     createSection(e) {
+
+        // DELETEME
+        console.log("State value: " + this.state.semesters);
+
+
         e.preventDefault();
 	
         const name = this.state.name;	
@@ -95,6 +128,34 @@ class CourseSection extends React.Component {
 
     onDescriptionChange(e) {
         this.setState({description: e.target.value});
+    }
+
+
+
+    // Returns true if backend signifies successfully semester creation
+    createSemester(semesterName, semesterStartDate, semesterEndDate) {
+
+        // TODO: the body should also include a value for OrganizationID
+        const options = {
+            method: 'POST',
+            uri: this.props.apiUrl + '/api/CreateSemester',
+            body: {
+                Name: semesterName,
+                startDate: semesterStartDate,
+                endDate: semesterEndDate,
+                OrganizationID: 1
+            },
+            json: true
+        };
+
+        request(options, (err, res, body) => {
+            // TODO: add error handling
+            console.log("Result status code:", res.status);
+            if (res.SemesterID !== null) {
+                return true;
+            }
+            return false;
+        });
     }
 
     onSemesterChange(semesterId) {
@@ -148,6 +209,12 @@ class CourseSection extends React.Component {
         if (this.submitCreateSemesterValidation() === false) {
             return false;
         }
+        if (this.createSemester(this.refs.field_semesterName.value, this.refs.field_startDate.value, this.refs.field_endDate.value) === false) {
+            // TODO: show something to user to signify failure
+            console.log("Failed to create semester on backend");
+            return false;
+        }
+
         let semesterCopy = this.state.semesters;
         let newSemesterValue = semesterCopy.length + 1;
         semesterCopy.push({value: newSemesterValue, label:this.refs.field_semesterName.value});  // add the new semester on to the copied array

@@ -17,6 +17,7 @@ class Container extends React.Component {
                     displaySections={this.props.displaySections}
                     sections={this.props.sections}
                     createSection={this.props.createSection}
+                    apiUrl={this.props.apiUrl}
                 />
             );
         }
