@@ -49,7 +49,7 @@ class DetailsContainer extends React.Component {
 
     createWorkflow(){
         let task = {
-            type: TASK_TYPES.CREATE_PROBLEM,
+            type: null,
             parent: null,
             subtasks: [],
             depth:0
@@ -97,31 +97,33 @@ class DetailsContainer extends React.Component {
 
         return (
             <div className="container">
-                <div className="section">
-                    <h3 className="title">Details</h3>
-                    <div className="section-content">
-                        <label>Name</label>
-                        <div>
-                            <input
-                                type="text"
-                                value={this.props.assignmentDetails.name}
-                                onChange={this.updateAssignmentName.bind(this)}
-                            >
-                            </input>
-                        </div>
+                <div className="center">
+                    <div className="section">
+                        <h3 className="title">Details</h3>
+                        <div className="section-content">
+                            <label>Name</label>
+                            <div>
+                                <input
+                                    type="text"
+                                    value={this.props.assignmentDetails.name}
+                                    onChange={this.updateAssignmentName.bind(this)}
+                                >
+                                </input>
+                            </div>
 
-                        <label>Description</label>
-                        <div>
-                            <textarea
-                                value={this.props.assignmentDetails.description}
-                                onChange={this.updateAssignmentDescription.bind(this)}
-                            >
-                            </textarea>
-                        </div>
-                        <div className="row">
-                            <button
-                            onClick={this.createWorkflow.bind(this)}
-                            >Submit</button>
+                            <label>Description</label>
+                            <div>
+                                <textarea
+                                    value={this.props.assignmentDetails.description}
+                                    onChange={this.updateAssignmentDescription.bind(this)}
+                                >
+                                </textarea>
+                            </div>
+                            <div className="row">
+                                <button
+                                onClick={this.createWorkflow.bind(this)}
+                                >Submit</button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -26,9 +26,25 @@ class WorkflowDetailContainer extends React.Component {
     closeAdvancedOptionsModal() {
         this.setState({showAdvancedOptions: false});
     }
+/**********************************/    
+// NEW STUFF TO GO OVER /
+/* Current task does not have sub tasks and no depth */
+    updateTask(newStuff){
+        let task = {
+                name: newStuff.name,
+                type: newStuff.type,
+                parent: this.props.task,
+                subtasks: [],
+                depth:this.props.workflow.task.depth,
+            };
+        this.setState({
+            currentTask:task
+        }); 
+
+    }
+/**********************************/
 
     addTask(task){
-        debugger
         let depth = 0;
         let index = 0;
         let workflow = this.props.workflow;
@@ -47,7 +63,6 @@ class WorkflowDetailContainer extends React.Component {
             parentTask.subtasks[this.state.subtaskIndex].subtasks.push(task);
         }
         this.props.changeWorkflow(workflow);
-        debugger
         this.setState({
             currentTask:task,
             depth : depth,
@@ -104,6 +119,7 @@ class WorkflowDetailContainer extends React.Component {
                     task={this.state.currentTask}
                     showAdvancedOptions={this.showAdvancedOptions.bind(this)}
                     addTask = {this.addTask.bind(this)}
+                    updateTask = {this.updateTask.bind(this)}
                 />
                 { advancedOptions }
             </div>
