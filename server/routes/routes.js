@@ -16,7 +16,10 @@ const pages = [
     'completed-task',
     'create-problem',
     'solve-problem',
-    'edit-problem'
+    'edit-problem',
+    'comment',
+    'grade-problem',
+    'revise-and-edit'
 ];
 
 var pageConfigs = [];
