@@ -2,6 +2,7 @@ import React from 'react';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
+import request from 'request';
 
 class TaskDetails extends React.Component {
     constructor(props) {
@@ -10,7 +11,9 @@ class TaskDetails extends React.Component {
 
         this.state = {
             type:this.props.type,
+            currentTask:null,
             dpChecked:false,
+            showCreateSemesterModal: false,
             options:[
                 {value: 'Student', label: 'Student'},
                 {value: 'Instructor', label: 'Instructor'},
@@ -20,15 +23,27 @@ class TaskDetails extends React.Component {
     }
 
     
-    textUpdate(e){
-        this.props.updateTask(e.target.value,e.target.name);
-    }
-    selectUpdate(e){
-        console.log(e.target);
+    updateCTA(data,inputType){
+        let task = {
+            name:null,
+            desc:null,
+            dueDate:null,
+            taskAssignee:null,
+        }
+        if(inputType === 'name'){
+            task.name = data;
+        }else if(inputType === 'desc'){
+            task.desc = data;
+        }else if(inputType === 'dueDate'){
+            task.dueDate = data;
+        }else if(inputType === 'taskAssignee'){
+            task.taskAssignee = data;
+        }
+
+
     }
     nextTask(){
         this.props.nextTask();
-        this.forceUpdate();
     }
     
 
@@ -43,13 +58,13 @@ class TaskDetails extends React.Component {
                         <div className="section-content">
                             <label>Name</label>
                             <div>
-                                <input type="text" name="name" onChange={this.textUpdate.bind(this)}>
+                                <input type="text" name="name" onChange={this.textUpdate.bind(this)} required>
                                 </input>
                             </div>
 
                             <label>Description</label>
                             <div>
-                                <textarea name="desc" onChange={this.textUpdate.bind(this)}>
+                                <textarea name="desc" onChange={this.textUpdate.bind(this)} required>
                                 </textarea>
                             </div>                            
                            
@@ -64,11 +79,13 @@ class TaskDetails extends React.Component {
                                 <div>
                                     <div>
                                         <p>Default: 3 days</p>
-                                        <input type='radio' name='dueDate'/>
+                                        <input type='radio' name='dueDate' required/>
                                     </div>
-                                    <div>
-                                        <p>Specific Date</p>
-                                        <input type='radio'  name='dueDate'/>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2" for="field_startDate">Start Date</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" name="field_startDate" ref="field_startDate" id="field_startDate" type="date" required></input>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -84,6 +101,7 @@ class TaskDetails extends React.Component {
                         searchable={false}
                         onChange={this.selectUpdate.bind(this)}
                         name="assign"
+                        required
                         />
                          <div className="row">
                                 <button onClick={this.nextTask.bind(this)}>Next</button>
