@@ -12,10 +12,8 @@ class WorkflowDetailContainer extends React.Component {
 
         this.state = {
             previousTask: null,
-            currentTask: this.props.workflow.task,
+            currentTask: this.props.workflow,
             showAdvancedOptions: false,
-            depth:this.props.workflow.task.depth,
-            subtaskIndex: 0
         };
     }
 
@@ -29,20 +27,21 @@ class WorkflowDetailContainer extends React.Component {
 /**********************************/    
 // NEW STUFF TO GO OVER /
 /* Current task does not have sub tasks and no depth */
-    updateTask(newStuff){
-        let task = {
-                name: newStuff.name,
-                type: newStuff.type,
-                parent: this.props.task,
-                subtasks: [],
-                depth:this.props.workflow.task.depth,
-            };
-        this.setState({
-            currentTask:task
-        }); 
+    updateTask(data,name){
+        if(name === 'name'){
+            this.state.currentTask.name = data;
+            console.log(this.state.currentTask.name);
+        }else if(name = 'desc'){
+            this.state.currentTask.taDesc = data;
+            console.log(this.state.currentTask.taDesc);
+        }
 
     }
 /**********************************/
+    nextTask(){
+        this.props.changeWorkflow()
+        this.forceUpdate();
+    }
 
     addTask(task){
         let depth = 0;
@@ -117,9 +116,8 @@ class WorkflowDetailContainer extends React.Component {
                 
                 <TaskDetails
                     task={this.state.currentTask}
-                    showAdvancedOptions={this.showAdvancedOptions.bind(this)}
-                    addTask = {this.addTask.bind(this)}
-                    updateTask = {this.updateTask.bind(this)}
+                    updateTask={this.updateTask.bind(this)}
+                    nextTask={this.nextTask.bind(this)}
                 />
                 { advancedOptions }
             </div>

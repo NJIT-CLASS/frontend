@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import PageHeader from './page-header';
 import DetailsContainer from './details-container';
 import WorkflowDetailContainer from './workflow-detail-container';
@@ -14,24 +14,66 @@ class AssignmentContainer extends React.Component {
             visibleWorkflowIndex: null
         };
     }
-    createWorkflow(workflow){
-        let workflows = this.state.workflows;
-        const len = workflows.length
-        workflows.push(workflow);
+    createWorkflow(){
+        let createProbTask = {
+            type:TASK_TYPES.CREATE_PROBLEM,
+            name:null,            
+            taDue:null,
+            taStart:null,
+            taEnd:'late',
+            taDesc:null,
+            taAssign:null,
+            taInstruction:null,
+            taID:null,
+            waID:null,
+        };
+        let solveProbTask = {
+            type:TASK_TYPES.SOLVE_PROBLEM,
+            name:null,            
+            taDue:null,
+            taStart:null,
+            taEnd:'late',
+            taDesc:null,
+            taAssign:null,
+            taInstruction:null,
+            taID:null,
+            waID:null,
+        };
+        let editProbTask = {
+            type:TASK_TYPES.EDIT,
+            name:null,            
+            taDue:null,
+            taStart:null,
+            taEnd:'late',
+            taDesc:null,
+            taAssign:null,
+            taInstruction:null,
+            taID:null,
+            waID:null,
+        };
+        let gradeProbTask = {
+            type:TASK_TYPES.GRADE_PROBLEM,
+            name:null,            
+            taDue:null,
+            taStart:null,
+            taEnd:'late',
+            taDesc:null,
+            taAssign:null,
+            taInstruction:null,
+            taID:null,
+            waID:null,
+        };
+        let workflows = [createProbTask,solveProbTask,editProbTask,gradeProbTask];
         this.setState({
             workflows : workflows,
-            visibleWorkflowIndex: len            
+            visibleWorkflowIndex: 0            
         })
     }
-    addTask(task){
-        this.setState
-    }
 
-    changeWorkflow(index,workflow){
-        let workflows = this.state.workflows;
-        workflows[index] = workflow;
+    changeWorkflow(){
+        let oldIndex = this.state.visibleWorkflowIndex;
         this.setState({
-            workflows:workflows
+            visibleWorkflowIndex: oldIndex + 1
         });
     }
     // selectWorkflow(index=null) {
@@ -95,8 +137,7 @@ class AssignmentContainer extends React.Component {
             content = (
                 <WorkflowDetailContainer
                     workflow={this.state.workflows[this.state.visibleWorkflowIndex]}
-                    createWorkflow={this.createWorkflow.bind(this, this.state.visibleWorkflowIndex)}
-                    changeWorkflow = {this.changeWorkflow.bind(this,this.state.visibleWorkflowIndex)}
+                    changeWorkflow = {this.changeWorkflow.bind(this)}
                 />
             );
         }
