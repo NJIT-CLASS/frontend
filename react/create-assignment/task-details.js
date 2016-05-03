@@ -19,15 +19,7 @@ class TaskDetails extends React.Component {
         };
     }
 
-    showDP(e){
-        var input = e.target;
-
-        this.setState({dpChecked: true});
-
-    }
-    rmDp(e){
-        this.setState({dpChecked: false});
-    }
+    
     textUpdate(e){
         this.props.updateTask(e.target.value,e.target.name);
     }
@@ -72,11 +64,11 @@ class TaskDetails extends React.Component {
                                 <div>
                                     <div>
                                         <p>Default: 3 days</p>
-                                        <input type='radio' onChange={this.rmDP} name='dueDate'/>
+                                        <input type='radio' name='dueDate'/>
                                     </div>
                                     <div>
                                         <p>Specific Date</p>
-                                        <input type='radio' onChange={this.showDP} name='dueDate'/>
+                                        <input type='radio'  name='dueDate'/>
                                     </div>
                                 </div>
 
