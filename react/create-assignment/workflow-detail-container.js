@@ -115,7 +115,7 @@ class WorkflowDetailContainer extends React.Component {
                 { previousTaskSidebar }
                 
                 <TaskDetails
-                    task={this.state.currentTask}
+                    task={this.props.currentTask}
                     updateTask={this.updateTask.bind(this)}
                     nextTask={this.nextTask.bind(this)}
                 />

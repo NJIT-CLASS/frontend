@@ -9,7 +9,7 @@ class TaskDetails extends React.Component {
 
 
         this.state = {
-            type:this.props.task.type,
+            type:this.props.type,
             dpChecked:false,
             options:[
                 {value: 'Student', label: 'Student'},
