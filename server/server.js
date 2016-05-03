@@ -235,6 +235,12 @@ app.use(function(req, res, next) {
                                 options.pageHeader = route.title;
                             }
 
+                            // pass masquerading info to template
+                            if (req.session.masqueraderId) {
+                                options.masquerading = true;
+                                options.userEmail = req.App.user.email;
+                            }
+
                             previousRender.call(this, template, options, cb);
                         };
                     }();

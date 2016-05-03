@@ -51,14 +51,32 @@
                 </div>
             </div>
             <div class="content">
-                <div class="secondary-nav">
+                {{#if masquerading}}
+                    <div class="secondary-nav masquerading">
+                {{else}}
+                    <div class="secondary-nav">
+                {{/if}}
                     <a class="hamburger" href="#" onclick="document.getElementsByClassName('sidebar')[0].classList.toggle('collapsed')"><i class="fa fa-bars"></i></a>
+                    {{#if masquerading}}
+                    <div class="right-nav">
+                        Masquerading as {{ userEmail }}
+                    </div>
+                    {{/if}}
+                    {{#if masquerading}}
+                    <div class="left-nav">
+                        <a href="/stop-masquerading" class="link">
+                            <i class="fa fa-sign-out"></i>
+                            {{ __ "Stop Masquerading" }}
+                        </a>
+                    </div>
+                    {{else}}
                     <div class="left-nav">
                         <a href="/logout" class="link">
                             <i class="fa fa-sign-out"></i>
                             {{ __ "Log out" }}
                         </a>
                     </div>
+                    {{/if}}
                 </div>
                 {{#showHTMLBasedOnBoolean showHeader}}
                     <div class="page-header">
@@ -73,8 +91,10 @@
                     </div>
                 {{/showHTMLBasedOnBoolean}}
                 <div class="masquerade-activate">
-                    <i class="fa-key fa"></i>
-                    <span>Masquerade</span>
+                    <a href="/masquerade">
+                        <i class="fa-key fa"></i>
+                        <span>Masquerade</span>
+                    </a>
                 </div>
             </div>
         </div>
