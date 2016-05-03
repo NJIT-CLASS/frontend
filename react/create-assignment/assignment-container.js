@@ -84,6 +84,7 @@ class AssignmentContainer extends React.Component {
         this.setState ({
             workflows: [],
             visibleWorkflowIndex: null});
+        
     }
     // selectWorkflow(index=null) {
     //     this.setState({

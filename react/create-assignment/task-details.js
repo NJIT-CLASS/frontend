@@ -29,7 +29,7 @@ class TaskDetails extends React.Component {
 
     }
     reset(){
-        this.props.reset; 
+        window.location('/dashboard') ; 
     }
 
 createAssingment() {
@@ -82,7 +82,9 @@ createAssingment() {
     lastTask(){
         let assignmentDetail = this.state.assignmentDetail;
         assignmentDetail.push(this.state.currentTask);
-        this.createAssingment();
+        console.log(this.state.assignmentDetail);
+        this.props.nextTask();
+        
     }
 
     addThree(){
@@ -370,20 +372,7 @@ createAssingment() {
                     </div>);
                 break; 
                 case "done":
-                    content=(<div>
-                        <div className="section">
-                        <h3 className="title">Congrats Assingment Created </h3>
-                        <div className="section-content">
-                        <div>
-                            <img src="http://www.animateit.net/data/media/feb2013/Thumbs_21.gif"/>
-                        </div>
-                         <div className="row">
-                                <button onClick={this.reset.bind(this)}>Click to Create Another Assingment</button>
-                            </div>
-                        </div>
-                    </div>
-                            
-                        </div>);
+                    window.location.href = '/dashboard';
                     break;
         }
 
