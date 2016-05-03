@@ -62,6 +62,20 @@ app.post('/api/translations', (req, res) => {
     res.status(200).end();
 });
 
+app.post('/api/change-admin-status', (req, res) => {
+    const userId = req.body.userId;
+    const makeAdmin = req.body.makeAdmin;
+
+    if (!makeAdmin) {
+        console.log('not make admin');
+        return res.status(500).end();
+    }
+
+    req.App.api.put('/makeUserAdmin/', {UserID: userId}, (err, statusCode, body) => {
+        res.status(statusCode).end();
+    });
+});
+
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
     // default language

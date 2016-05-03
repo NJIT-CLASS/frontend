@@ -47,7 +47,7 @@
                 {{#if admin}}
                 <div class="toggle-switch true right">
                 {{else}}
-                <div class="toggle-switch false right">
+                <div class="toggle-switch false right" data-onclick="toggleClick"  data-userid="{{ userId }}">
                 {{/if}}
                 	<div class="bubble"></div>
                 	<div class="text-true">{{ __ "Yes" }}</div>

@@ -14,8 +14,23 @@ document.onload = function() {
                 this.classList.add('true');
             }
 
-            if (this.dataset.onClick) {
-                this.dataset.onClick(this.dataset.value);
+            if (this.dataset.onclick) {
+                function toggleClick(value, userId) {
+                    fetch('http://localhost:4000/api/change-admin-status', {  
+                        method: 'post',  
+                        headers: {  
+                          "Content-type": "application/json"  
+                        },  
+                        body: JSON.stringify({
+                            'userId': userId,
+                            'makeAdmin': true
+                        })
+                    }).then(function (response) {
+                        console.log(response);
+                    });
+                }
+
+                toggleClick(this.dataset.value, this.dataset.userid);
             }
         }
     };
