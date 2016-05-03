@@ -1,5 +1,5 @@
 
-<form name="form_addInstructor" role="form" class="section" method="POST" action="#">
+<form name="form_addInstructor" role="form" class="section" method="POST">
 	<input type="hidden" name="what_was_changed" value="email">
     <h2 class="title">{{__ "Add New Instructor"}}</h2>
     <div class="section-content">
@@ -25,7 +25,7 @@
         <div class="form-group">
         	<label class="control-label col-sm-2" for="field_newEmail">{{__ "Instructor Email Address"}}</label>
         	<div class="col-sm-10">
-            	<input class="form-control" name="field_newEmail" id="field_newEmail" type="text" value="{{userEmail}}" required>
+            	<input class="form-control" name="email" id="field_newEmail" type="text" value="{{userEmail}}" required>
         	</div>
         </div>
         <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
@@ -43,8 +43,8 @@
 	</div>
     <ul>
         {{#each instructors}}
-            <li class="list-group-item">{{FirstName}} {{LastName}}
-                {{#if Admin}}
+            <li class="list-group-item">{{email}}
+                {{#if admin}}
                 <div class="toggle-switch true right">
                 {{else}}
                 <div class="toggle-switch false right">
