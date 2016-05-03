@@ -3,6 +3,19 @@
     display: flex;
     align-items: center;
 
+    &.masquerading {
+        background-color: #D3927E;
+
+        .left-nav a {
+            color: #fff;
+        }
+    }
+
+    .right-nav {
+        margin-left: 10px;
+        color: #fff;
+    }
+
     .hamburger {
         background-color: #2E4051;
         color: #FFFFFF;
