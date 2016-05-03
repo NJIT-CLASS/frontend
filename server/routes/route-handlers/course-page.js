@@ -4,13 +4,14 @@ exports.get = (req, res) => {
     req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{ 
         var sectionList = [];
         var apiCalls = {};
+        console.log(body);
         for (var i=0; i<body.Sections.length; i++){
             sectionList.push(body.Sections[i]);
 
             apiCalls[body.Sections[i].SectionID] = ((Sections) => {
                 return (callback)=> {
                     req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, body) =>{
-                        var sectionMembers = body.Section;  
+                        var sectionMembers = body.UserSection;
                         var sectionMembersApiCalls = [];    
                         for (var q=0; q<sectionMembers.length; q++){
                             sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
