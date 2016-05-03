@@ -63,7 +63,7 @@ class AssignmentContainer extends React.Component {
             taID:null,
             waID:null,
         };
-        let workflows = [createProbTask,solveProbTask,editProbTask,gradeProbTask];
+        let workflows = [createProbTask,gradeProbTask,solveProbTask,editProbTask];
         this.setState({
             workflows : workflows,
             visibleWorkflowIndex: 0            
@@ -72,9 +72,19 @@ class AssignmentContainer extends React.Component {
 
     changeWorkflow(){
         let oldIndex = this.state.visibleWorkflowIndex;
-        this.setState({
+        if(this.state.visibleWorkflowIndex < this.state.workflows.length){
+            this.setState({
             visibleWorkflowIndex: oldIndex + 1
-        });
+            });
+        }
+        
+    }
+
+    reset(){
+        this.setState ({
+            workflows: [],
+            visibleWorkflowIndex: null});
+        
     }
     // selectWorkflow(index=null) {
     //     this.setState({
@@ -122,7 +132,7 @@ class AssignmentContainer extends React.Component {
     render() {
         let content = null;
 
-        if (this.state.visibleWorkflowIndex === null) {
+        if (this.state.visibleWorkflowIndex === null || this.state.visibleWorkflowIndex > this.state.workflows.length) {
             content = (
                 <DetailsContainer
                     assignmentDetails={this.state.assignmentDetails}
@@ -138,6 +148,7 @@ class AssignmentContainer extends React.Component {
                 <WorkflowDetailContainer
                     workflow={this.state.workflows[this.state.visibleWorkflowIndex]}
                     changeWorkflow = {this.changeWorkflow.bind(this)}
+                    reset={this.reset.bind(this)}
                 />
             );
         }

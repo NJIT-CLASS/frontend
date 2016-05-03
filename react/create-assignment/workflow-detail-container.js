@@ -72,6 +72,12 @@ class WorkflowDetailContainer extends React.Component {
     render() {
         let previousTaskSidebar = null;
         let advancedOptions = null;
+        let type;
+        try{
+             type = this.props.workflow.type;    
+        }catch (err){
+            type = "done";           
+        }
 
         let taskCompleters = [
             {value: 'Student', label: 'Student'},
@@ -115,9 +121,10 @@ class WorkflowDetailContainer extends React.Component {
                 { previousTaskSidebar }
                 
                 <TaskDetails
-                    task={this.props.currentTask}
+                    task={type}
                     updateTask={this.updateTask.bind(this)}
                     nextTask={this.nextTask.bind(this)}
+                    reset={this.props.reset}
                 />
                 { advancedOptions }
             </div>
