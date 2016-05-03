@@ -1,3 +1,7 @@
 exports.get = (req, res) => {
-    res.render('admin');
+    req.App.api.get('/instructor/all', (err, statusCode, body) => {
+        res.render('admin', {
+            instructors: body.Instructors
+        });
+    });
 };
