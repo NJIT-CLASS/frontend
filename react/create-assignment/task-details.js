@@ -10,8 +10,14 @@ class TaskDetails extends React.Component {
 
 
         this.state = {
-            type:this.props.type,
-            currentTask:null,
+            assignmentDetail:[],
+            type:this.props.task,
+            currentTask: {
+            name:null,
+            desc:null,
+            dueDate:null,
+            taskAssignee:null,
+            },
             dpChecked:false,
             showCreateSemesterModal: false,
             options:[
@@ -20,16 +26,36 @@ class TaskDetails extends React.Component {
                 {value: 'TA', label: 'TA'}
             ]
         };
+
+    }
+    reset(){
+        this.props.reset; 
+    }
+
+createAssingment() {
+    let Assingment = this.state.currentTask;
+        const options = {
+            method: 'POST',
+            uri: 'http://162.243.45.215:8080' + '/assignment/create',
+            body: {
+                Name: Assingment.name,
+                Description: Assingment.desc,
+                dueDate: Assingment.dueDate,
+                taskAssignee: Assingment.taskAssignee
+            },
+            json: true
+        };
+
+        request(options, (err, res, body) => {
+            // TODO: add error handling
+            console.log("Result status code:", res.status);
+            
+        });
     }
 
     
     updateCTA(data,inputType){
-        let task = {
-            name:null,
-            desc:null,
-            dueDate:null,
-            taskAssignee:null,
-        }
+        let task =this.state.currentTask;
         if(inputType === 'name'){
             task.name = data;
         }else if(inputType === 'desc'){
@@ -40,17 +66,56 @@ class TaskDetails extends React.Component {
             task.taskAssignee = data;
         }
 
-
+        this.setState({
+            currentTask:task
+        });
     }
+
     nextTask(){
+        let assignmentDetail = this.state.assignmentDetail;
+        assignmentDetail.push(this.state.currentTask);
+        console.log(this.state.assignmentDetail);
         this.props.nextTask();
+        
+    }
+
+    lastTask(){
+        let assignmentDetail = this.state.assignmentDetail;
+        assignmentDetail.push(this.state.currentTask);
+        this.createAssingment();
+    }
+
+    addThree(){
+        let date = new Date();
+        let newDate = date.getDate()+3;
+        let correctMonth = date.getMonth()+1;
+        if(newDate <10){
+            newDate = '0'+newDate;
+        }
+        if(correctMonth < 10){
+            correctMonth = '0'+correctMonth
+        }
+        let final = date.getFullYear()+"-"+correctMonth+"-"+newDate;
+        this.updateCTA(final,'dueDate');
+    }
+    spDate(e){
+        this.updateCTA(e.target.value,'dueDate');
+    }
+    getStud(e){
+        this.updateCTA(e,'taskAssignee');
+    }
+    getName(e){
+        this.updateCTA(e.target.value,'name');
+    }
+    getDesc(e){
+        this.updateCTA(e.target.value,'desc');
     }
     
 
 	render(){
         let content = null;
 
-        switch(this.state.type) {
+        switch(this.props.task) {
             case TASK_TYPES.CREATE_PROBLEM:
                 content =(<div>
                     <div className="section">
@@ -58,13 +123,13 @@ class TaskDetails extends React.Component {
                         <div className="section-content">
                             <label>Name</label>
                             <div>
-                                <input type="text" name="name" onChange={this.textUpdate.bind(this)} required>
+                                <input type="text" onChange={this.getName.bind(this)} name="name"  required>
                                 </input>
                             </div>
 
                             <label>Description</label>
                             <div>
-                                <textarea name="desc" onChange={this.textUpdate.bind(this)} required>
+                                <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
                             </div>                            
                            
@@ -76,22 +141,24 @@ class TaskDetails extends React.Component {
                         <h3 className="title">When is this task due ?</h3>
                         <div className="section-content">
                         <div>
-                                <div>
-                                    <div>
-                                        <p>Default: 3 days</p>
-                                        <input type='radio' name='dueDate' required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label col-sm-2" for="field_startDate">Start Date</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" name="field_startDate" ref="field_startDate" id="field_startDate" type="date" required></input>
+
+                               <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Default : 3 Days</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.addThree.bind(this)} name="dueDate" type="radio"></input>
                                         </div>
                                     </div>
+                                    <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Specific Date</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
+                                        </div>
+                                    </div>     
                                 </div>
 
                                 </div>
                                 </div>
-                    </div>
+                    
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -99,8 +166,9 @@ class TaskDetails extends React.Component {
                         options={this.state.options}
                         clearable={false}
                         searchable={false}
-                        onChange={this.selectUpdate.bind(this)}
-                        name="assign"
+                        name="taskAssignee"
+                        onChange={this.getStud.bind(this)}
+                        value=''
                         required
                         />
                          <div className="row">
@@ -111,20 +179,21 @@ class TaskDetails extends React.Component {
 
                     </div>);
                 break;
-            case TASK_TYPES.Grade_PROBLEM:
+                //this is what it shoiuld be ***TASK_TYPES.Grade_PROBLEM *** but because of time we had to just leave like this
+            case "grade_problem":
                 content =(<div>
                     <div className="section">
                         <h3 className="title">{TASK_TYPE_TEXT.grade_problem}</h3>
                         <div className="section-content">
                             <label>Name</label>
                             <div>
-                                <input type="text" name="name" onChange={this.textUpdate.bind(this)}>
+                                <input type="text" onChange={this.getName.bind(this)} name="name"  required>
                                 </input>
                             </div>
 
                             <label>Description</label>
                             <div>
-                                <textarea name="desc" onChange={this.textUpdate.bind(this)}>
+                                <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
                             </div>                            
                            
@@ -136,20 +205,24 @@ class TaskDetails extends React.Component {
                         <h3 className="title">When is this task due ?</h3>
                         <div className="section-content">
                         <div>
-                                <div>
-                                    <div>
-                                        <p>Default: 3 days</p>
-                                        <input type='radio' onChange={this.rmDP} name='dueDate'/>
+
+                               <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Default : 3 Days</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.addThree.bind(this)} name="dueDate" type="radio"></input>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p>Specific Date</p>
-                                        <input type='radio' onChange={this.showDP} name='dueDate'/>
-                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Specific Date</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
+                                        </div>
+                                    </div>     
                                 </div>
 
                                 </div>
                                 </div>
-                    </div>
+                    
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -157,11 +230,13 @@ class TaskDetails extends React.Component {
                         options={this.state.options}
                         clearable={false}
                         searchable={false}
-                        onChange={this.selectUpdate.bind(this)}
-                        name="assign"
+                        name="taskAssignee"
+                        onChange={this.getStud.bind(this)}
+                        value=''
+                        required
                         />
                          <div className="row">
-                                <button>Next</button>
+                                <button onClick={this.nextTask.bind(this)}>Next</button>
                             </div>
                         </div>
                     </div>
@@ -175,13 +250,13 @@ class TaskDetails extends React.Component {
                         <div className="section-content">
                             <label>Name</label>
                             <div>
-                                <input type="text" name="name" onChange={this.textUpdate.bind(this)}>
+                                <input type="text" onChange={this.getName.bind(this)} name="name"  required>
                                 </input>
                             </div>
 
                             <label>Description</label>
                             <div>
-                                <textarea name="desc" onChange={this.textUpdate.bind(this)}>
+                                <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
                             </div>                            
                            
@@ -193,20 +268,24 @@ class TaskDetails extends React.Component {
                         <h3 className="title">When is this task due ?</h3>
                         <div className="section-content">
                         <div>
-                                <div>
-                                    <div>
-                                        <p>Default: 3 days</p>
-                                        <input type='radio' onChange={this.rmDP} name='dueDate'/>
+
+                               <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Default : 3 Days</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.addThree.bind(this)} name="dueDate" type="radio"></input>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p>Specific Date</p>
-                                        <input type='radio' onChange={this.showDP} name='dueDate'/>
-                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Specific Date</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
+                                        </div>
+                                    </div>     
                                 </div>
 
                                 </div>
                                 </div>
-                    </div>
+                    
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -214,11 +293,13 @@ class TaskDetails extends React.Component {
                         options={this.state.options}
                         clearable={false}
                         searchable={false}
-                        onChange={this.selectUpdate.bind(this)}
-                        name="assign"
+                        name="taskAssignee"
+                        onChange={this.getStud.bind(this)}
+                        value=''
+                        required
                         />
                          <div className="row">
-                                <button>Next</button>
+                                <button onClick={this.nextTask.bind(this)}>Next</button>
                             </div>
                         </div>
                     </div>
@@ -232,13 +313,13 @@ class TaskDetails extends React.Component {
                         <div className="section-content">
                             <label>Name</label>
                             <div>
-                                <input type="text" name="name" onChange={this.textUpdate.bind(this)}>
+                                <input type="text" onChange={this.getName.bind(this)} name="name"  required>
                                 </input>
                             </div>
 
                             <label>Description</label>
                             <div>
-                                <textarea name="desc" onChange={this.textUpdate.bind(this)}>
+                                <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
                             </div>                            
                            
@@ -250,20 +331,24 @@ class TaskDetails extends React.Component {
                         <h3 className="title">When is this task due ?</h3>
                         <div className="section-content">
                         <div>
-                                <div>
-                                    <div>
-                                        <p>Default: 3 days</p>
-                                        <input type='radio' onChange={this.rmDP} name='dueDate'/>
+
+                               <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Default : 3 Days</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.addThree.bind(this)} name="dueDate" type="radio"></input>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p>Specific Date</p>
-                                        <input type='radio' onChange={this.showDP} name='dueDate'/>
-                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="field_startDate">Specific Date</label>
+                                        <div className="col-sm-10">
+                                            <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
+                                        </div>
+                                    </div>     
                                 </div>
 
                                 </div>
                                 </div>
-                    </div>
+                    
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -271,17 +356,35 @@ class TaskDetails extends React.Component {
                         options={this.state.options}
                         clearable={false}
                         searchable={false}
-                        onChange={this.selectUpdate.bind(this)}
-                        name="assign"
+                        name="taskAssignee"
+                        onChange={this.getStud.bind(this)}
+                        value=''
+                        required
                         />
                          <div className="row">
-                                <button>Next</button>
+                                <button onClick={this.lastTask.bind(this)}>Next</button>
                             </div>
                         </div>
                     </div>
 
                     </div>);
                 break; 
+                case "done":
+                    content=(<div>
+                        <div className="section">
+                        <h3 className="title">Congrats Assingment Created </h3>
+                        <div className="section-content">
+                        <div>
+                            <img src="http://www.animateit.net/data/media/feb2013/Thumbs_21.gif"/>
+                        </div>
+                         <div className="row">
+                                <button onClick={this.reset.bind(this)}>Click to Create Another Assingment</button>
+                            </div>
+                        </div>
+                    </div>
+                            
+                        </div>);
+                    break;
         }
 
 
