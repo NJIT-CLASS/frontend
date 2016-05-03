@@ -21,34 +21,35 @@ exports.post = (req, res) => {
 
     if (req.body.what_was_changed=='name') {
         req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
-            if(body.Message=='Success') {       // success
+            // if(body.Message=='Success') {       // success
                 // TODO: check contents of reply to see if name change actually succeeded
                 options.statuscode = statusCode;
                 options.namechangesucceeded = true;
                 options.userFirstName = body.FirstName;
                 options.userLastName = body.LastName;
                 res.render('account_management', options);
-            }
-            else {                  // error
-                options.statuscode = statusCode;
-                options.namechangefailed = true;
-                res.render('account_management', options);
-            }
+            // }
+            // else {                  // error
+            //     options.statuscode = statusCode;
+            //     options.namechangefailed = true;
+            //     res.render('account_management', options);
+            // }
         });
     }
     else if (req.body.what_was_changed=='email') {
         req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
-            if(body.Message=='Success') {       // success
+            // console.log(err, statusCode)
+            // if(body.Message=='Success') {       // success
                 options.emailchangesucceeded = true;
-                options.userEmail = body.EmailAddress;
+                options.userEmail = req.body.field_newEmail;
                 options.statuscode = statusCode;
                 res.render('account_management', options);
-            }
-            else {                      // error
-                options.emailchangefailed = true;
-                options.statuscode = statusCode;
-                res.render('account_management', options);
-            }
+            // }
+            // else {                      // error
+            //     options.emailchangefailed = true;
+            //     options.statuscode = statusCode;
+            //     res.render('account_management', options);
+            // }
         }); 
     }
     else if (req.body.what_was_changed=='status') {     // TODO: fill in API endpoints here once they're available
@@ -77,16 +78,16 @@ exports.post = (req, res) => {
         }
         
         req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-            if(statusCode==200) {       // success
+            // if(statusCode==200) {       // success
                 options.passwordchangesucceeded = true;
                 options.statuscode = statusCode;
                 res.render('account_management', options);
-            }
-            else {                      // error
-                options.passwordchangefailed = true;
-                options.statuscode = statusCode;
-                res.render('account_management', options);
-            }
+            // }
+            // else {                      // error
+            //     options.passwordchangefailed = true;
+            //     options.statuscode = statusCode;
+            //     res.render('account_management', options);
+            // }
         });
     }
     else {
