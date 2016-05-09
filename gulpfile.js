@@ -11,6 +11,11 @@ const gutil = require('gulp-util');
 const flow = require('gulp-flowtype');
 const inquirer = require('inquirer');
 const fs = require('fs');
+const argv = require('yargs').argv;
+const install = require('gulp-install');
+const del = require('del');
+const runSequence = require('gulp-run-sequence');
+const file = require('gulp-file');
 
 const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
@@ -254,6 +259,124 @@ gulp.task('start', ['node-babel'], function () {
 gulp.task('build-server', ['node-babel', 'build-views', 'setup-static']);
 
 gulp.task('build-assets', ['sass', 'react:compile']);
+
+gulp.task('clean:build', () => {
+  return del([argv.location + '/**/*'], {force: true});
+});
+
+gulp.task('move:server-build', () => {
+  const dest = gulp.dest(argv.location + '/server');
+  return gulp.src(['.build/**/*'])
+  .pipe(dest);
+});
+
+gulp.task('move:config-build', () => {
+  return gulp.src(['package.json'])
+  .pipe(gulp.dest(argv.location))
+  .pipe(install({production: true}));
+});
+
+gulp.task('generate:build-fallback-settings', () => {
+  const questions = [
+    {
+        type: 'input',
+        name: 'redis-secret',
+        message: 'redis secret:'
+    },
+    {
+        type: 'input',
+        name: 'redis-host',
+        message: 'redis host:'
+    },
+    {
+        type: 'input',
+        name: 'redis-port',
+        message: 'redis port:'
+    },
+    {
+        type: 'input',
+        name: 'redis-auth',
+        message: 'redis auth:'
+    },
+    {
+        type: 'input',
+        name: 'server-port',
+        message: 'server port:'
+    },
+    {
+        type: 'input',
+        name: 'api-url',
+        message: 'API url:'
+    },
+  ];
+
+  return inquirer.prompt(questions).then((answers) => {
+    const content =
+`
+exports.REDIS_SECRET = '${answers['redis-secret']}';
+exports.REDIS_HOST = '${answers['redis-host']}';
+exports.REDIS_PORT = ${answers['redis-port']};
+exports.REDIS_AUTH = '${answers['redis-auth']}';
+exports.FRONTEND_PORT = ${answers['server-port']};
+exports.API_URL = '${answers['api-url']}';
+`;
+    return file('fallback_settings.js', content)
+    .pipe(gulp.dest(argv.location));
+  });
+});
+
+gulp.task('generate:fallback-settings', () => {
+  const questions = [
+    {
+        type: 'input',
+        name: 'redis-secret',
+        message: 'redis secret:'
+    },
+    {
+        type: 'input',
+        name: 'redis-host',
+        message: 'redis host:'
+    },
+    {
+        type: 'input',
+        name: 'redis-port',
+        message: 'redis port:'
+    },
+    {
+        type: 'input',
+        name: 'redis-auth',
+        message: 'redis auth:'
+    },
+    {
+        type: 'input',
+        name: 'server-port',
+        message: 'server port:'
+    },
+    {
+        type: 'input',
+        name: 'api-url',
+        message: 'API url:'
+    },
+  ];
+
+  return inquirer.prompt(questions).then((answers) => {
+    const content =
+`
+exports.REDIS_SECRET = '${answers['redis-secret']}';
+exports.REDIS_HOST = '${answers['redis-host']}';
+exports.REDIS_PORT = ${answers['redis-port']};
+exports.REDIS_AUTH = '${answers['redis-auth']}';
+exports.FRONTEND_PORT = ${answers['server-port']};
+exports.API_URL = '${answers['api-url']}';
+`;
+    return file('fallback_settings.js', content)
+    .pipe(gulp.dest(argv.location));
+  });
+});
+
+gulp.task('build-production', () => {
+  return runSequence(['build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
+});
 
 gulp.task('default', [
     'build-server',
