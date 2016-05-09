@@ -370,7 +370,7 @@ exports.FRONTEND_PORT = ${answers['server-port']};
 exports.API_URL = '${answers['api-url']}';
 `;
     return file('fallback_settings.js', content)
-    .pipe(gulp.dest(argv.location));
+    .pipe(gulp.dest(__dirname));
   });
 });
 
