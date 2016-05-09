@@ -11,11 +11,12 @@ If you've never used github before [set your ssh key](#github-setup)
 6. Download and install [redis](http://redis.io)
 7. Import latest language strings into server using [language-export.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-export.js) to export the strings from the Redis instance on AFS and [language-import.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-import.js) to import them to your local redis instance
 8. Set the environment variables `dbHost`, `dbUser`, `dbPass`, `database`, and `serverPort` to match your MySQL database hostname (probably localhost), database user, database user password, database name, and the port your want the backend server to serve on.
-9. Copy the [fallback settings](https://github.com/NJIT-CLASS/Configuration/blob/master/exampleFallbackSettings.js) into fallback_settings.js in the root directory of the frontend project and customize the values to match the values for your setup (your redis hostname, authentication key, redis port, the port the frontend server will serve on, the URL of the backend server you are using, and your redis secret (just a random value).
-5. Set the environment variables `
-5. Run `npm start` in the backend directory.
-5. Run `npm install` which will install all the third-party packages the project depends on.
-6. Run `npm start` to start the server and start developing.
+9. Run `npm install gulp`
+10. Run `gulp generate:fallback-settings` to generate your fallback settings (just answer the questions)
+11. Set the environment variables `serverPort, dbHost, dbUser, dbPass, database (for the backend project)
+12. Run `npm install` which will install all the third-party packages the project depends on.
+13. Run `npm start` in the frontend directory to start the server and start developing.
+14. Run `npm start` in the backend directory.
 
 ##Technologies and Tools
 
