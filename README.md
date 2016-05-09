@@ -6,8 +6,16 @@ If you've never used github before [set your ssh key](#github-setup)
 
 1. Clone the repo using git: `git clone git@github.com:NJIT-CLASS/frontend.git`.
 2. `cd` into the cloned directory.
-3. run `npm install` which will install all the third-party packages the project depends on.
-4. run `npm start` to start the server and start developing.
+4. Clone the backend repo using git: `git clone https://github.com/NJIT-CLASS/backend.git`.
+5. Set up a local MySQL database and run the latest [sql import script](https://github.com/NJIT-CLASS/Configuration/blob/master/class_2016-05-03.sql)
+6. Download and install [redis](http://redis.io)
+7. Import latest language strings into server using [language-export.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-export.js) to export the strings from the Redis instance on AFS and [language-import.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-import.js) to import them to your local redis instance
+8. Set the environment variables `dbHost`, `dbUser`, `dbPass`, `database`, and `serverPort` to match your MySQL database hostname (probably localhost), database user, database user password, database name, and the port your want the backend server to serve on.
+9. Copy the [fallback settings](https://github.com/NJIT-CLASS/Configuration/blob/master/exampleFallbackSettings.js) into fallback_settings.js in the root directory of the frontend project and customize the values to match the values for your setup (your redis hostname, authentication key, redis port, the port the frontend server will serve on, the URL of the backend server you are using, and your redis secret (just a random value).
+5. Set the environment variables `
+5. Run `npm start` in the backend directory.
+5. Run `npm install` which will install all the third-party packages the project depends on.
+6. Run `npm start` to start the server and start developing.
 
 ##Technologies and Tools
 
@@ -17,6 +25,7 @@ If you've never used github before [set your ssh key](#github-setup)
 - [React.js](https://facebook.github.io/react/index.html): frontend framework
 - [Handlebars.js](http://handlebarsjs.com/expressions.html): templating engine
 - [SCSS](http://sass-lang.com/guide): CSS preprocessor
+- [Redis](http://redis.io/): Redis
 
 ##Github Setup
 
