@@ -13,19 +13,25 @@
         font-weight: 400px;
         padding: 20px 30px 20px 30px;
         color: #676a6c;
-        
-        
+
+
     }
 
     p {
         max-width: 600px;
-        
+
     }
 
     .section-content {
         padding: 20px 30px;
         overflow: hidden;
-		
+
+    }
+
+    .big-text-field {
+      width:600px;
+      max-width: 1000px;
+      max-height: 700px;
     }
 
     li {
@@ -44,6 +50,6 @@
             }
         }
     }
-	
-	
+
+
 }

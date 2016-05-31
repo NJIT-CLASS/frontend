@@ -1,31 +1,31 @@
 <form name="currentCourseList" role="form" class="section" method="POST" action="#">
     <h2 class="title">Current Courses</h2>
     <div class="section-content">
-    
+
 
 
 		<div class="col-xs-6">
 
 
-         
+
         		<ul>
 
 				  {{#each courseList}}
 
-					<li class="list-group-item"> 
+					<li class="list-group-item">
 					<a href="/course_page/{{CourseID}}">{{Title}}</a>
-				    </li>						  
+				    </li>
 
                    {{/each}}
 
-	  
-				  
-                </ul>
-          
-        </div>
-	
 
-       
+
+                </ul>
+
+        </div>
+
+
+
     </div>
 </form>
 
@@ -34,30 +34,34 @@
 <form name="pendingTaskList" role="form" class="sectionTable" method="POST" action="#">
     <h2 class="title">Pending Tasks</h2>
     <div class="section-content">
-    
+
 
 
 		<div class="col-xs-6">
-			
+
 		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">
 		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
 		<tbody>
+      {{#each pendingTasksList}}
+      <tr><td><a href=""{{TaskActivity.WorkflowActivity.Name}}</td><td>{{TaskActivity.Name}}</td><td>{{TaskID}}</td><td>{{EndDate}}</td><tr>
+        {{/each}}
+      <!--
 			 <tr class="odd"><td><a href="/createproblem">Test Assignment 2 - Test</a></td><td>Create Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 14, 2016 8:05 PM">2 days </span></td> </tr>
 			 <tr class="even"><td><a href="/solveproblem">Homework 1 - Your Opinion</a></td><td>Solve Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Tue, Feb 9, 2016 12:41 PM">2 months ago</span></td> </tr>
 			 <tr class="odd"><td><a href="/editproblem">Homework 1 - Your Opinion</a></td><td>Edit</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Tue, Feb 9, 2016 3:27 PM">2 months ago</span></td> </tr>
 			 <tr class="even"><td><a href="/comment">Homework 1 - Your Opinion</a></td><td>Comment</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:47 PM">2 months ago</span></td> </tr>
-			 <tr class="odd"><td><a href="/revise">Homework 1 - Your Opinion</a></td><td>Revise and Resubmit</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:28 AM">2 months ago</span></td> </tr>
+			 <tr class="odd"><td><a href="/revise">Homework 1 - Your Opinion</a></workflowtd><td>Revise and Resubmit</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:28 AM">2 months ago</span></td> </tr>
 			 <tr class="odd"><td><a href="/grade">Homework 1 - Your Opinion</a></td><td>Grade</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 14, 2016 8:05 PM">1 month ago</span></td> </tr>
-				
+     -->
 		</tbody>
 		</table>
-			
-			
+
+
 
         </div>
-	
 
-       
+
+
     </div>
 </form>
 
@@ -65,11 +69,11 @@
 <form name="completedTaskList" role="form" class="sectionTable" method="POST" action="#">
     <h2 class="title">Completed Tasks</h2>
     <div class="section-content">
-    
+
 
 
 		<div class="col-xs-6">
-			
+
 		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">
 		 <thead><tr><th>Assignment</th><th>Task</th><th>Course</th><th>Date Completed</th> </tr></thead>
 		<tbody>
@@ -90,16 +94,16 @@
 		 <tr class="odd"><td><a href="/task">Homework 1 - Your Opinion</a></td><td>Grade a Solution</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Tue, Feb 9, 2016 3:27 PM">2 months ago</span></td> </tr>
 		 <tr class="even"><td><a href="/task">Homework 1 - Your Opinion</a></td><td>Create a Solution</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:47 PM">2 months ago</span></td> </tr>
 		 <tr class="odd"><td><a href="/task">Homework 1 - Your Opinion</a></td><td>Create a Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:28 AM">2 months ago</span></td> </tr>
-		 
-		 
+
+
 		</tbody>
 		</table>
-			
-			
+
+
 
         </div>
-	
 
-       
+
+
     </div>
 </form>

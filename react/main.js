@@ -6,6 +6,7 @@ import ClassPageContainer from './shared/class-page-container';
 import AssignmentContainer from './create-assignment/assignment-container';
 import CourseContainer from './create-course/course-container';
 import TranslationContainer from './translation/translation-container';
+import TemplateContainer from './task-template/TemplateContainer';
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 
@@ -32,4 +33,13 @@ if (translationContainerEl) {
     );
 
     ReactDOM.render(translationApp, document.getElementById('translation-container'));
+}
+
+const templateContainerEl = document.getElementById('template-container');
+if(templateContainerEl){
+  const userId = templateContainerEl.dataset.userId;
+  const apiUrl = templateContainerEl.dataset.apiUrl;
+  const taskId= templateContainerEl.dataset.taskId;
+
+  ReactDOM.render(<TemplateContainer UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
 }

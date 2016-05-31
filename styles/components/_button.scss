@@ -8,9 +8,19 @@ button {
     font-size: 18px;
     padding: 8px;
     font-weight: 300;
+    margin: 5px;
+    height:auto;
+
+
 
     .error {
         border-color: #ed5565;
+    }
+    
+    .in-line {
+      float: left;
+      padding: 5px;
+      margin: 10px;
     }
 
     &.success {
@@ -25,4 +35,18 @@ button {
     &:hover {
         cursor: pointer;
     }
+}
+
+.dispute{
+  border: 0;
+  border-radius: 3px;
+  border-color: #1ab394;
+  float: right;
+  color: #ffffff;
+  font-size: 18px;
+  padding: 8px;
+  font-weight: 300;
+  margin: 5px;
+  height:auto;
+  background-color: #ed5565;
 }
