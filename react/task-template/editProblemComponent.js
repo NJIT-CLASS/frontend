@@ -8,99 +8,98 @@ import request from 'request';
 import ProblemViewComponent  from './problemViewComponent';
 
 class EditProblemComponent extends React.Component {
-  constructor(props){
-    super(props);
+  constructor(props) {
+      super(props);
 
-    this.state = {
-      AssignmentDescription: '',
-      TaskRubric:'',
-      TaskInstructions:'',
-      EditedProblem: '',
-      EditedProblemError: false
-    }
+      this.state = {
+          AssignmentDescription: '',
+          TaskRubric: '',
+          TaskInstructions: '',
+          EditedProblem: '',
+          EditedProblemError: false
+      }
   }
 
-  getComponentData(){
-    const options = {
-      method: 'GET',
-      uri: this.props.apiUrl + "/api/taskTemplate/edit/1" + this.props.TaskID,
-      json:true
-    }
+  getComponentData() {
+      const options = {
+          method: 'GET',
+          uri: this.props.apiUrl + "/api/taskTemplate/edit/1" + this.props.TaskID,
+          json: true
+      }
 
-    request(options,(err,res,body)=>{
+      request(options, (err, res, body) => {
+          this.setState({
+              AssignmentDescription: body.result.assignmentDescription,
+              TaskRubric: body.result.taskRubric,
+              TaskInstructions: body.result.taskInstructions,
+              EditedProblem: body.result.editedProblemText
+          });
+      });
+  }
+  saveData() {
+      e.preventDefault();
+
+      const inputError = this.state.EditedProblem.length == 0 ? true : false;
+
+      if (inputError) {
+          return this.setState({
+              EditedProblemError: inputError
+          });
+      } else {
+          const options = {
+              method: 'PUT',
+              uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
+              body: {
+                  taskID: this.props.TaskID,
+                  userID: this.props.UserID,
+                  editedProblem: this.state.EditedProblem
+              },
+              json: true
+          };
+
+          request(options, (err, res, body) => {
+              console.log("Saved" + req.statusCode);
+          });
+      }
+  }
+  submitData() {
+      e.preventDefault();
+
+      const inputError = this.state.EditedProblem.length == 0 ? true : false;
+
+      if (inputError) {
+          return this.setState({
+              EditedProblemError: inputError
+          });
+      } else {
+          const options = {
+              method: 'POST',
+              uri: this.props.apiUrl + '/api/taskTemplate/edit/submit',
+              body: {
+                  taskID: this.props.TaskID,
+                  userID: this.props.UserID,
+                  EditedProblem: this.state.UserCreatedProblem
+              },
+              json: true
+          };
+
+          request(options, (err, res, body) => {
+              console.log("Submited" + req.statusCode);
+          });
+      }
+  }
+
+  componentWillMount() {
+      this.getComponentData();
+  }
+
+  handleChange(event) {
       this.setState({
-          AssignmentDescription: body.result.assignmentDescription,
-          TaskRubric: body.result.taskRubric,
-          TaskInstructions: body.result.taskInstructions,
-          EditedProblem: body.result.editedProblemText
+          EditedProblemError: false,
+          EditedProblem: event.target.value
       });
-    });
   }
-  saveData(){
-    e.preventDefault();
-
-    const inputError = this.state.EditedProblem.length == 0 ? true : false;
-
-    if(inputError){
-      return this.setState({
-        EditedProblemError: inputError
-      });
-    }
-    else{
-      const options = {
-          method: 'PUT',
-          uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              editedProblem: this.state.EditedProblem
-          },
-          json: true
-        };
-
-      request(options, (err, res, body) => {
-          console.log("Saved" + req.statusCode);
-      });
-    }
-  }
-  submitData(){
-    e.preventDefault();
-
-    const inputError = this.state.EditedProblem.length == 0 ? true : false;
-
-    if(inputError){
-      return this.setState({
-        EditedProblemError: inputError
-      });
-    }
-    else{
-      const options = {
-          method: 'POST',
-          uri: this.props.apiUrl + '/api/taskTemplate/edit/submit',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              EditedProblem: this.state.UserCreatedProblem
-          },
-          json: true
-        };
-
-      request(options, (err, res, body) => {
-          console.log("Submited" + req.statusCode);
-      });
-    }
-  }
-
-  componentWillMount(){
-    this.getComponentData();
-  }
-
-  handleChange(event){
-    this.setState({
-      EditedProblemError: false,
-      EditedProblem: event.target.value
-    });
-  }
+  
   render(){
     return(<div>
             <form name="editProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
@@ -120,7 +119,7 @@ class EditProblemComponent extends React.Component {
               <br />
               <button type="submit"><i className="fa fa-check button-group"></i>Submit</button>
               <button type="button" onClick={this.saveData.bind(this)}>Save for Later</button>
-              
+
 
            </div>
             </form>

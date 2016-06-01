@@ -1,6 +1,5 @@
 import React from 'react';
 import request from 'request';
-import Modal from '../shared/modal';
 
 class GradeSolutionComponent extends React.Component {
   constructor (props){
@@ -34,6 +33,7 @@ class GradeSolutionComponent extends React.Component {
             });
         });
   }
+
 
   saveData(e){
     e.preventDefault();
@@ -159,11 +159,10 @@ class GradeSolutionComponent extends React.Component {
     let newGradeText = this.state.GradeText;
     newGradeText[index] = event.target.value;
     this.setState({
-      GradeError,
+      GradeError: false,
       GradeText: newGradeText
     });
   }
-
 
   render(){
     let rubric = null;
@@ -199,7 +198,9 @@ class GradeSolutionComponent extends React.Component {
         <form name="gradeProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
           <div className="title"><b>Grade the Solution</b></div>
           <div className="section-content">
+
             <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {rubricButtonText}</button>
+
             <br />
             {rubric}
             <br />

@@ -21,7 +21,9 @@ const pages = [
     'grade-problem',
     'revise-and-edit',
     'masquerade',
-    'stop-masquerading',    'task-template'
+    'stop-masquerading',    'task-template',
+    'create-a-problem',
+    'edit-the-problem'
 ];
 
 var pageConfigs = [];

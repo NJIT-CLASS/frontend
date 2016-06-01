@@ -15,85 +15,84 @@ class SolveProblemComponent extends React.Component {
         UserSolutionError: false
     };
   }
-  getComponentData(){
+  getComponentData() {
     const options = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/solve/1' + this.props.TaskID,
-            json: true
-        };
+        method: 'GET',
+        uri: this.props.apiUrl + '/api/taskTemplate/solve/1' + this.props.TaskID,
+        json: true
+    };
 
-        request(options, (err, res, body) => {
-            this.setState({
-                UserSolution: body.result.userSolution
-            });
+    request(options, (err, res, body) => {
+        this.setState({
+            UserSolution: body.result.userSolution
         });
-  }
+    });
+}
 
   handleChange(event) {
       this.setState({
-        UserSolutionError: false,
-        UserSolution: event.target.value});
-    }
-
-  saveData(e){
-    e.preventDefault();
-
-    const inputError = this.state.UserSolution.length == 0 ? true : false;
-
-    if(inputError){
-      return this.setState({
-        UserSolutionError: inputError
+          UserSolutionError: false,
+          UserSolution: event.target.value
       });
-    }
-    else{
-      const options = {
-          method: 'PUT',
-          uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              userCreatedProblem: this.state.UserCreatedProblem
-          },
-          json: true
-        };
-
-      request(options, (err, res, body) => {
-          console.log(req.statusCode);
-      });
-    }
   }
 
-  submitData(e){
+  saveData(e) {
+      e.preventDefault();
+
+      const inputError = this.state.UserSolution.length == 0 ? true : false;
+
+      if (inputError) {
+          return this.setState({
+              UserSolutionError: inputError
+          });
+      } else {
+          const options = {
+              method: 'PUT',
+              uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
+              body: {
+                  taskID: this.props.TaskID,
+                  userID: this.props.UserID,
+                  userCreatedProblem: this.state.UserCreatedProblem
+              },
+              json: true
+          };
+
+          request(options, (err, res, body) => {
+              console.log(req.statusCode);
+          });
+      }
+  }
+
+  submitData(e) {
     e.preventDefault();
 
     const inputError = this.state.UserSolution.length === 0 ? true : false;
 
-    if(inputError){
-      return this.setState({
-        UserSolutionError: inputError
-      });
-    }
-    else{
-      const options = {
-          method: 'POST',
-          uri: this.props.apiUrl + '/api/taskTemplate/solve/submit',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              userSolution: this.state.UserSolution
-          },
-          json: true
+    if (inputError) {
+        return this.setState({
+            UserSolutionError: inputError
+        });
+    } else {
+        const options = {
+            method: 'POST',
+            uri: this.props.apiUrl + '/api/taskTemplate/solve/submit',
+            body: {
+                taskID: this.props.TaskID,
+                userID: this.props.UserID,
+                userSolution: this.state.UserSolution
+            },
+            json: true
         };
 
-      request(options, (err, res, body) => { //junk code
-          console.log('ok');
-      });
+        request(options, (err, res, body) => { //junk code
+            console.log('ok');
+        });
     }
-  }
+}
 
-  componentWillMount(){
+componentWillMount() {
     this.getComponentData();
-  }
+}
 
   render(){
     return(
@@ -108,7 +107,7 @@ class SolveProblemComponent extends React.Component {
             <br />
             <button type="submit"><i className="fa fa-check"></i>Submit</button>
             <button type="button" onClick={this.saveData.bind(this)}>Save for Later</button>
-            
+
 
          </div>
         </form>

@@ -1,5 +1,5 @@
 /*
-    This Container is the main component. It holds all the other components and decides what to render depending .
+This Container is the main component.It holds all the other components and decides what to render depending.
 
 */
 import React from 'react';
@@ -16,122 +16,211 @@ import DisputeComponent from './disputeComponent';
 //Display Components: These only display data retrived from the database. Not interactive.
 import HeaderComponent from './headerComponent'
 import ResponseComponent from './responseComponent';
-import ProblemViewComponent  from './problemViewComponent';
+import ProblemViewComponent from './problemViewComponent';
 import GradedComponent from './gradedComponent';
-import DisputeResolvedContainer from './disputeResolvedComponent';
+import DisputeViewComponent from './disputeResolvedComponent';
 import CompletedComponent from './completedComponent';
 import CommentComponent from './commentComponent';
 
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
-const createProblemContainer = document.getElementById('create');
-const solveProblemContainer = document.getElementById('solve');
-const editProblemContainer = document.getElementById('edit');
-const gradeContainer = document.getElementById('grade');
-const disputeContainer = document.getElementById('dispute');
-const resolveGradeContainer = document.getElementById('revision');
-const completedContainer = document.getElementById('comment');
+const createProblemContainer = document.getElementById('create-task-container');
+const solveProblemContainer = document.getElementById('solve-task-container');
+const editProblemContainer = document.getElementById('edit-task-container');
+const gradeContainer = document.getElementById('grade-task-container');
+const disputeContainer = document.getElementById('dispute-task-container');
+const resolveGradeContainer = document.getElementById('revision-task-container');
+const completedContainer = document.getElementById('completed-task-container');
 
 /* Make all the methods that will call the api to get the appropriate data  here */
 
 class TemplateContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      //universal variables - used in all the components
-      //Need to pass in TaskID,SectionID, UserID from HTML, route-handler, and main.js
-        TaskActivityID: null,
-        CourseID: null,
-        CourseName: '',
-        CourseNumber: '',
-        AssignmentTitle: '',
-        AssignmentID: null,
-        TaskActivityType: '',
-        SemesterID: null,
-        SemesterName: ''
+      constructor(props) {
+          super(props);
+          this.state = {
+              //universal variables - used in all the components
+              //Need to pass in TaskID,SectionID, UserID from HTML, route-handler, and main.js
+              TaskActivityID: null,
+              CourseID: null,
+              CourseName: '',
+              CourseNumber: '',
+              AssignmentTitle: '',
+              AssignmentID: null,
+              TaskActivityType: '',
+              SemesterID: null,
+              SemesterName: ''
 
-    }
-  }
+          }
+      }
 
-  getVariableData(){
-    const options = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/main/1' + this.props.TaskID,
-            qs: {
-              courseID: this.state.CourseID,
-              sectionID: this.props.SectionID,
-              userID: this.props.UserID
-            },
-            json: true
-        };
+      getVariableData() {
+          const options = {
+              method: 'GET',
+              uri: this.props.apiUrl + '/api/taskTemplate/main/1' + this.props.TaskID,
+              qs: {
+                  courseID: this.state.CourseID,
+                  sectionID: this.props.SectionID,
+                  userID: this.props.UserID
+              },
+              json: true
+          };
 
-        request(options, (err, res, body) => {
+          request(options, (err, res, body) => {
 
-            this.setState({
-                TaskActivityID: body.result.taskActivityID,
-                CourseID: body.result.courseID,
-                CourseName: body.result.courseName,
-                CourseNumber: body.result.courseNumber,
-                AssignmentTitle: body.result.assignmentTitle,
-                AssignmentID: body.result.assignmentID,
-                TaskActivityType: body.result.taskActivityType,
-                SemesterID: body.result.semesterID,
-                SemesterName: body.result.semesterName
-            });
-        });
-  }
+              this.setState({
+                  TaskActivityID: body.result.taskActivityID,
+                  CourseID: body.result.courseID,
+                  CourseName: body.result.courseName,
+                  CourseNumber: body.result.courseNumber,
+                  AssignmentTitle: body.result.assignmentTitle,
+                  AssignmentID: body.result.assignmentID,
+                  TaskActivityType: body.result.taskActivityType,
+                  SemesterID: body.result.semesterID,
+                  SemesterName: body.result.semesterName
+              });
+          });
+      }
 
 
-  componentWillMount(){ //get the database data before component renders
-    this.getVariableData();
+      componentWillMount() { //get the database data before component renders
+          this.getVariableData();
 
-  }
+      }
 
-  render(){
-    return(
-      <div > {this.props.TaskID} - {this.props.UserID} - {this.props.SectionID}
-        <HeaderComponent TaskID = {this.props.TaskID}
-                         CourseName = {this.state.CourseName}
-                         CourseName = {this.state.CourseName}
-                          CourseNumber = {this.state.CourseNumber}
-                          AssignmentTitle = {this.state.AssignmentTitle}
-                          TaskActivityType = {this.state.TaskActivityType}
-                          SemesterName={this.state.SemesterName} />
-        <br />
-        <CreateProblemComponent TaskID = {this.props.TaskID}
-                                UserID = {this.props.UserID}
-                                TaskActivityID = {this.state.TaskActivityID}
-                                AssignmentID = {this.state.AssignmentID}
-                                SemesterID={this.state.SemesterID}
-                                apiUrl={this.props.apiUrl}
-                                />
-        <br />
-        <ProblemViewComponent TaskID = {this.props.TaskID}
-                              apiUrl={this.props.apiUrl}
-                              problemHeader="Problem"/>
-        <br />
-        <SolveProblemComponent TaskID = {this.props.TaskID}
-                               apiUrl = {this.props.apiUrl}
-                               UserID = {this.props.UserID} />
-        <br />
-        <EditProblemComponent TaskID = {this.props.TaskID}
-                               apiUrl = {this.props.apiUrl}
-                               UserID = {this.props.UserID} />
-        <br />
-        <ResponseComponent TaskID = {this.props.TaskID}
-                               apiUrl = {this.props.apiUrl}/>
-        <br />
-        <GradeSolutionComponent TaskID = {this.props.TaskID}
-                               apiUrl = {this.props.apiUrl}
-                               UserID = {this.props.UserID} />
-        <br />
-        <GradedComponent       TaskID = {this.props.TaskID}
-                               apiUrl = {this.props.apiUrl}/>
-      </div>
+      render(){
+        let renderComponents = null;
+        if(createProblemContainer){
+          renderComponents = (
+            <CreateProblemComponent TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    TaskActivityID = {this.state.TaskActivityID}
+                                    AssignmentID = {this.state.AssignmentID}
+                                    SemesterID={this.state.SemesterID}
+                                    apiUrl={this.props.apiUrl}
+                                    />
 
-    );
+          );
+        }
+        else if(editProblemContainer){
+          renderComponents = (
+              <div>
+              <ProblemViewComponent TaskID = {this.props.TaskID}
+                                    apiUrl={this.props.apiUrl}
+                                    problemHeader="Problem"/>
+              <br />
+              <EditProblemComponent TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}
+                                     UserID = {this.props.UserID} />
+              <br />
+              </div>
 
-  }
+          );
+        }
+        else{
+          renderComponents =  (
+            <div><CreateProblemComponent TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    TaskActivityID = {this.state.TaskActivityID}
+                                    AssignmentID = {this.state.AssignmentID}
+                                    SemesterID={this.state.SemesterID}
+                                    apiUrl={this.props.apiUrl}
+                                    />
+            <br />
+            <ProblemViewComponent TaskID = {this.props.TaskID}
+                                  apiUrl={this.props.apiUrl}
+                                  problemHeader="Problem"/>
+            <br />
+            <SolveProblemComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}
+                                   UserID = {this.props.UserID} />
+            <br />
+            <EditProblemComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}
+                                   UserID = {this.props.UserID} />
+            <br />
+            <ResponseComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}/>
+            <br />
+            <GradeSolutionComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}
+                                   UserID = {this.props.UserID} />
+            <br />
+            <GradedComponent       TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}/>
+            <br />
+            <DisputeComponent     TaskID = {this.props.TaskID}
+                                  apiUrl = {this.props.apiUrl}
+                                  UserID = {this.props.UserID} />
+            <br />
+            <DisputeViewComponent  TaskID = {this.props.TaskID}
+                                  apiUrl = {this.props.apiUrl}
+                                  UserID = {this.props.UserID} />
+            </div>
+            );
+        }
+
+        return(
+
+          <div > {this.props.TaskID} - {this.props.UserID} - {this.props.SectionID}
+            <HeaderComponent TaskID = {this.props.TaskID}
+                             CourseName = {this.state.CourseName}
+                             CourseName = {this.state.CourseName}
+                              CourseNumber = {this.state.CourseNumber}
+                              AssignmentTitle = {this.state.AssignmentTitle}
+                              TaskActivityType = {this.state.TaskActivityType}
+                              SemesterName={this.state.SemesterName} />
+            <br />
+            {renderComponents}
+          </div>
+
+        );
+
+      }
+
+
+
+
+
+
+
+
+
+  /*  <CreateProblemComponent TaskID = {this.props.TaskID}
+                            UserID = {this.props.UserID}
+                            TaskActivityID = {this.state.TaskActivityID}
+                            AssignmentID = {this.state.AssignmentID}
+                            SemesterID={this.state.SemesterID}
+                            apiUrl={this.props.apiUrl}
+                            />
+    <br />
+    <ProblemViewComponent TaskID = {this.props.TaskID}
+                          apiUrl={this.props.apiUrl}
+                          problemHeader="Problem"/>
+    <br />
+    <SolveProblemComponent TaskID = {this.props.TaskID}
+                           apiUrl = {this.props.apiUrl}
+                           UserID = {this.props.UserID} />
+    <br />
+    <EditProblemComponent TaskID = {this.props.TaskID}
+                           apiUrl = {this.props.apiUrl}
+                           UserID = {this.props.UserID} />
+    <br />
+    <ResponseComponent TaskID = {this.props.TaskID}
+                           apiUrl = {this.props.apiUrl}/>
+    <br />
+    <GradeSolutionComponent TaskID = {this.props.TaskID}
+                           apiUrl = {this.props.apiUrl}
+                           UserID = {this.props.UserID} />
+    <br />
+    <GradedComponent       TaskID = {this.props.TaskID}
+                           apiUrl = {this.props.apiUrl}/>
+                           */
+
+
+
+
+
+
   /*
   if(completedContainer){
     //display everything
