@@ -35,17 +35,33 @@ class GradedComponent extends React.Component {
     this.getComponentData();
   }
   render(){
-
+    let tableStyle = {
+      backfaceVisibility: 'hidden'
+    }
     return(<div className="invisible">
-
-            <GradeViewComponent GradeNumber={this.state.GradeNumber}
-                                GradeText={this.state.GradeText}
-                                GradeCriteria={this.state.GradeCriteria} />
-            <GradeViewComponent GradeNumber={this.state.GradeNumber}
-                                GradeText={this.state.GradeText}
-                                GradeCriteria={this.state.GradeCriteria} />
-
-            <button type="button" className="dispute"> Dispute Grade </button>
+            <table border="0" cellPadding="0" cellSpacing="0" className="tab">
+              <tbody>
+                    <tr>
+                    <td style={tableStyle}> <GradeViewComponent GradeNumber={this.state.GradeNumber}
+                                            GradeText={this.state.GradeText}
+                                            GradeCriteria={this.state.GradeCriteria}   />
+                    </td>
+                    <td>
+                       <GradeViewComponent GradeNumber={this.state.GradeNumber}
+                                            GradeText={this.state.GradeText}
+                                            GradeCriteria={this.state.GradeCriteria}  />
+                    </td>
+                    <td>
+                      <GradeViewComponent GradeNumber={this.state.GradeNumber}
+                                            GradeText={this.state.GradeText}
+                                            GradeCriteria={this.state.GradeCriteria} />
+                    </td>
+                    </tr>
+                    <tr>
+                      <td></td><td></td><td><button type="button" className="dispute"> Dispute Grade </button></td>
+                    </tr>
+              </tbody>
+            </table>
           </div>
         );
 

@@ -12,6 +12,7 @@ class GradeViewComponent extends React.Component {
 
   render(){
 
+
     let gradesList = this.props.GradeNumber.map(function(grade,index){
       return (
         <div key={index + 2000}><b>{this.props.GradeCriteria[index]} Grade:   </b>

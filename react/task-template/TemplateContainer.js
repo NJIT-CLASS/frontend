@@ -89,6 +89,7 @@ class TemplateContainer extends React.Component {
 
       render(){
         let renderComponents = null;
+
         if(createProblemContainer){
           renderComponents = (
             <CreateProblemComponent TaskID = {this.props.TaskID}
@@ -118,7 +119,8 @@ class TemplateContainer extends React.Component {
         }
         else{
           renderComponents =  (
-            <div><CreateProblemComponent TaskID = {this.props.TaskID}
+            <div>
+              <CreateProblemComponent TaskID = {this.props.TaskID}
                                     UserID = {this.props.UserID}
                                     TaskActivityID = {this.state.TaskActivityID}
                                     AssignmentID = {this.state.AssignmentID}
@@ -155,7 +157,12 @@ class TemplateContainer extends React.Component {
             <DisputeViewComponent  TaskID = {this.props.TaskID}
                                   apiUrl = {this.props.apiUrl}
                                   UserID = {this.props.UserID} />
+                                <br/>
+            <ResolveGradeComponent TaskID = {this.props.TaskID}
+                                  apiUrl = {this.props.apiUrl}
+                                  UserID = {this.props.UserID} />
             </div>
+
             );
         }
 

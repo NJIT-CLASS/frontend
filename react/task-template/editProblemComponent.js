@@ -99,16 +99,12 @@ class EditProblemComponent extends React.Component {
           EditedProblem: event.target.value
       });
   }
-  
+
   render(){
     return(<div>
             <form name="editProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
             <div name="originalProblemHeader">
-              <div className="quoted-section">
-                <ProblemViewComponent TaskID = {this.props.TaskID}
-                                      apiUrl={this.props.apiUrl}
-                                      problemHeader="This is the original problem"/>
-              </div>
+            
             </div>
             <div name="editHeader">
               <h2 className="title"> <b>Edit the Problem</b> </h2>

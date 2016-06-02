@@ -48,9 +48,35 @@ button {
   padding: 8px;
   font-weight: 300;
   margin: 10px;
-  height: 40px;
+  height: auto;
   align-self: flex-end;
   white-space:nowrap;
   width:auto;
   background-color: #ed5565;
+}
+
+.tab {
+  border-style: none;
+  border: hidden;
+  width: 100%;
+  border: 0;
+}
+
+table tr{
+  border: hidden;
+}
+table tbody{
+  border: hidden;
+}
+table tr td{
+  border: hidden;
+}
+
+
+.invisible{
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 10px;
+  display:flex;
+  align-self: flex-end;
 }

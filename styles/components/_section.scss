@@ -26,6 +26,8 @@
       overflow:hidden;
     }
 
+
+
     li {
         display: flex;
         align-items: center;
@@ -42,15 +44,4 @@
             }
         }
     }
-}
-
-.floating-section{
-
-}
-
-.invisible{
-  box-sizing: border-box;
-  margin: 10px;
-  display:flex;
-  align-self: flex-end;
 }

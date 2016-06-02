@@ -5,28 +5,23 @@ import request from 'request';
 /*
   PROPS:
   TaskRubric,
-  GradingCriteria,
-  GradingText,
-  GradingNumber,
+  GradeCriteria,
+  GradeText,
+  GradeNumber,
+  handleGradeTextChange()
+  handleGradeNumberChange()
+  saveData()
+  submitData()
 */
 
-class GradingFramework extends React.Component{
-    constructor(){
+class GradingFrameworkComponent extends React.Component{
+    constructor(props){
       super(props);
       this.state = {
-        ShowRubric = true,
+        ShowRubric : true,
 
       };
     }
-
-    handleGradeTextChange(){
-      this.props.handleGradeTextChange().bind(this);
-    }
-
-    handleGradeNumberChange(){
-      this.props.handleGradeNumberChange().bind(this);
-    }
-
     toggleRubric(){
       const bool = this.state.ShowRubric ? false : true;
       console.log("Button toggled: " + bool);
@@ -42,9 +37,9 @@ class GradingFramework extends React.Component{
       let gradeCriteriaList = this.props.GradeCriteria.map(function(rule, index){
         return (
           <div key={index + 2000}><b>{this.props.GradeCriteria[index]} Grade:   </b>
-            <input type="text" key={index + 1000} className="number-input" value={this.props.GradeNumber[index]} onChange={this.handleGradeNumberChange.bind(this,index)} ></input>
+            <input type="text" key={index + 1000} className="number-input" value={this.props.GradeNumber[index]} onChange={this.props.handleGradeNumberChange.bind(this, index)} ></input>
             <br />
-            <textarea className="big-text-field" key={index} value={this.props.GradeText[index]} onChange={this.handleGradeTextChange.bind(this,index)} placeholder="Type your problem here ...">
+            <textarea className="big-text-field" key={index} value={this.props.GradeText[index]} onChange={this.props.handleGradeTextChange.bind(this,index)} placeholder="Type your problem here ...">
             </textarea>
             <br />
             <br />
@@ -66,16 +61,16 @@ class GradingFramework extends React.Component{
       let rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
 
       let gradingComp = (
-
         <div>
-            <div className="title"><b>Grade the Solution</b></div>
-            <div className="section-content">
+            <div >
               <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {rubricButtonText}</button>
               <br />
               {rubric}
               <br />
               {gradeCriteriaList}
               <br />
+              <button type="submit"><i className="fa fa-check"></i>Submit</button>
+              <button type="button" onClick={this.props.saveData.bind(this)}>Save for Later</button>
            </div>
 
         </div>
@@ -83,15 +78,22 @@ class GradingFramework extends React.Component{
 
       return(
         <div>
-          <form name="gradingFramework" role="form" onSubmit={this.submitData.bind(this)}>
-            <div name="disputeHeader">
-              <h2 className="title"> <b>Justify your Dispute</b> </h2>
-            </div>
-            <div className="section-content">
+          <form name="gradingFramework" role="form" onSubmit={this.props.submitData.bind(this)}>
+            <div>
               {gradingComp}
+
+            </div>
+            </form>
+        </div>
 
       );
 
 
     }
+
+
+
+
 }
+
+export default GradingFrameworkComponent;

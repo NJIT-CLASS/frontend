@@ -1,6 +1,9 @@
 import React from 'react';
 import request from 'request';
 
+
+import GradingFrameworkComponent from './gradingFrameworkComponent';
+
 class GradeSolutionComponent extends React.Component {
   constructor (props){
     super(props);
@@ -165,53 +168,25 @@ class GradeSolutionComponent extends React.Component {
   }
 
   render(){
-    let rubric = null;
-    let gradeNumberList = this.state.GradeNumber.map(function(grade,index){
-      return (
-        <div key={index + 2000}><b>{this.state.GradeCriteria[index]} Grade:   </b>
-          <input type="text" key={index + 1000} className="number-input" value={grade} onChange={this.handleGradeNumberChange.bind(this,index)} ></input>
-          <br />
-          <textarea className="big-text-field" key={index} value={this.state.GradeText[index]} onChange={this.handleGradeTextChange.bind(this,index)} placeholder="Type your problem here ...">
-          </textarea>
-          <br />
-          <br />
-        </div>
-
-      );
-    }, this);
-
-
-    if(this.state.ShowRubric){
-      rubric = (
-          <div name="taskRubric" className="regular-text">
-            {this.state.TaskRubric}
-          </div>
-
-      );
-    }
-
-    let rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
 
     return (
 
-      <div>
-        <form name="gradeProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
+      <div className="section">
+
           <div className="title"><b>Grade the Solution</b></div>
           <div className="section-content">
 
-            <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {rubricButtonText}</button>
-
-            <br />
-            {rubric}
-            <br />
-            {gradeNumberList}
-            <br />
-            <button type="submit"><i className="fa fa-check"></i>Submit</button>
-            <button type="button" onClick={this.saveData.bind(this)}>Save for Later</button>
-
-
-         </div>
-        </form>
+            <GradingFrameworkComponent TaskRubric={this.state.TaskRubric}
+                                      GradeCriteria={this.state.GradeCriteria}
+                                      GradeText={this.state.GradeText}
+                                      GradeNumber={this.state.GradeNumber}
+                                      saveData={this.saveData.bind(this)}
+                                      submitData={this.submitData.bind(this)}
+                                      handleGradeNumberChange={this.handleGradeNumberChange.bind(this)}
+                                      handleGradeTextChange={this.handleGradeTextChange.bind(this)}
+                                        />
+        <br />
+        </div>
       </div>
     );
   }

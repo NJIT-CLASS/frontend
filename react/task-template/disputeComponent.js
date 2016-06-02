@@ -4,6 +4,7 @@
 
 import React from 'react';
 import request from 'request';
+import GradingFrameworkComponent from './gradingFrameworkComponent';
 
 
 class DisputeComponent extends React.Component {
@@ -31,7 +32,9 @@ class DisputeComponent extends React.Component {
 
         request(options, (err, res, body) => {
             this.setState({
-                DisputeText: body.result.userSolution
+                DisputeText: body.result.disputeText,
+                DisputeNumber: body.result.disputeNumber,
+                GradeCriteria: body.result.gradeCriteria
             });
         });
 
@@ -83,7 +86,9 @@ class DisputeComponent extends React.Component {
                 body: {
                     taskID: this.props.TaskID,
                     userID: this.props.UserID,
-                    disputeText: this.state.DisputeText
+                    disputeText: this.state.DisputeText,
+                    disputeGradeText:this.state.DisputeGradeText,
+                    disputeGradeNumber: this.state.DisputeGradeNumber
                 },
                 json: true
             };
@@ -110,7 +115,9 @@ class DisputeComponent extends React.Component {
                 body: {
                     taskID: this.props.TaskID,
                     userID: this.props.UserID,
-                    disputeText: this.state.DisputeText
+                    disputeText: this.state.DisputeText,
+                    disputeGradeText:this.state.DisputeGradeText,
+                    disputeGradeNumber: this.state.DisputeGradeNumber
                 },
                 json: true
             };
@@ -196,22 +203,27 @@ class DisputeComponent extends React.Component {
       );
 
       return(
-        <div>
-          <form name="disputeProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
+        <div className="section">
             <div name="disputeHeader">
               <h2 className="title"> <b>Justify your Dispute</b> </h2>
             </div>
             <div className="section-content">
-              {gradingComp}
+              <form name="disputeProblemTask" role="form">
+                <div className="regular-text"><b>Explain fully why all previous graders were wrong, and your regrading is correct.</b></div>
+                <textarea className="big-text-field" value={this.state.DisputeText} onChange={this.handleChange.bind(this)} placeholder="Type your response here ...">
+                </textarea>
+              </form>
               <br />
-              <div className="regular-text"><b>Explain fully why all previous graders were wrong, and your regrading is correct.</b></div>
-              <textarea className="big-text-field" value={this.state.DisputeText} onChange={this.handleChange.bind(this)} placeholder="Type your response here ...">
-              </textarea>
-              <br />
-              <button type="submit"><i className="fa fa-check"></i>Submit</button>
-              <button type="button" onClick={this.saveData.bind(this)}>Save for Later</button>
-           </div>
-          </form>
+              <GradingFrameworkComponent TaskRubric={this.state.TaskRubric}
+                                        GradeCriteria={this.state.GradeCriteria}
+                                        GradeText={this.state.DisputeGradeText}
+                                        GradeNumber={this.state.DisputeGradeNumber}
+                                        saveData={this.saveData.bind(this)}
+                                        submitData={this.submitData.bind(this)}
+                                        handleGradeNumberChange={this.handleGradeNumberChange.bind(this)}
+                                        handleGradeTextChange={this.handleGradeTextChange.bind(this)}
+                                        />
+              </div>
         </div>
       );
 
