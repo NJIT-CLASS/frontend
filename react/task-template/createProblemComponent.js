@@ -21,7 +21,7 @@ class CreateProblemComponent extends React.Component {
   getComponentData () {
     const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/create/1' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
             json: true
         };
 
@@ -56,7 +56,6 @@ class CreateProblemComponent extends React.Component {
         };
 
       request(options, (err, res, body) => {
-          console.log(req.statusCode);
       });
     }
   }
@@ -84,7 +83,6 @@ class CreateProblemComponent extends React.Component {
         };
 
       request(options, (err, res, body) => {
-          console.log(req.statusCode);
       });
     }
   }

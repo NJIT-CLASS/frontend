@@ -26,7 +26,7 @@ class DisputeComponent extends React.Component {
     getComponentData() {
         const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/dispute/1' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/dispute/' + this.props.TaskID,
             json: true
         };
 
@@ -64,7 +64,6 @@ class DisputeComponent extends React.Component {
 
     toggleRubric(){
       const bool = this.state.ShowRubric ? false : true;
-      console.log("Button toggled: " + bool);
       this.setState({
         ShowRubric: bool
       });
@@ -94,7 +93,6 @@ class DisputeComponent extends React.Component {
             };
 
             request(options, (err, res, body) => {
-                console.log("Saved");
             });
         }
     }
@@ -123,7 +121,6 @@ class DisputeComponent extends React.Component {
             };
 
             request(options, (err, res, body) => {
-                console.log("Submitted");
             });
         }
     }

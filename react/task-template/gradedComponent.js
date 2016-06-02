@@ -1,3 +1,8 @@
+/* This Component is an invisible container holding a bunch of GradeView Components.
+* It has a GET method that gets the apporpriate data and feeds it to the GradeViewComponents.
+* This is shown after all grades have been submitted.
+*/
+
 import React from 'react';
 import request from 'request';
 import GradeViewComponent from './gradeViewComponent';
@@ -17,7 +22,7 @@ class GradedComponent extends React.Component {
   getComponentData(){
     const options = {
       method: 'GET',
-      uri: this.props.apiUrl + "/api/taskTemplate/grade/1" + this.props.TaskID,
+      uri: this.props.apiUrl + "/api/taskTemplate/grade/" + this.props.TaskID,
       json:true
     }
 
@@ -58,7 +63,7 @@ class GradedComponent extends React.Component {
                     </td>
                     </tr>
                     <tr>
-                      <td></td><td></td><td><button type="button" className="dispute"> Dispute Grade </button></td>
+                      <td></td><td></td><td><button type="button" className="dispute" onClick={()=>{location.href = '/task/dispute/'+this.props.TaskID}}> Dispute Grade </button></td>
                     </tr>
               </tbody>
             </table>

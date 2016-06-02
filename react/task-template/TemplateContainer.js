@@ -21,6 +21,7 @@ import GradedComponent from './gradedComponent';
 import DisputeViewComponent from './disputeResolvedComponent';
 import CompletedComponent from './completedComponent';
 import CommentComponent from './commentComponent';
+import ResolutionViewComponent from './resolutionViewComponent';
 
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
@@ -161,7 +162,12 @@ class TemplateContainer extends React.Component {
             <ResolveGradeComponent TaskID = {this.props.TaskID}
                                   apiUrl = {this.props.apiUrl}
                                   UserID = {this.props.UserID} />
+                                <br />
+            <ResolutionViewComponent TaskID = {this.props.TaskID}
+                                  apiUrl = {this.props.apiUrl}
+                                  UserID = {this.props.UserID} />
             </div>
+
 
             );
         }

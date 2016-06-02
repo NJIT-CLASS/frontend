@@ -18,7 +18,7 @@ class SolveProblemComponent extends React.Component {
   getComponentData() {
     const options = {
         method: 'GET',
-        uri: this.props.apiUrl + '/api/taskTemplate/solve/1' + this.props.TaskID,
+        uri: this.props.apiUrl + '/api/taskTemplate/solve/' + this.props.TaskID,
         json: true
     };
 
@@ -85,7 +85,7 @@ class SolveProblemComponent extends React.Component {
         };
 
         request(options, (err, res, body) => { //junk code
-            console.log('ok');
+            
         });
     }
 }

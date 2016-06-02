@@ -72,8 +72,7 @@ class GradeSolutionComponent extends React.Component {
           json: true
         };
 
-      request(options, (err, res, body) => { //probably do soemthing with error here
-        console.log("Save button fired");
+      request(options, (err, res, body) => {
       });
 
     }
@@ -87,7 +86,7 @@ class GradeSolutionComponent extends React.Component {
 
   toggleRubric(){
     const bool = this.state.ShowRubric ? false : true;
-    console.log("Button toggled: " + bool);
+
     this.setState({
       ShowRubric: bool
     });
@@ -127,7 +126,7 @@ class GradeSolutionComponent extends React.Component {
         };
 
       request(options, (err, res, body) => {
-        console.log("Submit button fired");
+
       });
     }
     else{
@@ -144,9 +143,7 @@ class GradeSolutionComponent extends React.Component {
   }
 
   handleGradeNumberChange(index, event){
-    console.log(event);
-    console.log(event.target.value);
-    console.log(index);
+
     let newGradeNumber = this.state.GradeNumber;
     newGradeNumber[index] = event.target.value;
     this.setState({
@@ -156,9 +153,6 @@ class GradeSolutionComponent extends React.Component {
   }
 
   handleGradeTextChange(index,event){
-    console.log(event);
-    console.log(event.target.value);
-    console.log(index);
     let newGradeText = this.state.GradeText;
     newGradeText[index] = event.target.value;
     this.setState({

@@ -23,7 +23,7 @@ class EditProblemComponent extends React.Component {
   getComponentData() {
       const options = {
           method: 'GET',
-          uri: this.props.apiUrl + "/api/taskTemplate/edit/1" + this.props.TaskID,
+          uri: this.props.apiUrl + "/api/taskTemplate/edit/" + this.props.TaskID,
           json: true
       }
 
@@ -104,7 +104,7 @@ class EditProblemComponent extends React.Component {
     return(<div>
             <form name="editProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
             <div name="originalProblemHeader">
-            
+
             </div>
             <div name="editHeader">
               <h2 className="title"> <b>Edit the Problem</b> </h2>

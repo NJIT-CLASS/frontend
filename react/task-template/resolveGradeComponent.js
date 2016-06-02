@@ -21,7 +21,7 @@ class ResolveGradeComponent extends React.Component {
     getComponentData() {
         const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/resolve/1' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/resolve/' + this.props.TaskID,
             json: true
         };
 
@@ -66,8 +66,7 @@ class ResolveGradeComponent extends React.Component {
                 json: true
             };
 
-            request(options, (err, res, body) => { //probably do soemthing with error here
-                console.log("Save button fired");
+            request(options, (err, res, body) => {
             });
 
         } else {
@@ -80,7 +79,6 @@ class ResolveGradeComponent extends React.Component {
         const bool = this.state.ShowRubric
             ? false
             : true;
-        console.log("Button toggled: " + bool);
         this.setState({ShowRubric: bool});
     }
 
@@ -120,8 +118,7 @@ class ResolveGradeComponent extends React.Component {
               json: true
           };
 
-          request(options, (err, res, body) => { //probably do soemthing with error here
-              console.log("Submit button fired");
+          request(options, (err, res, body) => {
           });
 
       } else {
@@ -136,9 +133,6 @@ class ResolveGradeComponent extends React.Component {
     }
 
     handleGradeNumberChange(index, event){
-      console.log(event);
-      console.log(event.target.value);
-      console.log(index);
       let newGradeNumber = this.state.ResolutionGradeNumber;
       newGradeNumber[index] = event.target.value;
       this.setState({
@@ -148,9 +142,6 @@ class ResolveGradeComponent extends React.Component {
     }
 
     handleGradeTextChange(index,event){
-      console.log(event);
-      console.log(event.target.value);
-      console.log(index);
       let newGradeText = this.state.GradeText;
       newGradeText[index] = event.target.value;
       this.setState({
