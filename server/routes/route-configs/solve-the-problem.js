@@ -1,8 +1,8 @@
-const handler = require('../route-handlers/completed-task');
+const handler = require('../route-handlers/solve-the-problem');
 
 module.exports = {
-    route: '/task/complete/:taskId',
-    title: 'Completed Task',
+    route: '/task/solve/:taskId',
+    title: 'Solve the Problem',
     routeHandler: handler,
     access: {
         admins: true,

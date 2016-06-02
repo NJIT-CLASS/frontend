@@ -26,11 +26,12 @@ import ResolutionViewComponent from './resolutionViewComponent';
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
 const createProblemContainer = document.getElementById('create-task-container');
-const solveProblemContainer = document.getElementById('solve-task-container');
 const editProblemContainer = document.getElementById('edit-task-container');
+const solveProblemContainer = document.getElementById('solve-task-container');
 const gradeContainer = document.getElementById('grade-task-container');
+const gradedContainer = document.getElementById('graded-container');
 const disputeContainer = document.getElementById('dispute-task-container');
-const resolveGradeContainer = document.getElementById('revision-task-container');
+const resolveGradeContainer = document.getElementById('resolve-task-container');
 const completedContainer = document.getElementById('completed-task-container');
 
 /* Make all the methods that will call the api to get the appropriate data  here */
@@ -118,6 +119,117 @@ class TemplateContainer extends React.Component {
 
           );
         }
+        else if(solveProblemContainer){
+            renderComponents =(
+              <div>
+              <ProblemViewComponent TaskID = {this.props.TaskID}
+                                    apiUrl={this.props.apiUrl}
+                                    problemHeader="Problem"/>
+              <br />
+              <SolveProblemComponent TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}
+                                     UserID = {this.props.UserID} />
+             </div>
+            );
+        }
+        else if(gradeContainer){
+          renderComponents = (<div>
+              <ProblemViewComponent TaskID = {this.props.TaskID}
+                                  apiUrl={this.props.apiUrl}
+                                  problemHeader="Problem" />
+              <br />
+              <GradeSolutionComponent TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}
+                                     UserID = {this.props.UserID} />
+              <br />
+            </div>
+          );
+
+        }
+        else if(gradedContainer){
+          renderComponents=(<div>
+            <ResponseComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}/>
+            <br />
+            <GradedComponent TaskID = {this.props.TaskID}
+                                   apiUrl = {this.props.apiUrl}
+                                   UserID = {this.props.UserID} />
+            <br />
+            </div>
+          );
+        }
+        else if(disputeContainer){
+          renderComponents=(
+            <div>
+              <ProblemViewComponent TaskID = {this.props.TaskID}
+                                    apiUrl={this.props.apiUrl}
+                                    problemHeader="Problem"/>
+              <br />
+              <ResponseComponent TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}/>
+              <br />
+              <GradedComponent       TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}/>
+              <br />
+              <DisputeComponent     TaskID = {this.props.TaskID}
+                                    apiUrl = {this.props.apiUrl}
+                                    UserID = {this.props.UserID} />
+              <br />
+
+            </div>
+          );
+        }
+        else if(resolveGradeContainer){
+          renderComponents=(
+            <div>
+              <ProblemViewComponent TaskID = {this.props.TaskID}
+                                    apiUrl={this.props.apiUrl}
+                                    problemHeader="Problem"/>
+              <br />
+              <ResponseComponent TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}/>
+              <br />
+              <GradedComponent       TaskID = {this.props.TaskID}
+                                     apiUrl = {this.props.apiUrl}/>
+              <br />
+              <DisputeViewComponent  TaskID = {this.props.TaskID}
+                                    apiUrl = {this.props.apiUrl}
+                                    UserID = {this.props.UserID} />
+                                  <br/>
+              <ResolveGradeComponent TaskID = {this.props.TaskID}
+                                    apiUrl = {this.props.apiUrl}
+                                    UserID = {this.props.UserID} />
+                                  <br />
+
+            </div>
+
+          );
+        }
+        else if(completedContainer){
+            renderComponents=(
+              <div>
+                <ProblemViewComponent TaskID = {this.props.TaskID}
+                                      apiUrl={this.props.apiUrl}
+                                      problemHeader="Problem"/>
+                <br />
+                <ResponseComponent TaskID = {this.props.TaskID}
+                                       apiUrl = {this.props.apiUrl}/>
+                <br />
+                <GradedComponent       TaskID = {this.props.TaskID}
+                                       apiUrl = {this.props.apiUrl}/>
+                <br />
+                <DisputeViewComponent  TaskID = {this.props.TaskID}
+                                      apiUrl = {this.props.apiUrl}
+                                      UserID = {this.props.UserID} />
+                                    <br/>
+                <ResolutionViewComponent TaskID = {this.props.TaskID}
+                                      apiUrl = {this.props.apiUrl}
+                                      UserID = {this.props.UserID} />
+
+              </div>
+            );
+
+        }
         else{
           renderComponents =  (
             <div>
@@ -169,7 +281,7 @@ class TemplateContainer extends React.Component {
             </div>
 
 
-            );
+          );
         }
 
         return(
@@ -189,133 +301,6 @@ class TemplateContainer extends React.Component {
         );
 
       }
-
-
-
-
-
-
-
-
-
-  /*  <CreateProblemComponent TaskID = {this.props.TaskID}
-                            UserID = {this.props.UserID}
-                            TaskActivityID = {this.state.TaskActivityID}
-                            AssignmentID = {this.state.AssignmentID}
-                            SemesterID={this.state.SemesterID}
-                            apiUrl={this.props.apiUrl}
-                            />
-    <br />
-    <ProblemViewComponent TaskID = {this.props.TaskID}
-                          apiUrl={this.props.apiUrl}
-                          problemHeader="Problem"/>
-    <br />
-    <SolveProblemComponent TaskID = {this.props.TaskID}
-                           apiUrl = {this.props.apiUrl}
-                           UserID = {this.props.UserID} />
-    <br />
-    <EditProblemComponent TaskID = {this.props.TaskID}
-                           apiUrl = {this.props.apiUrl}
-                           UserID = {this.props.UserID} />
-    <br />
-    <ResponseComponent TaskID = {this.props.TaskID}
-                           apiUrl = {this.props.apiUrl}/>
-    <br />
-    <GradeSolutionComponent TaskID = {this.props.TaskID}
-                           apiUrl = {this.props.apiUrl}
-                           UserID = {this.props.UserID} />
-    <br />
-    <GradedComponent       TaskID = {this.props.TaskID}
-                           apiUrl = {this.props.apiUrl}/>
-                           */
-
-
-
-
-
-
-  /*
-  if(completedContainer){
-    //display everything
-    return (
-      <ProblemViewComponent />
-      <ResponseComponent />
-      <GradedComponent />
-      <DisputeResponseComponent />
-      <FinalGradeComponent />
-    );
-  }
-  else if(resolveGradeContainer){
-    return (
-      <ProblemViewComponent />
-      <ResponseComponent />
-      <GradedComponent />
-      <DisputeResponseComponent />
-    );
-  }
-  else if(disputeContainer){
-    return (
-      <ProblemViewComponent />
-      <ResponseComponent />
-      <GradedComponent />
-      <DisputeComponent />
-    );
-  }
-  else if(gradeContainer){
-    return (
-      <ProblemViewComponent />
-
-      <ResponseComponent />
-
-      <GradeSolutionComponent />
-
-
-
-      );
-  }
-  else if(editProblemContainer){
-    return(
-      <ProblemViewComponent />
-
-      <EditProblemComponent />
-
-      );
-  }
-  else if(solveProblemContainer){
-    return(
-      <ProblemViewComponent />
-
-      <SolveProblemContainer />
-
-
-      );
-
-  }
-  else if(createProblemContainer){
-    //display create problem complete
-    return(
-      <CreateProblemComponent TaskID = this.state.TaskID,
-                              TaskActivityID = this.state.TaskActivityID,
-                              CourseID = this.state.CourseID,
-                              CourseName = this.state.CourseName,
-                              CourseNumber = this.state.CourseNumber,
-                              AssignmentTitle = this.state.AssignmentTitle,
-                              AssignmentID = this.state.AssignmentID,
-                              TaskActivityType = this.state.TaskActivityType,
-                              SemesterID=this.state.SemesterID,
-                              SemesterName=this.state.SemesterName
-                              />
-
-    );
-  }
-  else{
-    //error container
-  }
-  */
-
-
-
-
 
 
 }

@@ -40,6 +40,7 @@ if(templateContainerEl){
   const userId = templateContainerEl.dataset.userId;
   const apiUrl = templateContainerEl.dataset.apiUrl;
   const taskId= templateContainerEl.dataset.taskId;
+  const sectionId= templateContainerEl.dataset.sectionId;
 
-  ReactDOM.render(<TemplateContainer UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
+  ReactDOM.render(<TemplateContainer SectionID={sectionId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
 }

@@ -13,7 +13,6 @@ const pages = [
     'confirm-password-reset',
     'course-page',
     'create-account',
-    'completed-task',
     'create-problem',
     'solve-problem',
     'edit-problem',
@@ -23,7 +22,13 @@ const pages = [
     'masquerade',
     'stop-masquerading',    'task-template',
     'create-a-problem',
-    'edit-the-problem'
+    'edit-the-problem',
+    'solve-the-problem',
+    'grade-the-response',
+    'dispute-your-grade',
+    'resolve-the-dispute',
+    'view-your-grade',
+    'completed-task'
 ];
 
 var pageConfigs = [];
