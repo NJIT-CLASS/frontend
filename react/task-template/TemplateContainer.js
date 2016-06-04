@@ -58,12 +58,7 @@ class TemplateContainer extends React.Component {
       getVariableData() {
           const options = {
               method: 'GET',
-              uri: this.props.apiUrl + '/api/taskTemplate/main/1' + this.props.TaskID,
-              qs: {
-                  courseID: this.state.CourseID,
-                  sectionID: this.props.SectionID,
-                  userID: this.props.UserID
-              },
+              uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
               json: true
           };
 
@@ -286,7 +281,7 @@ class TemplateContainer extends React.Component {
 
         return(
 
-          <div > {this.props.TaskID} - {this.props.UserID} - {this.props.SectionID}
+          <div >
             <HeaderComponent TaskID = {this.props.TaskID}
                              CourseName = {this.state.CourseName}
                              CourseName = {this.state.CourseName}

@@ -21,7 +21,7 @@ class DisputeViewComponent extends React.Component {
     getComponentData() {
         const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/dispute/1' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/dispute/' + this.props.TaskID,
             json: true
         };
 

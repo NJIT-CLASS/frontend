@@ -20,7 +20,7 @@ class HeaderComponent extends React.Component {
             } < /h2> < div className = "section-content section-header" >
             < div name = "course-title"
             className = "regular-text" > < b > Course: < /b>{this.props.CourseNumber} - {this.props.CourseName} - {this.props.SemesterName} </div >
-            < br / >
+            
             < /div> < /div>
         );
     }

@@ -1,7 +1,8 @@
+const consts = require('../../utils/constants');
 const handler = require('../route-handlers/view-your-grade');
 
 module.exports = {
-    route: '/task/graded/:taskId',
+    route: '/task/' + consts.TASK_TYPES.CRITIQUE + '/:taskId',
     title: 'View Your Grade',
     routeHandler: handler,
     access: {

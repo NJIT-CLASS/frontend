@@ -1,7 +1,8 @@
+const consts = require('../../utils/constants');
 const handler = require('../route-handlers/completed-task');
 
 module.exports = {
-    route: '/task/complete/:taskId',
+    route:  '/task/'+ consts.TASK_TYPES.COMPLETED +'/:taskId',
     title: 'Completed Task',
     routeHandler: handler,
     access: {

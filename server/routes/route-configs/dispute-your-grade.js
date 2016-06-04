@@ -1,7 +1,8 @@
+const consts = require('../../utils/constants');
 const handler = require('../route-handlers/dispute-your-grade');
 
 module.exports = {
-    route: '/task/dispute/:taskId',
+    route: '/task/' + consts.TASK_TYPES.DISPUTE + '/:taskId',
     title: 'Dispute Your Grade',
     routeHandler: handler,
     access: {

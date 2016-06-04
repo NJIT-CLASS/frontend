@@ -17,7 +17,7 @@ class ResponseComponent extends React.Component {
   getComponentData(){
     const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/responseView/1'+this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/responseView/'+this.props.TaskID,
             json: true
         };
 

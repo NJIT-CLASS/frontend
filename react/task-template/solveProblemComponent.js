@@ -5,6 +5,7 @@
 
 import React from 'react';
 import request from 'request';
+import Modal from '../shared/modal';
 
 class SolveProblemComponent extends React.Component {
   constructor(props){
@@ -39,64 +40,79 @@ class SolveProblemComponent extends React.Component {
   saveData(e) {
       e.preventDefault();
 
-      const inputError = this.state.UserSolution.length == 0 ? true : false;
-
-      if (inputError) {
-          return this.setState({
-              UserSolutionError: inputError
-          });
-      } else {
-          const options = {
-              method: 'PUT',
-              uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
-              body: {
-                  taskID: this.props.TaskID,
-                  userID: this.props.UserID,
-                  userCreatedProblem: this.state.UserCreatedProblem
-              },
-              json: true
-          };
-
-          request(options, (err, res, body) => {
-              console.log(req.statusCode);
-          });
+      if(this.state.UserSolution == null){
+        this.setState({
+          UserSolutionError: true
+        });
+        return;
       }
+
+      const options = {
+          method: 'PUT',
+          uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
+          body: {
+              taskID: this.props.TaskID,
+              userID: this.props.UserID,
+              userSolution: this.state.UserSolution
+          },
+          json: true
+      };
+
+      request(options, (err, res, body) => {
+      });
+
   }
 
   submitData(e) {
     e.preventDefault();
 
-    const inputError = this.state.UserSolution.length === 0 ? true : false;
+    if(this.state.UserSolution == null){
+      this.setState({
+        UserSolutionError: true
+      });
+      return;
+    }
+    
+    const inputError = this.state.UserSolution.length == 0 ? true : false;
 
-    if (inputError) {
-        return this.setState({
-            UserSolutionError: inputError
-        });
-    } else {
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/taskTemplate/solve/submit',
-            body: {
-                taskID: this.props.TaskID,
-                userID: this.props.UserID,
-                userSolution: this.state.UserSolution
-            },
-            json: true
+    if(inputError){
+      this.setState({
+        UserSolutionError: inputError
+      });
+      return;
+    }
+    else{
+      const options = {
+          method: 'POST',
+          uri: this.props.apiUrl + '/api/taskTemplate/solve/submit',
+          body: {
+              taskID: this.props.TaskID,
+              userID: this.props.UserID,
+              userSolution: this.state.UserSolution
+          },
+          json: true
         };
 
-        request(options, (err, res, body) => { //junk code
-            
-        });
+      request(options, (err, res, body) => {
+      });
     }
 }
 
 componentWillMount() {
     this.getComponentData();
 }
+modalToggle(){
+  this.setState({UserSolutionError: false})
+}
 
   render(){
+    let errorMessage = null;
+    if(this.state.UserSolutionError){
+      errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+    }
     return(
       <div>
+        {errorMessage}
         <form name="solveProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
           <div name="solveHeader">
             <h2 className="title"> <b>Solve the Problem</b> </h2>
@@ -107,8 +123,6 @@ componentWillMount() {
             <br />
             <button type="submit"><i className="fa fa-check"></i>Submit</button>
             <button type="button" onClick={this.saveData.bind(this)}>Save for Later</button>
-
-
          </div>
         </form>
       </div>

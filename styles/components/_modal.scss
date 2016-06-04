@@ -1,6 +1,8 @@
 // modal
 .modal-overlay {
-    position: absolute;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -53,4 +55,3 @@
 
 
 }
-

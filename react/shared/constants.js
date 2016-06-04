@@ -1,23 +1,27 @@
+const constants = require('../../server/utils/constants');
+
 export const TASK_TYPES = {
-    CREATE_PROBLEM: 'create_problem',
-    GRADE_PROBLEM: 'grade_problem',
-    SOLVE_PROBLEM:'solve_problem',
-    EDIT:'edit',
-    REVISE_AND_RESUBMIT:'revise_and_resubmit',
-    CRITIQUE:'critique',
-    DISPUTE:'dispute',
-    CONSOLIDATION:'consolidation',
-    RESOLVE_DISPUTE:'resolve_dispute'
+    CREATE_PROBLEM: constants.TASK_TYPES.CREATE_PROBLEM,
+    GRADE_PROBLEM: constants.TASK_TYPES.GRADE_PROBLEM,
+    SOLVE_PROBLEM:constants.TASK_TYPES.SOLVE_PROBLEM,
+    EDIT: constants.TASK_TYPES.EDIT,
+    REVISE_AND_RESUBMIT:constants.TASK_TYPES.REVISE_AND_RESUBMIT,
+    CRITIQUE:constants.TASK_TYPES.CRITIQUE,
+    DISPUTE: constants.TASK_TYPES.DISPUTE,
+    CONSOLIDATION:constants.TASK_TYPES.CONSOLIDATION,
+    RESOLVE_DISPUTE: constants.TASK_TYPES.RESOLVE_DISPUTE,
+    COMPLETED: constants.TASK_TYPES.RESOLVE_DISPUTE.COMPLETED
 };
 
 export const TASK_TYPE_TEXT = {
-    create_problem: 'Create Problem',
-    grade_problem: 'Grade Problem',
-    solve_problem: 'Solve problem',
-    edit:'Edit',
-    revise_and_resubmit: 'Revise and Submit',
-    critique:'Critique',
-    dispute:'Dispute',
-    consolidation:'Sonsolidation',
-    resolve_dispute:'Resolve Dispute'
+    create_problem: constants.TASK_TYPE_TEXT.create_problem,
+    grade_problem: constants.TASK_TYPE_TEXT.grade_problem,
+    solve_problem: constants.TASK_TYPE_TEXT.solve_problem,
+    edit: constants.TASK_TYPE_TEXT.edit,
+    revise_and_resubmit: constants.TASK_TYPE_TEXT.revise_and_resubmit,
+    critique:constants.TASK_TYPE_TEXT.critique,
+    dispute:constants.TASK_TYPE_TEXT.dispute,
+    consolidation: constants.TASK_TYPE_TEXT.consoltidation,
+    resolve_dispute:constants.TASK_TYPE_TEXT.resolve_dispute,
+    completed: constants.TASK_TYPE_TEXT.completed,
 };

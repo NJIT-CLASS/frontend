@@ -4,7 +4,9 @@
 
 import React from 'react';
 import request from 'request';
+
 import GradingFrameworkComponent from './gradingFrameworkComponent';
+import Modal from '../shared/modal';
 
 
 class DisputeComponent extends React.Component {
@@ -72,41 +74,63 @@ class DisputeComponent extends React.Component {
     saveData(e) {
         e.preventDefault();
 
-        const inputError = this.state.DisputeText.length == 0 ? true : false;
 
-        if (inputError) {
-            return this.setState({
-                DisputeError: inputError
+        if (this.state.DisputeText == null || this.state.DisputeGradeText == null || this.state.DisputeGradeNumber == null) {
+            this.setState({
+                DisputeError: true
             });
-        } else {
-            const options = {
-                method: 'PUT',
-                uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
-                body: {
-                    taskID: this.props.TaskID,
-                    userID: this.props.UserID,
-                    disputeText: this.state.DisputeText,
-                    disputeGradeText:this.state.DisputeGradeText,
-                    disputeGradeNumber: this.state.DisputeGradeNumber
-                },
-                json: true
-            };
-
-            request(options, (err, res, body) => {
-            });
+            return;
         }
+        const options = {
+            method: 'PUT',
+            uri: this.props.apiUrl + '/api/taskTemplate/solve/save',
+            body: {
+                taskID: this.props.TaskID,
+                userID: this.props.UserID,
+                disputeText: this.state.DisputeText,
+                disputeGradeText:this.state.DisputeGradeText,
+                disputeGradeNumber: this.state.DisputeGradeNumber
+            },
+            json: true
+        };
+
+        request(options, (err, res, body) => {
+        });
+
     }
 
     submitData(e) {
         e.preventDefault();
 
-        const inputError = this.state.DisputeText.length == 0 ? true : false;
-
-        if (inputError) {
-            return this.setState({
-                DisputeError: inputError
+        if (this.state.DisputeText == null || this.state.DisputeGradeText == null || this.state.DisputeGradeNumber == null) {
+            this.setState({
+                DisputeError: true
             });
-        } else {
+            return;
+        }
+
+        const disputeTextValid = this.state.DisputeText.length == 0 ? false : true;
+
+
+        let numCount = 0;
+        let textCount = 0;
+
+        let numbersValid = this.state.DisputeGradeNumber.map(function(number){
+          if (number.length != 0){
+             numCount += 1;
+          }
+        });
+        let textsValid = this.state.DisputeGradeText.map(function(str){
+          if (str.length != 0){
+             textCount += 1;
+          }
+        });
+
+        const numberValid = this.state.DisputeGradeNumber.length == numCount ? true: false;
+        const textValid = this.state.DisputeGradeText.length == textCount ? true : false;
+
+
+        if(numberValid && textValid && disputeTextValid){
             const options = {
                 method: 'POST',
                 uri: this.props.apiUrl + '/api/taskTemplate/solve/submit',
@@ -122,6 +146,12 @@ class DisputeComponent extends React.Component {
 
             request(options, (err, res, body) => {
             });
+        }
+        else{
+          this.setState({
+              DisputeError: true
+          });
+          return
         }
     }
 
@@ -154,7 +184,16 @@ class DisputeComponent extends React.Component {
       });
     }
 
+    modalToggle(){
+      this.setState({DisputeError: false})
+    }
+
     render() {
+      let errorMessage = null;
+      if(this.state.DisputeError){
+        errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+      }
+
       let rubric = null;
 
       let gradeCriteriaList = this.state.GradeCriteria.map(function(rule, index){
@@ -201,6 +240,7 @@ class DisputeComponent extends React.Component {
 
       return(
         <div className="section">
+          {errorMessage}
             <div name="disputeHeader">
               <h2 className="title"> <b>Justify your Dispute</b> </h2>
             </div>

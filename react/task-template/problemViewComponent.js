@@ -16,7 +16,7 @@ class ProblemViewComponent extends React.Component {
   getComponentData(){
     const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/problemView/1'+this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/problemView/' + this.props.TaskID,
             json: true
         };
 

@@ -5,6 +5,7 @@
 import React from 'react';
 import request from 'request';
 
+import Modal from '../shared/modal';
 import ProblemViewComponent  from './problemViewComponent';
 
 class EditProblemComponent extends React.Component {
@@ -36,41 +37,48 @@ class EditProblemComponent extends React.Component {
           });
       });
   }
-  saveData() {
+  saveData(e) {
       e.preventDefault();
 
-      const inputError = this.state.EditedProblem.length == 0 ? true : false;
-
-      if (inputError) {
-          return this.setState({
-              EditedProblemError: inputError
-          });
-      } else {
-          const options = {
-              method: 'PUT',
-              uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
-              body: {
-                  taskID: this.props.TaskID,
-                  userID: this.props.UserID,
-                  editedProblem: this.state.EditedProblem
-              },
-              json: true
-          };
-
-          request(options, (err, res, body) => {
-              console.log("Saved" + req.statusCode);
-          });
+      if(this.state.EditedProblem == null){
+        this.setState({
+          EditedProblemError: true
+        });
+        return;
       }
+      
+      const options = {
+          method: 'PUT',
+          uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
+          body: {
+              taskID: this.props.TaskID,
+              userID: this.props.UserID,
+              editedProblem: this.state.EditedProblem
+          },
+          json: true
+      };
+
+      request(options, (err, res, body) => {
+      });
+
   }
-  submitData() {
+  submitData(e) {
       e.preventDefault();
+
+      if(this.state.EditedProblem == null){
+        this.setState({
+          EditedProblemError: true
+        });
+        return;
+      }
 
       const inputError = this.state.EditedProblem.length == 0 ? true : false;
 
       if (inputError) {
-          return this.setState({
+          this.setState({
               EditedProblemError: inputError
           });
+          return;
       } else {
           const options = {
               method: 'POST',
@@ -84,7 +92,6 @@ class EditProblemComponent extends React.Component {
           };
 
           request(options, (err, res, body) => {
-              console.log("Submited" + req.statusCode);
           });
       }
   }
@@ -99,9 +106,17 @@ class EditProblemComponent extends React.Component {
           EditedProblem: event.target.value
       });
   }
+  modalToggle(){
+    this.setState({EditedProblemError:false})
+  }
 
   render(){
+    let errorMessage = null;
+    if(this.state.EditedProblemError){
+      errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+    }
     return(<div>
+            {errorMessage}
             <form name="editProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
             <div name="originalProblemHeader">
 

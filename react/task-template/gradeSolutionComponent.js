@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'request';
 
-
+import Modal from '../shared/modal';
 import GradingFrameworkComponent from './gradingFrameworkComponent';
 
 class GradeSolutionComponent extends React.Component {
@@ -22,7 +22,7 @@ class GradeSolutionComponent extends React.Component {
   getComponentData(){
     const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/grade/1' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/grade/' + this.props.TaskID,
             json: true
         };
 
@@ -41,26 +41,13 @@ class GradeSolutionComponent extends React.Component {
   saveData(e){
     e.preventDefault();
 
-    let numCount = 0;
-    let textCount = 0;
-    let numbersValid = this.state.GradeNumber.map(function(number){
-      if (number.length != 0){
-        numCount += 1;
-      }
-    });
-    let textsValid = this.state.GradeText.map(function(str){
-      if (str.length != 0){
-         textCount += 1;
-      }
-    });
-
-    const numberValid = this.state.GradeNumber.length == numCount ? true: false;
-    const textValid = this.state.GradeText.length == textCount ? true : false;
-
-
-
-    if(numberValid && textValid){
-      const options = {
+    if(this.state.GradeText == null || this.state.GradeNumber == null){
+      this.setState({
+        GradeError: true
+      });
+      return;
+    }
+    const options = {
           method: 'PUT',
           uri: this.props.apiUrl + '/api/taskTemplate/grade/save',
           body: {
@@ -75,12 +62,7 @@ class GradeSolutionComponent extends React.Component {
       request(options, (err, res, body) => {
       });
 
-    }
-    else{
-      return this.setState({
-        GradeError: true
-      });
-    }
+
 
   }
 
@@ -96,6 +78,13 @@ class GradeSolutionComponent extends React.Component {
     e.preventDefault();
     let numCount = 0;
     let textCount = 0;
+
+    if(this.state.GradeText == null || this.state.GradeNumber == null){
+      this.setState({
+        GradeError: true
+      });
+      return;
+    }
 
     let numbersValid = this.state.GradeNumber.map(function(number){
       if (number.length != 0){
@@ -126,15 +115,13 @@ class GradeSolutionComponent extends React.Component {
         };
 
       request(options, (err, res, body) => {
-
+        console.log("Data submittted for grading")
       });
     }
     else{
-      return this.setState({
+      this.setState({
         GradeError: true
       });
-
-
     }
   }
 
@@ -161,12 +148,19 @@ class GradeSolutionComponent extends React.Component {
     });
   }
 
-  render(){
+  modalToggle(){
+    this.setState({GradeError: false})
+  }
 
+  render(){
+    let errorMessage = null;
+    if(this.state.GradeError){
+      errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+    }
     return (
 
       <div className="section">
-
+          {errorMessage}
           <div className="title"><b>Grade the Solution</b></div>
           <div className="section-content">
 

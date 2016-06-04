@@ -41,7 +41,7 @@ button {
   border: 0;
   border-radius: 3px;
   display: flex;
-  border-color: #1ab394;
+  border-color: #ed5565;
   float: right bottom;
   color: #ffffff;
   font-size: 18px;
@@ -62,21 +62,20 @@ button {
   border: 0;
 }
 
-table tr{
-  border: hidden;
-}
-table tbody{
-  border: hidden;
-}
-table tr td{
-  border: hidden;
-}
 
 
 .invisible{
   overflow: hidden;
   box-sizing: border-box;
   margin: 10px;
-  display:flex;
+  width:100%;
   align-self: flex-end;
+
+  table tr{
+    border: hidden;
+
+  }
+  table tr td {
+    border: hidden;
+  }
 }
