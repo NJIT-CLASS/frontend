@@ -46,7 +46,7 @@ class EditProblemComponent extends React.Component {
         });
         return;
       }
-      
+
       const options = {
           method: 'PUT',
           uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
@@ -115,7 +115,7 @@ class EditProblemComponent extends React.Component {
     if(this.state.EditedProblemError){
       errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
     }
-    return(<div>
+    return(<div className="animate fadeInDown">
             {errorMessage}
             <form name="editProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
             <div name="originalProblemHeader">

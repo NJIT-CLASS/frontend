@@ -15,7 +15,8 @@ class GradedComponent extends React.Component {
       GradeNumber: [],
       GradeText:[],
       GradeCriteria: [],
-      TaskRubric:''
+      TaskRubric:'',
+      HideDisputeButton: this.props.HideDisputeButton ? true: false
     };
   }
 
@@ -43,7 +44,11 @@ class GradedComponent extends React.Component {
     let tableStyle = {
       backfaceVisibility: 'hidden'
     }
-    return(<div className="invisible">
+    let disputeButton = (<button type="button" className="dispute animate fadeInUp" onClick={()=>{location.href = '/task/dispute/'+this.props.TaskID}}> Dispute Grade </button>);
+    if(this.state.HideDisputeButton){
+      disputeButton=null;
+    }
+    return(<div className="invisible animate fadeInUp">
             <table border="0" cellPadding="0" cellSpacing="0" className="tab">
               <tbody>
                     <tr>
@@ -63,7 +68,7 @@ class GradedComponent extends React.Component {
                     </td>
                     </tr>
                     <tr>
-                      <td></td><td></td><td><button type="button" className="dispute" onClick={()=>{location.href = '/task/dispute/'+this.props.TaskID}}> Dispute Grade </button></td>
+                      <td></td><td></td><td>{disputeButton}</td>
                     </tr>
               </tbody>
             </table>

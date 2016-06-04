@@ -159,7 +159,7 @@ class GradeSolutionComponent extends React.Component {
     }
     return (
 
-      <div className="section">
+      <div className="section animate fadeInUp ">
           {errorMessage}
           <div className="title"><b>Grade the Solution</b></div>
           <div className="section-content">

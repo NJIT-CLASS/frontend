@@ -1,0 +1,222 @@
+.animate {
+ -webkit-animation-duration: 0.7s;
+ animation-duration: 0.7s;
+}
+/*=== Kindly Taken from: https://fabriceleven.com/dev/quickly-add-css-fade-in-animations/ by Alex Gurevich ===*/
+
+
+/*=== Optional Delays, change values here  ===*/
+.one {
+-webkit-animation-delay: 0.4s;
+-moz-animation-delay: 0.4s;
+animation-delay: 0.4s;
+}
+
+.two {
+-webkit-animation-delay: 1.7s;
+-moz-animation-delay: 1.7s;
+animation-delay: 1.7s;
+}
+
+.three {
+-webkit-animation-delay: 2.3s;
+-moz-animation-delay: 2.3s;
+animation-delay: 2.3s;
+}
+
+.four {
+-webkit-animation-delay: 3.3s;
+-moz-animation-delay: 3.3s;
+animation-delay: 3.3s;
+}
+
+/*=== Animations start here  ===*/
+/*=== FADE IN  ===*/
+@-webkit-keyframes fadeIn {
+ from {
+   opacity: 0;
+ }
+
+ to {
+   opacity: 1;
+ }
+}
+@keyframes fadeIn {
+ from {
+   opacity: 0;
+ }
+
+ to {
+   opacity: 1;
+ }
+}
+
+.fadeIn {
+ -webkit-animation-name: fadeIn;
+ animation-name: fadeIn;
+}
+
+
+/*=== FADE IN DOWN ===*/
+@-webkit-keyframes fadeInDown {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(0, -100%, 0);
+   transform: translate3d(0, -100%, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+@keyframes fadeInDown {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(0, -100%, 0);
+   transform: translate3d(0, -100%, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+
+.fadeInDown {
+ -webkit-animation-name: fadeInDown;
+ animation-name: fadeInDown;
+}
+
+/*==== FADE IN UP ===*/
+@-webkit-keyframes fadeInUp {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(0, 100%, 0);
+   transform: translate3d(0, 100%, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+@keyframes fadeInUp {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(0, 100%, 0);
+   transform: translate3d(0, 100%, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+
+.fadeInUp {
+ -webkit-animation-name: fadeInUp;
+ animation-name: fadeInUp;
+}
+
+/*=== FADE IN LEFT ===*/
+@-webkit-keyframes fadeInLeft {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(-100%, 0, 0);
+   transform: translate3d(-100%, 0, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+@keyframes fadeInLeft {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(-100%, 0, 0);
+   transform: translate3d(-100%, 0, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+
+.fadeInLeft {
+ -webkit-animation-name: fadeInLeft;
+ animation-name: fadeInLeft;
+}
+
+
+/*==== FADE IN RIGHT ===*/
+@-webkit-keyframes fadeInRight {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(100%, 0, 0);
+   transform: translate3d(100%, 0, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+@keyframes fadeInRight {
+ from {
+   opacity: 0;
+   -webkit-transform: translate3d(100%, 0, 0);
+   transform: translate3d(100%, 0, 0);
+ }
+
+ to {
+   opacity: 1;
+   -webkit-transform: none;
+   transform: none;
+ }
+}
+
+.fadeInRight {
+ -webkit-animation-name: fadeInRight;
+ animation-name: fadeInRight;
+}
+
+
+/* Kindly Taken From: http://stackoverflow.com/questions/31462136/getting-reactcsstransitiongroup-to-work-for-a-fade-in-transition-with-react-js by user1072337 */
+
+
+.example-enter {
+  opacity: 0.01;
+  transition: opacity .4s ease-in;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+}
+
+.example-leave {
+  opacity: 0;
+  transition: opacity .4s ease-in;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+}
+
+.example-appear {
+  opacity: 0.01;
+  transition: opacity .4s ease-in;
+}
+
+.example-appear.example-appear-active {
+  opacity: 1;
+}

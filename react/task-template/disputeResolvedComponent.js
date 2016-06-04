@@ -54,7 +54,7 @@ class DisputeViewComponent extends React.Component {
 
 
       return(
-        <div className="section">
+        <div className="section animate fadeInUp">
 
             <div name="disputeHeader">
               <h2 className="title"> <b>Reasons for Dispute</b> </h2>

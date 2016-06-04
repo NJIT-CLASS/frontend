@@ -154,7 +154,7 @@ class ResolveGradeComponent extends React.Component {
         errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
       }
         return (
-            <div className="section">
+            <div className="section animate fadeInDown">
               {errorMessage}
                 <div className="title">
                     <h2>Resolution Grade</h2>

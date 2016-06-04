@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'request';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
 /*
@@ -50,9 +51,11 @@ class GradingFrameworkComponent extends React.Component{
 
       if(this.state.ShowRubric){
         rubric = (
+
             <div name="taskRubric" className="regular-text">
               {this.props.TaskRubric}
             </div>
+
 
         );
       }
@@ -64,7 +67,9 @@ class GradingFrameworkComponent extends React.Component{
             <div >
               <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {rubricButtonText}</button>
               <br />
+              <ReactCSSTransitionGroup transitionName="example" transitionAppear={true}>
               {rubric}
+              </ReactCSSTransitionGroup>
               <br />
               {gradeCriteriaList}
               <br />
@@ -76,7 +81,7 @@ class GradingFrameworkComponent extends React.Component{
       );
 
       return(
-        <div>
+        <div className="animate fadeInUp">
           <form name="gradingFramework" role="form" onSubmit={this.props.submitData.bind(this)}>
             <div>
               {gradingComp}

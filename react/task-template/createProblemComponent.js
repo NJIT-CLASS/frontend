@@ -113,7 +113,7 @@ class CreateProblemComponent extends React.Component {
       errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
     }
     return(
-      <div>
+      <div className="animate fadeInDown">
         {errorMessage}
         <form name="createProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
           <div name="assignmentDescriptionHeader">

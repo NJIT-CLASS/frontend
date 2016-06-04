@@ -34,7 +34,7 @@ class ResponseComponent extends React.Component {
   }
 
   render(){
-    return(<div className="section">
+    return(<div className="section animate fadeInUp">
             <h2 className="title"> <b>Response </b> </h2>
             <div className="section-content">
               <div name="response-text" className="regular-text">{this.state.UserResponse}</div>

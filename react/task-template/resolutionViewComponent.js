@@ -47,7 +47,7 @@ class ResolutionViewComponent extends React.Component {
       );
     }, this);
 
-    return(<div className="section">
+    return(<div className="section animate fadeInUp">
             <h2 className="title"> <b>Resolution Grades</b> </h2>
             <div className="section-content">
               <div className="resoltuionGrades">

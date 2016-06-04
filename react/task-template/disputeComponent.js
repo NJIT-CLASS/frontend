@@ -239,7 +239,7 @@ class DisputeComponent extends React.Component {
       );
 
       return(
-        <div className="section">
+        <div className="section animate fadeInUp">
           {errorMessage}
             <div name="disputeHeader">
               <h2 className="title"> <b>Justify your Dispute</b> </h2>

@@ -72,7 +72,7 @@ class SolveProblemComponent extends React.Component {
       });
       return;
     }
-    
+
     const inputError = this.state.UserSolution.length == 0 ? true : false;
 
     if(inputError){
@@ -111,7 +111,7 @@ modalToggle(){
       errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
     }
     return(
-      <div>
+      <div className="animate fadeInDown">
         {errorMessage}
         <form name="solveProblemTask" role="form" className="section" onSubmit={this.submitData.bind(this)}>
           <div name="solveHeader">

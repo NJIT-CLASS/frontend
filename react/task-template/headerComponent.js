@@ -12,15 +12,15 @@ class HeaderComponent extends React.Component {
     }
 
     render() {
-        return ( < div className = "section" >
-            < h2 className = "title" > {
+        return ( <div className="section animate fadeInDown" >
+            <h2 className = "title" > {
                 this.props.TaskActivityType
             }: {
                 this.props.AssignmentTitle
             } < /h2> < div className = "section-content section-header" >
             < div name = "course-title"
             className = "regular-text" > < b > Course: < /b>{this.props.CourseNumber} - {this.props.CourseName} - {this.props.SemesterName} </div >
-            
+
             < /div> < /div>
         );
     }
