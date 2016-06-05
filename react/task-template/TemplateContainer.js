@@ -143,6 +143,10 @@ class TemplateContainer extends React.Component {
         }
         else if(gradedContainer){
           renderComponents=(<div>
+            <ProblemViewComponent TaskID = {this.props.TaskID}
+                                apiUrl={this.props.apiUrl}
+                                problemHeader="Problem" />
+            <br />
             <ResponseComponent TaskID = {this.props.TaskID}
                                    apiUrl = {this.props.apiUrl}/>
             <br />
@@ -164,7 +168,8 @@ class TemplateContainer extends React.Component {
                                      apiUrl = {this.props.apiUrl}/>
               <br />
               <GradedComponent       TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}/>
+                                     apiUrl = {this.props.apiUrl}
+                                     HideDisputeButton = {true}/>
               <br />
               <DisputeComponent     TaskID = {this.props.TaskID}
                                     apiUrl = {this.props.apiUrl}
@@ -185,7 +190,8 @@ class TemplateContainer extends React.Component {
                                      apiUrl = {this.props.apiUrl}/>
               <br />
               <GradedComponent       TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}/>
+                                     apiUrl = {this.props.apiUrl}
+                                     HideDisputeButton = {true}/>
               <br />
               <DisputeViewComponent  TaskID = {this.props.TaskID}
                                     apiUrl = {this.props.apiUrl}

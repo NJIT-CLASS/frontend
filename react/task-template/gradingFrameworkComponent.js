@@ -73,7 +73,7 @@ class GradingFrameworkComponent extends React.Component{
               <br />
               {gradeCriteriaList}
               <br />
-              <button type="button" onClick={this.props.submitData.bind(this)}><i className="fa fa-check"></i>Submit</button>
+              <button type="submit" ><i className="fa fa-check"></i>Submit</button>
               <button type="button" onClick={this.props.saveData.bind(this)}>Save for Later</button>
            </div>
 

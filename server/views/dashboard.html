@@ -43,7 +43,7 @@
 		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
 		<tbody>
       {{#each pendingTasksList}}
-      <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskID}}">{{TaskActivity.WorkflowActivity.Name}}</td><td>{{TaskActivity.Type}}</td><td>{{TaskID}}</td><td>{{EndDate}}</td><tr>
+      <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskID}}">{{TaskActivity.WorkflowActivity.Name}}</td><td>{{TaskActivity.Type}}</td><td>{{TaskID}}</td><td>{{dateFormat EndDate}}</td><tr>
         {{/each}}
       <!--
 			 <tr class="odd"><td><a href="/createproblem">Test Assignment 2 - Test</a></td><td>Create Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 14, 2016 8:05 PM">2 days </span></td> </tr>

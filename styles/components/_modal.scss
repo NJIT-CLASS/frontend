@@ -9,6 +9,7 @@
     bottom: 0;
     background: rgba(4,4,4,0.2);
     z-index: 1;
+  
 
     .modal-overlay-container {
         display: flex;
@@ -20,6 +21,7 @@
         min-width: 400px;
         background: white;
     }
+
 
     .modal-header {
         box-sizing: border-box;
