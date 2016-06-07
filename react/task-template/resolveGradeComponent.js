@@ -9,13 +9,34 @@ class ResolveGradeComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.state = { //change to GradeTaskData, DisputeTaskData,ResolveTaskData
+          DisputeTaskData:{
+            reason:"",
+            grades: {
+              FactualGrade:90
+            }
+          },
+          GradeTaskData: {
+                            graders:  [this.props.UserID, 1],
+                            gradingCriteria: ["Factual","Other"],
+                            8: {
+                                FactualGrade: 78,
+                                FactualGradeText: "Hi"
+                            },
+                            1:{
+                              FactualGrade: 78,
+                              FactualGradeText: "Hi"
+                            }
+                          },
+          ResolveTaskData:{
+            grades: {
+              FactualGrade:90,
+              FactualGradeText: "Excellent"
+            }
+          },
             GradeType: '',
-            ResolutionGradeText: [],
-            ResolutionGradeNumber: [],
             TaskRubric: "",
             ShowRubric: true,
-            GradeCriteria: [],
             ResolutionError:''
         };
     }
@@ -27,85 +48,109 @@ class ResolveGradeComponent extends React.Component {
         };
 
         request(options, (err, res, body) => {
-            this.setState({GradeType: body.result.gradeType, ResolutionGradeText: body.result.gradeText, GradeCriteria: body.result.gradeCriteria, ResolutionGradeNumber: body.result.gradeNumber, TaskRubric: body.result.taskRubric});
+            this.setState({
+                          GradeTaskData: body.result.gradeTaskData,
+                          DisputeTaskData: body.result.disputeTaskData,
+                          ResolveTaskData: body.result.ResolveTaskData,
+                          TaskRubric: body.result.taskRubric});
         });
     }
 
     saveData(e) {
         e.preventDefault();
 
-        if(this.state.ResolutionGradeText == null || this.state.ResolutionGradeNumber == null){
+        if(this.state.ResolveTaskData == null){
           this.setState({
             ResolutionError: true
           });
           return;
         }
 
-        const options = {
-            method: 'PUT',
-            uri: this.props.apiUrl + '/api/taskTemplate/resolve/save',
-            body: {
-                taskID: this.props.TaskID,
-                userID: this.props.UserID,
-                gradeNumber: this.state.ResolutionGradeNumber,
-                gradeText: this.state.ResolutionGradeText
-            },
-            json: true
-        };
 
-        request(options, (err, res, body) => {
-        });
+        let nullCount = 0;
+        let validData = false;
+
+        if(this.state.ResolveTaskData.grades == null){
+          this.setState({
+            ResolutionError: true
+          });
+          return;
+        }
+
+        for(let str in this.state.ResolveTaskData["grades"]){
+          if(this.state.ResolveTaskData["grades"][str] == ''){
+            nullCount++;
+          }
+        }
+
+        if(nullCount == 0){
+            validData = true;
+        }
 
 
+        if(validData){
+          const options = {
+              method: 'PUT',
+              uri: this.props.apiUrl + '/api/taskTemplate/resolve/save',
+              body: {
+                  taskID: this.props.TaskID,
+                  userID: this.props.UserID,
+                  resolveTaskData: this.state.ResolveTaskData
+              },
+              json: true
+          };
+
+          request(options, (err, res, body) => {
+          });
+        } else{
+          this.setState({
+            ResolutionError: true
+          });
+        }
 
     }
 
-    toggleRubric() {
-        const bool = this.state.ShowRubric
-            ? false
-            : true;
-        this.setState({ShowRubric: bool});
-    }
 
     submitData(e) {
       e.preventDefault();
 
-      if(this.state.ResolutionGradeText == null || this.state.ResolutionGradeNumber == null){
+      if(this.state.ResolveTaskData == null){
         this.setState({
           ResolutionError: true
         });
         return;
       }
 
-      let numCount = 0;
-      let textCount = 0;
-      let numbersValid = this.state.ResolutionGradeNumber.map(function(number) {
-          if (number.length != 0) {
-              numCount += 1;
-          }
-      });
-      let textsValid = this.state.ResolutionGradeText.map(function(str) {
-          if (str.length != 0) {
-              textCount += 1;
-          }
-      });
 
-      const numberValid = this.state.ResolutionGradeNumber.length == numCount
-          ? true
-          : false;
-      const textValid = this.state.ResolutionGradeText.length == textCount
-          ? true
-          : false;
+      let nullCount = 0;
+      let validData = false;
 
-      if (numberValid && textValid) {
+      if(this.state.ResolveTaskData.grades == null){
+        this.setState({
+          ResolutionError: true
+        });
+        return;
+      }
+
+      for(let str in this.state.ResolveTaskData.grades){
+        if(this.state.ResolveTaskData.grades[str] == ''){
+          nullCount++;
+        }
+      }
+
+      if(nullCount == 0){
+          validData = true;
+      }
+
+
+      if(validData){
           const options = {
               method: 'POST',
               uri: this.props.apiUrl + '/api/taskTemplate/resolve/submit',
               body: {
                   taskID: this.props.TaskID,
                   userID: this.props.UserID,
-                  gradeNumber: this.state.ResolutionGradeNumber,
-                  gradeText: this.state.ResolutionGradeText
+                  resolveTaskData: this.state.ResolveTaskData
               },
               json: true
           };
@@ -123,25 +168,30 @@ class ResolveGradeComponent extends React.Component {
 
     }
 
-    componentWillMount() {
+    /*componentWillMount() {
         this.getComponentData();
-    }
+    }*/
 
     handleGradeNumberChange(index, event){
-      let newGradeNumber = this.state.ResolutionGradeNumber;
-      newGradeNumber[index] = event.target.value;
+      if(event.target.value.length > 3 ){
+        return;
+      }
+      let newTaskData = this.state.ResolveTaskData;
+      newTaskData["grades"][index+"Grade"] = event.target.value;
+
       this.setState({
         ResolutionError: false,
-        ResolutionGradeNumber: newGradeNumber
+        ResolveTaskData: newTaskData
       });
     }
 
     handleGradeTextChange(index,event){
-      let newGradeText = this.state.ResolutionGradeText;
-      newGradeText[index] = event.target.value;
+      let newTaskData = this.state.ResolveTaskData;
+      newTaskData["grades"][index+"GradeText"] = event.target.value;
+
       this.setState({
         ResolutionError: false,
-        ResolutionGradeText: newGradeText
+        ResolveTaskData: newTaskData
       });
     }
 
@@ -160,9 +210,8 @@ class ResolveGradeComponent extends React.Component {
                     <h2>Resolution Grade</h2>
                 </div>
                 <div className="section-content">
-                    <GradingFrameworkComponent GradeText={this.state.ResolutionGradeText}
-                                                GradeNumber={this.state.ResolutionGradeNumber}
-                                                GradeCriteria={this.state.GradeCriteria}
+                    <GradingFrameworkComponent  GradeData={this.state.ResolveTaskData.grades}
+                                                GradeCriteria={this.state.GradeTaskData.gradingCriteria}
                                                 TaskRubric={this.state.TaskRubric}
                                                 saveData={this.saveData.bind(this)}
                                                 submitData={this.submitData.bind(this)}

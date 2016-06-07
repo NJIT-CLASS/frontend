@@ -13,11 +13,11 @@ class GradeViewComponent extends React.Component {
   render(){
 
 
-    let gradesList = this.props.GradeNumber.map(function(grade,index){
+    let gradesList = this.props.GradeCriteria.map(function(criteria,index){
       return (
-        <div key={index + 2000}><b>{this.props.GradeCriteria[index]} Grade:   </b>
-          <div key={index + 1000} className="faded-small">{grade}</div>
-          <div className="faded-big" key={index} >{this.props.GradeText[index]} </div>
+        <div key={index + 2000}><b>{criteria} Grade:   </b>
+          <div key={index + 1000} className="faded-small">{this.props.GradeData[(criteria + "Grade")]}</div>
+          <div className="faded-big" key={index} >{this.props.GradeData[(criteria + "GradeText")]} </div>
           <br />
           <br />
         </div>

@@ -18,7 +18,7 @@ import HeaderComponent from './headerComponent'
 import ResponseComponent from './responseComponent';
 import ProblemViewComponent from './problemViewComponent';
 import GradedComponent from './gradedComponent';
-import DisputeViewComponent from './disputeResolvedComponent';
+import DisputeViewComponent from './disputeViewComponent';
 import CompletedComponent from './completedComponent';
 import CommentComponent from './commentComponent';
 import ResolutionViewComponent from './resolutionViewComponent';
@@ -164,11 +164,12 @@ class TemplateContainer extends React.Component {
                                     apiUrl={this.props.apiUrl}
                                     problemHeader="Problem"/>
               <br />
-              <ResponseComponent TaskID = {this.props.TaskID}
+              <ResponseComponent      TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}/>
               <br />
               <GradedComponent       TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}
+                                     UserID = {this.props.UserID}
                                      HideDisputeButton = {true}/>
               <br />
               <DisputeComponent     TaskID = {this.props.TaskID}
@@ -191,6 +192,7 @@ class TemplateContainer extends React.Component {
               <br />
               <GradedComponent       TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}
+                                     UserID = {this.props.UserID}
                                      HideDisputeButton = {true}/>
               <br />
               <DisputeViewComponent  TaskID = {this.props.TaskID}
@@ -218,6 +220,7 @@ class TemplateContainer extends React.Component {
                 <br />
                 <GradedComponent       TaskID = {this.props.TaskID}
                                        apiUrl = {this.props.apiUrl}
+                                       UserID = {this.props.UserID}
                                        HideDisputeButton = {true}/>
                 <br />
                 <DisputeViewComponent  TaskID = {this.props.TaskID}
@@ -263,7 +266,8 @@ class TemplateContainer extends React.Component {
                                    UserID = {this.props.UserID} />
             <br />
             <GradedComponent       TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}/>
+                                   apiUrl = {this.props.apiUrl}
+                                   UserID = {this.props.UserID}/>
             <br />
             <DisputeComponent     TaskID = {this.props.TaskID}
                                   apiUrl = {this.props.apiUrl}

@@ -7,9 +7,13 @@ class ResolutionViewComponent extends React.Component {
     super(props);
 
     this.state = {
-      ResolutionGradeNumber: [],
-      ResolutionGradeText:[],
-      GradeCriteria: [],
+      ResolveTaskData: {
+        grades: {
+          FactualGrade:90,
+          FactualGradeText: "Excellent"
+        }
+      },
+      GradeCriteria: ["Factual","Other"],
       TaskRubric:''
     };
   }
@@ -23,23 +27,22 @@ class ResolutionViewComponent extends React.Component {
 
     request(options,(err,res,body)=>{
       this.setState({
-          ResolutionGradeNumber: body.result.gradeNumber,
-          ResolutionGradeText: body.result.gradeText,
+          ResolveTaskData: body.result.resolveTaskData,
           GradeCriteria: body.result.gradeCriteria,
           TaskRubric: body.result.taskRubric
       });
     });
   }
 
-  componentWillMount(){
+/*  componentWillMount(){
     this.getComponentData();
-  }
+  } */
   render(){
-    let gradesList = this.state.ResolutionGradeNumber.map(function(grade,index){
+    let gradesList = this.state.GradeCriteria.map(function(rule,index){
       return (
-        <div key={index + 2000}><b>{this.state.GradeCriteria[index]} Grade:   </b>
-          <div key={index + 1000} className="faded-small">{grade}</div>
-          <div className="faded-big" key={index} >{this.state.ResolutionGradeText[index]} </div>
+        <div key={index + 2000}><b>{rule} Grade:   </b>
+          <div key={index + 1000} className="faded-small">{this.state.ResolveTaskData.grades[rule + "Grade"]}</div>
+          <div className="faded-big" key={index} >{this.state.ResolveTaskData.grades[rule + "GradeText"]} </div>
           <br />
           <br />
         </div>

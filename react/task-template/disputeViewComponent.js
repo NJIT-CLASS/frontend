@@ -11,10 +11,14 @@ class DisputeViewComponent extends React.Component {
 
 
         this.state = {
-            DisputeText: "",
-            GradeCriteria:["","","",""],
-            DisputeGradeNumber:["","","",""],
-            DisputeGradeText:["","","",""],
+            DisputeTaskData: {
+              reason:"",
+              grades: {
+                FactualGrade:90,
+                FactualGradeText: "Excellent"
+              }
+            },
+            GradeCriteria:["Factual","Other"]
         };
     }
 
@@ -27,22 +31,23 @@ class DisputeViewComponent extends React.Component {
 
         request(options, (err, res, body) => {
             this.setState({
-                DisputeText: body.result.disputeText,
-                GradeCriteria: body.result.gradeCriteria,
-                DisputeGradeText: body.result.disputeGradeText,
-                DisputeGradeNumber: body.result.DisputeGradeNumber
+                DisputeTaskData: body.result.disputeTaskData,
+                GradeCriteria: body.result.gradeCriteria
             });
         });
 
     }
+    /*  componentWillMount(){
+        this.getComponentData();
+      }*/
 
     render(){
       let gradeCriteriaList = this.state.GradeCriteria.map(function(rule, index){
         return (
-          <div key={index + 2000}><b>{this.state.GradeCriteria[index]} Grade:   </b>
-            <div key={index + 1000} className="faded-small">{this.state.DisputeGradeNumber[index]}</div>
+          <div key={index + 2000}><b>{rule} Grade:   </b>
+            <div key={index + 1000} className="faded-small">{this.state.DisputeTaskData.grades[rule + "Grade"]}</div>
             <br />
-            <div className="faded-big" key={index} >{this.state.DisputeGradeText[index]}
+            <div className="faded-big" key={index} >{this.state.DisputeTaskData.grades[rule + "GradeText"]}
             </div>
             <br />
             <br />

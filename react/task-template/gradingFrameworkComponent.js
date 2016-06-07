@@ -7,8 +7,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
   PROPS:
   TaskRubric,
   GradeCriteria,
-  GradeText,
-  GradeNumber,
+  GradeData,
   handleGradeTextChange()
   handleGradeNumberChange()
   saveData()
@@ -33,13 +32,14 @@ class GradingFrameworkComponent extends React.Component{
 
     render(){
       let rubric = null;
-
-      let gradeCriteriaList = this.props.GradeCriteria.map(function(rule, index){
+      let gradeCriteriaList = null;
+      if(this.props.GradeData == {}){
+        gradeCriteriaList = this.props.GradeCriteria.map(function(rule, index){
         return (
-          <div key={index + 2000}><b>{this.props.GradeCriteria[index]} Grade:   </b>
-            <input type="text" key={index + 1000} className="number-input" value={this.props.GradeNumber[index]} onChange={this.props.handleGradeNumberChange.bind(this, index)} ></input>
+          <div key={index + 2000}><b>{rule} Grade:   </b>
+            <input type="text" key={index + 1000}  onChange={this.props.handleGradeNumberChange.bind(this, rule)} ></input>
             <br />
-            <textarea className="big-text-field" key={index} value={this.props.GradeText[index]} onChange={this.props.handleGradeTextChange.bind(this,index)} placeholder="Type your problem here ...">
+            <textarea className="big-text-field" key={index}  onChange={this.props.handleGradeTextChange.bind(this,rule)} placeholder="Type your problem here ...">
             </textarea>
             <br />
             <br />
@@ -47,6 +47,22 @@ class GradingFrameworkComponent extends React.Component{
 
         );
       }, this);
+      }
+      else{
+        gradeCriteriaList = this.props.GradeCriteria.map(function(rule, index){
+        return (
+          <div key={index + 2000}><b>{rule} Grade:   </b>
+            <input type="text" key={index + 1000} className="number-input" value={this.props.GradeData[(rule + "Grade")]} onChange={this.props.handleGradeNumberChange.bind(this, rule)} ></input>
+            <br />
+            <textarea className="big-text-field" key={index} value={this.props.GradeData[(rule + "GradeText")]} onChange={this.props.handleGradeTextChange.bind(this,rule)} placeholder="Type your problem here ...">
+            </textarea>
+            <br />
+            <br />
+          </div>
+
+        );
+      }, this);
+    }
 
 
       if(this.state.ShowRubric){
@@ -67,7 +83,7 @@ class GradingFrameworkComponent extends React.Component{
             <div >
               <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {rubricButtonText}</button>
               <br />
-              <ReactCSSTransitionGroup transitionName="example" transitionAppear={true}>
+              <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
               {rubric}
               </ReactCSSTransitionGroup>
               <br />

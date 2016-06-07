@@ -9,12 +9,15 @@ class GradeSolutionComponent extends React.Component {
     super(props);
 
     this.state = {
+      TaskData:{
+                        graders:  [this.props.UserID],
+                        gradingCriteria: ["Factual","Other"],
+                        8: {
+                        }
+                      },
       GradeType:'',
-      GradeText:[],
-      GradeNumber:[],
-      GradeCriteria: [],
       TaskRubric:'',
-      GradeError:'',
+      GradeError:false,
       ShowRubric: true
     };
   }
@@ -26,38 +29,59 @@ class GradeSolutionComponent extends React.Component {
             json: true
         };
 
-        request(options, (err, res, body) => {
-            this.setState({
-                GradeType: body.result.gradeType,
-                GradeText: body.result.gradeText,
-                GradeCriteria: body.result.gradeCriteria,
-                GradeNumber: body.result.gradeNumber,
-                TaskRubric: body.result.taskRubric
-            });
+
+
+
+
+    request(options, (err, res, body) => {
+        this.setState({
+            GradeType: body.result.gradeType,
+          TaskData: body.result.taskData,
+            TaskRubric: body.result.taskRubric
         });
+    });
   }
 
 
   saveData(e){
     e.preventDefault();
 
-    if(this.state.GradeText == null || this.state.GradeNumber == null){
+    let nullCount = 0;
+    let validData = false;
+
+    if(this.state.TaskData[this.props.UserID]==null){
+      this.setState({
+        GradeError: true
+      });
+      return;
+    }
+
+    for(let str in this.state.TaskData[this.props.UserID]){
+      if(this.state.TaskData[this.props.UserID][str] == ''){
+        nullCount++;
+      }
+    }
+
+    if(nullCount == 0){
+        validData = true;
+    }
+
+    if(!validData){
       this.setState({
         GradeError: true
       });
       return;
     }
     const options = {
-          method: 'PUT',
-          uri: this.props.apiUrl + '/api/taskTemplate/grade/save',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              gradeNumber: this.state.GradeNumber,
-              gradeText: this.state.GradeText
-          },
-          json: true
-        };
+        method: 'PUT',
+        uri: this.props.apiUrl + '/api/taskTemplate/grade/submit',
+        body: {
+            taskID: this.props.TaskID,
+            userID: this.props.UserID,
+            taskData: this.state.TaskData
+        },
+        json: true
+      };
 
       request(options, (err, res, body) => {
       });
@@ -76,46 +100,40 @@ class GradeSolutionComponent extends React.Component {
 
   submitData(e){
     e.preventDefault();
-    let numCount = 0;
-    let textCount = 0;
+    let nullCount = 0;
+    let validData = false;
 
-    if(this.state.GradeText == null || this.state.GradeNumber == null){
+    if(this.state.TaskData[this.props.UserID]==null){
       this.setState({
         GradeError: true
       });
       return;
     }
 
-    let numbersValid = this.state.GradeNumber.map(function(number){
-      if (number.length != 0){
-         numCount += 1;
+    for(let str in this.state.TaskData[this.props.UserID]){
+      if(this.state.TaskData[this.props.UserID][str] == ''){
+        nullCount++;
       }
-    });
-    let textsValid = this.state.GradeText.map(function(str){
-      if (str.length != 0){
-         textCount += 1;
-      }
-    });
+    }
 
-    const numberValid = this.state.GradeNumber.length == numCount ? true: false;
-    const textValid = this.state.GradeText.length == textCount ? true : false;
+    if(nullCount == 0){
+        validData = true;
+    }
 
 
-    if(numberValid && textValid){
+    if(validData){
       const options = {
           method: 'POST',
           uri: this.props.apiUrl + '/api/taskTemplate/grade/submit',
           body: {
               taskID: this.props.TaskID,
               userID: this.props.UserID,
-              gradeNumber: this.state.GradeNumber,
-              gradeText: this.state.GradeText
+              taskData: this.state.TaskData
           },
           json: true
         };
 
       request(options, (err, res, body) => {
-        console.log("Data submittted for grading")
       });
     }
     else{
@@ -130,21 +148,30 @@ class GradeSolutionComponent extends React.Component {
   }
 
   handleGradeNumberChange(index, event){
-
-    let newGradeNumber = this.state.GradeNumber;
-    newGradeNumber[index] = event.target.value;
+    if(event.target.value.length > 3 ){
+      return;
+    }
+    let newTaskData = this.state.TaskData;
+    let newGradeData = this.state.TaskData[this.props.UserID];
+    let indexer = index + "Grade";
+    newGradeData[indexer] = event.target.value;
+    newTaskData[this.props.UserID] = newGradeData;
     this.setState({
       GradeError: false,
-      GradeNumber: newGradeNumber
+      TaskData: newTaskData
     });
   }
 
   handleGradeTextChange(index,event){
-    let newGradeText = this.state.GradeText;
-    newGradeText[index] = event.target.value;
+    let newTaskData = this.state.TaskData;
+    let newGradeData= this.state.TaskData[this.props.UserID];
+    let indexer = index + "GradeText";
+    newGradeData[indexer] = event.target.value;
+
+    newTaskData[this.props.UserID] = newGradeData;
     this.setState({
       GradeError: false,
-      GradeText: newGradeText
+      TaskData: newTaskData
     });
   }
 
@@ -160,14 +187,13 @@ class GradeSolutionComponent extends React.Component {
     return (
 
       <div className="section animate fadeInUp ">
+        {this.state.TaskData[this.props.UserID]["FactualGradeText"]}
           {errorMessage}
           <div className="title"><b>Grade the Solution</b></div>
           <div className="section-content">
-
             <GradingFrameworkComponent TaskRubric={this.state.TaskRubric}
-                                      GradeCriteria={this.state.GradeCriteria}
-                                      GradeText={this.state.GradeText}
-                                      GradeNumber={this.state.GradeNumber}
+                                      GradeCriteria={this.state.TaskData.gradingCriteria}
+                                      GradeData={this.state.TaskData[this.props.UserID]}
                                       saveData={this.saveData.bind(this)}
                                       submitData={this.submitData.bind(this)}
                                       handleGradeNumberChange={this.handleGradeNumberChange.bind(this)}

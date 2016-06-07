@@ -12,9 +12,18 @@ class GradedComponent extends React.Component {
     super(props);
 
     this.state = {
-      GradeNumber: [],
-      GradeText:[],
-      GradeCriteria: [],
+      GradeTaskData: {
+                        graders:  [this.props.UserID, 1],
+                        gradingCriteria: ["Factual","Other"],
+                        8: {
+                            FactualGrade: 78,
+                            FactualGradeText: "Hi"
+                        },
+                        1:{
+                          FactualGrade: 78,
+                          FactualGradeText: "Hi"
+                        }
+                      },
       TaskRubric:'',
       HideDisputeButton: this.props.HideDisputeButton ? true: false
     };
@@ -29,18 +38,17 @@ class GradedComponent extends React.Component {
 
     request(options,(err,res,body)=>{
       this.setState({
-          GradeNumber: body.result.gradeNumber,
-          GradeText: body.result.gradeText,
-          GradeCriteria: body.result.gradeCriteria,
+          GradeTaskData: body.result.GradeTaskData,
           TaskRubric: body.result.taskRubric
       });
     });
   }
 
-  componentWillMount(){
+/*  componentWillMount(){
     this.getComponentData();
-  }
+  }*/
   render(){
+    let gradesView = null;
     let tableStyle = {
       backfaceVisibility: 'hidden'
     }
@@ -48,27 +56,32 @@ class GradedComponent extends React.Component {
     if(this.state.HideDisputeButton){
       disputeButton=null;
     }
+
+    let divPadding = [];
+    this.state.GradeTaskData.graders.forEach(function(){
+      divPadding.push((<td></td>));
+    });
+
+    if( this.state.GradeTaskData != {}){
+      gradesView = this.state.GradeTaskData.graders.map(function(grader, index){
+          return(
+            <td key={index +500}>
+              <GradeViewComponent     key={grader}
+                                      GradeData={this.state.GradeTaskData[grader]}
+                                      GradeCriteria={this.state.GradeTaskData.gradingCriteria}   />
+            </td>
+          );
+      }, this);
+      divPadding.pop();
+  }
     return(<div className="invisible animate fadeInUp">
             <table border="0" cellPadding="0" cellSpacing="0" className="tab">
               <tbody>
                     <tr>
-                    <td style={tableStyle}> <GradeViewComponent GradeNumber={this.state.GradeNumber}
-                                            GradeText={this.state.GradeText}
-                                            GradeCriteria={this.state.GradeCriteria}   />
-                    </td>
-                    <td>
-                       <GradeViewComponent GradeNumber={this.state.GradeNumber}
-                                            GradeText={this.state.GradeText}
-                                            GradeCriteria={this.state.GradeCriteria}  />
-                    </td>
-                    <td>
-                      <GradeViewComponent GradeNumber={this.state.GradeNumber}
-                                            GradeText={this.state.GradeText}
-                                            GradeCriteria={this.state.GradeCriteria} />
-                    </td>
+                    {gradesView}
                     </tr>
                     <tr>
-                      <td></td><td></td><td>{disputeButton}</td>
+                      {divPadding} <td>{disputeButton}</td>
                     </tr>
               </tbody>
             </table>
