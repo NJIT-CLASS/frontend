@@ -59,21 +59,25 @@ class TemplateContainer extends React.Component {
           const options = {
               method: 'GET',
               uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
+              qs: {
+                courseID: 1,
+                userID: 1,
+                sectionID: 1
+              },
               json: true
           };
 
           request(options, (err, res, body) => {
 
               this.setState({
-                  TaskActivityID: body.result.taskActivityID,
-                  CourseID: body.result.courseID,
-                  CourseName: body.result.courseName,
-                  CourseNumber: body.result.courseNumber,
-                  AssignmentTitle: body.result.assignmentTitle,
-                  AssignmentID: body.result.assignmentID,
-                  TaskActivityType: body.result.taskActivityType,
-                  SemesterID: body.result.semesterID,
-                  SemesterName: body.result.semesterName
+                  TaskActivityID: body.taskActivityID,
+                  CourseName: body.courseName,
+                  CourseNumber: body.courseNumber,
+                  AssignmentTitle: body.assignmentTitle,
+                  AssignmentID: body.assignmentID,
+                  TaskActivityType: body.taskActivityType,
+                  SemesterID: body.semesterID,
+                  SemesterName: body.semesterName
               });
           });
       }

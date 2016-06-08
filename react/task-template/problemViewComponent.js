@@ -34,7 +34,7 @@ class ProblemViewComponent extends React.Component {
   render(){
       return (
         <div className="section animate fadeInDown">
-          <h2 className="title"> <b>{this.props.problemHeader}: </b> </h2>
+          <h2 className="title">{this.props.problemHeader}:</h2>
           <div className="section-content">
             <div name="problem-text" className="regular-text">{this.state.UserProblem}</div>
             <br />

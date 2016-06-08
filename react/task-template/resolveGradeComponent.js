@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'request';
 
-import GradingFrameworkComponent from './gradingFrameworkComponent';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Modal from '../shared/modal';
 
 class ResolveGradeComponent extends React.Component {
@@ -9,220 +9,357 @@ class ResolveGradeComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { //change to GradeTaskData, DisputeTaskData,ResolveTaskData
-          DisputeTaskData:{
-            reason:"",
-            grades: {
-              FactualGrade:90
-            }
+        this.state = {
+          TaskData: {
+            field_titles: []
           },
-          GradeTaskData: {
-                            graders:  [this.props.UserID, 1],
-                            gradingCriteria: ["Factual","Other"],
-                            8: {
-                                FactualGrade: 78,
-                                FactualGradeText: "Hi"
-                            },
-                            1:{
-                              FactualGrade: 78,
-                              FactualGradeText: "Hi"
-                            }
-                          },
-          ResolveTaskData:{
-            grades: {
-              FactualGrade:90,
-              FactualGradeText: "Excellent"
-            }
-          },
-            GradeType: '',
-            TaskRubric: "",
-            ShowRubric: true,
-            ResolutionError:''
+          Instructions:'',
+          Rubric:'',
+          ShowRubric: false,
+          FieldRubrics: [],
+          InputError: false
         };
-    }
-    getComponentData() {
-        const options = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/resolve/' + this.props.TaskID,
-            json: true
-        };
+      }
 
-        request(options, (err, res, body) => {
-            this.setState({
-                          GradeTaskData: body.result.gradeTaskData,
-                          DisputeTaskData: body.result.disputeTaskData,
-                          ResolveTaskData: body.result.ResolveTaskData,
-                          TaskRubric: body.result.taskRubric});
-        });
-    }
+        getComponentData () {
+          const options = {
+                  method: 'GET',
+                  uri: this.props.apiUrl + '/api/taskTemplate/resolve/' + this.props.TaskID,
+                  json: true
+              };
 
-    saveData(e) {
-        e.preventDefault();
-
-        if(this.state.ResolveTaskData == null){
-          this.setState({
-            ResolutionError: true
+          request(options, (err, res, body) => {
+              this.setState({
+                  AssignmentDescription: body.assignmentDescription,
+                  Instructions: body.taskInstructions,
+                  Rubric: body.taskRubric,
+                  TaskData: body.taskData
+              });
           });
-          return;
         }
 
-
-        let nullCount = 0;
-        let validData = false;
-
-        if(this.state.ResolveTaskData.grades == null){
-          this.setState({
-            ResolutionError: true
-          });
-          return;
+        componentWillMount(){
+          this.getComponentData();
         }
 
-        for(let str in this.state.ResolveTaskData["grades"]){
-          if(this.state.ResolveTaskData["grades"][str] == ''){
-            nullCount++;
+        saveData(e){
+          e.preventDefault();
+          let validData = true;
+          let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+          if(this.state.TaskData.users == null){
+            this.state.TaskData.field_titles.forEach(function(title){
+              if(this.state.TaskData[title].requires_justification){
+                if(this.state.TaskData.content[title] == '' || this.state.TaskData.content[title + "_justification"] == ''){
+                  this.setState({
+                    InputError: true
+                  });
+                  validData = false;
+                  return;
+                }
+              }
+              else{
+                if(this.state.TaskData.content[title] == ''){
+                  this.setState({
+                    InputError: true
+                  });
+                  validData = false;
+                  return;
+                }
+              }
+            }, this);
+
+          }
+          else{
+              this.state.TaskData.field_titles.forEach(function(title){
+                if(this.state.TaskData[title].requires_justification){
+                  let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+                  if(this.state.TaskData[indexer][title] == ''){
+                    this.setState({
+                      InputError: true
+                    });
+                    validData = false;
+                    return;
+                  }
+                }
+                else {
+                  if(this.state.TaskData[indexer][title] == ''){
+                    this.setState({
+                      InputError: true
+                    });
+                    validData = false;
+                    return;
+                  }
+                }
+              });
+
+          }
+          if(validData){
+            const options = {
+                method: 'PUT',
+                uri: this.props.apiUrl + '/api/taskTemplate/resolve/save',
+                body: {
+                    taskID: this.props.TaskID,
+                    userID: this.props.UserID,
+                    taskData: this.state.TaskData
+                },
+                json: true
+              };
+
+            request(options, (err, res, body) => {
+            });
           }
         }
 
-        if(nullCount == 0){
-            validData = true;
+        submitData(e){
+          e.preventDefault();
+          let validData = true;
+          let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+          if(this.state.TaskData.users == null){
+            this.state.TaskData.field_titles.forEach(function(title){
+              if(this.state.TaskData[title].requires_justification){
+                let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+                if(this.state.TaskData[indexer][title] == ''){
+                  this.setState({
+                    InputError: true
+                  });
+                  validData = false;
+                  return;
+                }
+              }
+              else{
+                if(this.state.TaskData[indexer][title] == ''){
+                  this.setState({
+                    InputError: true
+                  });
+                  validData = false;
+                  return;
+                }
+              }
+            },this);
+
+          }
+          else{
+            this.state.TaskData.users.forEach(function(user){
+              this.state.TaskData.field_titles.forEach(function(title){
+                if(this.state.TaskData[title].requires_justification){
+                  if(this.state.TaskData[indexer][title] == '' ){
+                    this.setState({
+                      InputError: true
+                    });
+                    validData = false;
+                    return;
+                  }
+                }
+                else {
+                  if(this.state.TaskData[indexer][title] == ''){
+                    this.setState({
+                      InputError: true
+                    });
+                    validData = false;
+                    return;
+                  }
+                }
+              },this);
+            },this);
+          }
+
+            if(validData){
+              const options = {
+                  method: 'POST',
+                  uri: this.props.apiUrl + '/api/taskTemplate/resolve/submit',
+                  body: {
+                      taskID: this.props.TaskID,
+                      userID: this.props.UserID,
+                      taskData: this.state.TaskData
+                  },
+                  json: true
+                };
+
+              request(options, (err, res, body) => {
+              });
+            }
+
+          }
+
+
+        modalToggle(){
+          this.setState({InputError:false})
         }
 
+        toggleRubric(){
+          const bool = this.state.ShowRubric ? false : true;
 
-        if(validData){
-          const options = {
-              method: 'PUT',
-              uri: this.props.apiUrl + '/api/taskTemplate/resolve/save',
-              body: {
-                  taskID: this.props.TaskID,
-                  userID: this.props.UserID,
-                  resolveTaskData: this.state.ResolveTaskData
-              },
-              json: true
-          };
-
-          request(options, (err, res, body) => {
-          });
-        } else{
           this.setState({
-            ResolutionError: true
+            ShowRubric: bool
           });
         }
 
-    }
+        handleChange(index,event) {
+          let newTaskData = this.state.TaskData;
+          if(newTaskData.users == null){
+            newTaskData.content[index] = event.target.value;
+          }
+          else{
+              newTaskData[this.props.UserID][index] = event.target.value;
+          }
+
+            this.setState({
+              TaskData: newTaskData
+            });
+          }
+
+        toggleFieldRubric(title){
+              if(this.state.FieldRubrics[title] == null){
+                let newFieldRubrics = this.state.FieldRubrics;
+                newFieldRubrics[title] = true;
+                this.setState({
+                  FieldRubrics: newFieldRubrics
+                });
+              }
+              else{
+                let bool = this.state.FieldRubrics[title] ? false: true;
+                let newFieldRubrics = this.state.FieldRubrics;
+                newFieldRubrics[title] = bool;
+                this.setState({
+                  FieldRubrics: newFieldRubrics
+                });
+              }
+            }
+
+        render(){
+              let errorMessage = null;
+              let TA_rubric = null;
+              let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+              let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
+              //if invalid data, shows error message
+              if(this.state.InputError){
+                errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+              }
+
+              if(this.state.Rubric != '' && this.state.Rubric != null){
+                if(this.state.ShowRubric){
+                    TA_rubric = ( <div>
+                        <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
+                        <br />
+                        <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
+                        <div className="regular-text"> {this.state.Rubric}</div>
+                        </ReactCSSTransitionGroup>
+                        <br />
+                      </div>
+                    );
+                  }
+                  else{
+                    TA_rubric = (<button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
+                  );
+                  }
+                }
 
 
-    submitData(e) {
-      e.preventDefault();
+              //creating all input fields here
+              let fields = this.state.TaskData.field_titles.map(function(title, idx){
+                console.log(title);
+                let rubricView = null;
+                let justification = null;
+                let fieldTitle = '';
+                if(this.state.TaskData[title].show_title){
+                  if(this.state.TaskData[title].grade_type != null){
+                    fieldTitle = (<div key={idx + 600}><b>{title} Grade:   </b></div>);
+                  }
+                  else{
+                    fieldTitle = title;
+                  }
+                }
+                console.log(this.state.TaskData[title].grade_type);
+                if(this.state.TaskData[title].rubric != ''){
+                  let buttonTextHelper = this.state.TaskData[title].show_title ? title : '';
+                  let rubricButtonText = this.state.FieldRubrics[title] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
+                  if(this.state.FieldRubrics[title]){
+                    rubricView = ( <div>
+                        <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
+                        <br />
+                        <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
+                        <div className="regular-text"> {this.state.TaskData[title].rubric}</div>
+                        </ReactCSSTransitionGroup>
+                      </div>
+                    );
+                  }
+                  else{
+                    rubricView =(<button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
+                                  );
+                  }
 
-      if(this.state.ResolveTaskData == null){
-        this.setState({
-          ResolutionError: true
-        });
-        return;
-      }
+                }
 
-
-      let nullCount = 0;
-      let validData = false;
-
-      if(this.state.ResolveTaskData.grades == null){
-        this.setState({
-          ResolutionError: true
-        });
-        return;
-      }
-
-      for(let str in this.state.ResolveTaskData.grades){
-        if(this.state.ResolveTaskData.grades[str] == ''){
-          nullCount++;
-        }
-      }
-
-      if(nullCount == 0){
-          validData = true;
-      }
-
-
-      if(validData){
-          const options = {
-              method: 'POST',
-              uri: this.props.apiUrl + '/api/taskTemplate/resolve/submit',
-              body: {
-                  taskID: this.props.TaskID,
-                  userID: this.props.UserID,
-                  resolveTaskData: this.state.ResolveTaskData
-              },
-              json: true
-          };
-
-          request(options, (err, res, body) => {
-          });
-
-      } else {
-          this.setState({
-            ResolutionError: true
-          });
-          return;
-      }
+                if(this.state.TaskData[title].requires_justification){
+                  justification = ( <div>
+                                      <div>{this.state.TaskData[title].justification_instructions}</div>
+                                      <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[indexer][title+"_justification"]} onChange={this.handleChange.bind(this, (title+"_justification"))} placeholder="Type your problem here ...">
+                                       </textarea>
+                                  </div>);
+                }
 
 
-    }
+                if(this.state.TaskData[title].input_type == "numeric"){
+                  if(this.state.TaskData[title].grade_type == "grade"){
+                      return (<div key={idx+200}>
+                        <br />
+                        <div className="regular-text">{this.state.TaskData[title].instructions}</div>
+                        <br />
+                        {rubricView}
+                        <br/>
+                        <div>{fieldTitle} </div>
+                        <input type="text"  key={idx} className="number-input" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="...">
+                        </input>
+                        <br key={idx+500}/>
+                        {justification}
+                      </div>
+                      );
+                    }
+                    else if(this.state.TaskData[title].grade_type == "rating"){
+                      //add stars logic later
+                    }
 
-    /*componentWillMount() {
-        this.getComponentData();
-    }*/
+                }
+                else if(this.state.TaskData[title].input_type == "text"){
+                  return (<div key={idx+200}>
+                    <br />
+                    <div>{fieldTitle} </div>
+                    <div className="regular-text">{this.state.TaskData[title].instructions}</div>
+                    <br />
+                    {rubricView}
+                    <br/>
+                    <textarea key={idx} className="big-text-field" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="Type your problem here ...">
+                    </textarea>
+                    <br key={idx+500}/>
+                    {justification}
+                  </div>
+                  );
+                }
+              }, this);
 
-    handleGradeNumberChange(index, event){
-      if(event.target.value.length > 3 ){
-        return;
-      }
-      let newTaskData = this.state.ResolveTaskData;
-      newTaskData["grades"][index+"Grade"] = event.target.value;
 
-      this.setState({
-        ResolutionError: false,
-        ResolveTaskData: newTaskData
-      });
-    }
-
-    handleGradeTextChange(index,event){
-      let newTaskData = this.state.ResolveTaskData;
-      newTaskData["grades"][index+"GradeText"] = event.target.value;
-
-      this.setState({
-        ResolutionError: false,
-        ResolveTaskData: newTaskData
-      });
-    }
-
-    modalToggle(){
-      this.setState({ResolutionError: false})
-    }
-    render() {
-      let errorMessage = null;
-      if(this.state.ResolutionError){
-        errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
-      }
-        return (
-            <div className="section animate fadeInDown">
-              {errorMessage}
-                <div className="title">
-                    <h2>Resolution Grade</h2>
+              return(
+                <div className="animate fadeInUp">
+                  {errorMessage}
+                  <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
+                    <div >
+                      <h2 className="title">Resolve the Dispute </h2>
+                    </div>
+                    <div className="section-content">
+                      <br />
+                      {this.state.Instructions}
+                      <br />
+                      {TA_rubric}
+                      <br />
+                        {fields}
+                      <br />
+                      <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
+                      <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+                   </div>
+                  </form>
                 </div>
-                <div className="section-content">
-                    <GradingFrameworkComponent  GradeData={this.state.ResolveTaskData.grades}
-                                                GradeCriteria={this.state.GradeTaskData.gradingCriteria}
-                                                TaskRubric={this.state.TaskRubric}
-                                                saveData={this.saveData.bind(this)}
-                                                submitData={this.submitData.bind(this)}
-                                                handleGradeNumberChange={this.handleGradeNumberChange.bind(this)}
-                                                handleGradeTextChange={this.handleGradeTextChange.bind(this)}
-                                                />
-                </div>
-            </div>
-        );
-    }
-
+              );
+            }
 }
 
 export default ResolveGradeComponent;
