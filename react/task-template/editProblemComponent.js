@@ -13,15 +13,12 @@ class EditProblemComponent extends React.Component {
       super(props);
 
       this.state = {
-        AssignmentDescription: '',
-        TaskActivityData: {
+        TaskActivityFields: {
           field_titles: []
         },
         TaskData: {
 
         },
-        Instructions:'',
-        Rubric:'',
         ShowRubric: false,
         FieldRubrics: [],
         InputError: false
@@ -29,29 +26,33 @@ class EditProblemComponent extends React.Component {
     }
 
       getComponentData () {
-        const options = {
+      /*  const options = {
                 method: 'GET',
-                uri: this.props.apiUrl + '/api/taskTemplate/edit/' + this.props.TaskID,
+                uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
                 json: true
             };
 
-        request(options, (err, res, body) => {
-          let tdata = JSON.parse(body.taskData);
-          let tAdata = body.taskActivityData;
-          if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
-              tAdata.field_titles.forEach(function(title){
-                tdata[title] = tAdata[title].default_content;
-              });
+        request(options, (err, res, body) => {*/
+        let tdata = this.props.TaskData;
+        let tAdata = this.props.TaskActivityFields;
+        if(tdata.constructor !== Object){
+          tdata = JSON.parse(this.props.TaskData)
+        }
+        if(tAdata.constructor !== Object){
+          tAdata = JSON.parse(this.props.TaskActivityFields)
+        }
 
-          }
-            this.setState({
-                AssignmentDescription: body.assignmentDescription,
-                Instructions: body.taskInstructions,
-                Rubric: body.taskRubric,
-                TaskData: tdata,
-                TaskActivityData: tAdata
+        if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
+            tAdata.field_titles.forEach(function(title){
+              tdata[title] = tAdata[title].default_content;
             });
+
+        }
+        this.setState({
+            TaskData: tdata,
+            TaskActivityFields: tAdata
         });
+        //});
       }
 
       componentWillMount(){
@@ -62,9 +63,9 @@ class EditProblemComponent extends React.Component {
         e.preventDefault();
         let validData = true;
 
-        this.state.TaskActivityData.field_titles.forEach(function(title){
+        this.state.TaskActivityFields.field_titles.forEach(function(title){
 
-          if(this.state.TaskActivityData[title].requires_justification){
+          if(this.state.TaskActivityFields[title].requires_justification){
             if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0 ) || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
               this.setState({
                 InputError: true
@@ -89,8 +90,8 @@ class EditProblemComponent extends React.Component {
 
         if(validData){
           const options = {
-              method: 'PUT',
-              uri: this.props.apiUrl + '/api/taskTemplate/edit/save',
+              method: 'POST',
+              uri: this.props.apiUrl + '/api/taskTemplate/create/save',
               body: {
                   taskid: this.props.TaskID,
                   userid: this.props.UserID,
@@ -100,6 +101,10 @@ class EditProblemComponent extends React.Component {
             };
 
           request(options, (err, res, body) => {
+            if(res.statusCode != 200){
+              this.setState({InputError: true});
+              return;
+            }
           });
         }
       }
@@ -107,9 +112,9 @@ class EditProblemComponent extends React.Component {
       submitData(e){
         e.preventDefault();
         let validData = true;
-        this.state.TaskActivityData.field_titles.forEach(function(title){
+        this.state.TaskActivityFields.field_titles.forEach(function(title){
 
-          if(this.state.TaskActivityData[title].requires_justification){
+          if(this.state.TaskActivityFields[title].requires_justification){
             if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0 ) || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
               this.setState({
                 InputError: true
@@ -136,7 +141,7 @@ class EditProblemComponent extends React.Component {
           if(validData){
             const options = {
                 method: 'POST',
-                uri: this.props.apiUrl + '/api/taskTemplate/edit/submit',
+                uri: this.props.apiUrl + '/api/taskTemplate/create/submit',
                 body: {
                     taskid: this.props.TaskID,
                     userid: this.props.UserID,
@@ -146,6 +151,7 @@ class EditProblemComponent extends React.Component {
               };
 
             request(options, (err, res, body) => {
+
             });
           }
 
@@ -166,11 +172,11 @@ class EditProblemComponent extends React.Component {
 
 
       handleContentChange(index,event) {
-        if(this.state.TaskActivityData[index] != null && this.state.TaskActivityData[index].input_type == "numeric"){
+        if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].input_type == "numeric"){
             if(isNaN(event.target.value)){
               return;
             }
-            if(event.target.value < this.state.TaskActivityData[index].grade_min || event.target.value > this.state.TaskActivityData[index].grade_max){
+            if(event.target.value < this.state.TaskActivityFields[index].grade_min || event.target.value > this.state.TaskActivityFields[index].grade_max){
                 return;
             }
           }
@@ -220,17 +226,18 @@ class EditProblemComponent extends React.Component {
             let indexer =  "content";
             let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
             //if invalid data, shows error message
+
             if(this.state.InputError){
               errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
             }
 
-            if(this.state.Rubric != '' && this.state.Rubric != null){
+            if(this.props.Rubric != '' && this.props.Rubric != null){
               if(this.state.ShowRubric){
                   TA_rubric = ( <div>
                       <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
                       <br />
                       <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-                      <div className="regular-text"> {this.state.Rubric}</div>
+                      <div className="regular-text"> {this.props.Rubric}</div>
                       </ReactCSSTransitionGroup>
                       <br />
                     </div>
@@ -244,29 +251,29 @@ class EditProblemComponent extends React.Component {
 
 
             //creating all input fields here
-            let fields = this.state.TaskActivityData.field_titles.map(function(title, idx){
+            let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
               let rubricView = null;
               let justification = null;
               let fieldTitle = '';
 
-              if(this.state.TaskActivityData[title].show_title){
-                if(this.state.TaskActivityData[title].grade_type != null){
-                  fieldTitle = (<div key={idx + 600}><b>{title} Grade:   </b></div>);
+              if(this.state.TaskActivityFields[title].show_title){
+                if(this.state.TaskActivityFields[title].grade_type != null){
+                  fieldTitle = title +" Grade";
                 }
                 else{
                   fieldTitle = title;
                 }
               }
 
-              if(this.state.TaskActivityData[title].rubric != ''){
-                let buttonTextHelper = this.state.TaskActivityData[title].show_title ? title : '';
+              if(this.state.TaskActivityFields[title].rubric != ''){
+                let buttonTextHelper = this.state.TaskActivityFields[title].show_title ? title : '';
                 let rubricButtonText = this.state.FieldRubrics[title] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
                 if(this.state.FieldRubrics[title]){
                   rubricView = ( <div>
                       <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
                       <br />
                       <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-                      <div className="regular-text"> {this.state.TaskActivityData[title].rubric}</div>
+                      <div className="regular-text"> {this.state.TaskActivityFields[title].rubric}</div>
                       </ReactCSSTransitionGroup>
                       <br />
                     </div>
@@ -279,32 +286,31 @@ class EditProblemComponent extends React.Component {
 
               }
 
-              if(this.state.Instructions != '' && this.state.Instructions != null){
-                TA_instructions = (<div className="regular-text">
-                      {this.state.Instructions}
+              if(this.props.Instructions != '' && this.props.Instructions != null){
+                TA_instructions = (<div className="regular-text instructions">
+                      Insructions: {this.props.Instructions}
                       <br />
                 </div>);
               }
 
-              if(this.state.AssignmentDescription != undefined && this.state.AssignmentDescription != '' && this.state.AssignmentDescription != null){
-                TA_assignmentDescription = (<div className="regular-text">
-                      {this.state.AssignmentDescription}
-                      <br />
+              if(this.props.AssignmentDescription != undefined && this.props.AssignmentDescription != '' && this.props.AssignmentDescription != null){
+                TA_assignmentDescription = (<div className="regular-text assignmentDescription">
+                      Description: {this.props.AssignmentDescription}
                       <br />
                 </div>);
               }
 
-              if(this.state.TaskActivityData[title].requires_justification){
+              if(this.state.TaskActivityFields[title].requires_justification){
                 if(this.state.TaskData[title][1] == ''){
                 justification = ( <div>
-                                    <div>{this.state.TaskActivityData[title].justification_instructions}</div>
-                                    <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityData[title].default_content[1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
+                                    <div>{this.state.TaskActivityFields[title].justification_instructions}</div>
+                                    <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityFields[title].default_content[1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
                                      </textarea>
                                 </div>);
                               }
                 else {
                   justification = ( <div>
-                                      <div>{this.state.TaskActivityData[title].justification_instructions}</div>
+                                      <div>{this.state.TaskActivityFields[title].justification_instructions}</div>
                                       <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[title][1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
                                        </textarea>
                                   </div>);
@@ -312,11 +318,11 @@ class EditProblemComponent extends React.Component {
               }
 
 
-              if(this.state.TaskActivityData[title].input_type == "numeric"){
-                if(this.state.TaskActivityData[title].grade_type == "grade"){
+              if(this.state.TaskActivityFields[title].input_type == "numeric"){
+                if(this.state.TaskActivityFields[title].grade_type == "grade"){
                   let fieldInput = null;
                   if(this.state.TaskData[title][0] == null){
-                    fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
+                    fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityFields[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
                     </input>);
                   }
                   else{
@@ -327,7 +333,7 @@ class EditProblemComponent extends React.Component {
                   return (
                     <div key={idx+200}>
                       <br />
-                      <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
+                      <div className="regular-text">{this.state.TaskActivityFields[title].instructions}</div>
                       <br />
                       {rubricView}
                       <br/>
@@ -338,15 +344,17 @@ class EditProblemComponent extends React.Component {
                     </div>
                     );
                   }
-                  else if(this.state.TaskActivityData[title].grade_type == "rating"){
+                  else if(this.state.TaskActivityFields[title].grade_type == "rating"){
                     //add stars logic later
                   }
 
               }
-              else if(this.state.TaskActivityData[title].input_type == "text"){
+              else if(this.state.TaskActivityFields[title].input_type == "text"){
                 let fieldInput = null;
+                console.log(this.state.TaskData[title]);
+                console.log(title);
                 if(this.state.TaskData[title][0] == null){
-                  fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
+                  fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityFields[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
                   </textarea>)
                 }
                 else{
@@ -356,8 +364,8 @@ class EditProblemComponent extends React.Component {
 
                 return (<div key={idx+200}>
                   <br />
-                  <div>{fieldTitle} </div>
-                  <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
+                  <div key={idx + 600}><b>{fieldTitle}</b></div>
+                  <div className="regular-text">{this.state.TaskActivityFields[title].instructions}</div>
                   <br />
                   {rubricView}
                   <br/>
@@ -391,6 +399,7 @@ class EditProblemComponent extends React.Component {
               </div>
             );
           }
+
 
 }
 

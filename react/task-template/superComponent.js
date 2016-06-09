@@ -1,16 +1,25 @@
-/* This component will get the user's response to the problem. It is shown only
-* on a solve-problem task. It makes a GET request to get the stored data, a PUT
-* request to save data for later, and a POST request to submit data.
+/* This component is show when the tasks is to create the problem. It will show
+* the assignment description, the rubric, the instructions, and a text area. The
+* component will be able to make a PUT request to save the data for later, a GET
+* request to get the initial data, and a POST request for final submission.
 */
-
 import React from 'react';
 import request from 'request';
 import Modal from '../shared/modal';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-class SolveProblemComponent extends React.Component {
-  constructor(props){
+class SuperComponent extends React.Component {
+  constructor (props){
     super(props);
+    /*
+    PROPS:  -TaskData
+            -TaskActivityFields (TaskAcitivtyData)
+            -ComponentTitle
+            -AssignmentDescription
+            -Instructions
+            -Rubric
+
+    */
 
     this.state = {
       TaskActivityFields: {
@@ -379,11 +388,11 @@ class SolveProblemComponent extends React.Component {
 
 
           return(
-            <div className="animate fadeInUp">
+            <div className="animate fadeInDown">
               {errorMessage}
               <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
                 <div >
-                  <h2 className="title">Solve the Problem </h2>
+                  <h2 className="title">{this.props.ComponentTitle} </h2>
                 </div>
                 <div className="section-content">
                   {TA_assignmentDescription}
@@ -399,6 +408,7 @@ class SolveProblemComponent extends React.Component {
             </div>
           );
         }
+
 }
 
-export default SolveProblemComponent;
+export default SuperComponent;

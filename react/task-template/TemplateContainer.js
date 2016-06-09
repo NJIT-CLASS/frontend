@@ -5,6 +5,8 @@ This Container is the main component.It holds all the other components and decid
 import React from 'react';
 import request from 'request';
 
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
+
 //Input Components: These can be interactive with the user;
 import CreateProblemComponent from './createProblemComponent';
 import EditProblemComponent from './editProblemComponent';
@@ -12,6 +14,7 @@ import SolveProblemComponent from './solveProblemComponent';
 import GradeSolutionComponent from './gradeSolutionComponent';
 import ResolveGradeComponent from './resolveGradeComponent';
 import DisputeComponent from './disputeComponent';
+import SuperComponent from './superComponent';
 
 //Display Components: These only display data retrived from the database. Not interactive.
 import HeaderComponent from './headerComponent'
@@ -42,6 +45,7 @@ class TemplateContainer extends React.Component {
               //universal variables - used in all the components
               //Need to pass in TaskID,SectionID, UserID from HTML, route-handler, and main.js
               TaskActivityID: null,
+              Loaded: false,
               CourseID: null,
               CourseName: '',
               CourseNumber: '',
@@ -50,26 +54,42 @@ class TemplateContainer extends React.Component {
               TaskActivityType: '',
               SemesterID: null,
               SemesterName: '',
-              TaskActivityName:''
+              TaskActivityName:'',
+              Data:{
 
+              }
           }
       }
 
       getVariableData() {
-          const options = {
-              method: 'GET',
-              uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
-              qs: {
-                courseID:1, //this.props.CourseID,
-                userID:1, //this.props.UserID,
-                sectionID:1, //this.props.SectionID
-              },
-              json: true
-          };
+        const options = {
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
+            qs: {
+              courseID:1, //this.props.CourseID,
+              userID:1, //this.props.UserID,
+              sectionID:1, //this.props.SectionID
+            },
+            json: true
+        };
 
-          request(options, (err, res, body) => {
+        request(options, (err, res, body) => {
 
-              this.setState({
+          if(true /*this.state.taskActivityType == TASK_TYPES.CREATE_PROBLEM*/){
+            const options2 = {
+                      method: 'GET',
+                      uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
+                      json: true
+                  };
+
+              request(options2, (err, res, bod) => {
+                let newData = this.state.Data;
+                let taskprops = [bod.taskData,bod.taskActivityData,bod.assignmentDescription,bod.taskInstructions, bod.taskRubric];
+                newData[this.props.TaskID] = taskprops;
+                this.setState({
+                  //set create's task data to pass down
+                  Data: newData,
+                  Loaded:true,
                   TaskActivityID: body.taskActivityID,
                   CourseName: body.courseName,
                   CourseNumber: body.courseNumber,
@@ -79,27 +99,55 @@ class TemplateContainer extends React.Component {
                   SemesterID: body.semesterID,
                   SemesterName: body.semesterName,
                   TaskActivityName: body.taskActivityName
-              });
-          });
+                  });
+                });
+
+          }
+        });
       }
 
 
       componentWillMount() { //get the database data before component renders
-          this.getVariableData();
+        this.getVariableData();
+
 
       }
 
       render(){
         let renderComponents = null;
+        if(!this.state.Loaded){
+          renderComponents = (<div></div>);
 
+          return(
+
+            <div >
+              <HeaderComponent TaskID = {this.props.TaskID}
+                               CourseName = {this.state.CourseName}
+                               CourseName = {this.state.CourseName}
+                                CourseNumber = {this.state.CourseNumber}
+                                AssignmentTitle = {this.state.AssignmentTitle}
+                                TaskActivityType = {this.state.TaskActivityType}
+                                SemesterName={this.state.SemesterName}
+                                TaskActivityName= {this.state.TaskActivityName} />
+              <br />
+              {renderComponents}
+            </div>
+
+          );
+
+        }
         if(createProblemContainer){
           renderComponents = (
-            <CreateProblemComponent TaskID = {this.props.TaskID}
+            <SuperComponent         TaskID = {this.props.TaskID}
                                     UserID = {this.props.UserID}
-                                    TaskActivityID = {this.state.TaskActivityID}
-                                    AssignmentID = {this.state.AssignmentID}
-                                    SemesterID={this.state.SemesterID}
+                                    ComponentTitle="Create the Problem"
+                                    TaskData = {this.state.Data[this.props.TaskID][0]}
+                                    TaskActivityFields = {this.state.Data[this.props.TaskID][1]}
+                                    AssignmentDescription = {this.state.Data[this.props.TaskID][2]}
+                                    Instructions = {this.state.Data[this.props.TaskID][3]}
+                                    Rubric= {this.state.Data[this.props.TaskID][4]}
                                     apiUrl={this.props.apiUrl}
+
                                     />
 
           );
