@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'request';
+import {Router, Redirect} from 'react-router';
 
 import Modal from '../shared/modal';
 import GradingFrameworkComponent from './gradingFrameworkComponent';
@@ -10,8 +11,12 @@ class GradeSolutionComponent extends React.Component {
     super(props);
 
     this.state = {
-      TaskData: {
+      AssignmentDescription: '',
+      TaskActivityData: {
         field_titles: []
+      },
+      TaskData: {
+
       },
       Instructions:'',
       Rubric:'',
@@ -29,11 +34,20 @@ class GradeSolutionComponent extends React.Component {
           };
 
       request(options, (err, res, body) => {
+        let tdata = JSON.parse(body.taskData);
+        let tAdata = body.taskActivityData;
+        if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
+            tAdata.field_titles.forEach(function(title){
+              tdata[title] = tAdata[title].default_content;
+            });
+
+        }
           this.setState({
               AssignmentDescription: body.assignmentDescription,
               Instructions: body.taskInstructions,
               Rubric: body.taskRubric,
-              TaskData: body.taskData
+              TaskData: tdata,
+              TaskActivityData: tAdata
           });
       });
     }
@@ -45,68 +59,46 @@ class GradeSolutionComponent extends React.Component {
     saveData(e){
       e.preventDefault();
       let validData = true;
-      let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-      if(this.state.TaskData.users == null){
-        this.state.TaskData.field_titles.forEach(function(title){
-          if(this.state.TaskData[title].requires_justification){
-            if(this.state.TaskData.content[title] == '' || this.state.TaskData.content[title + "_justification"] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
+
+      this.state.TaskActivityData.field_titles.forEach(function(title){
+
+        if(this.state.TaskActivityData[title].requires_justification){
+          if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '') || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
           }
-          else{
-            if(this.state.TaskData.content[title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-        }, this);
 
       }
-      else{
-        this.state.TaskData.users.forEach(function(user){
-          this.state.TaskData.field_titles.forEach(function(title){
-            if(this.state.TaskData[title].requires_justification){
-              let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-              if(this.state.TaskData[indexer][title] == ''){
-                this.setState({
-                  InputError: true
-                });
-                validData = false;
-                return;
-              }
-            }
-            else {
-              if(this.state.TaskData[indexer][title] == ''){
-                this.setState({
-                  InputError: true
-                });
-                validData = false;
-                return;
-              }
-            }
-          });
-        });
-      }
+        else {
+          if(this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == ''){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
+          }
+        }
+
+      },this);
+
+
       if(validData){
         const options = {
             method: 'PUT',
             uri: this.props.apiUrl + '/api/taskTemplate/grade/save',
             body: {
-                taskID: this.props.TaskID,
-                userID: this.props.UserID,
+                taskid: this.props.TaskID,
+                userid: this.props.UserID,
                 taskData: this.state.TaskData
             },
             json: true
           };
 
         request(options, (err, res, body) => {
+          <Redirect from="/task/grade_problem/:taskId" to="/dashboard" />
         });
       }
     }
@@ -114,54 +106,31 @@ class GradeSolutionComponent extends React.Component {
     submitData(e){
       e.preventDefault();
       let validData = true;
-      let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-      if(this.state.TaskData.users == null){
-        this.state.TaskData.field_titles.forEach(function(title){
-          if(this.state.TaskData[title].requires_justification){
+      this.state.TaskActivityData.field_titles.forEach(function(title){
 
-            if(this.state.TaskData.content[title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
+        if(this.state.TaskActivityData[title].requires_justification){
+          if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '') || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
           }
-          else{
-            if(this.state.TaskData.content[title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-        },this);
 
       }
-      else{
-          this.state.TaskData.field_titles.forEach(function(title){
-            if(this.state.TaskData[title].requires_justification){
-              let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-              if(this.state.TaskData[indexer][title] == '' ){
-                this.setState({
-                  InputError: true
-                });
-                validData = false;
-                return;
-              }
-            }
-            else {
-              if(this.state.TaskData[indexer][title] == ''){
-                this.setState({
-                  InputError: true
-                });
-                validData = false;
-                return;
-              }
-            }
-          },this);
-      }
+        else {
+          if(this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' ){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
+          }
+        }
+
+
+
+      },this);
 
         if(validData){
           const options = {
@@ -178,7 +147,6 @@ class GradeSolutionComponent extends React.Component {
           request(options, (err, res, body) => {
           });
         }
-
       }
 
 
@@ -194,19 +162,35 @@ class GradeSolutionComponent extends React.Component {
       });
     }
 
-    handleChange(index,event) {
-      let newTaskData = this.state.TaskData;
-      if(newTaskData.users == null){
-        newTaskData.content[index] = event.target.value;
-      }
-      else{
-          newTaskData[this.props.UserID][index] = event.target.value;
-      }
 
-        this.setState({
+    handleContentChange(index,event) {
+      if(this.state.TaskActivityData[index] != null && this.state.TaskActivityData[index].input_type == "numeric"){
+          if(isNaN(event.target.value)){
+            return;
+          }
+          if(event.target.value < this.state.TaskActivityData[index].grade_min || event.target.value > this.state.TaskActivityData[index].grade_max){
+              return;
+          }
+        }
+
+      let newTaskData = this.state.TaskData;
+      newTaskData[index][0] = event.target.value;
+      this.setState({
           TaskData: newTaskData
         });
       }
+
+      handleJustificationChange(index,event) {
+        let newTaskData = this.state.TaskData;
+        newTaskData[index][1] = event.target.value;
+
+
+          this.setState({
+            TaskData: newTaskData
+          });
+        }
+
+
 
     toggleFieldRubric(title){
           if(this.state.FieldRubrics[title] == null){
@@ -229,7 +213,9 @@ class GradeSolutionComponent extends React.Component {
     render(){
           let errorMessage = null;
           let TA_rubric = null;
-          let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
+          let TA_assignmentDescription = null;
+          let TA_instructions = null;
+          let indexer =  "content";
           let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
           //if invalid data, shows error message
           if(this.state.InputError){
@@ -256,30 +242,31 @@ class GradeSolutionComponent extends React.Component {
 
 
           //creating all input fields here
-          let fields = this.state.TaskData.field_titles.map(function(title, idx){
-            console.log(title);
+          let fields = this.state.TaskActivityData.field_titles.map(function(title, idx){
             let rubricView = null;
             let justification = null;
             let fieldTitle = '';
-            if(this.state.TaskData[title].show_title){
-              if(this.state.TaskData[title].grade_type != null){
+
+            if(this.state.TaskActivityData[title].show_title){
+              if(this.state.TaskActivityData[title].grade_type != null){
                 fieldTitle = (<div key={idx + 600}><b>{title} Grade:   </b></div>);
               }
               else{
                 fieldTitle = title;
               }
             }
-            console.log(this.state.TaskData[title].grade_type);
-            if(this.state.TaskData[title].rubric != ''){
-              let buttonTextHelper = this.state.TaskData[title].show_title ? title : '';
+
+            if(this.state.TaskActivityData[title].rubric != ''){
+              let buttonTextHelper = this.state.TaskActivityData[title].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[title] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
               if(this.state.FieldRubrics[title]){
                 rubricView = ( <div>
                     <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
                     <br />
                     <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-                    <div className="regular-text"> {this.state.TaskData[title].rubric}</div>
+                    <div className="regular-text"> {this.state.TaskActivityData[title].rubric}</div>
                     </ReactCSSTransitionGroup>
+                    <br />
                   </div>
                 );
               }
@@ -290,46 +277,89 @@ class GradeSolutionComponent extends React.Component {
 
             }
 
-            if(this.state.TaskData[title].requires_justification){
+            if(this.state.Instructions != '' && this.state.Instructions != null){
+              TA_instructions = (<div className="regular-text">
+                    {this.state.Instructions}
+                    <br />
+              </div>);
+            }
+
+            if(this.state.AssignmentDescription != undefined && this.state.AssignmentDescription != '' && this.state.AssignmentDescription != null){
+              TA_assignmentDescription = (<div className="regular-text">
+                    {this.state.AssignmentDescription}
+                    <br />
+                    <br />
+              </div>);
+            }
+
+            if(this.state.TaskActivityData[title].requires_justification){
+              if(this.state.TaskData[title][1] == ''){
               justification = ( <div>
-                                  <div>{this.state.TaskData[title].justification_instructions}</div>
-                                  <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[indexer][title+"_justification"]} onChange={this.handleChange.bind(this, (title+"_justification"))} placeholder="Type your problem here ...">
+                                  <div>{this.state.TaskActivityData[title].justification_instructions}</div>
+                                  <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityData[title].default_content[1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
                                    </textarea>
                               </div>);
+                            }
+              else {
+                justification = ( <div>
+                                    <div>{this.state.TaskActivityData[title].justification_instructions}</div>
+                                    <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[title][1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
+                                     </textarea>
+                                </div>);
+              }
             }
 
 
-            if(this.state.TaskData[title].input_type == "numeric"){
-              if(this.state.TaskData[title].grade_type == "grade"){
-                  return (<div key={idx+200}>
+            if(this.state.TaskActivityData[title].input_type == "numeric"){
+              if(this.state.TaskActivityData[title].grade_type == "grade"){
+                let fieldInput = null;
+                if(this.state.TaskData[title][0] == null){
+                  fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
+                  </input>);
+                }
+                else{
+                  fieldInput = (<input type="text"  key={idx} className="number-input" value={this.state.TaskData[title][0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
+                  </input>);
+                }
+
+                return (
+                  <div key={idx+200}>
                     <br />
-                    <div className="regular-text">{this.state.TaskData[title].instructions}</div>
+                    <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
                     <br />
                     {rubricView}
                     <br/>
                     <div>{fieldTitle} </div>
-                    <input type="text"  key={idx} className="number-input" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="...">
-                    </input>
+                    {fieldInput}
                     <br key={idx+500}/>
                     {justification}
                   </div>
                   );
                 }
-                else if(this.state.TaskData[title].grade_type == "rating"){
+                else if(this.state.TaskActivityData[title].grade_type == "rating"){
                   //add stars logic later
                 }
 
             }
-            else if(this.state.TaskData[title].input_type == "text"){
+            else if(this.state.TaskActivityData[title].input_type == "text"){
+              let fieldInput = null;
+              if(this.state.TaskData[title][0] == null){
+                fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
+                </textarea>)
+              }
+              else{
+                fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskData[title][0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
+                </textarea>)
+              }
+
               return (<div key={idx+200}>
                 <br />
                 <div>{fieldTitle} </div>
-                <div className="regular-text">{this.state.TaskData[title].instructions}</div>
+                <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
                 <br />
                 {rubricView}
                 <br/>
-                <textarea key={idx} className="big-text-field" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="Type your problem here ...">
-                </textarea>
+                {fieldInput}
                 <br key={idx+500}/>
                 {justification}
               </div>
@@ -343,12 +373,11 @@ class GradeSolutionComponent extends React.Component {
               {errorMessage}
               <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
                 <div >
-                  <h2 className="title">Grade the Problem </h2>
+                  <h2 className="title">Grade the Solution </h2>
                 </div>
                 <div className="section-content">
-                  <br />
-                  {this.state.Instructions}
-                  <br />
+                  {TA_assignmentDescription}
+                  {TA_instructions}
                   {TA_rubric}
                   <br />
                     {fields}
@@ -360,7 +389,6 @@ class GradeSolutionComponent extends React.Component {
             </div>
           );
         }
-
 }
 
 export default GradeSolutionComponent;

@@ -14,7 +14,7 @@ class HeaderComponent extends React.Component {
     render() {
         return ( <div className="section animate fadeInDown" >
             <h2 className = "title" > {
-                this.props.TaskActivityType
+                this.props.TaskActivityName
             }: {
                 this.props.AssignmentTitle
             } < /h2> < div className = "section-content section-header" >

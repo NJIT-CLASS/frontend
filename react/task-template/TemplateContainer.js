@@ -19,7 +19,6 @@ import ResponseComponent from './responseComponent';
 import ProblemViewComponent from './problemViewComponent';
 import GradedComponent from './gradedComponent';
 import DisputeViewComponent from './disputeViewComponent';
-import CompletedComponent from './completedComponent';
 import CommentComponent from './commentComponent';
 import ResolutionViewComponent from './resolutionViewComponent';
 
@@ -50,7 +49,8 @@ class TemplateContainer extends React.Component {
               AssignmentID: null,
               TaskActivityType: '',
               SemesterID: null,
-              SemesterName: ''
+              SemesterName: '',
+              TaskActivityName:''
 
           }
       }
@@ -60,9 +60,9 @@ class TemplateContainer extends React.Component {
               method: 'GET',
               uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
               qs: {
-                courseID: 1,
-                userID: 1,
-                sectionID: 1
+                courseID:1, //this.props.CourseID,
+                userID:1, //this.props.UserID,
+                sectionID:1, //this.props.SectionID
               },
               json: true
           };
@@ -77,7 +77,8 @@ class TemplateContainer extends React.Component {
                   AssignmentID: body.assignmentID,
                   TaskActivityType: body.taskActivityType,
                   SemesterID: body.semesterID,
-                  SemesterName: body.semesterName
+                  SemesterName: body.semesterName,
+                  TaskActivityName: body.taskActivityName
               });
           });
       }
@@ -303,7 +304,8 @@ class TemplateContainer extends React.Component {
                               CourseNumber = {this.state.CourseNumber}
                               AssignmentTitle = {this.state.AssignmentTitle}
                               TaskActivityType = {this.state.TaskActivityType}
-                              SemesterName={this.state.SemesterName} />
+                              SemesterName={this.state.SemesterName}
+                              TaskActivityName= {this.state.TaskActivityName} />
             <br />
             {renderComponents}
           </div>

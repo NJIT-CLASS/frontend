@@ -9,20 +9,24 @@ class ProblemViewComponent extends React.Component {
     super(props);
 
     this.state = {
-      UserProblem: ''
+      TaskActivityData:{
+        field_titles:[]
+      },
+      TaskData:{}
     };
   }
 
   getComponentData(){
     const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/problemView/' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
             json: true
         };
 
         request(options, (err, res, body) => {
             this.setState({
-                UserProblem: body.result.problemText
+                TaskData: body.taskData,
+                TaskActivityData:body.taskActivityData
             });
         });
   }
@@ -32,12 +36,27 @@ class ProblemViewComponent extends React.Component {
   }
 
   render(){
+    let fields = this.state.TaskActivityData.field_titles.map(function(title, idx){
+
+      if(this.state.TaskActivityData[title].input_type == "text"){
+        let fieldView = (<div key={idx} className="regular-text"> {this.state.TaskData[title][0]}
+      </div>);
+
+
+        return (<div key={idx+200}>
+          {fieldView}
+          <br key={idx+500}/>
+        </div>
+        );
+
+      }
+    }, this);
+
       return (
         <div className="section animate fadeInDown">
           <h2 className="title">{this.props.problemHeader}:</h2>
           <div className="section-content">
-            <div name="problem-text" className="regular-text">{this.state.UserProblem}</div>
-            <br />
+            <div name="problem-text" className="regular-text">{fields}</div>
             <br />
           </div>
         </div>

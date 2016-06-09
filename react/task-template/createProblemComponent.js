@@ -14,114 +14,68 @@ class CreateProblemComponent extends React.Component {
 
     this.state = {
       AssignmentDescription: '',
+      TaskActivityData: {
+        field_titles: []
+      },
+      TaskData: {
+
+      },
       Instructions:'',
       Rubric:'',
       ShowRubric: false,
-      TaskData: {
-        field_titles: [],
-      },
-      InputError: false,
-      FieldRubrics: {}
+      FieldRubrics: [],
+      InputError: false
     };
   }
 
-  getComponentData () {
-    const options = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
-            json: true
-        };
-
-    request(options, (err, res, body) => {
-        this.setState({
-            AssignmentDescription: body.assignmentDescription,
-            Instructions: body.taskInstructions,
-            Rubric: body.taskRubric,
-            TaskData: body.taskData
-        });
-    });
-  }
-
-  componentWillMount(){
-    this.getComponentData();
-  }
-
-  saveData(e){
-    e.preventDefault();
-    let validData = true;
-    if(this.state.TaskData.users == null){
-      this.state.TaskData.field_titles.forEach(function(title){
-        if(this.state.TaskData[title].requires_justification){
-          let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-          if(this.state.TaskData[indexer][title] == ''){
-            this.setState({
-              InputError: true
-            });
-            validData = false;
-            return;
-          }
-        }
-        else{
-          if(this.state.TaskData.content[title] == ''){
-            this.setState({
-              InputError: true
-            });
-            validData = false;
-            return;
-          }
-        }
-      }, this);
-
-    }
-    else{
-        this.state.TaskData.field_titles.forEach(function(title){
-          if(this.state.TaskData[title].requires_justification){
-            let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-            if(this.state.TaskData[indexer][title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-          else {
-            if(this.state.TaskData[indexer][title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-        });
-    }
-    if(validData){
+    getComponentData () {
       const options = {
-          method: 'PUT',
-          uri: this.props.apiUrl + '/api/taskTemplate/create/save',
-          body: {
-              taskID: this.props.TaskID,
-              userID: this.props.UserID,
-              taskData: this.state.TaskData
-          },
-          json: true
-        };
+              method: 'GET',
+              uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
+              json: true
+          };
 
       request(options, (err, res, body) => {
+        let tdata = JSON.parse(body.taskData);
+        let tAdata = body.taskActivityData;
+        if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
+            tAdata.field_titles.forEach(function(title){
+              tdata[title] = tAdata[title].default_content;
+            });
+
+        }
+          this.setState({
+              AssignmentDescription: body.assignmentDescription,
+              Instructions: body.taskInstructions,
+              Rubric: body.taskRubric,
+              TaskData: tdata,
+              TaskActivityData: tAdata
+          });
       });
     }
-  }
 
-  submitData(e){
-    e.preventDefault();
-    let validData = true;
-    let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-    if(this.state.TaskData.users == null){
-      this.state.TaskData.field_titles.forEach(function(title){
-        if(this.state.TaskData[title].requires_justification){
-          let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-          if(this.state.TaskData[indexer][title] == ''){
+    componentWillMount(){
+      this.getComponentData();
+    }
+
+    saveData(e){
+      e.preventDefault();
+      let validData = true;
+
+      this.state.TaskActivityData.field_titles.forEach(function(title){
+
+        if(this.state.TaskActivityData[title].requires_justification){
+          if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0 ) || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
+          }
+
+      }
+        else {
+          if(this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0){
             this.setState({
               InputError: true
             });
@@ -129,242 +83,322 @@ class CreateProblemComponent extends React.Component {
             return;
           }
         }
-        else{
-          if(this.state.TaskData.content[title] == ''){
-            this.setState({
-              InputError: true
-            });
-            validData = false;
-            return;
-          }
-        }
+
       },this);
 
-    }
-    else{
-        this.state.TaskData.field_titles.forEach(function(title){
-          if(this.state.TaskData[title].requires_justification){
-            let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-            if(this.state.TaskData[indexer][title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-          else {
-            if(this.state.TaskData[indexer][title] == ''){
-              this.setState({
-                InputError: true
-              });
-              validData = false;
-              return;
-            }
-          }
-        },this);
-    }
 
       if(validData){
         const options = {
             method: 'POST',
-            uri: this.props.apiUrl + '/api/taskTemplate/create/submit',
+            uri: this.props.apiUrl + '/api/taskTemplate/create/save',
             body: {
-                taskID: this.props.TaskID,
-                userID: this.props.UserID,
+                taskid: this.props.TaskID,
+                userid: this.props.UserID,
                 taskData: this.state.TaskData
             },
             json: true
           };
 
         request(options, (err, res, body) => {
+          if(res.statusCode != 200){
+            this.setState({InputError: true});
+            return;
+          }
         });
       }
-
     }
 
+    submitData(e){
+      e.preventDefault();
+      let validData = true;
+      this.state.TaskActivityData.field_titles.forEach(function(title){
 
-  modalToggle(){
-    this.setState({InputError:false})
-  }
+        if(this.state.TaskActivityData[title].requires_justification){
+          if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0 ) || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
+          }
 
-  toggleRubric(){
-    const bool = this.state.ShowRubric ? false : true;
+      }
+        else {
+          if(this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0){
+            this.setState({
+              InputError: true
+            });
+            validData = false;
+            return;
+          }
+        }
 
-    this.setState({
-      ShowRubric: bool
-    });
-  }
 
-  handleChange(index,event) {
-    let newTaskData = this.state.TaskData;
-    if(newTaskData.users == null){
-      newTaskData.content[index] = event.target.value;
+
+      },this);
+
+        if(validData){
+          const options = {
+              method: 'POST',
+              uri: this.props.apiUrl + '/api/taskTemplate/create/submit',
+              body: {
+                  taskid: this.props.TaskID,
+                  userid: this.props.UserID,
+                  taskData: this.state.TaskData
+              },
+              json: true
+            };
+
+          request(options, (err, res, body) => {
+
+          });
+        }
+
+      }
+
+
+    modalToggle(){
+      this.setState({InputError:false})
     }
-    else{
-        newTaskData[this.props.UserID][index] = event.target.value;
-    }
+
+    toggleRubric(){
+      const bool = this.state.ShowRubric ? false : true;
 
       this.setState({
-        TaskData: newTaskData
+        ShowRubric: bool
       });
     }
 
-  toggleFieldRubric(title){
-        if(this.state.FieldRubrics[title] == null){
-          let newFieldRubrics = this.state.FieldRubrics;
-          newFieldRubrics[title] = true;
-          this.setState({
-            FieldRubrics: newFieldRubrics
-          });
+
+    handleContentChange(index,event) {
+      if(this.state.TaskActivityData[index] != null && this.state.TaskActivityData[index].input_type == "numeric"){
+          if(isNaN(event.target.value)){
+            return;
+          }
+          if(event.target.value < this.state.TaskActivityData[index].grade_min || event.target.value > this.state.TaskActivityData[index].grade_max){
+              return;
+          }
         }
-        else{
-          let bool = this.state.FieldRubrics[title] ? false: true;
-          let newFieldRubrics = this.state.FieldRubrics;
-          newFieldRubrics[title] = bool;
-          this.setState({
-            FieldRubrics: newFieldRubrics
-          });
-        }
+
+      let newTaskData = this.state.TaskData;
+      newTaskData[index][0] = event.target.value;
+      this.setState({
+          TaskData: newTaskData
+        });
       }
 
-  render(){
-    let errorMessage = null;
-    let TA_rubric = null;
-    let indexer = this.state.TaskData.users == null ? "content" : this.props.UserID;
-    let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
+      handleJustificationChange(index,event) {
+        let newTaskData = this.state.TaskData;
+        newTaskData[index][1] = event.target.value;
 
-    //if invalid data, shows error message
-    if(this.state.InputError){
-      errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
-    }
 
-    if(this.state.Rubric != '' && this.state.Rubric != null){
-      if(this.state.ShowRubric){
-          TA_rubric = ( <div>
-              <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
-              <br />
-              <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-              <div className="regular-text"> {this.state.Rubric}</div>
-              </ReactCSSTransitionGroup>
-              <br />
+          this.setState({
+            TaskData: newTaskData
+          });
+        }
+
+
+
+    toggleFieldRubric(title){
+          if(this.state.FieldRubrics[title] == null){
+            let newFieldRubrics = this.state.FieldRubrics;
+            newFieldRubrics[title] = true;
+            this.setState({
+              FieldRubrics: newFieldRubrics
+            });
+          }
+          else{
+            let bool = this.state.FieldRubrics[title] ? false: true;
+            let newFieldRubrics = this.state.FieldRubrics;
+            newFieldRubrics[title] = bool;
+            this.setState({
+              FieldRubrics: newFieldRubrics
+            });
+          }
+        }
+
+    render(){
+          let errorMessage = null;
+          let TA_rubric = null;
+          let TA_assignmentDescription = null;
+          let TA_instructions = null;
+          let indexer =  "content";
+          let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
+          //if invalid data, shows error message
+
+          if(this.state.InputError){
+            errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+          }
+
+          if(this.state.Rubric != '' && this.state.Rubric != null){
+            if(this.state.ShowRubric){
+                TA_rubric = ( <div>
+                    <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
+                    <br />
+                    <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
+                    <div className="regular-text"> {this.state.Rubric}</div>
+                    </ReactCSSTransitionGroup>
+                    <br />
+                  </div>
+                );
+              }
+              else{
+                TA_rubric = (<button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
+              );
+              }
+            }
+
+
+          //creating all input fields here
+          let fields = this.state.TaskActivityData.field_titles.map(function(title, idx){
+            let rubricView = null;
+            let justification = null;
+            let fieldTitle = '';
+
+            if(this.state.TaskActivityData[title].show_title){
+              if(this.state.TaskActivityData[title].grade_type != null){
+                fieldTitle = (<div key={idx + 600}><b>{title} Grade:   </b></div>);
+              }
+              else{
+                fieldTitle = title;
+              }
+            }
+
+            if(this.state.TaskActivityData[title].rubric != ''){
+              let buttonTextHelper = this.state.TaskActivityData[title].show_title ? title : '';
+              let rubricButtonText = this.state.FieldRubrics[title] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
+              if(this.state.FieldRubrics[title]){
+                rubricView = ( <div>
+                    <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
+                    <br />
+                    <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
+                    <div className="regular-text"> {this.state.TaskActivityData[title].rubric}</div>
+                    </ReactCSSTransitionGroup>
+                    <br />
+                  </div>
+                );
+              }
+              else{
+                rubricView =(<button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
+                              );
+              }
+
+            }
+
+            if(this.state.Instructions != '' && this.state.Instructions != null){
+              TA_instructions = (<div className="regular-text">
+                    {this.state.Instructions}
+                    <br />
+              </div>);
+            }
+
+            if(this.state.AssignmentDescription != undefined && this.state.AssignmentDescription != '' && this.state.AssignmentDescription != null){
+              TA_assignmentDescription = (<div className="regular-text">
+                    {this.state.AssignmentDescription}
+                    <br />
+                    <br />
+              </div>);
+            }
+
+            if(this.state.TaskActivityData[title].requires_justification){
+              if(this.state.TaskData[title][1] == ''){
+              justification = ( <div>
+                                  <div>{this.state.TaskActivityData[title].justification_instructions}</div>
+                                  <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityData[title].default_content[1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
+                                   </textarea>
+                              </div>);
+                            }
+              else {
+                justification = ( <div>
+                                    <div>{this.state.TaskActivityData[title].justification_instructions}</div>
+                                    <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[title][1]} onChange={this.handleJustificationChange.bind(this, title)} placeholder="Type your problem here ...">
+                                     </textarea>
+                                </div>);
+              }
+            }
+
+
+            if(this.state.TaskActivityData[title].input_type == "numeric"){
+              if(this.state.TaskActivityData[title].grade_type == "grade"){
+                let fieldInput = null;
+                if(this.state.TaskData[title][0] == null){
+                  fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
+                  </input>);
+                }
+                else{
+                  fieldInput = (<input type="text"  key={idx} className="number-input" value={this.state.TaskData[title][0]} onChange={this.handleContentChange.bind(this,title)} placeholder="...">
+                  </input>);
+                }
+
+                return (
+                  <div key={idx+200}>
+                    <br />
+                    <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
+                    <br />
+                    {rubricView}
+                    <br/>
+                    <div>{fieldTitle} </div>
+                    {fieldInput}
+                    <br key={idx+500}/>
+                    {justification}
+                  </div>
+                  );
+                }
+                else if(this.state.TaskActivityData[title].grade_type == "rating"){
+                  //add stars logic later
+                }
+
+            }
+            else if(this.state.TaskActivityData[title].input_type == "text"){
+              let fieldInput = null;
+              console.log(this.state.TaskData[title]);
+              console.log(title);
+              if(this.state.TaskData[title][0] == null){
+                fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityData[title].default_content[0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
+                </textarea>)
+              }
+              else{
+                fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskData[title][0]} onChange={this.handleContentChange.bind(this,title)} placeholder="Type your problem here ...">
+                </textarea>)
+              }
+
+              return (<div key={idx+200}>
+                <br />
+                <div>{fieldTitle} </div>
+                <div className="regular-text">{this.state.TaskActivityData[title].instructions}</div>
+                <br />
+                {rubricView}
+                <br/>
+                {fieldInput}
+                <br key={idx+500}/>
+                {justification}
+              </div>
+              );
+            }
+          }, this);
+
+
+          return(
+            <div className="animate fadeInUp">
+              {errorMessage}
+              <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
+                <div >
+                  <h2 className="title">Create a Problem </h2>
+                </div>
+                <div className="section-content">
+                  {TA_assignmentDescription}
+                  {TA_instructions}
+                  {TA_rubric}
+                  <br />
+                    {fields}
+                  <br />
+                  <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
+                  <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+               </div>
+              </form>
             </div>
           );
         }
-        else{
-          TA_rubric = (<button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
-        );
-        }
-      }
-
-
-    //creating all input fields here
-    let fields = this.state.TaskData["field_titles"].map(function(title, idx){
-      let rubricView = null;
-      let justification = null;
-      let fieldTitle = '';
-      if(this.state.TaskData[title].show_title){
-        if(this.state.TaskData[title].grade_type != null){
-          fieldTitle = (<div key={idx + 600}><b>{title} Grade:   </b></div>);
-        }
-        else{
-          fieldTitle = title;
-        }
-      }
-      if(this.state.TaskData[title].rubric != ''){
-        let buttonTextHelper = this.state.TaskData[title].show_title ? title : '';
-        let rubricButtonText = this.state.FieldRubrics[title] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
-        if(this.state.FieldRubrics[title]){
-          rubricView = ( <div>
-              <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
-              <br />
-              <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-              <div className="regular-text"> {this.state.TaskData[title].rubric}</div>
-              </ReactCSSTransitionGroup>
-            </div>
-          );
-        }
-        else{
-          rubricView =(<button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,title)} > {rubricButtonText}</button>
-                        );
-        }
-
-      }
-
-      if(this.state.TaskData[title].requires_justification){
-        justification = ( <div>
-                            <div>{this.state.TaskData[title].justification_instructions}</div>
-                            <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[indexer][title+"_justification"]} onChange={this.handleChange.bind(this, (title+"_justification"))} placeholder="Type your problem here ...">
-                             </textarea>
-                        </div>);
-      }
-
-
-      if(this.state.TaskData[title].input_type == "numeric"){
-        if(this.state.TaskData[title].grade_type == "grade"){
-            return (<div key={idx+200}>
-              <br />
-              <div className="regular-text">{this.state.TaskData[title].instructions}</div>
-              <br />
-              {rubricView}
-              <br/>
-              <div>{fieldTitle} </div>
-              <input type="text"  key={idx} className="number-input" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="...">
-              </input>
-              <br key={idx+500}/>
-              {justification}
-            </div>
-            );
-          }
-          else if(this.state.TaskData[title].grade_type == "rating"){
-            //add stars logic later
-          }
-      }
-
-      else if(this.state.TaskData[title].input_type == "text"){
-        return (<div key={idx+200}>
-          <br />
-          <div>{fieldTitle} </div>
-          <div className="regular-text">{this.state.TaskData[title].instructions}</div>
-          <br />
-          {rubricView}
-          <br/>
-          <textarea key={idx} className="big-text-field" value={this.state.TaskData[indexer][title]} onChange={this.handleChange.bind(this,title)} placeholder="Type your problem here ...">
-          </textarea>
-          <br key={idx+500}/>
-          {justification}
-        </div>
-        );
-      }
-    }, this);
-
-
-    return(
-      <div className="animate fadeInDown">
-        {errorMessage}
-        <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
-          <div >
-            <h2 className="title">Create a Problem </h2>
-          </div>
-          <div className="section-content">
-          	<div  className="regular-text">
-              {this.state.AssignmentDescription}
-      		  </div>
-            <br />
-            {this.state.Instructions}
-            <br />
-            {TA_rubric}
-            <br />
-              {fields}
-            <br />
-            <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
-            <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
-         </div>
-        </form>
-      </div>
-    );
-  }
-
 
 }
 
