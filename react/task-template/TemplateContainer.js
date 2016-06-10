@@ -4,7 +4,11 @@ This Container is the main component.It holds all the other components and decid
 */
 import React from 'react';
 import request from 'request';
-
+var ReactTabs = require('react-tabs');
+var Tab = ReactTabs.Tab;
+var Tabs = ReactTabs.Tabs;
+var TabList = ReactTabs.TabList;
+var TabPanel = ReactTabs.TabPanel;
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 
 //Input Components: These can be interactive with the user;
@@ -344,18 +348,42 @@ class TemplateContainer extends React.Component {
         }
 
         return(
-
           <div >
-            <HeaderComponent TaskID = {this.props.TaskID}
-                             CourseName = {this.state.CourseName}
-                             CourseName = {this.state.CourseName}
-                              CourseNumber = {this.state.CourseNumber}
-                              AssignmentTitle = {this.state.AssignmentTitle}
-                              TaskActivityType = {this.state.TaskActivityType}
-                              SemesterName={this.state.SemesterName}
-                              TaskActivityName= {this.state.TaskActivityName} />
-            <br />
-            {renderComponents}
+          <Tabs
+            selectedIndex={0}
+          >
+
+
+        <TabList>
+
+
+          <Tab>Foo</Tab>
+          <Tab>Bar</Tab>
+          <Tab>Baz</Tab>
+        </TabList>
+
+
+        <TabPanel>
+          <HeaderComponent TaskID = {this.props.TaskID}
+                           CourseName = {this.state.CourseName}
+                           CourseName = {this.state.CourseName}
+                            CourseNumber = {this.state.CourseNumber}
+                            AssignmentTitle = {this.state.AssignmentTitle}
+                            TaskActivityType = {this.state.TaskActivityType}
+                            SemesterName={this.state.SemesterName}
+                            TaskActivityName= {this.state.TaskActivityName} />
+          <br />
+          {renderComponents}
+        </TabPanel>
+        <TabPanel>
+          <h2>Hello from Bar</h2>
+        </TabPanel>
+        <TabPanel>
+          <h2>Hello from Baz</h2>
+        </TabPanel>
+      </Tabs>
+
+
           </div>
 
         );

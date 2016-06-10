@@ -30,7 +30,8 @@ class SuperComponent extends React.Component {
       },
       ShowRubric: false,
       FieldRubrics: [],
-      InputError: false
+      InputError: false,
+      ShowContent: true
     };
   }
 
@@ -178,7 +179,13 @@ class SuperComponent extends React.Component {
         ShowRubric: bool
       });
     }
+    toggleContent(){
+      const bool = this.state.ShowContent ? false : true;
 
+      this.setState({
+        ShowContent: bool
+      });
+    }
 
     handleContentChange(index,event) {
       if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].input_type == "numeric"){
@@ -228,6 +235,7 @@ class SuperComponent extends React.Component {
         }
 
     render(){
+          let content= null;
           let errorMessage = null;
           let TA_rubric = null;
           let TA_assignmentDescription = null;
@@ -386,24 +394,31 @@ class SuperComponent extends React.Component {
             }
           }, this);
 
+          if(this.state.ShowContent){
+            content = (<div className="section-content">
+              {TA_assignmentDescription}
+              {TA_instructions}
+              {TA_rubric}
+              <br />
+                {fields}
+              <br />
+              <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
+              <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+           </div>);
+          }
+          else{
+            content = (<div ></div>)
+          }
 
           return(
-            <div className="animate fadeInDown">
+            <div className="animate fadeInUp">
               {errorMessage}
-              <form  role="form" className="section" onSubmit={this.submitData.bind(this)}>
-                <div >
+              <form  role="form" className="task-section" onSubmit={this.submitData.bind(this)}>
+                <div className="placeholder"></div>
+                <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>
                 </div>
-                <div className="section-content">
-                  {TA_assignmentDescription}
-                  {TA_instructions}
-                  {TA_rubric}
-                  <br />
-                    {fields}
-                  <br />
-                  <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
-                  <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
-               </div>
+                {content}
               </form>
             </div>
           );
