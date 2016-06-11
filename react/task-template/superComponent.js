@@ -6,6 +6,7 @@
 import React from 'react';
 import request from 'request';
 import Modal from '../shared/modal';
+import ErrorComponent from './errorComponent';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class SuperComponent extends React.Component {
@@ -31,7 +32,8 @@ class SuperComponent extends React.Component {
       ShowRubric: false,
       FieldRubrics: [],
       InputError: false,
-      ShowContent: true
+      ShowContent: true,
+      Error: false
     };
   }
 
@@ -45,11 +47,22 @@ class SuperComponent extends React.Component {
       request(options, (err, res, body) => {*/
       let tdata = this.props.TaskData;
       let tAdata = this.props.TaskActivityFields;
+
+      if(!tdata || !tAdata){
+        this.setState({Error: true});
+        return;
+      }
+
       if(tdata.constructor !== Object){
         tdata = JSON.parse(this.props.TaskData)
       }
       if(tAdata.constructor !== Object){
         tAdata = JSON.parse(this.props.TaskActivityFields)
+      }
+
+      if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
+        this.setState({Error: true});
+        return;
       }
 
       if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
@@ -58,6 +71,14 @@ class SuperComponent extends React.Component {
           });
 
       }
+
+      tAdata.field_titles.forEach(function(title, idx){
+        if(!tdata[title]){
+          this.setState({Error: true});
+          return;
+        }
+      },this);
+
       this.setState({
           TaskData: tdata,
           TaskActivityFields: tAdata
@@ -244,6 +265,10 @@ class SuperComponent extends React.Component {
           let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
           //if invalid data, shows error message
 
+          if(this.state.Error){
+              return(<ErrorComponent />);
+          }
+
           if(this.state.InputError){
             errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
           }
@@ -273,6 +298,11 @@ class SuperComponent extends React.Component {
             let justification = null;
             let fieldTitle = '';
 
+            if(!this.state.TaskData[title]){
+              this.setState({Error: true});
+              return(<div key={idx}></div>);
+            }
+
             if(this.state.TaskActivityFields[title].show_title){
               if(this.state.TaskActivityFields[title].grade_type != null){
                 fieldTitle = title +" Grade";
@@ -281,6 +311,7 @@ class SuperComponent extends React.Component {
                 fieldTitle = title;
               }
             }
+
 
             if(this.state.TaskActivityFields[title].rubric != ''){
               let buttonTextHelper = this.state.TaskActivityFields[title].show_title ? title : '';
@@ -350,14 +381,15 @@ class SuperComponent extends React.Component {
                 return (
                   <div key={idx+200}>
                     <br />
-                    <div className="regular-text">{this.state.TaskActivityFields[title].instructions}</div>
+                    <div className="regular-text"><b>{fieldTitle} instructions:</b> {this.state.TaskActivityFields[title].instructions}</div>
                     <br />
                     {rubricView}
                     <br/>
-                    <div>{fieldTitle} </div>
-                    {fieldInput}
+                    <div key={idx + 600}><b>{fieldTitle}</b> {fieldInput}</div>
                     <br key={idx+500}/>
                     {justification}
+                    <br />
+                    <br />
                   </div>
                   );
                 }
@@ -382,13 +414,14 @@ class SuperComponent extends React.Component {
               return (<div key={idx+200}>
                 <br />
                 <div key={idx + 600}><b>{fieldTitle}</b></div>
-                <div className="regular-text">{this.state.TaskActivityFields[title].instructions}</div>
+                <div className="regular-text"><b>{fieldTitle} instructions:</b> {this.state.TaskActivityFields[title].instructions}</div>
                 <br />
                 {rubricView}
                 <br/>
                 {fieldInput}
                 <br key={idx+500}/>
                 {justification}
+                <br />
               </div>
               );
             }
@@ -407,13 +440,13 @@ class SuperComponent extends React.Component {
            </div>);
           }
           else{
-            content = (<div ></div>)
+            content = (<div></div>)
           }
 
           return(
             <div className="animate fadeInUp">
               {errorMessage}
-              <form  role="form" className="task-section" onSubmit={this.submitData.bind(this)}>
+              <form  role="form" className="task-section two" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>

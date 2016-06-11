@@ -4,11 +4,6 @@ This Container is the main component.It holds all the other components and decid
 */
 import React from 'react';
 import request from 'request';
-var ReactTabs = require('react-tabs');
-var Tab = ReactTabs.Tab;
-var Tabs = ReactTabs.Tabs;
-var TabList = ReactTabs.TabList;
-var TabPanel = ReactTabs.TabPanel;
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 
 //Input Components: These can be interactive with the user;
@@ -66,6 +61,7 @@ class TemplateContainer extends React.Component {
       }
 
       getVariableData() {
+
         const options = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
@@ -82,32 +78,56 @@ class TemplateContainer extends React.Component {
           if(true /*this.state.taskActivityType == TASK_TYPES.CREATE_PROBLEM*/){
             const options2 = {
                       method: 'GET',
-                      uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
+                      uri: this.props.apiUrl + '/api/taskTemplate/create/10',
                       json: true
                   };
 
               request(options2, (err, res, bod) => {
-                let newData = this.state.Data;
-                let taskprops = [bod.taskData,bod.taskActivityData,bod.assignmentDescription,bod.taskInstructions, bod.taskRubric];
-                newData[this.props.TaskID] = taskprops;
-                this.setState({
-                  //set create's task data to pass down
-                  Data: newData,
-                  Loaded:true,
-                  TaskActivityID: body.taskActivityID,
-                  CourseName: body.courseName,
-                  CourseNumber: body.courseNumber,
-                  AssignmentTitle: body.assignmentTitle,
-                  AssignmentID: body.assignmentID,
-                  TaskActivityType: body.taskActivityType,
-                  SemesterID: body.semesterID,
-                  SemesterName: body.semesterName,
-                  TaskActivityName: body.taskActivityName
-                  });
-                });
+                const options3 = {
+                          method: 'GET',
+                          uri: this.props.apiUrl + '/api/taskTemplate/edit/' + this.props.TaskID,
+                          json: true
+                      };
 
-          }
-        });
+                  request(options3, (err, res, bo) => {
+                    const options4 = {
+                              method: 'GET',
+                              uri: this.props.apiUrl + '/api/taskTemplate/grade/' + this.props.TaskID,
+                              json: true
+                          };
+
+                      request(options4, (err, res, gradebody) => {
+
+
+                        let newData = this.state.Data;
+                        let taskprops = [bod.taskData,bod.taskActivityData,bod.assignmentDescription,bod.taskInstructions, bod.taskRubric];
+                        let etaskprops = [bo.taskData,bo.taskActivityData,bo.assignmentDescription,bo.taskInstructions, bo.taskRubric];
+                        newData['create'] = taskprops;
+                        newData['edit'] = etaskprops;
+                        newData['grade'] = [gradebody.taskData,gradebody.taskActivityData,gradebody.assignmentDescription,gradebody.taskInstructions, gradebody.taskRubric];
+                        console.log(newData);
+                        this.setState({
+                          //set create's task data to pass down
+                          Data: newData,
+                          Loaded:true,
+                          TaskActivityID: body.taskActivityID,
+                          CourseName: body.courseName,
+                          CourseNumber: body.courseNumber,
+                          AssignmentTitle: body.assignmentTitle,
+                          AssignmentID: body.assignmentID,
+                          TaskActivityType: body.taskActivityType,
+                          SemesterID: body.semesterID,
+                          SemesterName: body.semesterName,
+                          TaskActivityName: body.taskActivityName
+
+                          });
+                        });
+                    });
+                  });
+
+                  }
+          });
+
       }
 
 
@@ -145,11 +165,11 @@ class TemplateContainer extends React.Component {
             <SuperComponent         TaskID = {this.props.TaskID}
                                     UserID = {this.props.UserID}
                                     ComponentTitle="Create the Problem"
-                                    TaskData = {this.state.Data[this.props.TaskID][0]}
-                                    TaskActivityFields = {this.state.Data[this.props.TaskID][1]}
-                                    AssignmentDescription = {this.state.Data[this.props.TaskID][2]}
-                                    Instructions = {this.state.Data[this.props.TaskID][3]}
-                                    Rubric= {this.state.Data[this.props.TaskID][4]}
+                                    TaskData = {this.state.Data['create'][0]}
+                                    TaskActivityFields = {this.state.Data['create'][1]}
+                                    AssignmentDescription = {this.state.Data['create'][2]}
+                                    Instructions = {this.state.Data['create'][3]}
+                                    Rubric= {this.state.Data['create'][4]}
                                     apiUrl={this.props.apiUrl}
 
                                     />
@@ -161,11 +181,21 @@ class TemplateContainer extends React.Component {
               <div>
               <ProblemViewComponent TaskID = {this.props.TaskID}
                                     apiUrl={this.props.apiUrl}
-                                    problemHeader="Problem"/>
+                                    problemHeader="Problem"
+                                    TaskData={this.state.Data['create'][0]}
+                                    TaskActivityFields={this.state.Data['create'][1]}/>
               <br />
-              <EditProblemComponent TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}
-                                     UserID = {this.props.UserID} />
+              <SuperComponent         TaskID = {this.props.TaskID}
+                                      UserID = {this.props.UserID}
+                                      ComponentTitle="Edit the Problem"
+                                      TaskData = {this.state.Data['edit'][0]}
+                                      TaskActivityFields = {this.state.Data['edit'][1]}
+                                      AssignmentDescription = {this.state.Data['edit'][2]}
+                                      Instructions = {this.state.Data['edit'][3]}
+                                      Rubric= {this.state.Data['edit'][4]}
+                                      apiUrl={this.props.apiUrl}
+
+                                      />
               <br />
               </div>
 
@@ -186,14 +216,31 @@ class TemplateContainer extends React.Component {
         }
         else if(gradeContainer){
           renderComponents = (<div>
-              <ProblemViewComponent TaskID = {this.props.TaskID}
+            <ProblemViewComponent TaskID = {this.props.TaskID}
                                   apiUrl={this.props.apiUrl}
-                                  problemHeader="Problem" />
-              <br />
-              <GradeSolutionComponent TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}
-                                     UserID = {this.props.UserID} />
-              <br />
+                                  problemHeader="Problem"
+                                  TaskData={this.state.Data['create'][0]}
+                                  TaskActivityFields={this.state.Data['create'][1]}/>
+
+            <SuperComponent         TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    ComponentTitle="Grade the Problem"
+                                    TaskData = {this.state.Data['grade'][0]}
+                                    TaskActivityFields = {this.state.Data['grade'][1]}
+                                    AssignmentDescription = {this.state.Data['grade'][2]}
+                                    Instructions = {this.state.Data['grade'][3]}
+                                    Rubric= {this.state.Data['grade'][4]}
+                                    apiUrl={this.props.apiUrl}
+                                    />
+            <ProblemViewComponent TaskID = {this.props.TaskID}
+                                  apiUrl={this.props.apiUrl}
+                                  problemHeader="Grades"
+                                  TaskData={this.state.Data['grade'][0]}
+                                  TaskActivityFields={this.state.Data['grade'][1]}/>
+
+
+
+            <br />
             </div>
           );
 
@@ -201,16 +248,18 @@ class TemplateContainer extends React.Component {
         else if(gradedContainer){
           renderComponents=(<div>
             <ProblemViewComponent TaskID = {this.props.TaskID}
-                                apiUrl={this.props.apiUrl}
-                                problemHeader="Problem" />
-            <br />
+                                  apiUrl={this.props.apiUrl}
+                                  problemHeader="Problem"
+                                  TaskData={this.state.Data['create'][0]}
+                                  TaskActivityFields={this.state.Data['create'][1]}/>
+
             <ResponseComponent TaskID = {this.props.TaskID}
                                    apiUrl = {this.props.apiUrl}/>
-            <br />
+
             <GradedComponent TaskID = {this.props.TaskID}
                                    apiUrl = {this.props.apiUrl}
                                    UserID = {this.props.UserID} />
-            <br />
+
             </div>
           );
         }
@@ -347,44 +396,26 @@ class TemplateContainer extends React.Component {
           );
         }
 
+
+
+
         return(
-          <div >
-          <Tabs
-            selectedIndex={0}
-          >
+          <div>
+                <HeaderComponent TaskID = {this.props.TaskID}
+                                 CourseName = {this.state.CourseName}
+                                 CourseName = {this.state.CourseName}
+                                  CourseNumber = {this.state.CourseNumber}
+                                  AssignmentTitle = {this.state.AssignmentTitle}
+                                  TaskActivityType = {this.state.TaskActivityType}
+                                  SemesterName={this.state.SemesterName}
+                                  TaskActivityName= {this.state.TaskActivityName} />
+                {renderComponents}
 
 
-        <TabList>
+
+              </div>
 
 
-          <Tab>Foo</Tab>
-          <Tab>Bar</Tab>
-          <Tab>Baz</Tab>
-        </TabList>
-
-
-        <TabPanel>
-          <HeaderComponent TaskID = {this.props.TaskID}
-                           CourseName = {this.state.CourseName}
-                           CourseName = {this.state.CourseName}
-                            CourseNumber = {this.state.CourseNumber}
-                            AssignmentTitle = {this.state.AssignmentTitle}
-                            TaskActivityType = {this.state.TaskActivityType}
-                            SemesterName={this.state.SemesterName}
-                            TaskActivityName= {this.state.TaskActivityName} />
-          <br />
-          {renderComponents}
-        </TabPanel>
-        <TabPanel>
-          <h2>Hello from Bar</h2>
-        </TabPanel>
-        <TabPanel>
-          <h2>Hello from Baz</h2>
-        </TabPanel>
-      </Tabs>
-
-
-          </div>
 
         );
 

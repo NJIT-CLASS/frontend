@@ -12,6 +12,7 @@
         color: #676a6c;
     }
 
+
     p {
         max-width: 400px;
     }
@@ -51,6 +52,7 @@
     box-sizing: border-box;
     margin: 10px;
     width:auto;
+    min-height: 0px;
 
     .title {
         border-bottom: 1px solid #e7eaec;
@@ -94,7 +96,17 @@
         }
     }
 }
+.error {
+    background-color: #ed5565 !important;
+    color: #ffffff;
 
+    .title{
+      color: #ffffff;
+    }
+    .regular-text{
+      color:#ffffff;
+    }
+}
 .placeholder{
   width:960px;
 }
