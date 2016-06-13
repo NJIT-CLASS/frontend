@@ -6,20 +6,23 @@
     min-width: 700px;
     max-width:1200px;
 
-	
+
+    a:visited{
+      color:#70119F;
+    }
     .title {
         border-bottom: 1px solid #e7eaec;
         font-size: 20px;
         font-weight: 400px;
         padding: 20px 30px 20px 30px;
         color: #676a6c;
-        
-        
+
+
     }
-	
+
     p {
         max-width: 600px;
-        
+
     }
 
     .section-content {
@@ -44,6 +47,6 @@
             }
         }
     }
-	
-	
+
+
 }

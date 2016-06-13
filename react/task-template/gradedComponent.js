@@ -5,6 +5,8 @@
 
 import React from 'react';
 import request from 'request';
+import ErrorComponent from './errorComponent';
+import SuperViewComponent from './superViewComponent';
 import GradeViewComponent from './gradeViewComponent';
 
 class GradedComponent extends React.Component {
@@ -12,41 +14,17 @@ class GradedComponent extends React.Component {
     super(props);
 
     this.state = {
-      GradeTaskData: {
-                        graders:  [this.props.UserID, 1],
-                        gradingCriteria: ["Factual","Other"],
-                        8: {
-                            FactualGrade: 78,
-                            FactualGradeText: "Hi"
-                        },
-                        1:{
-                          FactualGrade: 78,
-                          FactualGradeText: "Hi"
-                        }
-                      },
-      TaskRubric:'',
+      UsersTaskData: [], //props
+      TaskActivityFields: {}, //props
+      ComponentTitles:"",
       HideDisputeButton: this.props.HideDisputeButton ? true: false
     };
   }
 
-  getComponentData(){
-    const options = {
-      method: 'GET',
-      uri: this.props.apiUrl + "/api/taskTemplate/grade/" + this.props.TaskID,
-      json:true
-    }
+  componentWillMount(){
 
-    request(options,(err,res,body)=>{
-      this.setState({
-          GradeTaskData: body.result.GradeTaskData,
-          TaskRubric: body.result.taskRubric
-      });
-    });
   }
 
-/*  componentWillMount(){
-    this.getComponentData();
-  }*/
   render(){
     let gradesView = null;
     let tableStyle = {

@@ -6,7 +6,6 @@ import React from 'react';
 import request from 'request';
 import Modal from '../shared/modal';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ProblemViewComponent  from './problemViewComponent';
 
 class EditProblemComponent extends React.Component {
   constructor(props) {

@@ -3,10 +3,20 @@
 */
 import React from 'react';
 import request from 'request';
-
+import Rater from 'react-rater';
 import ErrorComponent from './errorComponent';
+/**** PROPS:
+    TaskData,
+    TaskActivityFields,
+    ComponentTitle
 
-class ProblemViewComponent extends React.Component {
+
+*/
+
+
+
+
+class SuperViewComponent extends React.Component {
   constructor(props){
     super(props);
 
@@ -41,13 +51,13 @@ class ProblemViewComponent extends React.Component {
         tAdata = JSON.parse(this.props.TaskActivityFields)
       }
 
-      tAdata.field_titles.forEach(function(title){
-        if(tdata[title] == null){
+
+      for(let i = 0; i< tAdata.number_of_fields;i++){
+        if(tdata[i] == null){
           this.setState({Error: true});
           return;
         }
-      },this);
-
+      }
       this.setState({
         TaskData: tdata,
         TaskActivityFields: tAdata
@@ -67,29 +77,29 @@ class ProblemViewComponent extends React.Component {
 
       let justification = null;
       let fieldTitle = '';
-      console.log(this.state.TaskActivityFields[title]);
-      if(this.state.TaskActivityFields[title].show_title){
-        if(this.state.TaskActivityFields[title].grade_type != null){
+      console.log(this.state.TaskActivityFields[idx]);
+      if(this.state.TaskActivityFields[idx].show_title){
+        if(this.state.TaskActivityFields[idx].grade_type != null){
           fieldTitle = title +" Grade";
         }
         else{
           fieldTitle = title;
         }
       }
-      if(this.state.TaskActivityFields[title].requires_justification){
-        console.log(this.state.TaskActivityFields[title]);
-        if(this.state.TaskData[title][1] == ''){
+      if(this.state.TaskActivityFields[idx].requires_justification){
+        console.log(this.state.TaskActivityFields[idx]);
+        if(this.state.TaskData[idx][1] == ''){
           justification = (<div></div>);
         }
         else{
-          justification = (<div className="faded-big">{this.state.TaskData[title][1]}</div>)
+          justification = (<div className="faded-big">{this.state.TaskData[idx][1]}</div>)
         }
       }
 
-      if(this.state.TaskActivityFields[title].input_type == "text"){
+      if(this.state.TaskActivityFields[idx].input_type == "text"){
         let fieldView = (<div>
           <div key={idx + 600}><b>{fieldTitle}</b></div>
-          <div key={idx} className="faded-big"> {this.state.TaskData[title][0]}
+          <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
           </div>
           <br />
           {justification}
@@ -103,22 +113,40 @@ class ProblemViewComponent extends React.Component {
         );
 
       }
-      else if(this.props.TaskActivityFields[title].input_type == "numeric"){
-        let fieldView = (<div>
-          <div key={idx + 600}><b>{fieldTitle}</b></div>
-          <div key={idx} className="faded-small"> {this.state.TaskData[title][0]}
-          </div>
-          <br />
-          {justification}
-        </div>);
+      else if(this.props.TaskActivityFields[idx].input_type == "numeric"){
+        if(this.state.TaskActivityFields[idx].grade_type == "grade"){
+          let fieldView = (<div>
+            <div key={idx + 600}><b>{fieldTitle}</b></div>
+            <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
+            </div>
+            <br />
+            {justification}
+          </div>);
 
 
-        return (<div key={idx+200}>
-          {fieldView}
-          <br key={idx+500}/>
-        </div>
-        );
+          return (<div key={idx+200}>
+              {fieldView}
+              <br key={idx+500}/>
+            </div>
+          );
+        }
+        else if(this.state.TaskActivityFields[idx].grade_type == "rating"){
+          let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
+          let fieldView = (<div>
+            <div key={idx + 600}><b>{fieldTitle}   </b>
+               <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} interactive={false} />
+            </div>
+            <br />
+            {justification}
+          </div>);
 
+
+          return (<div key={idx+200}>
+              {fieldView}
+              <br key={idx+500}/>
+            </div>
+          );
+        }
       }
       else{
         return (<div></div>);
@@ -139,8 +167,8 @@ class ProblemViewComponent extends React.Component {
       }
 
       return (
-        <div className="task-section animate fadeInDown">
-          <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.problemHeader}:</h2>
+        <div className="section task-hiding animate fadeInDown">
+          <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
             {content}
         </div>
     );
@@ -148,4 +176,4 @@ class ProblemViewComponent extends React.Component {
   }
 
 }
-export default ProblemViewComponent;
+export default SuperViewComponent;

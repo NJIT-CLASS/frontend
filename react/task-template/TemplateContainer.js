@@ -7,18 +7,21 @@ import request from 'request';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 
 //Input Components: These can be interactive with the user;
+import SuperComponent from './superComponent';
+/* DEAD ONES
 import CreateProblemComponent from './createProblemComponent';
 import EditProblemComponent from './editProblemComponent';
 import SolveProblemComponent from './solveProblemComponent';
 import GradeSolutionComponent from './gradeSolutionComponent';
 import ResolveGradeComponent from './resolveGradeComponent';
 import DisputeComponent from './disputeComponent';
-import SuperComponent from './superComponent';
+*/
 
 //Display Components: These only display data retrived from the database. Not interactive.
+
+import SuperViewComponent from './superViewComponent';
 import HeaderComponent from './headerComponent'
 import ResponseComponent from './responseComponent';
-import ProblemViewComponent from './problemViewComponent';
 import GradedComponent from './gradedComponent';
 import DisputeViewComponent from './disputeViewComponent';
 import CommentComponent from './commentComponent';
@@ -179,12 +182,11 @@ class TemplateContainer extends React.Component {
         else if(editProblemContainer){
           renderComponents = (
               <div>
-              <ProblemViewComponent TaskID = {this.props.TaskID}
-                                    apiUrl={this.props.apiUrl}
-                                    problemHeader="Problem"
+              <SuperViewComponent 
+                                    ComponentTitle="Problem"
                                     TaskData={this.state.Data['create'][0]}
                                     TaskActivityFields={this.state.Data['create'][1]}/>
-              <br />
+
               <SuperComponent         TaskID = {this.props.TaskID}
                                       UserID = {this.props.UserID}
                                       ComponentTitle="Edit the Problem"
@@ -204,21 +206,31 @@ class TemplateContainer extends React.Component {
         else if(solveProblemContainer){
             renderComponents =(
               <div>
-              <ProblemViewComponent TaskID = {this.props.TaskID}
-                                    apiUrl={this.props.apiUrl}
-                                    problemHeader="Problem"/>
-              <br />
-              <SolveProblemComponent TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}
-                                     UserID = {this.props.UserID} />
+                <SuperViewComponent TaskID = {this.props.TaskID}
+                                      apiUrl={this.props.apiUrl}
+                                      ComponentTitle="Problem"
+                                      TaskData={this.state.Data['create'][0]}
+                                      TaskActivityFields={this.state.Data['create'][1]}/>
+
+                <SuperComponent         TaskID = {this.props.TaskID}
+                                        UserID = {this.props.UserID}
+                                        ComponentTitle="Solve the Problem"
+                                        TaskData = {this.state.Data['solve'][0]}
+                                        TaskActivityFields = {this.state.Data['solve'][1]}
+                                        AssignmentDescription = {this.state.Data['solve'][2]}
+                                        Instructions = {this.state.Data['solve'][3]}
+                                        Rubric= {this.state.Data['solve'][4]}
+                                        apiUrl={this.props.apiUrl}
+
+                                        />
              </div>
             );
         }
         else if(gradeContainer){
           renderComponents = (<div>
-            <ProblemViewComponent TaskID = {this.props.TaskID}
+            <SuperViewComponent TaskID = {this.props.TaskID}
                                   apiUrl={this.props.apiUrl}
-                                  problemHeader="Problem"
+                                  ComponentTitle="Problem"
                                   TaskData={this.state.Data['create'][0]}
                                   TaskActivityFields={this.state.Data['create'][1]}/>
 
@@ -232,9 +244,9 @@ class TemplateContainer extends React.Component {
                                     Rubric= {this.state.Data['grade'][4]}
                                     apiUrl={this.props.apiUrl}
                                     />
-            <ProblemViewComponent TaskID = {this.props.TaskID}
+            <SuperViewComponent TaskID = {this.props.TaskID}
                                   apiUrl={this.props.apiUrl}
-                                  problemHeader="Grades"
+                                  ComponentTitle="Grades"
                                   TaskData={this.state.Data['grade'][0]}
                                   TaskActivityFields={this.state.Data['grade'][1]}/>
 
@@ -247,9 +259,9 @@ class TemplateContainer extends React.Component {
         }
         else if(gradedContainer){
           renderComponents=(<div>
-            <ProblemViewComponent TaskID = {this.props.TaskID}
+            <SuperViewComponent TaskID = {this.props.TaskID}
                                   apiUrl={this.props.apiUrl}
-                                  problemHeader="Problem"
+                                  ComponentTitle="Problem"
                                   TaskData={this.state.Data['create'][0]}
                                   TaskActivityFields={this.state.Data['create'][1]}/>
 
@@ -266,22 +278,28 @@ class TemplateContainer extends React.Component {
         else if(disputeContainer){
           renderComponents=(
             <div>
-              <ProblemViewComponent TaskID = {this.props.TaskID}
-                                    apiUrl={this.props.apiUrl}
-                                    problemHeader="Problem"/>
-              <br />
-              <ResponseComponent      TaskID = {this.props.TaskID}
+              <SuperViewComponent  TaskID = {this.props.TaskID}
+                                     apiUrl={this.props.apiUrl}
+                                     problemHeader="Problem"/>
+
+              <ResponseComponent     TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}/>
-              <br />
+
               <GradedComponent       TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}
                                      UserID = {this.props.UserID}
                                      HideDisputeButton = {true}/>
-              <br />
-              <DisputeComponent     TaskID = {this.props.TaskID}
-                                    apiUrl = {this.props.apiUrl}
-                                    UserID = {this.props.UserID} />
-              <br />
+
+             <SuperComponent         TaskID = {this.props.TaskID}
+                                     UserID = {this.props.UserID}
+                                     ComponentTitle="Dispute Your Grade"
+                                     TaskData = {this.state.Data['dispute'][0]}
+                                     TaskActivityFields = {this.state.Data['dispute'][1]}
+                                     AssignmentDescription = {this.state.Data['dispute'][2]}
+                                     Instructions = {this.state.Data['dispute'][3]}
+                                     Rubric= {this.state.Data['dispute'][4]}
+                                     apiUrl={this.props.apiUrl}
+                                     />
 
             </div>
           );
@@ -289,26 +307,29 @@ class TemplateContainer extends React.Component {
         else if(resolveGradeContainer){
           renderComponents=(
             <div>
-              <ProblemViewComponent TaskID = {this.props.TaskID}
+              <SuperViewComponent TaskID = {this.props.TaskID}
                                     apiUrl={this.props.apiUrl}
                                     problemHeader="Problem"/>
               <br />
               <ResponseComponent TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}/>
-              <br />
               <GradedComponent       TaskID = {this.props.TaskID}
                                      apiUrl = {this.props.apiUrl}
                                      UserID = {this.props.UserID}
                                      HideDisputeButton = {true}/>
-              <br />
               <DisputeViewComponent  TaskID = {this.props.TaskID}
                                     apiUrl = {this.props.apiUrl}
                                     UserID = {this.props.UserID} />
-                                  <br/>
-              <ResolveGradeComponent TaskID = {this.props.TaskID}
-                                    apiUrl = {this.props.apiUrl}
-                                    UserID = {this.props.UserID} />
-                                  <br />
+              <SuperComponent         TaskID = {this.props.TaskID}
+                                      UserID = {this.props.UserID}
+                                      ComponentTitle="Resolve the Dispute"
+                                      TaskData = {this.state.Data['resolve'][0]}
+                                      TaskActivityFields = {this.state.Data['resolve'][1]}
+                                      AssignmentDescription = {this.state.Data['resolve'][2]}
+                                      Instructions = {this.state.Data['resolve'][3]}
+                                      Rubric= {this.state.Data['resolve'][4]}
+                                      apiUrl={this.props.apiUrl}
+                                      />
 
             </div>
 
@@ -317,7 +338,7 @@ class TemplateContainer extends React.Component {
         else if(completedContainer){
             renderComponents=(
               <div>
-                <ProblemViewComponent TaskID = {this.props.TaskID}
+                <SuperViewComponent TaskID = {this.props.TaskID}
                                       apiUrl={this.props.apiUrl}
                                       problemHeader="Problem"/>
                 <br />
@@ -344,49 +365,87 @@ class TemplateContainer extends React.Component {
         else{
           renderComponents =  (
             <div>
-              <CreateProblemComponent TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    TaskActivityID = {this.state.TaskActivityID}
-                                    AssignmentID = {this.state.AssignmentID}
-                                    SemesterID={this.state.SemesterID}
-                                    apiUrl={this.props.apiUrl}
-                                    />
-            <br />
-            <ProblemViewComponent TaskID = {this.props.TaskID}
+              <SuperComponent         TaskID = {this.props.TaskID}
+                                      UserID = {this.props.UserID}
+                                      ComponentTitle="Create the Problem"
+                                      TaskData = {this.state.Data['create'][0]}
+                                      TaskActivityFields = {this.state.Data['create'][1]}
+                                      AssignmentDescription = {this.state.Data['create'][2]}
+                                      Instructions = {this.state.Data['create'][3]}
+                                      Rubric= {this.state.Data['create'][4]}
+                                      apiUrl={this.props.apiUrl}
+
+                                      />
+            <SuperViewComponent TaskID = {this.props.TaskID}
                                   apiUrl={this.props.apiUrl}
-                                  problemHeader="Problem"/>
-            <br />
-            <SolveProblemComponent TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}
-                                   UserID = {this.props.UserID} />
-            <br />
-            <EditProblemComponent TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}
-                                   UserID = {this.props.UserID} />
-            <br />
+                                  ComponentTitle="Problem"
+                                  TaskData={this.state.Data['create'][0]}
+                                  TaskActivityFields={this.state.Data['create'][1]}/>
+
+            <SuperComponent         TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    ComponentTitle="Edit the Problem"
+                                    TaskData = {this.state.Data['edit'][0]}
+                                    TaskActivityFields = {this.state.Data['edit'][1]}
+                                    AssignmentDescription = {this.state.Data['edit'][2]}
+                                    Instructions = {this.state.Data['edit'][3]}
+                                    Rubric= {this.state.Data['edit'][4]}
+                                    apiUrl={this.props.apiUrl}
+
+                                    />
+            <SuperComponent         TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    ComponentTitle="Solve the Problem"
+                                    TaskData = {this.state.Data['solve'][0]}
+                                    TaskActivityFields = {this.state.Data['solve'][1]}
+                                    AssignmentDescription = {this.state.Data['solve'][2]}
+                                    Instructions = {this.state.Data['solve'][3]}
+                                    Rubric= {this.state.Data['solve'][4]}
+                                    apiUrl={this.props.apiUrl}
+
+                                    />
+
             <ResponseComponent TaskID = {this.props.TaskID}
                                    apiUrl = {this.props.apiUrl}/>
-            <br />
-            <GradeSolutionComponent TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}
-                                   UserID = {this.props.UserID} />
-            <br />
+
+           <SuperComponent         TaskID = {this.props.TaskID}
+                                   UserID = {this.props.UserID}
+                                   ComponentTitle="Grade the Problem"
+                                   TaskData = {this.state.Data['grade'][0]}
+                                   TaskActivityFields = {this.state.Data['grade'][1]}
+                                   AssignmentDescription = {this.state.Data['grade'][2]}
+                                   Instructions = {this.state.Data['grade'][3]}
+                                   Rubric= {this.state.Data['grade'][4]}
+                                   apiUrl={this.props.apiUrl}
+                                   />
+
             <GradedComponent       TaskID = {this.props.TaskID}
                                    apiUrl = {this.props.apiUrl}
                                    UserID = {this.props.UserID}/>
-            <br />
-            <DisputeComponent     TaskID = {this.props.TaskID}
-                                  apiUrl = {this.props.apiUrl}
-                                  UserID = {this.props.UserID} />
-            <br />
+
+            <SuperComponent         TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    ComponentTitle="Dispute Your Grade"
+                                    TaskData = {this.state.Data['dispute'][0]}
+                                    TaskActivityFields = {this.state.Data['dispute'][1]}
+                                    AssignmentDescription = {this.state.Data['dispute'][2]}
+                                    Instructions = {this.state.Data['dispute'][3]}
+                                    Rubric= {this.state.Data['dispute'][4]}
+                                    apiUrl={this.props.apiUrl}
+                                    />
             <DisputeViewComponent  TaskID = {this.props.TaskID}
                                   apiUrl = {this.props.apiUrl}
                                   UserID = {this.props.UserID} />
-                                <br/>
-            <ResolveGradeComponent TaskID = {this.props.TaskID}
-                                  apiUrl = {this.props.apiUrl}
-                                  UserID = {this.props.UserID} />
-                                <br />
+            <SuperComponent         TaskID = {this.props.TaskID}
+                                    UserID = {this.props.UserID}
+                                    ComponentTitle="Resolve the Dispute"
+                                    TaskData = {this.state.Data['resolve'][0]}
+                                    TaskActivityFields = {this.state.Data['resolve'][1]}
+                                    AssignmentDescription = {this.state.Data['resolve'][2]}
+                                    Instructions = {this.state.Data['resolve'][3]}
+                                    Rubric= {this.state.Data['resolve'][4]}
+                                    apiUrl={this.props.apiUrl}
+                                    />
             <ResolutionViewComponent TaskID = {this.props.TaskID}
                                   apiUrl = {this.props.apiUrl}
                                   UserID = {this.props.UserID} />

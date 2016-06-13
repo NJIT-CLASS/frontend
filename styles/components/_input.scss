@@ -10,7 +10,7 @@ textarea {
     margin: 10px 0;
     border: 1px solid #e5e6e7;
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    
+
     &:focus {
         outline: none;
         border-color: #00AB8D;
@@ -24,3 +24,22 @@ textarea {
         border-color: #ed5565;
     }
 }
+
+.react-rater {
+  display: inline-block;
+  line-height: normal;
+  margin-left: 10px;}
+
+  .react-rater a {
+    cursor: pointer;
+    font-size: 18px;
+    color: #262626; }
+    .react-rater a.will-be-active {
+      color: #ffdd99; }
+    .react-rater a.is-active {
+      color: #fc6; }
+    .react-rater a.is-disabled {
+      color: #ccc;
+      cursor: not-allowed; }
+  .react-rater.is-disabled a {
+    cursor: default; }
