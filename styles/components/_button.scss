@@ -34,13 +34,19 @@ button {
 
     &:hover {
         cursor: pointer;
+
     }
 }
 
 .dispute{
-
   background-color: #ed5565 !important;
 }
+/*.dispute:hover {
+    box-shadow: 0 0 5px #ed5565;
+    border-color: #ed5565;
+    border-radius: 3px 3px 0 0;
+    outline: none;
+  }*/
 
 .tab {
   border-style: none;
@@ -56,6 +62,7 @@ button {
   box-sizing: border-box;
   margin: 10px;
   width:100%;
+  display:flex;
   align-self: flex-end;
 
   table tr{

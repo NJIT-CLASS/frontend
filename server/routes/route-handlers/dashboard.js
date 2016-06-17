@@ -5,26 +5,31 @@ exports.get = (req, res) => {
             courseList.push(body.Courses[i]);
         }
 
-        req.App.api.get('/getPendingTasks/' + req.App.user.userId, (err,statusCode,body) => { /* need to make this new APi get tasks*/
+        req.App.api.get('/getPendingTasks/' + req.App.user.userId, (err,statusCode,bod) => { /* need to make this new APi get tasks*/
+          req.App.api.get('/getCompletedTasks/' + req.App.user.userId, (err,statusCode,bo) => {
+            var pendingTasksList = [];
+            var completedTasksList = [];
+            if(bod.PendingTasks == null){ //PendingTasks defined in backend Rest.js
+              res.render('dashboard', {
+                courseList: courseList,
+                pendingTasksList: pendingTasksList, //empty
+                completedTasksList: completedTasksList 
+              });
+            }
 
-          var pendingTasksList = [];
+            for(var i=0; i<bod.PendingTasks.length; i++){
+                pendingTasksList.push(bod.PendingTasks[i]);
+            }
+            for(var i=0; i<bo.CompletedTasks.length; i++){
+                completedTasksList.push(bo.CompletedTasks[i]);
+            }
 
-          if(body.PendingTasks == null){ //PendingTasks defined in backend Rest.js
             res.render('dashboard', {
               courseList: courseList,
-              pendingTasksList: pendingTasksList //empty
+              pendingTasksList: pendingTasksList,
+              completedTasksList: completedTasksList //empty
             });
-          }
-
-          for(var i=0; i<body.PendingTasks.length; i++){
-              pendingTasksList.push(body.PendingTasks[i]);
-          }
-
-          res.render('dashboard', {
-            courseList: courseList,
-            pendingTasksList: pendingTasksList //empty
           });
-
         });
       });
 

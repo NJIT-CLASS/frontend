@@ -9,6 +9,7 @@ export const TASK_TYPES = {
     CRITIQUE:constants.TASK_TYPES.CRITIQUE,
     DISPUTE: constants.TASK_TYPES.DISPUTE,
     CONSOLIDATION:constants.TASK_TYPES.CONSOLIDATION,
+    NEEDS_CONSOLIDATION: constants.TASK_TYPES.NEEDS_CONSOLIDATION,
     RESOLVE_DISPUTE: constants.TASK_TYPES.RESOLVE_DISPUTE,
     COMPLETED: constants.TASK_TYPES.RESOLVE_DISPUTE.COMPLETED
 };
@@ -22,6 +23,7 @@ export const TASK_TYPE_TEXT = {
     critique:constants.TASK_TYPE_TEXT.critique,
     dispute:constants.TASK_TYPE_TEXT.dispute,
     consolidation: constants.TASK_TYPE_TEXT.consoltidation,
+    needs_consolidation: constants.TASK_TYPE_TEXT.needs_consolidation,
     resolve_dispute:constants.TASK_TYPE_TEXT.resolve_dispute,
     completed: constants.TASK_TYPE_TEXT.completed,
 };

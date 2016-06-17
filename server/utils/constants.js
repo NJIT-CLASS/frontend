@@ -24,6 +24,7 @@ exports.TASK_TYPES = {
     CRITIQUE:'critique',
     DISPUTE:'dispute',
     CONSOLIDATION:'consolidation',
+    NEEDS_CONSOLIDATION: 'needs_consolidation',
     RESOLVE_DISPUTE:'resolve_dispute',
     COMPLETED: 'completed'
 };
@@ -37,6 +38,7 @@ exports.TASK_TYPE_TEXT = {
     critique:'Critique',
     dispute:'Dispute',
     consolidation:'Consolidation',
+    needs_consolidation: "Needs Consolidate",
     resolve_dispute:'Resolve Dispute',
     completed:'Completed Task'
 };

@@ -73,7 +73,13 @@
 
 
 		<div class="col-xs-6">
-
+      <table width="100%" class="sticky-enabled tableheader-processed sticky-table">
+  		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
+  		<tbody>
+        {{#each completedTasksList}}
+        <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskID}}">{{AssignmentSection.Assignment.Title}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentSection.Section.Course.Title}}</td><td>{{dateFormat EndDate}}</td><tr>
+          {{/each}}
+    <!--
 		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">
 		 <thead><tr><th>Assignment</th><th>Task</th><th>Course</th><th>Date Completed</th> </tr></thead>
 		<tbody>
@@ -95,7 +101,7 @@
 		 <tr class="even"><td><a href="/task">Homework 1 - Your Opinion</a></td><td>Create a Solution</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:47 PM">2 months ago</span></td> </tr>
 		 <tr class="odd"><td><a href="/task">Homework 1 - Your Opinion</a></td><td>Create a Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 7, 2016 11:28 AM">2 months ago</span></td> </tr>
 
-
+    -->
 		</tbody>
 		</table>
 

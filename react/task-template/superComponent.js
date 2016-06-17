@@ -19,6 +19,7 @@ class SuperComponent extends React.Component {
             -ComponentTitle
             -AssignmentDescription
             -Instructions
+            -TaskStatus
             -Rubric
 
     */
@@ -27,71 +28,65 @@ class SuperComponent extends React.Component {
       TaskActivityFields: {
         field_titles: []
       },
-      TaskData: {
-
-      },
+      TaskData: {},
       ShowRubric: false,
       FieldRubrics: [],
       InputError: false,
+      TaskStatus: '',
       ShowContent: true,
       Error: false
     };
   }
 
-    getComponentData () {
-    /*  const options = {
-              method: 'GET',
-              uri: this.props.apiUrl + '/api/taskTemplate/create/' + this.props.TaskID,
-              json: true
-          };
+  componentWillMount(){
 
-      request(options, (err, res, body) => {*/
-      let tdata = this.props.TaskData;
-      let tAdata = this.props.TaskActivityFields;
+        let tdata = this.props.TaskData;
+        let tAdata = this.props.TaskActivityFields;
 
-      if(!tdata || !tAdata){
-        this.setState({Error: true});
-        return;
-      }
+        //checks to see if either data prop is null
+        if(!tdata || !tAdata){
+          this.setState({Error: true});
+          return;
+        }
 
-      if(tdata.constructor !== Object){
-        tdata = JSON.parse(this.props.TaskData)
-      }
-      if(tAdata.constructor !== Object){
-        tAdata = JSON.parse(this.props.TaskActivityFields)
-      }
+        if(tdata.constructor !== Object){
+          tdata = JSON.parse(this.props.TaskData)
+        }
+        if(tAdata.constructor !== Object){
+          tAdata = JSON.parse(this.props.TaskActivityFields)
+        }
 
-      if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
-        this.setState({Error: true});
-        return;
-      }
+        //checks to see if either task activity data is empty. This would only be caused by an error
+        if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
+          this.setState({Error: true});
+          return;
+        }
+        //if task data is empty, it fills it up with the TA's fields
+        if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
+            tdata.number_of_fields = tAdata.number_of_fields;
+            for(let i = 0; i < tAdata.number_of_fields; i++){
 
-      if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
-          tdata.number_of_fields = tAdata.number_of_fields;
-          for(let i = 0; i < tAdata.number_of_fields; i++){
+              tdata[i] = tAdata[i].default_content;
+            }
+            /*tAdata.field_titles.forEach(function(title){
+              tdata[title] = tAdata[title].default_content;
+            });*/
 
-            tdata[i] = tAdata[i].default_content;
-          }
-          /*tAdata.field_titles.forEach(function(title){
-            tdata[title] = tAdata[title].default_content;
-          });*/
+        }
+        //if no TaskStatus is given, assume complete
+        let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : "Complete";
 
-      }
-
-
-      this.setState({
-          TaskData: tdata,
-          TaskActivityFields: tAdata
-      });
-      //});
-    }
-
-    componentWillMount(){
-      this.getComponentData();
-    }
+        this.setState({
+            TaskData: tdata,
+            TaskActivityFields: tAdata,
+            TaskStatus: tstat
+        });
+  }
 
     isValidData(){
-
+      //go through all of TaskData's fields to check if null. If a field requires_justification,
+      // also check the justification field
+      //returns false if any field is null and true if all fields are filled
       for(let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++){
         if(this.state.TaskActivityFields[i].requires_justification){
           if((this.state.TaskData[i][0] == null || this.state.TaskData[i][0] == '') || (this.state.TaskData[i][1] == null || this.state.TaskData[i][1] == '')){
@@ -112,33 +107,12 @@ class SuperComponent extends React.Component {
     saveData(e){
 
       e.preventDefault();
-      let validData = this.isValidData();
-
-
-      /*this.state.TaskActivityFields.field_titles.forEach(function(title){
-
-        if(this.state.TaskActivityFields[title].requires_justification){
-          if((this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0 ) || (this.state.TaskData[title][1] == null || this.state.TaskData[title][1] == '' || this.state.TaskData[title][1] == 0)){
-            this.setState({
-              InputError: true
-            });
-            validData = false;
-            return;
-          }
-
+      //if task is complete, don't allow saving
+      if(this.state.TaskStatus == "Complete"){
+        return ;
       }
-        else {
-          if(this.state.TaskData[title][0] == null || this.state.TaskData[title][0] == '' || this.state.TaskData[title][0] == 0){
-            this.setState({
-              InputError: true
-            });
-            validData = false;
-            return;
-          }
-        }
 
-      },this);
-      */
+      let validData = this.isValidData();
 
       if(validData){
         const options = {
@@ -167,6 +141,11 @@ class SuperComponent extends React.Component {
 
     submitData(e){
       e.preventDefault();
+      //don't allow submit if task is complete
+      if(this.state.TaskStatus == "Complete"){
+        return ;
+      }
+      //check if input is valid
       let validData = this.isValidData();
 
       if(validData){
@@ -195,17 +174,21 @@ class SuperComponent extends React.Component {
 
 
     modalToggle(){
+      //shows or hides error message popup(modal)
       this.setState({InputError:false})
     }
 
     toggleRubric(){
+      //shows or hides the task activity rubric
       const bool = this.state.ShowRubric ? false : true;
 
       this.setState({
         ShowRubric: bool
       });
     }
+
     toggleContent(){
+      //shows or hides the component's section-content for accordian view
       const bool = this.state.ShowContent ? false : true;
 
       this.setState({
@@ -214,6 +197,7 @@ class SuperComponent extends React.Component {
     }
 
     handleContentChange(index,event) {
+      //updates task data with new user input in grading fields
       if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].input_type == "numeric"){
           if(isNaN(event.target.value)){
             return;
@@ -231,6 +215,7 @@ class SuperComponent extends React.Component {
       }
 
       handleJustificationChange(index,event) {
+        //updates task data with new user input in justification fields
         let newTaskData = this.state.TaskData;
         newTaskData[index][1] = event.target.value;
 
@@ -240,6 +225,7 @@ class SuperComponent extends React.Component {
         }
 
     handleStarChange(index,value){
+      //updates rating grade in taskdata
       let newTaskData = this.state.TaskData;
       newTaskData[index][0] = value;
 
@@ -250,6 +236,7 @@ class SuperComponent extends React.Component {
     }
 
     toggleFieldRubric(index){
+      //shows or hides the indivual fields' rubrics
           if(this.state.FieldRubrics[index] === []){
             let newFieldRubrics = this.state.FieldRubrics;
             newFieldRubrics[index] = true;
@@ -273,6 +260,11 @@ class SuperComponent extends React.Component {
           let TA_rubric = null;
           let TA_assignmentDescription = null;
           let TA_instructions = null;
+          let formButtons = (<div>
+            <br />
+            <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
+            <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+          </div>);
           let indexer =  "content";
           let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
           //if invalid data, shows error message
@@ -292,7 +284,7 @@ class SuperComponent extends React.Component {
                     <ReactCSSTransitionGroup  transitionEnterTimeout={300} transitionLeaveTimeout={300} transitionAppearTimeout={300} transitionName="example" transitionAppear={true}>
                     <div className="regular-text"> {this.props.Rubric}</div>
                     </ReactCSSTransitionGroup>
-                    <br />
+
                   </div>
                 );
               }
@@ -305,14 +297,14 @@ class SuperComponent extends React.Component {
           if(this.props.Instructions != null && this.props.Instructions != '' ){
             TA_instructions = (<div className="regular-text instructions">
                   <b>Insructions</b>: {this.props.Instructions}
-                  <br />
+
             </div>);
           }
 
           if(this.props.AssignmentDescription != null && this.props.AssignmentDescription != ''){
             TA_assignmentDescription = (<div className="regular-text assignmentDescription">
                   <b>Description</b>: {this.props.AssignmentDescription}
-                  <br />
+
             </div>);
           }
 
@@ -355,7 +347,7 @@ class SuperComponent extends React.Component {
                     <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
                     <div className="regular-text"> {this.state.TaskActivityFields[idx].rubric}</div>
                     </ReactCSSTransitionGroup>
-                    
+
                   </div>
                 );
               }
@@ -387,7 +379,7 @@ class SuperComponent extends React.Component {
               instructions = (
                 <div>
                   <br />
-                  <div className="regular-text"><b>{fieldTitleText} instructions:</b> {this.state.TaskActivityFields[idx].instructions}</div>
+                  <div className="regular-text"><b>{fieldTitleText} Instructions:</b> {this.state.TaskActivityFields[idx].instructions}</div>
                   <br />
                 </div>
               );
@@ -471,6 +463,10 @@ class SuperComponent extends React.Component {
             }
           }, this);
 
+          if(this.state.TaskStatus == "Complete"){
+            formButtons = (<div></div>);
+          }
+
           if(this.state.ShowContent){
             content = (<div className="section-content">
               {TA_assignmentDescription}
@@ -478,9 +474,7 @@ class SuperComponent extends React.Component {
               {TA_rubric}
               <br />
                 {fields}
-              <br />
-              <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
-              <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+                {formButtons}
            </div>);
           }
           else{
@@ -490,13 +484,14 @@ class SuperComponent extends React.Component {
           return(
             <div className="animate fadeInUp">
               {errorMessage}
-              <form  role="form" className="section task-hiding" onSubmit={this.submitData.bind(this)}>
+              <form  role="form" className="section task-hiding card-1" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>
                 </div>
                 {content}
               </form>
+
             </div>
           );
         }

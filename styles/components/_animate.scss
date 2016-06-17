@@ -1,10 +1,13 @@
-    
+
 .animate {
  -webkit-animation-duration: 0.7s;
  animation-duration: 0.7s;
 }
 /*=== Kindly Taken from: https://fabriceleven.com/dev/quickly-add-css-fade-in-animations/ by Alex Gurevich ===*/
-
+.animate-fast {
+ -webkit-animation-duration: 0.4s;
+ animation-duration: 0.4s;
+}
 
 /*=== Optional Delays, change values here  ===*/
 .one {

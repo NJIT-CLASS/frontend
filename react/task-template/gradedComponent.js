@@ -17,54 +17,72 @@ class GradedComponent extends React.Component {
       UsersTaskData: [], //props
       TaskActivityFields: {}, //props
       ComponentTitles:"",
-      HideDisputeButton: this.props.HideDisputeButton ? true: false
+      TaskStatus:"",
+      HideDisputeButton: this.props.HideDisputeButton ? true: false,
+      Error:false
     };
   }
 
   componentWillMount(){
+    if(!this.props.UsersTaskData){
+      this.setState({
+        Error: false
+      });
+    }
 
+      let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : "Incomplete";
+      this.setState({
+          TaskStatus: tstat
+      });
   }
 
   render(){
     let gradesView = null;
+    let divPadding = [];
     let tableStyle = {
       backfaceVisibility: 'hidden'
     }
     let disputeButton = (<button type="button" className="dispute animate fadeInUp" onClick={()=>{location.href = '/task/dispute/'+this.props.TaskID}}> Dispute Grade </button>);
-    if(this.state.HideDisputeButton){
+    if(this.state.HideDisputeButton || this.state.TaskStatus == "Complete"){
       disputeButton=null;
     }
 
-    let divPadding = [];
-    this.state.GradeTaskData.graders.forEach(function(){
-      divPadding.push((<td></td>));
-    });
+    if( !this.state.Error){
 
-    if( this.state.GradeTaskData != {}){
-      gradesView = this.state.GradeTaskData.graders.map(function(grader, index){
+      this.state.UsersTaskData.forEach(function(){
+        divPadding.push((<td></td>));
+      });
+
+      gradesView = this.state.UsersTaskData.map(function(grader, index){
           return(
             <td key={index +500}>
-              <GradeViewComponent     key={grader}
-                                      GradeData={this.state.GradeTaskData[grader]}
-                                      GradeCriteria={this.state.GradeTaskData.gradingCriteria}   />
+              <SuperViewComponent
+                                    ComponentTitle="Grade"
+                                    TaskData={grader[0]}
+                                    TaskActivityFields={grader[1]}/>
             </td>
           );
       }, this);
       divPadding.pop();
   }
-    return(<div className="invisible animate fadeInUp">
-            <table border="0" cellPadding="0" cellSpacing="0" className="tab">
-              <tbody>
-                    <tr>
-                    {gradesView}
-                    </tr>
-                    <tr>
-                      {divPadding} <td>{disputeButton}</td>
-                    </tr>
-              </tbody>
-            </table>
-          </div>
-        );
+
+  else{
+    return(<ErrorComponent />);
+  }
+
+  return(<div className="invisible animate fadeInUp">
+          <table border="0" cellPadding="0" cellSpacing="0" className="tab">
+            <tbody>
+                  <tr>
+                  {gradesView}
+                  </tr>
+                  <tr>
+                    {divPadding} <td>{disputeButton}</td>
+                  </tr>
+            </tbody>
+          </table>
+        </div>
+      );
 
   }
 

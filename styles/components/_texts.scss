@@ -31,6 +31,7 @@
 
 .number-input {
   width:55px;
+  font-size: 14px;
   max-width: 55px;
 }
 
@@ -43,10 +44,10 @@
 }
 
 .big-text-field {
-  width:900px;
+  width:75%;
+  box-sizing: border-box;
   height:200px;
   line-height: 1.5;
   overflow: auto;
-  max-width: auto;
-  max-height: 700px;
+  font-size: 14px;
 }

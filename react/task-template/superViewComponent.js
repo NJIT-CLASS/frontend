@@ -13,9 +13,6 @@ import ErrorComponent from './errorComponent';
 
 */
 
-
-
-
 class SuperViewComponent extends React.Component {
   constructor(props){
     super(props);
@@ -77,7 +74,6 @@ class SuperViewComponent extends React.Component {
 
       let justification = null;
       let fieldTitle = '';
-      console.log(this.state.TaskActivityFields[idx]);
       if(this.state.TaskActivityFields[idx].show_title){
         if(this.state.TaskActivityFields[idx].grade_type != null){
           fieldTitle = title +" Grade";
@@ -87,7 +83,6 @@ class SuperViewComponent extends React.Component {
         }
       }
       if(this.state.TaskActivityFields[idx].requires_justification){
-        console.log(this.state.TaskActivityFields[idx]);
         if(this.state.TaskData[idx][1] == ''){
           justification = (<div></div>);
         }
@@ -167,7 +162,7 @@ class SuperViewComponent extends React.Component {
       }
 
       return (
-        <div className="section task-hiding animate fadeInDown">
+        <div className="section task-hiding animate fadeInUp">
           <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
             {content}
         </div>
