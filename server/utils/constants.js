@@ -17,28 +17,32 @@ exports.ROOT_DIRECTORY_PATH = path.resolve(__dirname, '../');
 
 exports.TASK_TYPES = {
     CREATE_PROBLEM: 'create_problem',
-    GRADE_PROBLEM: 'grade_problem',
-    SOLVE_PROBLEM:'solve_problem',
     EDIT:'edit',
+    COMMENT:'comment',
     REVISE_AND_RESUBMIT:'revise_and_resubmit',
+    SOLVE_PROBLEM:'solve_problem',
+    GRADE_PROBLEM: 'grade_problem',
     CRITIQUE:'critique',
-    DISPUTE:'dispute',
-    CONSOLIDATION:'consolidation',
+    GRADED:'graded',
     NEEDS_CONSOLIDATION: 'needs_consolidation',
+    CONSOLIDATION:'consolidation',
+    DISPUTE:'dispute',
     RESOLVE_DISPUTE:'resolve_dispute',
     COMPLETED: 'completed'
 };
 
 exports.TASK_TYPE_TEXT = {
     create_problem: 'Create Problem',
-    grade_problem: 'Grade Problem',
-    solve_problem: 'Solve problem',
     edit:'Edit',
-    revise_and_resubmit: 'Revise and Submit',
+    comment:"Comment",
+    revise_and_resubmit: 'Revise and Resubmit',
+    solve_problem: 'Solve problem',
+    grade_problem: 'Grade',
     critique:'Critique',
-    dispute:'Dispute',
+    graded:'Grades',
+    needs_consolidation: "Needs Consolidation",
     consolidation:'Consolidation',
-    needs_consolidation: "Needs Consolidate",
+    dispute:'Dispute',
     resolve_dispute:'Resolve Dispute',
     completed:'Completed Task'
 };

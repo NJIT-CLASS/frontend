@@ -31,7 +31,9 @@ import GradedComponent from './gradedComponent';
 import DisputeViewComponent from './disputeViewComponent';
 import CommentComponent from './commentComponent';
 import ResolutionViewComponent from './resolutionViewComponent';
-
+import ModalInfo from '../assignment-records/info-modal';
+import WorkflowTable from '../assignment-records/workflowTable';
+import AssignSectionContainer from '../assign-to-section/assignContainer';
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
 const createProblemContainer = document.getElementById('create-task-container');
@@ -69,7 +71,6 @@ class TemplateContainer extends React.Component {
       }
 
       getVariableData() {
-
         const options = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
@@ -538,7 +539,8 @@ class TemplateContainer extends React.Component {
               <TabList className="big-text">
                 <Tab>Task</Tab>
                 <Tab>Comments</Tab>
-                <Tab>Baz</Tab>
+                <Tab>Testing Modal</Tab>
+                <Tab>Testing Assign to Section</Tab>
               </TabList>
               <TabPanel>
                 <HeaderComponent TaskID = {this.props.TaskID}
@@ -558,9 +560,13 @@ class TemplateContainer extends React.Component {
                 <CommentComponent />
               </TabPanel>
               <TabPanel>
-                <div className="placeholder"></div>
-                <h2>Hello from Baz</h2>
+                <ModalInfo />
               </TabPanel>
+              <TabPanel>
+              <div className="placeholder"></div>
+                <WorkflowTable />
+              </TabPanel>
+
             </Tabs>
 
           </div>

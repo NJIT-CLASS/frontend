@@ -5,6 +5,7 @@
 
 import React from 'react';
 import request from 'request';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import ErrorComponent from './errorComponent';
 import SuperViewComponent from './superViewComponent';
 import GradeViewComponent from './gradeViewComponent';
@@ -42,7 +43,7 @@ class GradedComponent extends React.Component {
     let tableStyle = {
       backfaceVisibility: 'hidden'
     }
-    let disputeButton = (<button type="button" className="dispute animate fadeInUp" onClick={()=>{location.href = '/task/dispute/'+this.props.TaskID}}> Dispute Grade </button>);
+    let disputeButton = (<button type="button" className="dispute animate fadeInUp" onClick={()=>{location.href = '/task/'+ TASK_TYPES.DISPUTE+'/'+this.props.TaskID}}> Dispute Grade </button>);
     if(this.state.HideDisputeButton || this.state.TaskStatus == "Complete"){
       disputeButton=null;
     }

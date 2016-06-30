@@ -28,7 +28,9 @@ const pages = [
     'dispute-your-grade',
     'resolve-the-dispute',
     'view-your-grade',
-    'completed-task'
+    'completed-task',
+    'consolidate-the-grades',
+    'assignment-editor'
 ];
 
 var pageConfigs = [];

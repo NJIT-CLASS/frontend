@@ -3,13 +3,14 @@ input[type=password],
 input[type=email],
 input[type=date],
 textarea {
-    width: 400px;
+    width: fit-content;
     font-size: 18px;
     box-sizing: border-box;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #e5e6e7;
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    transition: border-color ease .3s;
 
     &:focus {
         outline: none;
@@ -20,26 +21,145 @@ textarea {
         background-color: #eee;
     }
 
+    &:hover {
+        border-color: #00AB8D;
+        cursor: pointer;
+    }
+
     &.error {
         border-color: #ed5565;
     }
 }
 
+.numeric-input-component{
+  display: flex;
+    &:hover {
+      border-color: #00AB8D;
+      cursor: pointer;
+    }
+}
+
+.big-text-field {
+  width:600px;
+  max-width: 1000px;
+  max-height: 700px;
+  display:block;
+}
 .react-rater {
   display: inline-block;
   line-height: normal;
   margin-left: 10px;}
 
-  .react-rater a {
-    cursor: pointer;
-    font-size: 18px;
-    color: #262626; }
-    .react-rater a.will-be-active {
-      color: #ffdd99; }
-    .react-rater a.is-active {
-      color: #fc6; }
-    .react-rater a.is-disabled {
-      color: #ccc;
-      cursor: not-allowed; }
-  .react-rater.is-disabled a {
-    cursor: default; }
+.react-rater a {
+  cursor: pointer;
+  font-size: 18px;
+  color: #262626;
+}
+.react-rater a.will-be-active {
+  color: #ffdd99; }
+.react-rater a.is-active {
+  color: #fc6; }
+.react-rater a.is-disabled {
+  color: #ccc;
+  cursor: not-allowed; }
+.react-rater.is-disabled a {
+  cursor: default; }
+
+.Dropdown-root {
+  position: relative;
+}
+
+.Dropdown-control {
+  position: relative;
+  margin: 10px 0px;
+  width: fit-content;
+  height: 35px;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-sizing: border-box;
+  color: #333;
+  cursor: default;
+  outline: none;
+  padding: 8px 52px 8px 10px;
+  transition: all 200ms ease;
+}
+
+.Dropdown-control:hover {
+  border-color: #00AB8D;
+  cursor: pointer;
+}
+
+.Dropdown-arrow {
+  border-color: #999 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 0;
+  content: ' ';
+  display: block;
+  height: 0;
+  margin-top: -ceil(2.5);
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  width: 0
+}
+
+.is-open .Dropdown-arrow {
+  border-color: transparent transparent #999;
+  border-width: 0 5px 5px;
+}
+
+.Dropdown-menu {
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  overflow-x:visible;
+  overflow-y: auto;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+
+.Dropdown-menu .Dropdown-group > .Dropdown-title{
+  padding: 8px 10px;
+  color: rgba(51, 51, 51, 1);
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.Dropdown-option {
+  box-sizing: border-box;
+  color: rgba(51, 51, 51, 0.8);
+  cursor: pointer;
+  display: block;
+  padding: 8px 10px;
+}
+
+.Dropdown-option:last-child {
+  border-bottom-right-radius: 2px;
+   border-bottom-left-radius: 2px;
+}
+
+.Dropdown-option:hover {
+  background-color: #f2f9fc;
+  color: #333;
+}
+
+.Dropdown-option.is-selected {
+  background-color: #f2f9fc;
+  color: #333;
+}
+
+.Dropdown-noresults {
+  box-sizing: border-box;
+  color: #ccc;
+  cursor: default;
+  display: block;
+  padding: 8px 10px;
+}

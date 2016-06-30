@@ -75,7 +75,7 @@ class SuperViewComponent extends React.Component {
       let justification = null;
       let fieldTitle = '';
       if(this.state.TaskActivityFields[idx].show_title){
-        if(this.state.TaskActivityFields[idx].grade_type != null){
+        if(this.state.TaskActivityFields[idx].assessment_type != null){
           fieldTitle = title +" Grade";
         }
         else{
@@ -91,7 +91,7 @@ class SuperViewComponent extends React.Component {
         }
       }
 
-      if(this.state.TaskActivityFields[idx].input_type == "text"){
+      if(this.state.TaskActivityFields[idx].field_type == "text"){
         let fieldView = (<div>
           <div key={idx + 600}><b>{fieldTitle}</b></div>
           <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
@@ -108,8 +108,8 @@ class SuperViewComponent extends React.Component {
         );
 
       }
-      else if(this.props.TaskActivityFields[idx].input_type == "numeric"){
-        if(this.state.TaskActivityFields[idx].grade_type == "grade"){
+      else if(this.props.TaskActivityFields[idx].field_type == "numeric"){
+        if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
           let fieldView = (<div>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
             <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
@@ -125,7 +125,7 @@ class SuperViewComponent extends React.Component {
             </div>
           );
         }
-        else if(this.state.TaskActivityFields[idx].grade_type == "rating"){
+        else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
           let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
           let fieldView = (<div>
             <div key={idx + 600}><b>{fieldTitle}   </b>
@@ -162,7 +162,7 @@ class SuperViewComponent extends React.Component {
       }
 
       return (
-        <div className="section task-hiding animate fadeInUp">
+        <div className="section task-hiding animate fadeInUp card-1">
           <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
             {content}
         </div>

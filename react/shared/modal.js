@@ -3,6 +3,9 @@ import React from 'react';
 class Modal extends React.Component {
     render() {
         let styles = {};
+        if(this.props.styles){
+          styles=this.props.styles;
+        }
 
         if (this.props.width) {
             styles.width = this.props.width;

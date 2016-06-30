@@ -2,7 +2,6 @@
     background-color: #ffffff;
     box-sizing: border-box;
     margin: 10px;
-    width:auto;
 
     a:visited{
       color:#70119F;
@@ -51,46 +50,35 @@
         }
     }
 }
+.section-divider{
+  position: relative;
+  overflow:hidden;
+  border-bottom: 0.5px solid #e7eaec;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  label{
+    margin:8px 15px !important;
+  }
 
-.react-tabs{
-  width:100%;
-}
-.react-tabs [role=tab]{
-  width:25%;
-  height: 23px;
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
-  border-color: #E7EAEC;
-  background-color:#d7d7da;
-  padding-top: 5px;
-  outline: none;
-}
-.react-tabs [role=tab][aria-selected=true] {
-  border-color: #DDDDDD;
-  background-color: #F3F3F4;
-  outline: none;
-  border-bottom: none;
-}
-.react-tabs [role=tab][aria-disabled=true] {
-  border-color: #d7d7da;
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
-  outline: none;
-}
-.react-tabs [role=tab]:focus {
-border-radius: 5px 5px 0 0;
-}
-.react-tabs [role=tablist] {
-    border-bottom: 1px solid #d7d7da;
+  .subheading{
+    font-size:20px;
     text-align: center;
+    font-weight: 400px;
+    padding: 20px 30px 20px 30px;
+    color: #000000;
   }
-.react-tabs [role=tab]:hover {
-    box-shadow: 0 0 5px #d7d7da;
-    border-color: #d7d7da;
-    border-bottom: none;
-    border-radius: 5px 5px 0 0;
-    outline: none;
-  }
+  .inner{
+    text-align: center;
+     display:inline-block;
+     padding: 10px;
+     margin-right: 25px;
+     margin-left: 25px;
+     vertical-align: top;
+    }
+
+
+}
+
 
 .comment{
   background-color: #ffffff;
@@ -123,8 +111,12 @@ border-radius: 5px 5px 0 0;
 
 
 .task-hiding{
-
+    max-height: 0px;
     min-height: 0px;
+    height:0px;
+    position:relative;
+    overflow: hidden;
+    display: inline-block;
 
 
 }

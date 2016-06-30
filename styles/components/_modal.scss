@@ -9,7 +9,7 @@
     bottom: 0;
     background: rgba(4,4,4,0.2);
     z-index: 1;
-  
+
 
     .modal-overlay-container {
         display: flex;
@@ -55,5 +55,20 @@
         padding: 20px;
     }
 
+}
 
+.modal-section {
+  h3{
+    color: #676a6c;
+  }
+  p{
+    margin-bottom:5px;
+  }
+  a{
+    color: #4B4BF3;
+  }
+  padding: 10px;
+  border-bottom: 0.5px solid #e7eaec;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

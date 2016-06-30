@@ -74,7 +74,7 @@ class SuperComponent extends React.Component {
 
         }
         //if no TaskStatus is given, assume complete
-        let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : "Complete";
+        let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : "Incomplete";
 
         this.setState({
             TaskData: tdata,
@@ -198,7 +198,7 @@ class SuperComponent extends React.Component {
 
     handleContentChange(index,event) {
       //updates task data with new user input in grading fields
-      if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].input_type == "numeric"){
+      if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].field_type == "numeric"){
           if(isNaN(event.target.value)){
             return;
           }
@@ -278,20 +278,19 @@ class SuperComponent extends React.Component {
           }
 
           if(this.props.Rubric != '' && this.props.Rubric != null){
+            let TA_rubric_content = null;
             if(this.state.ShowRubric){
-                TA_rubric = ( <div>
-                    <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
-                    <ReactCSSTransitionGroup  transitionEnterTimeout={300} transitionLeaveTimeout={300} transitionAppearTimeout={300} transitionName="example" transitionAppear={true}>
-                    <div className="regular-text"> {this.props.Rubric}</div>
-                    </ReactCSSTransitionGroup>
+                TA_rubric_content = (<div className="regular-text" key={"rubric"}> {this.props.Rubric}</div>);
 
-                  </div>
-                );
               }
-              else{
-                TA_rubric = (<button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} > {TA_rubricButtonText}</button>
-              );
-              }
+
+              TA_rubric = ( <div key={"rub"}>
+                  <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)}  key={"button"}> {TA_rubricButtonText}</button>
+                  <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
+                  {TA_rubric_content}
+                </ReactCSSTransitionGroup>
+
+                </div>);
           }
 
           if(this.props.Instructions != null && this.props.Instructions != '' ){
@@ -324,7 +323,7 @@ class SuperComponent extends React.Component {
             }
 
             if(this.state.TaskActivityFields[idx].show_title){
-              if(this.state.TaskActivityFields[idx].grade_type != null){
+              if(this.state.TaskActivityFields[idx].assessment_type != null){
                 fieldTitleText = title +" Grade";
               }
               else{
@@ -339,22 +338,21 @@ class SuperComponent extends React.Component {
 
 
             if(this.state.TaskActivityFields[idx].rubric != ''){
+              let rubric_content = null;
               let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
               if(this.state.FieldRubrics[idx]){
-                rubricView = ( <div>
-                    <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)} > {rubricButtonText}</button>
-                    <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={true}>
-                    <div className="regular-text"> {this.state.TaskActivityFields[idx].rubric}</div>
-                    </ReactCSSTransitionGroup>
+                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}> {this.state.TaskActivityFields[idx].rubric}</div>);
+              }
 
-                  </div>
-                );
-              }
-              else{
-                rubricView =(<button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)} > {rubricButtonText}</button>
-                              );
-              }
+              rubricView = ( <div>
+                  <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)}> {rubricButtonText}</button>
+                  <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
+                    {rubric_content}
+                  </ReactCSSTransitionGroup>
+
+                </div>
+              );
 
             }
 
@@ -386,8 +384,8 @@ class SuperComponent extends React.Component {
             }
 
 
-            if(this.state.TaskActivityFields[idx].input_type == "numeric"){
-              if(this.state.TaskActivityFields[idx].grade_type == "grade"){
+            if(this.state.TaskActivityFields[idx].field_type == "numeric"){
+              if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
                 let fieldInput = null;
                 if(this.state.TaskData[idx][0] == null){
                   fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
@@ -411,7 +409,7 @@ class SuperComponent extends React.Component {
                   </div>
                   );
                 }
-                else if(this.state.TaskActivityFields[idx].grade_type == "rating"){
+                else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
                   let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
                   let nameStr = "rate" + idx;
                   return (
@@ -436,7 +434,7 @@ class SuperComponent extends React.Component {
                 }
 
             }
-            else if(this.state.TaskActivityFields[idx].input_type == "text"){
+            else if(this.state.TaskActivityFields[idx].field_type == "text"){
               let fieldInput = null;
               if(this.state.TaskData[idx][0] == null){
                 fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="Type your problem here ...">
@@ -451,6 +449,7 @@ class SuperComponent extends React.Component {
 
                 <div key={idx + 600}><b>{fieldTitleText}</b></div>
                 {instructions}
+
                 {rubricView}
                 <br/>
                 {fieldInput}
@@ -471,7 +470,9 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
               {TA_assignmentDescription}
               {TA_instructions}
-              {TA_rubric}
+
+                {TA_rubric}
+
               <br />
                 {fields}
                 {formButtons}
@@ -484,7 +485,7 @@ class SuperComponent extends React.Component {
           return(
             <div className="animate fadeInUp">
               {errorMessage}
-              <form  role="form" className="section task-hiding card-1" onSubmit={this.submitData.bind(this)}>
+              <form  role="form" className="section card-1" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>
