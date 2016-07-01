@@ -20,7 +20,7 @@ class TaskDetailsComponent extends React.Component{
             TA_what_if_late: 'Keep same participant',
             TA_display_name: 'Create Problem',
             TA_one_or_separate: false,
-            TA_assignee_constraint: [],
+            TA_assignee_constraint: ['student','individual',null],
             TA_simple_grade: 'none',
             TA_is_final_grade: false,
             TA_overall_instructions: 'test',
@@ -219,7 +219,7 @@ class TaskDetailsComponent extends React.Component{
           </div>);
       }
 
-      if(this.state.TA_allow_reflection[0] != 'none'){
+      if(this.state.TaskActivityData.TA_allow_reflection[0] != 'none'){
         allowReflectionOptions = (<div>
 
           <Dropdown options={reflectionValues} onChange={(event) => {
@@ -404,9 +404,9 @@ class TaskDetailsComponent extends React.Component{
             <h2 className="title" div onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}} >Create Problem Task</h2>
               <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
 
-                <div >
+                <div className="section-divider">
                   <div className="inner" style={instyle}>
-                    <label>Does this task require any file uploads?</label><br />
+                    <label>Does this task require any file uploads?</label>
                     <div className="checkbox" checked={this.state.FileUp} onClick={ ()=>{
                         this.setState({
                           FileUp: this.state.FileUp ? false: true
@@ -427,7 +427,7 @@ class TaskDetailsComponent extends React.Component{
 
                     }} ></input><br />
                   </div>
-                </div>
+
 
                 <label>Task Instructions</label>
                 <textarea className="big-text-field"
@@ -452,7 +452,10 @@ class TaskDetailsComponent extends React.Component{
                             }}
                           value={this.state.TaskActivityData.TA_overall_rubric}
                           ></textarea>
+                </div>
+
                 {inputFieldsView}
+                
                 <button type="button" className="divider" onClick={()=>{
                     let newData = this.state.TaskActivityData;
                     newData.TA_fields.number_of_fields += 1;
@@ -496,7 +499,6 @@ class TaskDetailsComponent extends React.Component{
                           }}
                           />
                   </div>
-
 
                   <div className="inner">
                     <label>Delay before starting task</label>
@@ -663,7 +665,15 @@ class TaskDetailsComponent extends React.Component{
                                         TaskActivityData: newData
                                       })
                                     }}/>
-                        <label>Will this be a group task</label><div className="checkbox"></div>
+                                  <label>Will this be a group task</label><Checkbox click={ () => {
+                                    let newData = this.state.TaskActivityData;
+                                    if(this.state.TaskActivityData.TA_assignee_constraint[1] != 'group'){
+                                      newData.TA_assignee_constraint[1] = 'group';
+                                    }
+                                    else{
+                                      newData.TA_assignee_constraint[1] = 'individual';
+                                    }
+                                  }}/>
                     </div>
 
                     <div className="inner">
