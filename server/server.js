@@ -139,10 +139,11 @@ app.use((req, res, next) => {
             if (err || statusCode !== 200) {
                 delete req.session.userId;
                 res.redirect('/');
+
             }
 
             const user = body.User[0];
-            req.App.user.email = user.Email;
+            req.App.user.email = user.UserLogin.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
             req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
@@ -159,7 +160,7 @@ app.use((req, res, next) => {
 
     res.render = function(template, options, cb) {
         options = options ? options : {};
-        
+
 		        options.template = template;
 
         if (!('showHeader' in options)) {

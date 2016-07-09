@@ -29,11 +29,11 @@ import HeaderComponent from './headerComponent'
 import ResponseComponent from './responseComponent';
 import GradedComponent from './gradedComponent';
 import DisputeViewComponent from './disputeViewComponent';
+import ErrorComponent from './errorComponent';
 import CommentComponent from './commentComponent';
 import ResolutionViewComponent from './resolutionViewComponent';
-import ModalInfo from '../assignment-records/info-modal';
 import WorkflowTable from '../assignment-records/workflowTable';
-import AssignSectionContainer from '../assign-to-section/assignContainer';
+
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
 const createProblemContainer = document.getElementById('create-task-container');
@@ -60,17 +60,19 @@ class TemplateContainer extends React.Component {
               CourseNumber: '',
               AssignmentTitle: '',
               AssignmentID: null,
+              AssignmentDescription: '',
               TaskActivityType: '',
+              TaskStatus: '',
               SemesterID: null,
               SemesterName: '',
               TaskActivityName:'',
-              Data:{
-
-              }
+              Data:null,
+              Error: false
           }
       }
 
-      getVariableData() {
+      getHeaderData() {
+
         const options = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
@@ -83,451 +85,162 @@ class TemplateContainer extends React.Component {
         };
 
         request(options, (err, res, body) => {
+          console.log(err,res);
 
-          if(true /*this.state.taskActivityType == TASK_TYPES.CREATE_PROBLEM*/){
-            const options2 = {
-                      method: 'GET',
-                      uri: this.props.apiUrl + '/api/taskTemplate/create/10',
-                      json: true
-                  };
-
-              request(options2, (err, res, bod) => {
-                const options3 = {
-                          method: 'GET',
-                          uri: this.props.apiUrl + '/api/taskTemplate/edit/' + this.props.TaskID,
-                          json: true
-                      };
-
-                  request(options3, (err, res, bo) => {
-                    const options4 = {
-                              method: 'GET',
-                              uri: this.props.apiUrl + '/api/taskTemplate/grade/' + this.props.TaskID,
-                              json: true
-                          };
-
-                      request(options4, (err, res, gradebody) => {
+          if(res.statusCode == 400){
+              this.setState({Error: true});
+              return;
+          }
 
 
-                        let newData = this.state.Data;
-                        let taskprops = [bod.taskData,bod.taskActivityData,bod.assignmentDescription,bod.taskInstructions, bod.taskRubric,bod.taskStatus];
-                        let etaskprops = [bo.taskData,bo.taskActivityData,bo.assignmentDescription,bo.taskInstructions, bo.taskRubric];
-                        newData['create'] = taskprops;
-                        newData['edit'] = etaskprops;
-                        newData['grade'] = [gradebody.taskData,gradebody.taskActivityData,gradebody.assignmentDescription,gradebody.taskInstructions, gradebody.taskRubric];
+          this.setState({
+            //set create's task data to pass down
+            Loaded:true,
+            TaskActivityID: body.taskActivityID,
+            CourseName: body.courseName,
+            CourseNumber: body.courseNumber,
+            AssignmentTitle: body.assignmentTitle,
+            AssignmentID: body.assignmentID,
+            AssignmentDescription: body.assignmentDescription,
+            TaskActivityType: body.taskActivityType,
+            SemesterID: body.semesterID,
+            SemesterName: body.semesterName,
+            TaskActivityVisualID: body.taskActivityVisualID
 
-                        this.setState({
-                          //set create's task data to pass down
-                          Data: newData,
-                          Loaded:true,
-                          TaskActivityID: body.taskActivityID,
-                          CourseName: body.courseName,
-                          CourseNumber: body.courseNumber,
-                          AssignmentTitle: body.assignmentTitle,
-                          AssignmentID: body.assignmentID,
-                          TaskActivityType: body.taskActivityType,
-                          SemesterID: body.semesterID,
-                          SemesterName: body.semesterName,
-                          TaskActivityVisualID: body.taskActivityVisualID
 
-                          });
-                        });
-                    });
-                  });
-
-                  }
           });
+        });
 
       }
 
 
-      componentWillMount() { //get the database data before component renders
-        this.getVariableData();
+      getTasks(){
+        const options = {
+                  method: 'GET',
+                  uri: this.props.apiUrl + '/api/superCall/'+ this.props.TaskID,
+                  json: true
+              };
 
+        request(options, (err, res, bod) => {
+          console.log(bod);
+          if(res.statusCode != 200){
+            this.setState({
+              Error: true
+            });
+            return;
+          }
+          else{
+            let currentTaskStatus = bod.superTask[0].Status;
+            let taskList = bod.superTask.reverse();
+            this.setState({
+              Data: taskList,
+              TaskStatus: currentTaskStatus
+            });
+          }
+        });
+      }
+
+      componentWillMount() { //get the database data before component renders
+        this.getHeaderData();
+        this.getTasks();
 
       }
 
       render(){
+
         let renderComponents = null;
         let gradeViews = null;
+        let numberOfGradingTasks = 0;
 
+        if(this.state.Error){
+          return(<ErrorComponent />)
+        }
         if(!this.state.Loaded){
           return(
             <div></div>
           );
         }
-        /*
-        renderComponents = this.state.Data.map(function(data,idx){ //this task -> previous... -> first task
-            let compString = null;
-            let gradesViewIndex = null;
-            switch(/*ta_type){
-              case TASK_TYPES.CREATE_PROBLEM:
-                compString = "Create the Problem";
-                break;
-            case TASK_TYPES.EDIT:
-                compString = "Edit the Problem";
-                break;
-            case TASK_TYPES.SOLVE_PROBLEM:
-                compString = "Solve the Problem";
-                break;
-            case TASK_TYPES.GRADE_PROBLEM:
-                compString = "Grade the Solution";
-                break;
-            case TASK_TYPES.CONSOLIDATION:
-                compString = "Consolidate the Grades";
-                break;
-            case TASK_TYPES.DISPUTE:
-                compString = "Dispute Your Grade";
-                break;
-            case TASK_TYPES.RESOLVE_DISPUTE:
-                compString = "Resolve the Dispute";
-                break;
-            default:
-                compString = "";
-                break;
-            }
 
-            if(idx == 0){
-              return (<SuperComponent    TaskID = {this.props.TaskID}
-                                          UserID = {this.props.UserID}
-                                          ComponentTitle={compString}
-                                          TaskData = {data["Data"]}
-                                          TaskActivityFields = {data["TA_Fields"]}
-                                          AssignmentDescription = {data.Assignment.Description}
-                                          Instructions = {data.TaskActivity.Instructions}
-                                          Rubric= {data.TaskActivity.Rubric}
-                                          apiUrl={this.props.apiUrl}
-                                      />);
-            }
+        if(this.state.Data != null){
+          let gradesViewIndex = null;
+          renderComponents = this.state.Data.map(function(task,idx){ //this task -> previous... -> first task
+              let compString = null;
 
-            if(data.TaskActivity.Type == TASK_TYPES.GRADE_PROBLEM){
-              gradeViews.push(data);
-              return null;
+              switch(task.TaskActivity.Type){
+                case TASK_TYPES.CREATE_PROBLEM:
+                  compString = "Create the Problem";
+                  break;
+              case TASK_TYPES.EDIT:
+                  compString = "Edit the Problem";
+                  break;
+              case TASK_TYPES.SOLVE_PROBLEM:
+                  compString = "Solve the Problem";
+                  break;
+              case TASK_TYPES.GRADE_PROBLEM:
+                  compString = "Grade the Solution";
+                  break;
+              case TASK_TYPES.CONSOLIDATION:
+                  compString = "Consolidate the Grades";
+                  break;
+              case TASK_TYPES.DISPUTE:
+                  compString = "Dispute Your Grade";
+                  break;
+              case TASK_TYPES.RESOLVE_DISPUTE:
+                  compString = "Resolve the Dispute";
+                  break;
+              default:
+                  compString = "";
+                  break;
+              }
+
+              if(idx == 0){
+                return (<SuperComponent    TaskID = {this.props.TaskID}
+                                            UserID = {this.props.UserID}
+                                            ComponentTitle={compString}
+                                            TaskData = {task.Data}
+                                            TaskStatus = {task.Status}
+                                            TaskActivityFields = {task.TaskActivity.Fields}
+                                            Instructions = {task.TaskActivity.Instructions}
+                                            Rubric= {task.TaskActivity.Rubric}
+                                            apiUrl={this.props.apiUrl}
+                                        />);
+              }
+
+              if(taskType == TASK_TYPES.GRADE_PROBLEM){
+                numberOfGradingTasks = task.TaskActivity.NumberParticipants;
+                gradeViews.push(data);
+                return null;
+              }
+              else{
+                return (<SuperViewComponent
+                                    ComponentTitle={compString}
+                                    TaskData={task.Data}
+                                    TaskActivityFields={task.TaskActivity.Fields}/>)
+              }
+          }, this);
+
+          for(let i = 0; i < this.state.Data.length; i++){
+            if(this.state.Data[i].TaskActivity.Type == TASK_TYPES.NEED_CONSOLIDATION){
+              gradesViewIndex = i;
             }
             else{
-              return (<SuperViewComponent
-                                  ComponentTitle={compString}
-                                  TaskData={data["Data"]}
-                                  TaskActivityFields={data["TA_Fields"]}/>)
+              continue;
             }
-        });
-
-        for(let i = 0; i < this.state.Data.length; i++){
-          if(this.state.Data[i].TaskActivity.Type == TASK_TYPES.NEED_CONSOLIDATION){
-            gradesViewIndex = i;
           }
-          else{
-            continue;
-          }
-        }
 
-        let gradedComponentView = (  <GradedComponent      TaskID = {this.props.TaskID}
-                                                           UsersTaskData = {gradeViews}
-                                                           TaskActivityFields = {gradeViews[0].TaskActivity.TA_fields}
-                                                           />);
-
-        if(gradesViewIndex != null){
-          renderComponents.splice(gradesViewIndex, 0, gradedComponentView);
-        }
-
-        return(<div>
-          {renderComponents}
-        </div>);
-        */
-        if(createProblemContainer){
-          renderComponents = (
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Create the Problem"
-                                    TaskData = {this.state.Data['create'][0]}
-                                    TaskActivityFields = {this.state.Data['create'][1]}
-                                    AssignmentDescription = {this.state.Data['create'][2]}
-                                    Instructions = {this.state.Data['create'][3]}
-                                    Rubric= {this.state.Data['create'][4]}
-                                    TaskStatus={this.state.Data['create'][5]}
-                                    apiUrl={this.props.apiUrl}
-
-                                    />
-
-          );
-        }
-        else if(editProblemContainer){
-          renderComponents = (
-              <div>
-              <SuperViewComponent
-                                    ComponentTitle="Problem"
-                                    TaskData={this.state.Data['create'][0]}
-                                    TaskActivityFields={this.state.Data['create'][1]}/>
-
-              <SuperComponent         TaskID = {this.props.TaskID}
-                                      UserID = {this.props.UserID}
-                                      ComponentTitle="Edit the Problem"
-                                      TaskData = {this.state.Data['edit'][0]}
-                                      TaskActivityFields = {this.state.Data['edit'][1]}
-                                      AssignmentDescription = {this.state.Data['edit'][2]}
-                                      Instructions = {this.state.Data['edit'][3]}
-                                      Rubric= {this.state.Data['edit'][4]}
-                                      apiUrl={this.props.apiUrl}
-
-                                      />
-              <br />
-              </div>
-
-          );
-        }
-        else if(solveProblemContainer){
-            renderComponents =(
-              <div>
-                <SuperViewComponent TaskID = {this.props.TaskID}
-                                      apiUrl={this.props.apiUrl}
-                                      ComponentTitle="Problem"
-                                      TaskData={this.state.Data['create'][0]}
-                                      TaskActivityFields={this.state.Data['create'][1]}/>
-
-                <SuperComponent         TaskID = {this.props.TaskID}
-                                        UserID = {this.props.UserID}
-                                        ComponentTitle="Solve the Problem"
-                                        TaskData = {this.state.Data['solve'][0]}
-                                        TaskActivityFields = {this.state.Data['solve'][1]}
-                                        AssignmentDescription = {this.state.Data['solve'][2]}
-                                        Instructions = {this.state.Data['solve'][3]}
-                                        Rubric= {this.state.Data['solve'][4]}
-                                        apiUrl={this.props.apiUrl}
-
-                                        />
-             </div>
-            );
-        }
-        else if(gradeContainer){
-          renderComponents = (<div>
-            <SuperViewComponent TaskID = {this.props.TaskID}
-                                  apiUrl={this.props.apiUrl}
-                                  ComponentTitle="Problem"
-                                  TaskData={this.state.Data['create'][0]}
-                                  TaskActivityFields={this.state.Data['create'][1]}/>
-
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Grade the Problem"
-                                    TaskData = {this.state.Data['grade'][0]}
-                                    TaskActivityFields = {this.state.Data['grade'][1]}
-                                    AssignmentDescription = {this.state.Data['grade'][2]}
-                                    Instructions = {this.state.Data['grade'][3]}
-                                    Rubric= {this.state.Data['grade'][4]}
-                                    apiUrl={this.props.apiUrl}
-                                    />
-            <SuperViewComponent TaskID = {this.props.TaskID}
-                                  apiUrl={this.props.apiUrl}
-                                  ComponentTitle="Grades"
-                                  TaskData={this.state.Data['grade'][0]}
-                                  TaskActivityFields={this.state.Data['grade'][1]}/>
-
-
-
-            <br />
-            </div>
-          );
-
-        }
-        else if(gradedContainer){
-          renderComponents=(<div>
-            <SuperViewComponent TaskID = {this.props.TaskID}
-                                  apiUrl={this.props.apiUrl}
-                                  ComponentTitle="Problem"
-                                  TaskData={this.state.Data['create'][0]}
-                                  TaskActivityFields={this.state.Data['create'][1]}/>
-
-            <ResponseComponent TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}/>
-
+        if(gradeViews != null){
+          let gradedComponentView = (
             <GradedComponent      TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}
-                                   UserID = {this.props.UserID} />
-
-            </div>
-          );
-        }
-        else if(disputeContainer){
-          renderComponents=(
-            <div>
-              <SuperViewComponent  TaskID = {this.props.TaskID}
-                                     apiUrl={this.props.apiUrl}
-                                     problemHeader="Problem"/>
-
-              <ResponseComponent     TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}/>
-
-              <GradedComponent       TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}
-                                     UserID = {this.props.UserID}
-                                     HideDisputeButton = {true}/>
-
-             <SuperComponent         TaskID = {this.props.TaskID}
-                                     UserID = {this.props.UserID}
-                                     ComponentTitle="Dispute Your Grade"
-                                     TaskData = {this.state.Data['dispute'][0]}
-                                     TaskActivityFields = {this.state.Data['dispute'][1]}
-                                     AssignmentDescription = {this.state.Data['dispute'][2]}
-                                     Instructions = {this.state.Data['dispute'][3]}
-                                     Rubric= {this.state.Data['dispute'][4]}
-                                     apiUrl={this.props.apiUrl}
-                                     />
-
-            </div>
-          );
-        }
-        else if(resolveGradeContainer){
-          renderComponents=(
-            <div>
-              <SuperViewComponent TaskID = {this.props.TaskID}
-                                    apiUrl={this.props.apiUrl}
-                                    problemHeader="Problem"/>
-              <br />
-              <ResponseComponent TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}/>
-              <GradedComponent       TaskID = {this.props.TaskID}
-                                     apiUrl = {this.props.apiUrl}
-                                     UserID = {this.props.UserID}
-                                     HideDisputeButton = {true}/>
-              <DisputeViewComponent  TaskID = {this.props.TaskID}
-                                    apiUrl = {this.props.apiUrl}
-                                    UserID = {this.props.UserID} />
-              <SuperComponent         TaskID = {this.props.TaskID}
-                                      UserID = {this.props.UserID}
-                                      ComponentTitle="Resolve the Dispute"
-                                      TaskData = {this.state.Data['resolve'][0]}
-                                      TaskActivityFields = {this.state.Data['resolve'][1]}
-                                      AssignmentDescription = {this.state.Data['resolve'][2]}
-                                      Instructions = {this.state.Data['resolve'][3]}
-                                      Rubric= {this.state.Data['resolve'][4]}
-                                      apiUrl={this.props.apiUrl}
-                                      />
-
-            </div>
-
-          );
-        }
-        else if(completedContainer){
-            renderComponents=(
-              <div>
-                <SuperViewComponent TaskID = {this.props.TaskID}
-                                      apiUrl={this.props.apiUrl}
-                                      problemHeader="Problem"/>
-                <br />
-                <ResponseComponent TaskID = {this.props.TaskID}
-                                       apiUrl = {this.props.apiUrl}/>
-                <br />
-                <GradedComponent       TaskID = {this.props.TaskID}
-                                       apiUrl = {this.props.apiUrl}
-                                       UserID = {this.props.UserID}
-                                       HideDisputeButton = {true}/>
-                <br />
-                <DisputeViewComponent  TaskID = {this.props.TaskID}
-                                      apiUrl = {this.props.apiUrl}
-                                      UserID = {this.props.UserID} />
-                                    <br/>
-                <ResolutionViewComponent TaskID = {this.props.TaskID}
-                                      apiUrl = {this.props.apiUrl}
-                                      UserID = {this.props.UserID} />
-
-              </div>
+                                  UsersTaskData = {gradeViews}
+                                  TaskActivityFields = {gradeViews[0].TaskActivity.Fields}
+                                  TaskStatus = {this.state.Task}
+                                  />
             );
+          }
 
-        }
-        else{
-          renderComponents =  (
-            <div>
-              <SuperComponent         TaskID = {this.props.TaskID}
-                                      UserID = {this.props.UserID}
-                                      ComponentTitle="Create the Problem"
-                                      TaskData = {this.state.Data['create'][0]}
-                                      TaskActivityFields = {this.state.Data['create'][1]}
-                                      AssignmentDescription = {this.state.Data['create'][2]}
-                                      Instructions = {this.state.Data['create'][3]}
-                                      Rubric= {this.state.Data['create'][4]}
-                                      apiUrl={this.props.apiUrl}
-
-                                      />
-            <SuperViewComponent TaskID = {this.props.TaskID}
-                                  apiUrl={this.props.apiUrl}
-                                  ComponentTitle="Problem"
-                                  TaskData={this.state.Data['create'][0]}
-                                  TaskActivityFields={this.state.Data['create'][1]}/>
-
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Edit the Problem"
-                                    TaskData = {this.state.Data['edit'][0]}
-                                    TaskActivityFields = {this.state.Data['edit'][1]}
-                                    AssignmentDescription = {this.state.Data['edit'][2]}
-                                    Instructions = {this.state.Data['edit'][3]}
-                                    Rubric= {this.state.Data['edit'][4]}
-                                    apiUrl={this.props.apiUrl}
-
-                                    />
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Solve the Problem"
-                                    TaskData = {this.state.Data['solve'][0]}
-                                    TaskActivityFields = {this.state.Data['solve'][1]}
-                                    AssignmentDescription = {this.state.Data['solve'][2]}
-                                    Instructions = {this.state.Data['solve'][3]}
-                                    Rubric= {this.state.Data['solve'][4]}
-                                    apiUrl={this.props.apiUrl}
-
-                                    />
-
-            <ResponseComponent TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}/>
-
-           <SuperComponent         TaskID = {this.props.TaskID}
-                                   UserID = {this.props.UserID}
-                                   ComponentTitle="Grade the Problem"
-                                   TaskData = {this.state.Data['grade'][0]}
-                                   TaskActivityFields = {this.state.Data['grade'][1]}
-                                   AssignmentDescription = {this.state.Data['grade'][2]}
-                                   Instructions = {this.state.Data['grade'][3]}
-                                   Rubric= {this.state.Data['grade'][4]}
-                                   apiUrl={this.props.apiUrl}
-                                   />
-
-            <GradedComponent       TaskID = {this.props.TaskID}
-                                   apiUrl = {this.props.apiUrl}
-                                   UserID = {this.props.UserID}/>
-
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Dispute Your Grade"
-                                    TaskData = {this.state.Data['dispute'][0]}
-                                    TaskActivityFields = {this.state.Data['dispute'][1]}
-                                    AssignmentDescription = {this.state.Data['dispute'][2]}
-                                    Instructions = {this.state.Data['dispute'][3]}
-                                    Rubric= {this.state.Data['dispute'][4]}
-                                    apiUrl={this.props.apiUrl}
-                                    />
-            <DisputeViewComponent  TaskID = {this.props.TaskID}
-                                  apiUrl = {this.props.apiUrl}
-                                  UserID = {this.props.UserID} />
-            <SuperComponent         TaskID = {this.props.TaskID}
-                                    UserID = {this.props.UserID}
-                                    ComponentTitle="Resolve the Dispute"
-                                    TaskData = {this.state.Data['resolve'][0]}
-                                    TaskActivityFields = {this.state.Data['resolve'][1]}
-                                    AssignmentDescription = {this.state.Data['resolve'][2]}
-                                    Instructions = {this.state.Data['resolve'][3]}
-                                    Rubric= {this.state.Data['resolve'][4]}
-                                    apiUrl={this.props.apiUrl}
-                                    />
-            <ResolutionViewComponent TaskID = {this.props.TaskID}
-                                  apiUrl = {this.props.apiUrl}
-                                  UserID = {this.props.UserID} />
-            </div>
-
-
-          );
-        }
-
-
-
+          if(gradesViewIndex != null){
+            renderComponents.splice(gradesViewIndex, gradeViews.length, gradedComponentView);
+          }}
 
         return(
           <div className="super-container">
@@ -539,8 +252,6 @@ class TemplateContainer extends React.Component {
               <TabList className="big-text">
                 <Tab>Task</Tab>
                 <Tab>Comments</Tab>
-                <Tab>Testing Modal</Tab>
-                <Tab>Testing Assign to Section</Tab>
               </TabList>
               <TabPanel>
                 <HeaderComponent TaskID = {this.props.TaskID}
@@ -548,6 +259,7 @@ class TemplateContainer extends React.Component {
                                  CourseName = {this.state.CourseName}
                                   CourseNumber = {this.state.CourseNumber}
                                   AssignmentTitle = {this.state.AssignmentTitle}
+                                  AssignmentDescription = {this.state.AssignmentDescription}
                                   TaskActivityType = {this.state.TaskActivityType}
                                   SemesterName={this.state.SemesterName}
                                   TaskActivityVisualID= {this.state.TaskActivityVisualID} />
@@ -559,13 +271,8 @@ class TemplateContainer extends React.Component {
                 <CommentComponent />
                 <CommentComponent />
               </TabPanel>
-              <TabPanel>
-                <ModalInfo />
-              </TabPanel>
-              <TabPanel>
-              <div className="placeholder"></div>
-                <WorkflowTable />
-              </TabPanel>
+
+
 
             </Tabs>
 

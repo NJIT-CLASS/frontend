@@ -13,15 +13,15 @@ class HeaderComponent extends React.Component {
 
     render() {
         return ( <div className="section animate fadeInUp card-2" >
-            <h2 className = "title" > {
-                this.props.TaskActivityVisualID
-            }: {
-                this.props.AssignmentTitle
-            } < /h2> < div className = "section-content section-header animate" >
-            < div name = "course-title"
-            className = "regular-text" > < b > Course: < /b>{this.props.CourseNumber} - {this.props.CourseName} - {this.props.SemesterName} </div >
-
-            < /div> < /div>
+                  <h2 className = "title" > {this.props.TaskActivityVisualID}: {this.props.AssignmentTitle} </h2>
+                    <div className = "section-content section-header animate" >
+                      <div name = "course-title" className = "regular-text" >
+                      <b> Course: </b>{this.props.CourseNumber} - {this.props.CourseName} - {this.props.SemesterName}
+                        <br/>
+                        {this.props.AssignmentDescription}
+                    </div>
+                  </div>
+                </div>
         );
     }
 }

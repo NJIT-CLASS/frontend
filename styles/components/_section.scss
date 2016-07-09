@@ -52,13 +52,15 @@
 }
 .section-divider{
   position: relative;
+  align-content: center;
   overflow:hidden;
   border-bottom: 0.5px solid #e7eaec;
-  margin-top: 5px;
   margin-bottom: 5px;
-  label{
-    margin:8px 15px !important;
+
+  br{
+    display:block;
   }
+
 
   .subheading{
     font-size:20px;
@@ -68,13 +70,21 @@
     color: #000000;
   }
   .inner{
-    text-align: center;
+     text-align: justify;
      display:inline-block;
      padding: 10px;
-     margin-right: 25px;
-     margin-left: 25px;
+     margin: 3px 18px;
      vertical-align: top;
+     align-content: center;
      overflow-x: visible;
+
+     label{
+       display:inline-block;
+       margin:8px 8px;
+     }
+    }
+    .block{
+      display:block;
     }
 
 
@@ -117,13 +127,13 @@
     height:0px;
     position:relative;
     overflow: hidden;
-    display: inline-block;
+    display: none;
 
 
 }
-.error {
+.error-component {
     background-color: #ed5565 !important;
-    color: #ffffff;
+    color: #ffffff !important;
 
     .title{
       color: #ffffff;
@@ -134,7 +144,7 @@
 }
 
 .placeholder{
-  width: 80vw;
+  width: 75vw;
 }
 
 .super-container{

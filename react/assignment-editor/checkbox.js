@@ -5,12 +5,14 @@ class Checkbox extends React.Component{
     super(props);
 
     this.state = {
-      Clicked: false
+      Clicked: this.props.isClicked
     }
   }
 
+
+
   render(){
-    return(<div className={this.state.Clicked ? "checkbox checked" : "checkbox"} onClick={() => {
+    return(<div className={this.state.Clicked ? "checkbox checked" : "checkbox"}  onClick={() => {
       this.setState({
         Clicked: this.state.Clicked ? false: true
       });

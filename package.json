@@ -38,7 +38,8 @@
     "react-star-rating-component": "^1.0.0",
     "react-tabs": "^0.5.4",
     "redis": "^2.6.0-1",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "tree-model": "^1.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

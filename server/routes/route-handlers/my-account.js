@@ -50,7 +50,7 @@ exports.post = (req, res) => {
             //     options.statuscode = statusCode;
             //     res.render('account_management', options);
             // }
-        }); 
+        });
     }
     else if (req.body.what_was_changed=='status') {     // TODO: fill in API endpoints here once they're available
         /*
@@ -69,14 +69,14 @@ exports.post = (req, res) => {
         */
     }
     else if (req.body.what_was_changed=='password') {
-        
+
         // If the "confirm password" doesn't match the new password entered, then alert the user and abort the operation
         if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
             options.passwordchangemismatch = true;
             res.render('account_management', options);
             return;
         }
-        
+
         req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
             // if(statusCode==200) {       // success
                 options.passwordchangesucceeded = true;

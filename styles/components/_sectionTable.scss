@@ -2,7 +2,6 @@
     background-color: #ffffff;
     box-sizing: border-box;
     margin: 10px;
-    padding: 20px;
     width: auto;
     min-width: 700px;
     max-width:1200px;
@@ -28,10 +27,16 @@
 
     .section-content {
         padding: 20px 30px;
-		max-height: 400px;
+		    max-height: 400px;
         overflow: auto;
     }
-
+    table{
+      tr{
+        td{
+          padding: 9px;
+        }
+      }
+    }
     li {
         display: flex;
         align-items: center;

@@ -27,7 +27,7 @@ class GradedComponent extends React.Component {
   componentWillMount(){
     if(!this.props.UsersTaskData){
       this.setState({
-        Error: false
+        Error: true
       });
     }
 

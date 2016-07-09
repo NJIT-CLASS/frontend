@@ -12,7 +12,11 @@ class Modal extends React.Component {
         }
 
         return (
-            <div className="modal-overlay">
+            <div className="modal-overlay" onClick={() => {
+                if(this.props.outsideClick){
+                  this.props.close()
+                }
+              }}>
                 <div className="modal-overlay-container">
                     <div className="modal" style={ styles }>
                         <div className="modal-header">

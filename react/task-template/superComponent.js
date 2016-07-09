@@ -5,9 +5,11 @@
 */
 import React from 'react';
 import request from 'request';
-import Modal from '../shared/modal';
 import ErrorComponent from './errorComponent';
+import Checkbox from '../assignment-editor/checkbox';
+import Dropdown from 'react-dropdown';
 import Rater from 'react-rater';
+import {RadioGroup, Radio} from 'react-radio-group';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class SuperComponent extends React.Component {
@@ -17,7 +19,6 @@ class SuperComponent extends React.Component {
     PROPS:  -TaskData
             -TaskActivityFields (TaskAcitivtyData)
             -ComponentTitle
-            -AssignmentDescription
             -Instructions
             -TaskStatus
             -Rubric
@@ -34,7 +35,10 @@ class SuperComponent extends React.Component {
       InputError: false,
       TaskStatus: '',
       ShowContent: true,
-      Error: false
+      Error: false,
+      SaveSuccess: false,
+      SubmitSuccess: false,
+      PassFailValue: null
     };
   }
 
@@ -119,9 +123,9 @@ class SuperComponent extends React.Component {
             method: 'POST',
             uri: this.props.apiUrl + '/api/taskTemplate/create/save',
             body: {
-                taskid: this.props.TaskID,
+                taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
-                taskData: this.state.TaskData
+                taskInstanceData: this.state.TaskData
             },
             json: true
           };
@@ -129,6 +133,12 @@ class SuperComponent extends React.Component {
         request(options, (err, res, body) => {
           if(res.statusCode != 200){
             this.setState({InputError: true});
+            return;
+          }
+          else{
+            this.setState({
+              SaveSuccess: true
+            });
             return;
           }
         });
@@ -153,15 +163,25 @@ class SuperComponent extends React.Component {
             method: 'POST',
             uri: this.props.apiUrl + '/api/taskTemplate/create/submit',
             body: {
-                taskid: this.props.TaskID,
+                taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
-                taskData: this.state.TaskData
+                taskInstanceData: this.state.TaskData
             },
             json: true
           };
 
         request(options, (err, res, body) => {
-          //chekc error status
+          if(res.statusCode != 200){
+            this.setState({InputError: true});
+            return;
+          }
+          else{
+            this.setState({
+              SubmitSuccess: true,
+              TaskStatus: "Complete"
+            });
+            return;
+          }
         });
       }
 
@@ -256,15 +276,11 @@ class SuperComponent extends React.Component {
 
     render(){
           let content= null;
-          let errorMessage = null;
+          let infoMessage = null;
+
           let TA_rubric = null;
-          let TA_assignmentDescription = null;
           let TA_instructions = null;
-          let formButtons = (<div>
-            <br />
-            <button type="submit" className="divider"><i className="fa fa-check"></i>Submit</button>
-            <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
-          </div>);
+          let formButtons =  null;
           let indexer =  "content";
           let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
           //if invalid data, shows error message
@@ -274,7 +290,24 @@ class SuperComponent extends React.Component {
           }
 
           if(this.state.InputError){
-            errorMessage = (<Modal title="Submit Error" close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+            infoMessage = (<span style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+            //old Modal style:
+            // infoMessage = (<Modal title="Submit Error"  close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
+          }
+
+          if(this.state.SaveSuccess){
+            infoMessage = (<span style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}>Your work has been saved and will be loaded when you return </span>);
+          }
+          if(this.state.SubmitSuccess){
+            infoMessage = (<span style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted for grading! </span>);
+          }
+
+          if(this.state.TaskStatus != "Complete"){
+            formButtons = (<div>
+              <br />
+              <button type="submit" action="#" className="divider"><i className="fa fa-check"></i>Submit</button>
+              <button type="button" className="divider" onClick={this.saveData.bind(this)}>Save for Later</button>
+            </div>);
           }
 
           if(this.props.Rubric != '' && this.props.Rubric != null){
@@ -296,13 +329,6 @@ class SuperComponent extends React.Component {
           if(this.props.Instructions != null && this.props.Instructions != '' ){
             TA_instructions = (<div className="regular-text instructions">
                   <b>Insructions</b>: {this.props.Instructions}
-
-            </div>);
-          }
-
-          if(this.props.AssignmentDescription != null && this.props.AssignmentDescription != ''){
-            TA_assignmentDescription = (<div className="regular-text assignmentDescription">
-                  <b>Description</b>: {this.props.AssignmentDescription}
 
             </div>);
           }
@@ -342,7 +368,7 @@ class SuperComponent extends React.Component {
               let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
               if(this.state.FieldRubrics[idx]){
-                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}> {this.state.TaskActivityFields[idx].rubric}</div>);
+                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
               }
 
               rubricView = ( <div>
@@ -385,7 +411,6 @@ class SuperComponent extends React.Component {
 
 
             if(this.state.TaskActivityFields[idx].field_type == "numeric"){
-              if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
                 let fieldInput = null;
                 if(this.state.TaskData[idx][0] == null){
                   fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
@@ -408,30 +433,8 @@ class SuperComponent extends React.Component {
                     <br />
                   </div>
                   );
-                }
-                else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
-                  let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
-                  let nameStr = "rate" + idx;
-                  return (
-                    <div key={idx+200}>
 
-                      {instructions}
 
-                      {rubricView}
-                      <br/>
-                      <div key={idx + 600}><b>{fieldTitleText}   </b>
-                        <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} /><br />
-
-                      </div>
-                      <br key={idx+500}/>
-                      {justification}
-                      <br />
-                      <br />
-                    </div>
-                    );
-
-                  //add stars logic later
-                }
 
             }
             else if(this.state.TaskActivityFields[idx].field_type == "text"){
@@ -460,6 +463,123 @@ class SuperComponent extends React.Component {
               </div>
               );
             }
+
+            else if(this.state.TaskActivityFields[idx].field_type == "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
+
+              if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
+                let fieldInput = null;
+
+                if(this.state.TaskData[idx][0] == null){
+                  fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                  </input>);
+                }
+
+                else{
+                  fieldInput = (<input type="text"  key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                  </input>);
+                }
+
+                return (
+                  <div key={idx+200}>
+                    {instructions}
+                    {rubricView}
+                    <br/>
+                    <div key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
+                    <br key={idx+500}/>
+                    {justification}
+                    <br />
+                    <br />
+                  </div>
+                  );
+                }
+
+                else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
+                  let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
+                  let nameStr = "rate" + idx;
+                  return (
+                    <div key={idx+200}>
+
+                      {instructions}
+
+                      {rubricView}
+                      <br/>
+                      <div key={idx + 600}><b>{fieldTitleText}   </b>
+                        <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} /><br />
+
+                      </div>
+                      <br key={idx+500}/>
+                      {justification}
+                      <br />
+                      <br />
+                    </div>
+                  );
+                }
+
+                else if(this.state.TaskActivityFields[idx].assessment_type == "pass"){
+
+                  return(
+                    <div key={idx+200}>
+                      {instructions}
+                      {rubricView}
+                      <br />
+
+                      <div className='true-checkbox'>
+                        <RadioGroup selectedValue={this.state.TaskData[idx][0]} onChange={
+                        (val) => {
+                          let newData = this.state.TaskData;
+                          newData[idx][0] = val;
+                          this.setState({TaskData: newData});
+                        }
+                      }>
+                      <label >Pass <Radio value={"pass"} /> </label>
+                      <label >Fail <Radio value={"fail"}/> </label>
+
+                    </RadioGroup>
+                      </div>
+
+                      <br key={idx+500}/>
+                      {justification}
+                      <br />
+                      <br />
+                    </div>
+
+                  );
+              }
+              else if(this.state.TaskActivityFields[idx].assessment_type == "evaluation"){
+                let labels = this.state.TaskActivityFields[idx].list_of_labels;
+                if(typeof labels == 'string' ){
+                  labels = labels.split(',');
+                }
+
+                return(
+                  <div key={idx+200}>
+                    {instructions}
+                    {rubricView}
+                    <br />
+                    <label>Choose from one of the labels below</label> <br />
+                    <Dropdown key={idx+1000}
+                              options={labels}
+                              selectedValue={this.state.TaskData[idx][0]}
+                              value={this.state.TaskData[idx][0]}
+                              onChange={ (e) => {
+                                let newData = this.state.TaskData;
+                                newData[idx][0] = e.value;
+                                this.setState({
+                                  TaskData: newData
+                                });
+                              }}
+                      />
+
+                    <br key={idx+500}/>
+                    {justification}
+                    <br />
+                    <br />
+                  </div>
+
+                );
+              }
+
+            }
           }, this);
 
           if(this.state.TaskStatus == "Complete"){
@@ -468,7 +588,7 @@ class SuperComponent extends React.Component {
 
           if(this.state.ShowContent){
             content = (<div className="section-content">
-              {TA_assignmentDescription}
+
               {TA_instructions}
 
                 {TA_rubric}
@@ -484,8 +604,8 @@ class SuperComponent extends React.Component {
 
           return(
             <div className="animate fadeInUp">
-              {errorMessage}
-              <form  role="form" className="section card-1" onSubmit={this.submitData.bind(this)}>
+              {infoMessage}
+              <form  role="form" className="section card-1" action="#" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>

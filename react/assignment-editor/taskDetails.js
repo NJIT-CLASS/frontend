@@ -7,6 +7,11 @@ import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
 
 class TaskDetailsComponent extends React.Component{
+
+  // PROPS:
+//  - all the methods
+//  - index, TaskActivityData, Opened
+
     constructor(props){
       super(props);
 
@@ -64,10 +69,15 @@ class TaskDetailsComponent extends React.Component{
             Reflection: ['none', null]
           }],
           SimpleGradePointReduction: 0,
-          ShowAdvanced: true,
-          ShowContent: true
+          ShowAdvanced: false,
+          ShowContent: this.props.isOpen ? true : false
       };
     }
+
+
+
+
+
 
     render(){
       let style={marginRight: "10px",
@@ -103,7 +113,7 @@ class TaskDetailsComponent extends React.Component{
                                    }
                                 };
 
-      let fieldTypeValues = [{value:'text',label:'Text'},{value:'assessment',label:'Assessment'},{value:'numeric',label:'Numeric'},{value:'self assessment',label:'Self Assessment'}];
+      let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
       let onTaskEndValues = ['late','resolved','abandon','complete'];
       let onLateValues = ['Keep same participant', 'Allocate new participant', 'Allocate to instructor','Allocate to different group member', 'Consider resolved'];
@@ -117,123 +127,113 @@ class TaskDetailsComponent extends React.Component{
       let simpleGradeOptionsView = null;
       let allowReflectionOptions = null;
       let allowAssesmentOptions = null;
+      let whatIfLateView = null;
 
       let fileUploadOptions= (<div style={{display:'inline-block',
-                                          width:'360px'}}></div>);
-      let advancedOptionsToggle = null;
+                                          width:'100px'}}></div>);
 
-
-      if(this.state.TaskActivityData.TA_simple_grade != 'none'){
-        simpleGradeOptionsView = (<div>
-          <label>Reduce this by what % per day late</label><br />
+      if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
+        allowAssesmentOptions = (<div>
+          <Dropdown options={assessmentValues} />
+          <label>Who can assess</label>
+          <br />
+          <label>Students</label><div className="checkbox"></div>
+          <label>Instructors</label><div className="checkbox"></div>
+          <br />
+          <label>Number of Assessors</label>
+          <br />
           <NumericInput
-              value={this.state.SimpleGradePointReduction}
+              value={this.props.TaskActivityData.number_of_participants}
               min={0}
               size={6}
               style={numericInputStyle}
-              onChange={(val) => {
-                let newData = this.state.TaskActivityData;
-                if(val == 0){
-                  newData.TA_simple_grade = 'exists';
-                }
-                else{
-                  newData.TA_simple_grade = 'off_per_day(' + val + ')';
-                }
-                this.setState({
-                  TaskActivityData: newData,
-                  SimpleGradePointReduction: val
-                });
-              }} />
+            onChange={this.props.changeNumericData.bind('number_of_participants', this.props.index)} />
+            <br />
+            <label>Should the assessments be consolidated</label><div className="checkbox"></div>
+            <br />
+            <label>Grading Threshold</label>
+            <br />
+            <label>Points</label><input type="radio"></input>
+            <label>Percentage</label><input type="radio"></input>
+            <br />
+            <NumericInput
+                value={2}
+                min={0}
+                size={6}
+                style={numericInputStyle} />
+              <br />
+            <label>To be consolidated, the grade should be: </label>
+            <Dropdown options={['max','sum','average']} />
+            <br />
+            <label>Can a student dispute the grade</label><div className="checkbox"></div>
+        </div>)
+      }
+
+      if(this.props.TaskActivityData.TA_simple_grade != 'none'){
+        simpleGradeOptionsView = (<div>
+          <label>Reduce this by what % per day late</label><br />
+          <NumericInput
+              value={this.props.TaskActivityData.SimpleGradePointReduction}
+              min={0}
+              size={6}
+              style={numericInputStyle}
+              onChange={this.props.changeTASimpleGradePoints.bind(this.props.index)} />
           <br />
           <label>No Points If Late</label>
-            <Checkbox click={()=> {
-                let newData = this.state.TaskActivityData;
-                if(newData.TA_simple_grade != 'off_per_day(100)'){
-                  newData.TA_simple_grade = 'off_per_day(100)';
-                  this.setState({
-                    TaskActivityData: newData,
-                    SimpleGradePointReduction: 100
-                  })
-                }
-                else{
-                  newData.TA_simple_grade = 'off_per_day(5)';
-                  this.setState({
-                    TaskActivityData: newData,
-                    SimpleGradePointReduction: 5
-                  })
-
-                }
-
-              }} />
+            <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this.props.index)} />
           </div>);
       }
 
-        advancedOptionsToggle = (
-          <div className="toggle-switch false right" onClick={() => {
-              this.setState({ShowAdvanced: this.state.ShowAdvanced ? false : true})
-            }} >
-            <div className="bubble"></div>
-            <div className="text-true">Yes</div>
-            <div className="text-false">No</div>
-          </div>
-        );
 
 
 
       if(this.state.FileUp){
         fileUploadOptions = (
-          <div className="inner" style={instyle}>
+          <div style={{display: "inline-block"}}>
             <div className="inner" style={instyle}>
               <label> How many required files</label> <br />
               <NumericInput
-
                   min={0}
                   size={6}
-                  onChange={(val) => {
-                    let newData = this.state.TaskActivityData;
-                      newData.TA_file_upload[0][0] = val;
-                      this.setState({
-                        TaskActivityData: newData
-                      });
-
-                  }}
-                  value={this.state.TaskActivityData.TA_file_upload[0][0]}
-                  style={numericInputStyle}/>
+                  onChange={this.props.changeFileUpload.bind(this.props.index,0,0)}
+                  value={this.props.TaskActivityData.TA_file_upload[0][0]}
+                  style={numericInputStyle} />
             </div>
             <div className="inner" style={instyle}>
               <label> Maximum number of optional files</label> <br />
               <NumericInput
                   min={0}
                   size={6}
-                  onChange={(val) => {
-                    let newData = this.state.TaskActivityData;
-                      newData.TA_file_upload[1][0] = val;
-                      this.setState({
-                        TaskActivityData: newData
-                      });
-
-                  }}
-                  value={this.state.TaskActivityData.TA_file_upload[1][0]}
+                  onChange={this.props.changeFileUpload.bind(this.props.index,1,0)}
+                  value={this.props.TaskActivityData.TA_file_upload[1][0]}
                   style={numericInputStyle}/>
+
             </div>
           </div>);
       }
 
-      if(this.state.TaskActivityData.TA_allow_reflection[0] != 'none'){
+      if(this.props.TaskActivityData.TA_at_duration_end == 'late'){
+        whatIfLateView = (<div>
+          <label> What happens if late</label>
+        <Dropdown options={onLateValues}
+          onChange={ this.props.changeDropdownData.bind(this,'TA_what_if_late',this.props.index)}
+            value={this.props.TaskActivityData.TA_what_if_late} />
+          </div>
+        )
+      }
+
+      if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
         allowReflectionOptions = (<div>
 
-          <Dropdown options={reflectionValues} onChange={(event) => {
-              let newData = this.state.TaskActivityData;
-              newData.TA_allow_reflection[0] = event.value;
-              this.setState({TaskActivityData: newData});
-            }} />
+          <Dropdown options={reflectionValues} onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_reflection[0]}/>
           <label>Who can reflect</label><br />
           <label>Students</label><div className="checkbox"></div>
           <label>Instructors</label><div className="checkbox"></div>
           <br />
           <label>Number of Editors</label>
+          <br />
           <NumericInput
-              value={this.state.TaskActivityData.TA_number_participant}
+              value={this.props.TaskActivityData.TA_number_participant}
               min={0}
               size={6}
               style={numericInputStyle}/>
@@ -242,76 +242,58 @@ class TaskDetailsComponent extends React.Component{
         </div>);
       }
 
-      let inputFieldsView = this.state.TaskActivityData.TA_fields.field_titles.map(function(field, index){
+
+
+      let inputFieldsView = this.props.TaskActivityData.TA_fields.field_titles.map(function(field, index){
         let justificationView = null; //justification textbox for the field
         let fieldTypeOptions = null; //options that change on Field Type dropbox selection
         let assessmentTypeView = null; //options that change on assessment type selection
 
-        if(this.state.TaskActivityData.TA_fields[index].requires_justification){
+        if(this.props.TaskActivityData.TA_fields[index].requires_justification){
           justificationView = (
-          <div key={index + 200}>
+          <div className = "inner block" key={index + 200}>
             <label>Field Justification Instructions</label>
             <textarea className="big-text-field"
-              value={this.state.TaskActivityData.TA_fields[index].justification_instructions}
-              onChange={() => {
-                let newData = this.state.TaskActivityData;
-                newData.TA_fields[index].justification_instructions = event.target.value;
-                this.setState({TaskActivityData: newData});
-              }}></textarea>
+              value={this.props.TaskActivityData.TA_fields[index].justification_instructions}
+              onChange={this.props.changeInputFieldData.bind(this,'justification_instructions',this.props.index, index)}></textarea>
           </div>)
 
         }
 
-        if(this.state.TaskActivityData.TA_fields[index].field_type == "numeric"){
+        if(this.props.TaskActivityData.TA_fields[index].field_type == "numeric"){
           fieldTypeOptions = (<div>
             <label>Min</label>
             <NumericInput
 
                 min={0}
                 size={6}
-                value={this.state.TaskActivityData.TA_fields[index].numeric_min}
+                value={this.props.TaskActivityData.TA_fields[index].numeric_min}
                 style={numericInputStyle}
-                onChange={ (val) => {
-                  let newData = this.state.TaskActivityData;
-                  newData.TA_fields[index].numeric_min = val;
-                  this.setState({
-                    TaskActivityData: newData
-                  });
-                }}
+                onChange={this,props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
+                }
                 />
               <label>Max</label>
               <NumericInput
-                  value={this.state.TaskActivityData.TA_fields[index].numeric_max}
+                  value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                   min={0}
                   size={6}
                   style={numericInputStyle}
-                  onChange={ (val) => {
-                    let newData = this.state.TaskActivityData;
-                    newData.TA_fields[index].numeric_max = val;
-                    this.setState({
-                      TaskActivityData: newData
-                    });
-                  }}
+                  onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index )}
                   />
               </div>);
 
 
         }
 
-        else if(this.state.TaskActivityData.TA_fields[index].field_type == "assessment" || this.state.TaskActivityData.TA_fields[index].field_type == "self assessment"){
+        else if(this.props.TaskActivityData.TA_fields[index].field_type == "assessment" || this.props.TaskActivityData.TA_fields[index].field_type == "self assessment"){
           fieldTypeOptions = (<div>
 
             <label>Assessment Type</label> <br/>
 
               <Dropdown key={index+300}
                 options={assessmentTypeValues}
-                onChange={ (event) => {
-                  let newData = this.state.TaskActivityData;
-                  newData.TA_fields[index].assessment_type = event.value;
-
-                  this.setState({TaskActivityData: newData});
-                  }}
-                value={this.state.TaskActivityData.TA_fields[index].assessment_type} />
+                onChange={this.props.changeDropdownFieldData.bind(this, 'assessment_type', this.props.index, index)}
+                selectedValue={this.props.TaskActivityData.TA_fields[index].assessment_type} />
 
               <br />
               {assessmentTypeView}
@@ -323,75 +305,55 @@ class TaskDetailsComponent extends React.Component{
 
         return (<div className="section-divider">
                   <h3 className="subheading">Input Fields</h3>
-                  <div className="inner" style={instyle}>
+
+                  <div className="inner" >
                     <label>Field Name</label> <br />
-                    <input type="text" style={style}
-                      value={this.state.TaskActivityData.TA_fields[index].title}
-                      onChange={ (event) => {
-                        let newData = this.state.TaskActivityData;
-                        newData.TA_fields[index].title = event.target.value;
-                        newData.TA_fields.field_titles[index] = event.target.value;
-                        this.setState({TaskActivityData: newData});
-                        }}></input>
+                    <input type="text" style={style} placeholder="Field Name"
+                      value={this.props.TaskActivityData.TA_fields[index].title}
+                      onChange={this.props.changeFieldName.bind(this,this.props.index,index)}></input>
                   </div>
 
-                  <div className="inner" style={instyle}>
+                  <div className="inner">
                     <label>Field Type</label> <br />
 
                     <Dropdown key={index}
                       options={fieldTypeValues}
-                      onChange={ (event) => {
-                        let newData = this.state.TaskActivityData;
-                        newData.TA_fields[index].field_type = event.value;
-                        this.setState({TaskActivityData: newData});
-                        }}
-                      value={this.state.TaskActivityData.TA_fields[index].field_type} />
+                      onChange={this.props.changeDropdownFieldData.bind('field_type', this.props.index,index)}
+                      selectedValue={this.props.TaskActivityData.TA_fields[index].field_type} />
                     <br />
                     {fieldTypeOptions}
                   </div>
 
                   <div className="inner">
                   <label>Requires Justification ?</label>
-                  <Checkbox click={() => {
-                      let newData = this.state.TaskActivityData;
-                      newData.TA_fields[index].requires_justification = this.state.TaskActivityData.TA_fields[index].requires_justification ? false : true;
-
-                      this.setState({TaskActivityData: newData});
-                    }} />
-
+                  <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index)} />
                   </div>
-                  <div>
+
+                  <div className = "inner block">
                     <label >Field Instructions (optional)</label>
-                    <textarea className="big-text-field"
-                      onChange={ (event) => {
-                        let newData = this.state.TaskActivityData;
-                        newData.TA_fields[index].instructions = event.target.value;
-                        this.setState({TaskActivityData: newData});
-                        }}
-                      value={this.state.TaskActivityData.TA_fields[index].instructions}></textarea>
+                    <textarea className="big-text-field" placeholder="Type the instructions here..."
+                      onChange={this.props.changeInputFieldData.bind(this, 'instructions', this.props.index,index)}
+                      value={this.props.TaskActivityData.TA_fields[index].instructions}></textarea>
                   </div>
-                  <label>Field Rubric</label>
-                  <textarea className="big-text-field"
-                    onChange={ (event) => {
-                      let newData = this.state.TaskActivityData;
-                      newData.TA_fields[index].rubric = event.target.value;
-                      this.setState({TaskActivityData: newData});
-                      }}
-                    value={this.state.TaskActivityData.TA_fields[index].rubric}
-                    ></textarea>
+
+                  <div className="inner block">
+                    <label>Field Rubric</label>
+                    <textarea className="big-text-field" placeholder="Type the rubric here..."
+                      onChange={this.props.changeInputFieldData.bind(this,this.props.index, index)}
+                      value={this.props.TaskActivityData.TA_fields[index].rubric}
+                      ></textarea>
+                  </div>
+
                   {justificationView}
-                  <label>Default content for the field</label>
-                  <textarea className="big-text-field"
-                    onChange={ (event) => {
-                      let newData = this.state.TaskActivityData;
-                      newData.TA_fields[index].default_content[0] = event.target.value;
-                      this.setState({TaskActivityData: newData});
-                      }}
 
-                    value={this.state.TaskActivityData.TA_fields[index].default_content[0]}
-                    ></textarea>
+                  <div className="inner block">
+                    <label>Default content for the field</label>
+                    <textarea className="big-text-field" placeholder="Default content for the field..."
+                      onChange={this.props.changeInputFieldData.bind(this, 'default_content',this.props.index,index)}
+                      value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                      ></textarea>
+                  </div>
                   <br />
-
                   <br />
                 </div>
               );
@@ -400,12 +362,12 @@ class TaskDetailsComponent extends React.Component{
 
 
       return (
-        <div className="section">
-            <h2 className="title" div onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}} >Create Problem Task</h2>
+        <div className="section card-1">
+            <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}} >{this.props.TaskActivityData.TA_display_name}</h2>
               <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
 
                 <div className="section-divider">
-                  <div className="inner" style={instyle}>
+                  <div className="inner">
                     <label>Does this task require any file uploads?</label>
                     <div className="checkbox" checked={this.state.FileUp} onClick={ ()=>{
                         this.setState({
@@ -415,68 +377,61 @@ class TaskDetailsComponent extends React.Component{
                   </div>
                   {fileUploadOptions}
 
-                  <div className="inner" style={instyle}>
-                    <label>Display name</label><br />
-                    <input type="text" style={style} value={this.state.TaskActivityData.TA_display_name} onChange={(event) => {
-
-                      let newData = this.state.TaskActivityData;
-                        newData.TA_display_name = event.target.value;
-                        this.setState({
-                          TaskActivityData: newData
-                        });
-
-                    }} ></input><br />
+                  <div className="inner " >
+                    <label>Display name</label>
+                    <br />
+                    <input type="text" placeholder="Display Name "style={style} value={this.props.TaskActivityData.TA_display_name}
+                            onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index)} ></input><br />
                   </div>
 
-
-                <label>Task Instructions</label>
-                <textarea className="big-text-field"
-                          onChange={(event) => {
-                            let newData = this.state.TaskActivityData;
-                              newData.TA_overall_instructions = event.target.value;
-                              this.setState({
-                                TaskActivityData: newData
-                              });
-                            }}
-
-                          value={this.state.TaskActivityData.TA_overall_instructions}
-                          ></textarea>
-                <label>Task Rubric</label>
-                <textarea className="big-text-field"
-                          onChange={(event) => {
-                          let newData = this.state.TaskActivityData;
-                            newData.TA_overall_rubric = event.target.value;
-                            this.setState({
-                              TaskActivityData: newData
-                            });
-                            }}
-                          value={this.state.TaskActivityData.TA_overall_rubric}
-                          ></textarea>
+                  <br />
+                  <div className="inner block">
+                    <label>Task Instructions</label>
+                    <textarea className="big-text-field" placeholder="Type the instructions here..."
+                              onChange={this.props.changeInputData.bind(this,'TA_overall_instructions', this.props.index)}
+                              value={this.props.TaskActivityData.TA_overall_instructions}
+                              ></textarea>
+                    </div>
+                    <br />
+                    <div className="inner block">
+                      <label>Task Rubric</label>
+                      <textarea className="big-text-field" placeholder="Type the rubric here..."
+                                onChange={this.props.changeInputData.bind(this,'TA_overall_rubric', this.props.index)}
+                                value={this.props.TaskActivityData.TA_overall_rubric}
+                                ></textarea>
+                      </div>
                 </div>
 
                 {inputFieldsView}
-                
-                <button type="button" className="divider" onClick={()=>{
-                    let newData = this.state.TaskActivityData;
-                    newData.TA_fields.number_of_fields += 1;
-                    newData.TA_fields.field_titles.push('');
-                    this.setState({
-                      TaskActivityData: newData
-                    })
-                  }}><i className="fa fa-check"></i>Add another field</button>
-                {advancedOptionsToggle}
+                <div className="section-divider">
+                  <div className="inner block" style={{alignContent:'right'}}>
+                    <button type="button" className="divider" onClick={this.props.addFieldButton.bind(this,this.props.index)}><i className="fa fa-check"></i>Add another field</button>
+
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
+                    <br />
+                    <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
+                        this.setState({ShowAdvanced: this.state.ShowAdvanced ? false : true})
+                      }} >
+                      <div className="bubble"></div>
+                      <div className="text-true">Yes</div>
+                      <div className="text-false">No</div>
+                    </div>
+                  </div>
+                </div>
+
+
                 <div className={this.state.ShowAdvanced ? "section-divider" : "task-hiding"}>
                   <br />
                   <div className="inner">
                       <label>Should this task end at a certain time</label>
                       <br />
                       <RadioGroup
-                        selectedValue={this.state.TaskActivityData.TA_due_type[0]}
-                        onChange={ (val)=> {
-                          let newData = this.state.TaskActivityData;
-                          newData.TA_due_type[0] = val;
-                          this.setState({TaskActivityData: newData});
-                        }} >
+                        selectedValue={this.props.TaskActivityData.TA_due_type[0]}
+                        onChange={this.props.changeRadioData.bind(this,'TA_due_type', this.props.index)} >
                         <label>
                           <Radio value="duration" />
                           Expire After
@@ -486,56 +441,38 @@ class TaskDetailsComponent extends React.Component{
                       </RadioGroup>
                       <br />
                       <NumericInput
-                          value={this.state.TaskActivityData.TA_due_type[1] / 1440 }
+                          value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
                           min={0}
                           size={6}
                           style={numericInputStyle}
-                          onChange={ (val) => {
-                            let newData = this.state.TaskActivityData;
-                            newData.TA_due_type[1] = val * 1440;
-                            this.setState({
-                              TaskActivityData: newData
-                            });
-                          }}
+                          onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index)}
                           />
                   </div>
 
                   <div className="inner">
                     <label>Delay before starting task</label>
                     <br />
-                    <RadioGroup selectedValue={this.state.TaskActivityData.TA_start_delay != 0 ? true : 0 }
-                                onChange={ (val)=> {
-                                  let newData = this.state.TaskActivityData;
-                                  newData.TA_start_delay = val;
-                                  this.setState({TaskActivityData: newData});
-                                }}
+                    <RadioGroup selectedValue={this.props.TaskActivityData.TA_start_delay != 0 ? true : 0 }
+                                onChange={ this.props.changeRadioData.bind(this, 'TA_start_delay', this.props.index)}
                                 >
                       <label><Radio value={0} ></Radio>Start when prior task is complete</label>
                       <label><Radio value={true} ></Radio>Start after prior task ends by</label>
                     </RadioGroup>
 
                     <NumericInput
-                        value={this.state.TaskActivityData.TA_start_delay}
+                        value={this.props.TaskActivityData.TA_start_delay}
                         min={0}
                         size={6}
                         style={numericInputStyle}
-                        onChange={ (val) => {
-                          let newData = this.state.TaskActivityData;
-                          newData.TA_start_delay = val;
-                          this.setState({TaskActivityData: newData})
-                          }
+                        onChange={ this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index)
                         }/>
 
                   </div>
 
                   <div className= "inner">
                     <label>Does everyone get the same problem</label> <br />
-                    <RadioGroup selectedValue={this.state.TaskActivityData.TA_one_or_separate} onChange={
-                        (val) => {
-                          let newData = this.state.TaskActivityData;
-                          newData.TA_one_or_separate = val;
-                          this.setState({TaskActivityData: newData});
-                        }
+                    <RadioGroup selectedValue={this.props.TaskActivityData.TA_one_or_separate} onChange={
+                        this.props.changeRadioData.bind(this,'TA_one_or_separate', this.props.index)
                       }>
                       <label><Radio value={false}/> No</label>
                       <label><Radio value={true} /> Yes</label>
@@ -546,40 +483,16 @@ class TaskDetailsComponent extends React.Component{
                   <br />
                   <div className="inner" >
                     <label>What happens when the task ends</label> <br/>
-                    <Dropdown options={onTaskEndValues} onChange={ (event) => {
-                        let newTasks = this.state.TaskActivityData;
-                        newTasks.TA_at_duration_end = event.value;
-                        this.setState({Tasks: newTasks}); }}
-                        value={this.state.TaskActivityData.TA_at_duration_end} />
-                    <br />
-                    <label> What happens if late</label>
-                    <Dropdown options={onLateValues}
-                      onChange={ (event) => {
-                        let newTasks = this.state.TaskActivityData;
-                        newTasks.TA_what_if_late = event.value;
-                        this.setState({Tasks: newTasks}); }}
-                        value={this.state.TaskActivityData.TA_what_if_late} />
+                    <Dropdown options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index)}
+                        value={this.props.TaskActivityData.TA_at_duration_end} />
+
+                    {whatIfLateView}
                     </div>
 
                     <div className="inner">
                       <label>Award points just for doing the task on time</label>
 
-                      <div className="checkbox" onClick={ () =>{
-                          let temp = null;
-                          if(this.state.TaskActivityData.TA_simple_grade == 'none'){
-                            temp = "exists";
-                          }
-                          else{
-                            temp = 'none';
-                          }
-
-                          let newData = this.state.TaskActivityData;
-                          newData.TA_simple_grade = temp;
-                          this.setState({
-                            TaskActivityData: newData,
-                            SimpleGradePointReduction:1
-                          });
-                        }}></div>
+                      <div className="checkbox" onClick={this.props.changeSimpleGradeCheck.bind(this, this.props.index)}></div>
                       <br />
                       {simpleGradeOptionsView}
                     </div>
@@ -591,61 +504,19 @@ class TaskDetailsComponent extends React.Component{
                     <br />
                     <div className="inner">
                       <label>Allow a reflection of this task</label>
-                      <Checkbox click={() => {
-                          if(this.state.TaskActivityData.TA_allow_reflection[0] != 'none'){
-                            this.state.TaskActivityData.TA_allow_reflection[0] = 'none'
-                          }
-                          else{
-                            this.state.TaskActivityData.TA_allow_reflection[0] = 'edit'
-                          }
-                      }} />
+                      <Checkbox click={this.props.changeDataCheck.bind(this, "TA_allow_reflection", this.props.index)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'}/>
                     {allowReflectionOptions}
                     </div>
 
                     <div className="inner">
                         <label>Allow an assessment of this task</label>
-                        <div className="checkbox"></div>
-                        <Dropdown options={assessmentValues} />
-                        <label>Who can assess</label><br />
-                        <label>Students</label><div className="checkbox"></div>
-                        <label>Instructors</label><div className="checkbox"></div>
-                        <br />
-                        <label>Number of Assessors</label>
-                        <br />
-                        <NumericInput
-                            value={2}
-                            min={0}
-                            size={6}
-                            style={numericInputStyle}/>
-                          <br />
-                          <label>Should the assessments be consolidated</label><div className="checkbox"></div>
-                          <br />
-                          <label>Grading Threshold</label>
-                          <br />
-                          <label>Points</label><input type="radio"></input>
-                          <label>Percentage</label><input type="radio"></input>
-                          <br />
-                          <NumericInput
-                              value={2}
-                              min={0}
-                              size={6}
-                              style={numericInputStyle} />
-                            <br />
-                          <label>To be consolidated, the grade should be: </label>
-                          <Dropdown options={['max','sum','average']} />
-                          <br />
-                          <label>Can a student dispute the grade</label><div className="checkbox"></div>
+                          <Checkbox click={this.props.changeDataCheck.bind(this,'TA_allow_assessment', this.props.index)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'}/>
+                        {allowAssesmentOptions}
                     </div>
 
                     <div className="inner">
                       <label>Allow a revision of this task</label>
-                      <Checkbox click={ () => {
-                          let newData = this.state.TaskActivityData;
-                          newData.TA_allow_revisions = this.state.TaskActivityData.TA_allow_revisions ? false : true;
-                          this.setState({
-                            TaskActivityData: newData
-                          })
-                        } }/>
+                      <Checkbox click={this.props.changeDataCheck.bind(this,"TA_allow_revisions",this.props.index) }/>
                     </div>
 
                     <br />
@@ -655,25 +526,12 @@ class TaskDetailsComponent extends React.Component{
                         <label>Assignee Constraints</label>
                         <br />
                         <label>Who can do this task</label>
+                        <br />
                         <Dropdown options={assigneeWhoValues}
-                                  selectedValue={this.state.TaskActivityData.TA_assignee_constraint[0]}
-                                  onChange={ (event) =>
-                                    {
-                                      let newData = this.state.TaskActivityData;
-                                      newData.TA_assignee_constraint[0] = event.value;
-                                      this.setState({
-                                        TaskActivityData: newData
-                                      })
-                                    }}/>
-                                  <label>Will this be a group task</label><Checkbox click={ () => {
-                                    let newData = this.state.TaskActivityData;
-                                    if(this.state.TaskActivityData.TA_assignee_constraint[1] != 'group'){
-                                      newData.TA_assignee_constraint[1] = 'group';
-                                    }
-                                    else{
-                                      newData.TA_assignee_constraint[1] = 'individual';
-                                    }
-                                  }}/>
+                                  selectedValue={this.props.TaskActivityData.TA_assignee_constraint[0]}
+                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraint', this.props.index)}/>
+                                  <label>Will this be a group task</label>
+                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index)}/>
                     </div>
 
                     <div className="inner">

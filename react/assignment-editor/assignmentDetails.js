@@ -60,24 +60,16 @@ class AssignmentDetailsComponent extends React.Component{
       let courseList = ['CS 288', 'CS 341', 'CS 113'];
       let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
 
-      let advancedOptionsToggle = (
-        <div className="toggle-switch false right" onClick={() => {
-            this.setState({ShowAdvanced: this.state.ShowAdvanced ? false : true})
-          }} >
-          <div className="bubble"></div>
-          <div className="text-true">Yes</div>
-          <div className="text-false">No</div>
-        </div>
-      );
+
       return (
-        <div className="section">
-          <h2 className="title" > Assignment Parameters</h2>
+        <div className="section card-1">
+          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> Assignment Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
               <div className="inner">
                 <label>Assignment Name</label>
                 <br />
-                <input type="text" value={this.state.AssignmentActivityData.AA_name}
+                <input placeholder="Name" type="text" value={this.state.AssignmentActivityData.AA_name}
                   onChange={ (event) => {
                       let newData = this.state.AssignmentActivityData;
                       newData.AA_name = event.target.value;
@@ -108,18 +100,29 @@ class AssignmentDetailsComponent extends React.Component{
                   style={numericInputStyle}
                   />
               </div>
-              <br />
+
+              <div className="inner block">
                 <label>Instructions</label>
                 <br />
-                <textarea className="big-text-field" value={this.state.AssignmentActivityData.AA_instructions} onChange={ (event) => {
+                <textarea placeholder="Instructions" className="big-text-field" value={this.state.AssignmentActivityData.AA_instructions} onChange={ (event) => {
                     let newData = this.state.AssignmentActivityData;
                     newData.AA_instructions = event.target.value;
                     this.setState({
                       AssignmentActivityData: newData
                     });
                   }}></textarea>
-            
-              {advancedOptionsToggle}
+              </div>
+
+              <br />
+              <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
+              <br />
+              <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
+                  this.setState({ShowAdvanced: this.state.ShowAdvanced ? false : true})
+                }} >
+                <div className="bubble"></div>
+                <div className="text-true">Yes</div>
+                <div className="text-false">No</div>
+              </div>
               <br />
               <br />
               <br />
