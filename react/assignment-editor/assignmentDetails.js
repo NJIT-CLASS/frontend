@@ -17,7 +17,8 @@ class AssignmentDetailsComponent extends React.Component{
           AA_display_name: '',
           AA_section:[],
           AA_semester: [],
-          AA_grade_distribution: []
+          AA_grade_distribution: [],
+          AA_documentation: ''
         },
         NumberofWorkflows: 1
       };

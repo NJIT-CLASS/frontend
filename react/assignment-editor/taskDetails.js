@@ -16,50 +16,7 @@ class TaskDetailsComponent extends React.Component{
       super(props);
 
       this.state = {
-          TaskActivityData:{
-            TA_type: TASK_TYPES.CREATE_PROBLEM,
-            TA_file_upload: [[0,"mandatory"],[0,'optional']],
-            TA_due_type: ['duration', 4320],
-            TA_start_delay:0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Create Problem',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: ['student','individual',null],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'test',
-            TA_overall_rubric: 'y',
-            TA_allow_reflection: ['edit',"don't wait"],
-            TA_allow_assessment: 'grade',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute:false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution:true,
-            TA_visual_id: 'P1',
-            TA_fields: {
-              number_of_fields: 1,
-              field_titles: [''],
-              0: {
-                        title: '',
-            	          show_title: false,
-                        assessment_type: null,
-                        numeric_min: '0',
-                        numeric_max: '40',
-                        rating_max: '5',
-                        list_of_labels: 'Easy, Medium, Difficult',
-                        field_type: "text",
-                        requires_justification: false,
-                        instructions: 'H',
-                        rubric: 'J',
-                        justification_instructions: 'KD',
-                        default_refers_to: [null, null],
-                        default_content: ['D','']
-                        }
-            }
-          },
+
 
           FileUp: false,
           FieldType: "text",
@@ -112,13 +69,13 @@ class TaskDetailsComponent extends React.Component{
                                        borderWidth : '0 1px 1px 1px'
                                    }
                                 };
-
+      //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
-      let onTaskEndValues = ['late','resolved','abandon','complete'];
+      let onTaskEndValues = [{value:'late', label: "Late"},'resolved','abandon','complete'];
       let onLateValues = ['Keep same participant', 'Allocate new participant', 'Allocate to instructor','Allocate to different group member', 'Consider resolved'];
       let reflectionValues = [{value: 'edit', label:'Edit'},{value:'comment', label:'Comment'}];
-      let assessmentValues = ['Grade','Critique','None'];
+      let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'},{value:'none', label:'None'}];
       let simpleGradeOptions = [{value: 'exists', label: ''}];
       let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}];
       //display logic
@@ -133,23 +90,10 @@ class TaskDetailsComponent extends React.Component{
                                           width:'100px'}}></div>);
 
       if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
-        allowAssesmentOptions = (<div>
-          <Dropdown options={assessmentValues} />
-          <label>Who can assess</label>
-          <br />
-          <label>Students</label><div className="checkbox"></div>
-          <label>Instructors</label><div className="checkbox"></div>
-          <br />
-          <label>Number of Assessors</label>
-          <br />
-          <NumericInput
-              value={this.props.TaskActivityData.number_of_participants}
-              min={0}
-              size={6}
-              style={numericInputStyle}
-            onChange={this.props.changeNumericData.bind('number_of_participants', this.props.index)} />
-            <br />
-            <label>Should the assessments be consolidated</label><div className="checkbox"></div>
+        let showConsol= this.props.getAssessNumberofParticipants(this.props.index) > 1 ? (
+          <div>
+            <label>Should the assessments be consolidated</label>
+            <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index)}/>
             <br />
             <label>Grading Threshold</label>
             <br />
@@ -164,8 +108,32 @@ class TaskDetailsComponent extends React.Component{
               <br />
             <label>To be consolidated, the grade should be: </label>
             <Dropdown options={['max','sum','average']} />
+          </div>) : null;
+
+        let showDispute = (<div>
+          <label> Can students dispute this reflection </label>
+          <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index)}/>
+          </div>);
+
+        allowAssesmentOptions = (<div>
+          <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
+          <label>Who can assess</label>
+          <br />
+          <label>Students</label><div className="checkbox"></div>
+          <label>Instructors</label><div className="checkbox"></div>
+          <br />
+          <label>Number of Assessors</label>
+          <br />
+          <NumericInput
+            value={this.props.getAssessNumberofParticipants(this.props.index)}
+            min={1}
+            size={6}
+            style={numericInputStyle}
+            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index)} />
             <br />
-            <label>Can a student dispute the grade</label><div className="checkbox"></div>
+            {showConsol}
+            <br />
+            {showDispute}
         </div>)
       }
 
@@ -223,6 +191,17 @@ class TaskDetailsComponent extends React.Component{
       }
 
       if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
+
+        let showConsol= this.props.getReflectNumberofParticipants(this.props.index) > 1 ? (
+          <div>
+          <label>Should the reflections be consolidated</label>
+        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index)}/></div>) : null;
+
+        let showDispute = (<div>
+          <label> Can students dispute this reflection </label>
+          <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Dispute", this.props.index)}/>
+          </div>);
+
         allowReflectionOptions = (<div>
 
           <Dropdown options={reflectionValues} onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_reflection[0]}/>
@@ -233,12 +212,16 @@ class TaskDetailsComponent extends React.Component{
           <label>Number of Editors</label>
           <br />
           <NumericInput
-              value={this.props.TaskActivityData.TA_number_participant}
-              min={0}
+              value={this.props.getReflectNumberofParticipants(this.props.index)}
+              min={1}
               size={6}
-              style={numericInputStyle}/>
+              style={numericInputStyle}
+              onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index)}
+              />
             <br />
-            <label>Should the reflections be consolidated</label><div className="checkbox"></div>
+            {showConsol}
+            <br />
+            {showDispute}
         </div>);
       }
 
@@ -492,7 +475,7 @@ class TaskDetailsComponent extends React.Component{
                     <div className="inner">
                       <label>Award points just for doing the task on time</label>
 
-                      <div className="checkbox" onClick={this.props.changeSimpleGradeCheck.bind(this, this.props.index)}></div>
+                      <Checkbox click={this.props.changeSimpleGradeCheck.bind(this, this.props.index)} />
                       <br />
                       {simpleGradeOptionsView}
                     </div>
@@ -584,12 +567,12 @@ class TaskDetailsComponent extends React.Component{
 
                     <div className="inner">
                       <label>Does this lead to a new problem?</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_problem', this.props.index)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
                     </div>
 
                     <div className="inner">
                       <label>Does this lead to a new solution?</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_solution', this.props.index)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
                     </div>
 
                   </div>
