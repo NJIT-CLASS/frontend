@@ -36,7 +36,7 @@ class SuperViewComponent extends React.Component {
     let tdata = this.props.TaskData;
     let tAdata = this.props.TaskActivityFields;
     if(!tdata || tdata == "{}" || !tAdata || tAdata == "{}" || Object.keys(tdata).length === 0 && tdata.constructor === Object ){
-      console.log("ERR");
+
       this.setState({Error: true});
       return ;
     }
@@ -69,7 +69,6 @@ class SuperViewComponent extends React.Component {
     if(this.state.Error){
         return(<ErrorComponent />);
     }
-
     let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
 
       let justification = null;
@@ -162,7 +161,7 @@ class SuperViewComponent extends React.Component {
       }
 
       return (
-        <div className="section task-hiding animate fadeInUp card-1">
+        <div className="section animate fadeInUp card-1">
           <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
             {content}
         </div>

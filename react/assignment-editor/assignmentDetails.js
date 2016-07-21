@@ -1,7 +1,7 @@
 import React from 'react';
 import Dropdown from 'react-dropdown';
 import NumericInput from 'react-numeric-input';
-import Checkbox from './checkbox';
+import Checkbox from '../shared/checkbox';
 
 class AssignmentDetailsComponent extends React.Component{
     constructor(props){
@@ -9,54 +9,17 @@ class AssignmentDetailsComponent extends React.Component{
 
       this.state = {
         ShowContent: true,
-        AssignmentActivityData: {
-          AA_name:'',
-          AA_course:'',
-          AA_instructions:'',
-          AA_type:'',
-          AA_display_name: '',
-          AA_section:[],
-          AA_semester: [],
-          AA_grade_distribution: [],
-          AA_documentation: ''
-        },
         NumberofWorkflows: 1
       };
     }
+
+
+    //assignment details functions
 
     render(){
       let style={marginRight: "10px",
                 marginLeft:'10px'};
       let instyle = {display: "inline-block"};
-      let numericInputStyle = {   display: 'block',
-                                  input: {
-                                    height:'35px !important',
-                                    width:'fit-content',
-                                    marginLeft: '10px',
-                                    marginRight: '10px',
-                                    marginTop: '5px !important'
-
-                                  },
-                                  'input:hover': {
-                                      borderColor: '#00AB8D',
-                                      cursor: 'pointer'
-                                  },
-                                  btnUp: {
-                                      height: '32px',
-                                      marginTop: '4px',
-                                       borderRadius: '2px 2px 0 0',
-                                       borderWidth : '1px 1px 0 1px',
-                                       marginRight: '10px'
-                                   },
-
-                                   btnDown: {
-                                      marginLeft:'10px',
-                                      marginTop: '4px',
-                                       height: '32px',
-                                       borderRadius: '0 0 2px 2px',
-                                       borderWidth : '0 1px 1px 1px'
-                                   }
-      };
 
       let courseList = ['CS 288', 'CS 341', 'CS 113'];
       let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
@@ -70,51 +33,46 @@ class AssignmentDetailsComponent extends React.Component{
               <div className="inner">
                 <label>Assignment Name</label>
                 <br />
-                <input placeholder="Name" type="text" value={this.state.AssignmentActivityData.AA_name}
-                  onChange={ (event) => {
-                      let newData = this.state.AssignmentActivityData;
-                      newData.AA_name = event.target.value;
-                      this.setState({
-                        AssignmentActivityData: newData
-                      });
-                    }}
+                <input placeholder="Name" type="text" value={this.props.AssignmentActivityData.AA_name}
+                  onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
                   ></input>
               </div>
 
               <div className="inner">
                 <label>Course</label>
-                <Dropdown options={courseList} selectedValue={this.state.AssignmentActivityData.AA_course}  />
+                <Dropdown options={courseList} selectedValue={this.props.AssignmentActivityData.AA_course}
+                          onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_course')}/>
               </div>
 
               <div className="inner">
-                <label>Problem Type</label>
-                <Dropdown options={problemTypeList} selectedValue={this.state.AssignmentActivityData.AA_type}/>
+                <label>Assignment Type</label>
+                <Dropdown options={problemTypeList} selectedValue={this.props.AssignmentActivityData.AA_type}
+                  onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
+                  />
               </div>
 
+               {/*set numericinput max to real world limit of numebr of max problems*/}
               <div className='inner'>
-                <label> How Many Problems</label>
+                <label> How Many Different Types of Problems</label>
                 <br />
                 <NumericInput
-                  value={this.state.NumberofWorkflows}
-                  min={0}
+                  value={this.props.AssignmentActivityData.NumberofWorkflows}
+                  min={1}
+                  max={100}
                   size={6}
-                  style={numericInputStyle}
+                  onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')}
                   />
               </div>
 
               <div className="inner block">
                 <label>Instructions</label>
                 <br />
-                <textarea placeholder="Instructions" className="big-text-field" value={this.state.AssignmentActivityData.AA_instructions} onChange={ (event) => {
-                    let newData = this.state.AssignmentActivityData;
-                    newData.AA_instructions = event.target.value;
-                    this.setState({
-                      AssignmentActivityData: newData
-                    });
-                  }}></textarea>
+                <textarea placeholder="Instructions" className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
+                  onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
               </div>
 
               <br />
+              {/*
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
@@ -123,10 +81,7 @@ class AssignmentDetailsComponent extends React.Component{
                 <div className="bubble"></div>
                 <div className="text-true">Yes</div>
                 <div className="text-false">No</div>
-              </div>
-              <br />
-              <br />
-              <br />
+              </div>*/}
               <br />
             </div>
 

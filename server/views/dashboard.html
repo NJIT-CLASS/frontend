@@ -13,7 +13,7 @@
 				  {{#each courseList}}
 
 					<li class="list-group-item">
-					<a href="/course_page/{{CourseID}}">{{Title}}</a>
+					<a href="/course_page/{{CourseID}}">{{Name}}</a>
 				    </li>
 
                    {{/each}}
@@ -43,7 +43,7 @@
 		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
 		<tbody>
       {{#each pendingTasksList}}
-      <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}">{{AssignmentInstance.Assignment.Title}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentInstance.Section.Course.Title}}</td><td>{{dateFormat EndDate}}</td><tr>
+      <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{AssignmentInstance.Assignment.Name}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentInstance.Section.Course.Name}}</td><td>{{dateFormat EndDate}}</td><tr>
         {{/each}}
       <!--
 			 <tr class="odd"><td><a href="/createproblem">Test Assignment 2 - Test</a></td><td>Create Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 14, 2016 8:05 PM">2 days </span></td> </tr>
@@ -77,7 +77,7 @@
   		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
   		<tbody>
         {{#each completedTasksList}}
-        <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}">{{AssignmentInstance.Assignment.Title}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentInstance.Section.Course.Title}}</td><td>{{dateFormat EndDate}}</td><tr>
+        <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{AssignmentInstance.Assignment.Name}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentInstance.Section.Course.Name}}</td><td>{{dateFormat EndDate}}</td><tr>
           {{/each}}
     <!--
 		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">

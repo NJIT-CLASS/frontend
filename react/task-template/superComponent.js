@@ -6,7 +6,7 @@
 import React from 'react';
 import request from 'request';
 import ErrorComponent from './errorComponent';
-import Checkbox from '../assignment-editor/checkbox';
+import Checkbox from '../shared/checkbox';
 import Dropdown from 'react-dropdown';
 import Rater from 'react-rater';
 import {RadioGroup, Radio} from 'react-radio-group';
@@ -46,9 +46,12 @@ class SuperComponent extends React.Component {
 
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
-
+        console.log(tdata, tAdata)
         //checks to see if either data prop is null
-        if(!tdata || !tAdata){
+        if(!tdata ){
+          tdata = {};
+        }
+        if(!tAdata){
           this.setState({Error: true});
           return;
         }
@@ -121,7 +124,7 @@ class SuperComponent extends React.Component {
       if(validData){
         const options = {
             method: 'POST',
-            uri: this.props.apiUrl + '/api/taskTemplate/create/save',
+            uri: this.props.apiUrl + '/api/taskInstanceTemplate/create/save',
             body: {
                 taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
@@ -161,7 +164,7 @@ class SuperComponent extends React.Component {
       if(validData){
         const options = {
             method: 'POST',
-            uri: this.props.apiUrl + '/api/taskTemplate/create/submit',
+            uri: this.props.apiUrl + '/api/taskInstanceTemplate/create/submit',
             body: {
                 taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
@@ -343,10 +346,7 @@ class SuperComponent extends React.Component {
             let fieldTitleText = '';
             let fieldTitle = null;
 
-            if(!this.state.TaskData[idx]){
-              this.setState({Error: true});
-              return(<div key={idx}></div>);
-            }
+
 
             if(this.state.TaskActivityFields[idx].show_title){
               if(this.state.TaskActivityFields[idx].assessment_type != null){

@@ -43,8 +43,9 @@ if(templateContainerEl){
   const apiUrl = templateContainerEl.dataset.apiUrl;
   const taskId= templateContainerEl.dataset.taskId;
   const sectionId= templateContainerEl.dataset.sectionId;
+  const courseId = templateContainerEl.dataset.courseId;
 
-  ReactDOM.render(<TemplateContainer SectionID={sectionId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
+  ReactDOM.render(<TemplateContainer SectionID={sectionId} CourseID={courseId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
 }
 
 const assignmentEditorContainerEl = document.getElementById('assignment-editor-container');

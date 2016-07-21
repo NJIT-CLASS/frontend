@@ -3,8 +3,9 @@ exports.get = (req, res) => {
   res.render('./task/edit', {
     scripts: ['/static/react_apps.js'],
     userId: req.App.user.userId,
-    sectionId: req.query.sectionId,
     taskId: req.params.taskId,
+    courseId: req.query.courseId,
+    sectionId: req.query.sectionId,
     apiUrl: consts.API_URL
 });
 };

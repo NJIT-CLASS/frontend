@@ -75,11 +75,11 @@ class TemplateContainer extends React.Component {
 
         const options = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/taskTemplate/main/' + this.props.TaskID,
+            uri: this.props.apiUrl + '/api/taskInstanceTemplate/main/' + this.props.TaskID,
             qs: {
-              courseID:1, //this.props.CourseID,
-              userID:1, //this.props.UserID,
-              sectionID:1, //this.props.SectionID
+              courseID: this.props.CourseID,
+              userID: this.props.UserID,
+              sectionID:this.props.SectionID
             },
             json: true
         };
@@ -122,7 +122,7 @@ class TemplateContainer extends React.Component {
               };
 
         request(options, (err, res, bod) => {
-          console.log(bod);
+
           if(res.statusCode != 200){
             this.setState({
               Error: true
@@ -131,7 +131,7 @@ class TemplateContainer extends React.Component {
           }
           else{
             let currentTaskStatus = bod.superTask[0].Status;
-            let taskList = bod.superTask.reverse();
+            let taskList = bod.superTask;
             this.setState({
               Data: taskList,
               TaskStatus: currentTaskStatus
@@ -147,7 +147,7 @@ class TemplateContainer extends React.Component {
       }
 
       render(){
-
+        console.log(this.state.Data);
         let renderComponents = null;
         let gradeViews = null;
         let numberOfGradingTasks = 0;
@@ -193,7 +193,9 @@ class TemplateContainer extends React.Component {
                   break;
               }
 
-              if(idx == 0){
+
+
+              if(idx == this.state.Data.length - 1){
                 return (<SuperComponent    TaskID = {this.props.TaskID}
                                             UserID = {this.props.UserID}
                                             ComponentTitle={compString}
@@ -205,8 +207,7 @@ class TemplateContainer extends React.Component {
                                             apiUrl={this.props.apiUrl}
                                         />);
               }
-
-              if(taskType == TASK_TYPES.GRADE_PROBLEM){
+              else if(task.TaskActivity.Type == TASK_TYPES.GRADE_PROBLEM){
                 numberOfGradingTasks = task.TaskActivity.NumberParticipants;
                 gradeViews.push(data);
                 return null;
@@ -217,6 +218,9 @@ class TemplateContainer extends React.Component {
                                     TaskData={task.Data}
                                     TaskActivityFields={task.TaskActivity.Fields}/>)
               }
+
+
+
           }, this);
 
           for(let i = 0; i < this.state.Data.length; i++){
@@ -240,11 +244,11 @@ class TemplateContainer extends React.Component {
 
           if(gradesViewIndex != null){
             renderComponents.splice(gradesViewIndex, gradeViews.length, gradedComponentView);
-          }}
+          }
+        }
 
         return(
           <div className="super-container">
-
             <Tabs
               onSelect={this.handleSelect}
               selectedIndex={0}

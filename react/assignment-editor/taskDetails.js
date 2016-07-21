@@ -2,7 +2,9 @@ import React from 'react';
 import NumericInput from 'react-numeric-input';
 import Dropdown from 'react-dropdown';
 var moment = require('moment');
-import Checkbox from './checkbox';
+import Checkbox from '../shared/checkbox';
+import ToggleSwitch from './toggleSwitch';
+var CheckBoxList = require('react-checkbox-list');
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
 
@@ -26,6 +28,7 @@ class TaskDetailsComponent extends React.Component{
             Reflection: ['none', null]
           }],
           SimpleGradePointReduction: 0,
+          ShowAssigneeConstraintSections: [false,false,false,false], //same as, in same group as, not in, choose from
           ShowAdvanced: false,
           ShowContent: this.props.isOpen ? true : false
       };
@@ -40,51 +43,31 @@ class TaskDetailsComponent extends React.Component{
       let style={marginRight: "10px",
                 marginLeft:'10px'};
       let instyle = {display: "inline-block"};
-      let numericInputStyle = {   display: 'block',
-                                  input: {
-                                    height:'35px !important',
-                                    width:'fit-content',
-                                    marginLeft: '10px',
-                                    marginRight: '10px',
-                                    marginTop: '5px !important'
 
-                                  },
-                                  'input:hover': {
-                                      borderColor: '#00AB8D',
-                                      cursor: 'pointer'
-                                  },
-                                  btnUp: {
-                                      height: '32px',
-                                      marginTop: '4px',
-                                       borderRadius: '2px 2px 0 0',
-                                       borderWidth : '1px 1px 0 1px',
-                                       marginRight: '10px'
-                                   },
-
-                                   btnDown: {
-                                      marginLeft:'10px',
-                                      marginTop: '4px',
-                                       height: '32px',
-                                       borderRadius: '0 0 2px 2px',
-                                       borderWidth : '0 1px 1px 1px'
-                                   }
-                                };
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
-      let onTaskEndValues = [{value:'late', label: "Late"},'resolved','abandon','complete'];
-      let onLateValues = ['Keep same participant', 'Allocate new participant', 'Allocate to instructor','Allocate to different group member', 'Consider resolved'];
+      let onTaskEndValues = [{value:'late', label: "Late"},{value:'resolved', label: 'Resolved'},{value:'abandon', label: 'Abandon'},{value:'complete', label:'Complete'}];
+      let onLateValues = [{value:'Keep same participant', label:'Keep Same Participant'}, {value:'Allocate new participant', label: 'Allocate New Participant'}, {value:'Allocate to instructor', label: 'Allocate to Instructor'},{value: 'Allocate to different group member', label: 'Allocate to Different Group Member'}, {value: 'Consider resolved', label: 'Consider Resolved'}];
       let reflectionValues = [{value: 'edit', label:'Edit'},{value:'comment', label:'Comment'}];
-      let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'},{value:'none', label:'None'}];
-      let simpleGradeOptions = [{value: 'exists', label: ''}];
+      let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'}];
       let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}];
       //display logic
+
+      let taskCreatedList = this.props.getAlreadyCreatedTasks(this.props.index);
 
       let advancedOptionsView = null;
       let simpleGradeOptionsView = null;
       let allowReflectionOptions = null;
       let allowAssesmentOptions = null;
       let whatIfLateView = null;
+
+      //assignee constraint views
+      let sameAsOptions = null;
+      let inSameGroupAsOptions = null;
+      let notInOptions = null;
+      let chooseFromOptions = null;
+
 
       let fileUploadOptions= (<div style={{display:'inline-block',
                                           width:'100px'}}></div>);
@@ -103,8 +86,7 @@ class TaskDetailsComponent extends React.Component{
             <NumericInput
                 value={2}
                 min={0}
-                size={6}
-                style={numericInputStyle} />
+                size={6} />
               <br />
             <label>To be consolidated, the grade should be: </label>
             <Dropdown options={['max','sum','average']} />
@@ -119,8 +101,8 @@ class TaskDetailsComponent extends React.Component{
           <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
           <label>Who can assess</label>
           <br />
-          <label>Students</label><div className="checkbox"></div>
-          <label>Instructors</label><div className="checkbox"></div>
+          <label>Students</label><Checkbox />
+          <label>Instructors</label><Checkbox />
           <br />
           <label>Number of Assessors</label>
           <br />
@@ -128,7 +110,6 @@ class TaskDetailsComponent extends React.Component{
             value={this.props.getAssessNumberofParticipants(this.props.index)}
             min={1}
             size={6}
-            style={numericInputStyle}
             onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index)} />
             <br />
             {showConsol}
@@ -144,15 +125,61 @@ class TaskDetailsComponent extends React.Component{
               value={this.props.TaskActivityData.SimpleGradePointReduction}
               min={0}
               size={6}
-              style={numericInputStyle}
-              onChange={this.props.changeTASimpleGradePoints.bind(this.props.index)} />
+              onChange={this.props.changeTASimpleGradePoints.bind(this, this.props.index)} />
           <br />
           <label>No Points If Late</label>
-            <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this.props.index)} />
+            <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this, this.props.index)} />
           </div>);
       }
 
+      if(this.state.ShowAssigneeConstraintSections[0]){
+        sameAsOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
+          {taskCreatedList.map(function(task){
+            return (<div>
+              <label>{task.label}</label>
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'same_as', task.value)} />
+            </div>)
 
+          },this)
+        }
+      </div>  );
+      }
+      if(this.state.ShowAssigneeConstraintSections[1]){
+        inSameGroupAsOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
+          {taskCreatedList.map(function(task){
+            return (<div>
+              <label>{task.label}</label>
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'group_with_member', task.value)} />
+            </div>)
+
+          },this)
+        }
+      </div>  );
+      }
+      if(this.state.ShowAssigneeConstraintSections[2]){
+        notInOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px',alignContent: 'right'}}>
+          {taskCreatedList.map(function(task){
+            return (<div>
+              <label>{task.label}</label>
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'not', task.value)} />
+            </div>)
+
+          },this)
+        }
+      </div>  );
+      }
+      if(this.state.ShowAssigneeConstraintSections[3]){
+        chooseFromOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
+          {taskCreatedList.map(function(task){
+            return (<div>
+              <label>{task.label}</label>
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value)} />
+            </div>)
+
+          },this)
+        }
+      </div>);
+      }
 
 
       if(this.state.FileUp){
@@ -163,18 +190,16 @@ class TaskDetailsComponent extends React.Component{
               <NumericInput
                   min={0}
                   size={6}
-                  onChange={this.props.changeFileUpload.bind(this.props.index,0,0)}
-                  value={this.props.TaskActivityData.TA_file_upload[0][0]}
-                  style={numericInputStyle} />
+                  onChange={this.props.changeFileUpload.bind(this, this.props.index,0,0)}
+                  value={this.props.TaskActivityData.TA_file_upload[0][0]} />
             </div>
             <div className="inner" style={instyle}>
               <label> Maximum number of optional files</label> <br />
               <NumericInput
                   min={0}
                   size={6}
-                  onChange={this.props.changeFileUpload.bind(this.props.index,1,0)}
-                  value={this.props.TaskActivityData.TA_file_upload[1][0]}
-                  style={numericInputStyle}/>
+                  onChange={this.props.changeFileUpload.bind(this, this.props.index,1,0)}
+                  value={this.props.TaskActivityData.TA_file_upload[1][0]} />
 
             </div>
           </div>);
@@ -206,8 +231,8 @@ class TaskDetailsComponent extends React.Component{
 
           <Dropdown options={reflectionValues} onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_reflection[0]}/>
           <label>Who can reflect</label><br />
-          <label>Students</label><div className="checkbox"></div>
-          <label>Instructors</label><div className="checkbox"></div>
+          <label>Students</label><Checkbox />
+          <label>Instructors</label><Checkbox />
           <br />
           <label>Number of Editors</label>
           <br />
@@ -215,7 +240,6 @@ class TaskDetailsComponent extends React.Component{
               value={this.props.getReflectNumberofParticipants(this.props.index)}
               min={1}
               size={6}
-              style={numericInputStyle}
               onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index)}
               />
             <br />
@@ -251,8 +275,8 @@ class TaskDetailsComponent extends React.Component{
                 min={0}
                 size={6}
                 value={this.props.TaskActivityData.TA_fields[index].numeric_min}
-                style={numericInputStyle}
-                onChange={this,props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
+
+                onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
                 }
                 />
               <label>Max</label>
@@ -260,7 +284,6 @@ class TaskDetailsComponent extends React.Component{
                   value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                   min={0}
                   size={6}
-                  style={numericInputStyle}
                   onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index )}
                   />
               </div>);
@@ -269,6 +292,29 @@ class TaskDetailsComponent extends React.Component{
         }
 
         else if(this.props.TaskActivityData.TA_fields[index].field_type == "assessment" || this.props.TaskActivityData.TA_fields[index].field_type == "self assessment"){
+          if(this.props.TaskActivityData.TA_fields[index].assessment_type == 'grade'){
+            assessmentTypeView  = (<div>
+              <label>Min</label>
+              <NumericInput
+
+                  min={0}
+                  size={6}
+                  value={this.props.TaskActivityData.TA_fields[index].numeric_min}
+
+                  onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
+                  }
+                  />
+                <label>Max</label>
+                <NumericInput
+                    value={this.props.TaskActivityData.TA_fields[index].numeric_max}
+                    min={0}
+                    size={6}
+                    onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index )}
+                    />
+                </div>);
+          }
+
+
           fieldTypeOptions = (<div>
 
             <label>Assessment Type</label> <br/>
@@ -301,7 +347,7 @@ class TaskDetailsComponent extends React.Component{
 
                     <Dropdown key={index}
                       options={fieldTypeValues}
-                      onChange={this.props.changeDropdownFieldData.bind('field_type', this.props.index,index)}
+                      onChange={this.props.changeDropdownFieldData.bind(this, 'field_type', this.props.index,index)}
                       selectedValue={this.props.TaskActivityData.TA_fields[index].field_type} />
                     <br />
                     {fieldTypeOptions}
@@ -352,11 +398,11 @@ class TaskDetailsComponent extends React.Component{
                 <div className="section-divider">
                   <div className="inner">
                     <label>Does this task require any file uploads?</label>
-                    <div className="checkbox" checked={this.state.FileUp} onClick={ ()=>{
+                    <Checkbox isChecked={this.state.FileUp} click={ ()=>{
                         this.setState({
                           FileUp: this.state.FileUp ? false: true
                           });
-                        }} value={"t-fileUp"} style={style}></div>
+                        }}  />
                   </div>
                   {fileUploadOptions}
 
@@ -396,13 +442,9 @@ class TaskDetailsComponent extends React.Component{
                     <br />
                     <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
                     <br />
-                    <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
-                        this.setState({ShowAdvanced: this.state.ShowAdvanced ? false : true})
-                      }} >
-                      <div className="bubble"></div>
-                      <div className="text-true">Yes</div>
-                      <div className="text-false">No</div>
-                    </div>
+                    <ToggleSwitch click={ ()=> {
+                        this.setState({ShowAdvanced : this.state.ShowAdvanced ? false : true});
+                      }} />
                   </div>
                 </div>
 
@@ -427,7 +469,6 @@ class TaskDetailsComponent extends React.Component{
                           value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
                           min={0}
                           size={6}
-                          style={numericInputStyle}
                           onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index)}
                           />
                   </div>
@@ -446,7 +487,6 @@ class TaskDetailsComponent extends React.Component{
                         value={this.props.TaskActivityData.TA_start_delay}
                         min={0}
                         size={6}
-                        style={numericInputStyle}
                         onChange={ this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index)
                         }/>
 
@@ -514,51 +554,54 @@ class TaskDetailsComponent extends React.Component{
                                   selectedValue={this.props.TaskActivityData.TA_assignee_constraint[0]}
                                   onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraint', this.props.index)}/>
                                   <label>Will this be a group task</label>
-                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index)}/>
+                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index)} isClicked = {this.props.TaskActivityData.TA_assignee_constraint[1] == 'group'}/>
                     </div>
 
                     <div className="inner">
                       <label>Should this assignee have a specific relation to an assignee of another task in this problem</label>
                       <br />
                       <label>None</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none') } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
+                      <label>New to Problem</label>
+                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance')}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
                       <label>Same as</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={()=> {
+                          this.props.checkAssigneeConstraints(this.props.index, 'same_as');
+                          let newAssignee = this.state.ShowAssigneeConstraintSections;
+                          newAssignee[0] = !this.state.ShowAssigneeConstraintSections[0];
+                          this.setState({ShowAssigneeConstraintSections: newAssignee});
+                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['same_as'] ? true : false }
+                          style={{marginRight: '8px'}}/>
                       <label>In same group as</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={()=> {
+                          this.props.checkAssigneeConstraints(this.props.index, 'group_with_member')
+                          let newAssignee = this.state.ShowAssigneeConstraintSections;
+                          newAssignee[1] = !this.state.ShowAssigneeConstraintSections[1];
+                          this.setState({ShowAssigneeConstraintSections: newAssignee});
+                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['group_with_member'] ? true : false }
+                        style={{marginRight: '8px'}}/>
                       <label>Not in</label>
-                      <div className="checkbox"></div>
+                      <Checkbox click={()=> {
+                          this.props.checkAssigneeConstraints(this.props.index, 'not')
+                          let newAssignee = this.state.ShowAssigneeConstraintSections;
+                          newAssignee[2] = !this.state.ShowAssigneeConstraintSections[2];
+                          this.setState({ShowAssigneeConstraintSections: newAssignee});
+                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not'] ? true : false }
+                          style={{marginRight: '8px'}} />
                       <label>Choose from </label>
-                      <div className="checkbox"></div>
-                      <br />
-                      <div className="checkbox-group inner">
-                        <div className="checkbox"></div><label>Edit Problem</label><br />
-                        <div className="checkbox"></div><label>Solve Problem</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 1</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 2</label><br />
-                        <div className="checkbox"></div><label>Dispute  Grade</label><br />
-                      </div>
-                      <div className="checkbox-group inner">
-                        <div className="checkbox"></div><label>Edit Problem</label><br />
-                        <div className="checkbox"></div><label>Solve Problem</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 1</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 2</label><br />
-                        <div className="checkbox"></div><label>Dispute  Grade</label><br />
-                      </div>
-                      <div className="checkbox-group inner">
-                        <div className="checkbox"></div><label>Edit Problem</label><br />
-                        <div className="checkbox"></div><label>Solve Problem</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 1</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 2</label><br />
-                        <div className="checkbox"></div><label>Dispute  Grade</label><br />
-                      </div>
-                      <div className="checkbox-group inner">
-                        <div className="checkbox"></div><label>Edit Problem</label><br />
-                        <div className="checkbox"></div><label>Solve Problem</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 1</label><br />
-                        <div className="checkbox"></div><label>Grade Problem 2</label><br />
-                        <div className="checkbox"></div><label>Dispute  Grade</label><br />
-                      </div>
+                      <Checkbox click={()=> {
+                          this.props.checkAssigneeConstraints(this.props.index, 'choose_from')
+                          let newAssignee = this.state.ShowAssigneeConstraintSections;
+                          newAssignee[3] = !this.state.ShowAssigneeConstraintSections[3];
+                          this.setState({ShowAssigneeConstraintSections: newAssignee});
+                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['choose_from'] ? true : false }
+                            />
+
+                          <br />
+                      {sameAsOptions}
+                      {inSameGroupAsOptions}
+                      {notInOptions}
+                      {chooseFromOptions}
                     </div>
 
 
@@ -577,7 +620,7 @@ class TaskDetailsComponent extends React.Component{
 
                   </div>
                   <br />
-                  <button className="divider">Continue</button>
+
               </div>
         </div>);
     }
