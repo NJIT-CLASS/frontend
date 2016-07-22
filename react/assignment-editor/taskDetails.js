@@ -18,9 +18,8 @@ class TaskDetailsComponent extends React.Component{
       super(props);
 
       this.state = {
-
-
           FileUp: false,
+          NewTask: true,
           FieldType: "text",
           Tasks: [{
             AtDurationEnd: '',
@@ -389,10 +388,11 @@ class TaskDetailsComponent extends React.Component{
       }, this);
 
 
-
+      let title = this.state.NewTask ? (<b>{this.props.TaskActivityData.TA_display_name}</b>) : (this.props.TaskActivityData.TA_display_name);
       return (
         <div className="section card-1">
-            <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}} >{this.props.TaskActivityData.TA_display_name}</h2>
+            <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
+                                                                 NewTask: false});}} >{title}</h2>
               <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
 
                 <div className="section-divider">
