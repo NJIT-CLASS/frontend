@@ -46,12 +46,15 @@ $break-large: 1200px;
   background-color: #F3F3F4;
   outline: none;
   border-bottom: none;
+	transform: scale(1.1,1.1);
+	z-index: 10;
 }
 .react-tabs [role=tab][aria-disabled=true] {
   border-color: #d7d7da;
   border-bottom: none;
   border-radius: 5px 5px 0 0;
   outline: none;
+
 }
 .react-tabs [role=tab]:focus {
 border-radius: 5px 5px 0 0;

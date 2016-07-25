@@ -40,19 +40,15 @@ textarea {
         margin-top: 5px !important;
 
       }
-      input:hover {
-          border-color: #00AB8D;
-          cursor: pointer;
-      }
-      b { display: inline;
-          margin-left: 8px;
-          margin-right: 8px;
-          height: 33px;
-          margin-top: 3px;
-          border-radius: 2px 2px 0 0;
-          border-width : 1px 1px 0 1px;
-
+      b { display: inline !important;
+          margin-left: 8px !important;
+          margin-right: 8px !important;
+          height: 33px !important;
+          margin-top: 3px !important;
+          border-radius: 2px 2px 0 0 !important;
+          border-width : 1px 1px 0 1px !important;
        }
+
 
 
 }

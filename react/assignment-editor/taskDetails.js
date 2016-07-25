@@ -53,7 +53,7 @@ class TaskDetailsComponent extends React.Component{
       let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}];
       //display logic
 
-      let taskCreatedList = this.props.getAlreadyCreatedTasks(this.props.index);
+      let taskCreatedList = this.props.getAlreadyCreatedTasks(this.props.index, this.props.workflowIndex);
 
       let advancedOptionsView = null;
       let simpleGradeOptionsView = null;
@@ -72,10 +72,10 @@ class TaskDetailsComponent extends React.Component{
                                           width:'100px'}}></div>);
 
       if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
-        let showConsol= this.props.getAssessNumberofParticipants(this.props.index) > 1 ? (
+        let showConsol= this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
           <div>
             <label>Should the assessments be consolidated</label>
-            <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index)}/>
+            <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index, this.props.workflowIndex)}/>
             <br />
             <label>Grading Threshold</label>
             <br />
@@ -93,11 +93,11 @@ class TaskDetailsComponent extends React.Component{
 
         let showDispute = (<div>
           <label> Can students dispute this reflection </label>
-          <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index)}/>
+          <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index, this.props.workflowIndex)}/>
           </div>);
 
         allowAssesmentOptions = (<div>
-          <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
+          <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
           <label>Who can assess</label>
           <br />
           <label>Students</label><Checkbox />
@@ -106,10 +106,10 @@ class TaskDetailsComponent extends React.Component{
           <label>Number of Assessors</label>
           <br />
           <NumericInput
-            value={this.props.getAssessNumberofParticipants(this.props.index)}
+            value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
             min={1}
             size={6}
-            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index)} />
+            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
             <br />
             {showConsol}
             <br />
@@ -124,10 +124,10 @@ class TaskDetailsComponent extends React.Component{
               value={this.props.TaskActivityData.SimpleGradePointReduction}
               min={0}
               size={6}
-              onChange={this.props.changeTASimpleGradePoints.bind(this, this.props.index)} />
+              onChange={this.props.changeTASimpleGradePoints.bind(this, this.props.index, this.props.workflowIndex)} />
           <br />
           <label>No Points If Late</label>
-            <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this, this.props.index)} />
+            <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this, this.props.index, this.props.workflowIndex)} />
           </div>);
       }
 
@@ -136,7 +136,7 @@ class TaskDetailsComponent extends React.Component{
           {taskCreatedList.map(function(task){
             return (<div>
               <label>{task.label}</label>
-              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'same_as', task.value)} />
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'same_as', task.value, this.props.workflowIndex)} />
             </div>)
 
           },this)
@@ -148,7 +148,7 @@ class TaskDetailsComponent extends React.Component{
           {taskCreatedList.map(function(task){
             return (<div>
               <label>{task.label}</label>
-              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'group_with_member', task.value)} />
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'group_with_member', task.value, this.props.workflowIndex)} />
             </div>)
 
           },this)
@@ -160,7 +160,7 @@ class TaskDetailsComponent extends React.Component{
           {taskCreatedList.map(function(task){
             return (<div>
               <label>{task.label}</label>
-              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'not', task.value)} />
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'not', task.value, this.props.workflowIndex)} />
             </div>)
 
           },this)
@@ -172,7 +172,7 @@ class TaskDetailsComponent extends React.Component{
           {taskCreatedList.map(function(task){
             return (<div>
               <label>{task.label}</label>
-              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value)} />
+              <Checkbox click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value, this.props.workflowIndex)} />
             </div>)
 
           },this)
@@ -189,7 +189,7 @@ class TaskDetailsComponent extends React.Component{
               <NumericInput
                   min={0}
                   size={6}
-                  onChange={this.props.changeFileUpload.bind(this, this.props.index,0,0)}
+                  onChange={this.props.changeFileUpload.bind(this, this.props.index,0,0, this.props.workflowIndex)}
                   value={this.props.TaskActivityData.TA_file_upload[0][0]} />
             </div>
             <div className="inner" style={instyle}>
@@ -197,7 +197,7 @@ class TaskDetailsComponent extends React.Component{
               <NumericInput
                   min={0}
                   size={6}
-                  onChange={this.props.changeFileUpload.bind(this, this.props.index,1,0)}
+                  onChange={this.props.changeFileUpload.bind(this, this.props.index,1,0, this.props.workflowIndex)}
                   value={this.props.TaskActivityData.TA_file_upload[1][0]} />
 
             </div>
@@ -208,7 +208,7 @@ class TaskDetailsComponent extends React.Component{
         whatIfLateView = (<div>
           <label> What happens if late</label>
         <Dropdown options={onLateValues}
-          onChange={ this.props.changeDropdownData.bind(this,'TA_what_if_late',this.props.index)}
+          onChange={ this.props.changeDropdownData.bind(this,'TA_what_if_late',this.props.index, this.props.workflowIndex)}
             value={this.props.TaskActivityData.TA_what_if_late} />
           </div>
         )
@@ -216,19 +216,19 @@ class TaskDetailsComponent extends React.Component{
 
       if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
 
-        let showConsol= this.props.getReflectNumberofParticipants(this.props.index) > 1 ? (
+        let showConsol= this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
           <div>
           <label>Should the reflections be consolidated</label>
-        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index)}/></div>) : null;
+        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index, this.props.workflowIndex)}/></div>) : null;
 
         let showDispute = (<div>
           <label> Can students dispute this reflection </label>
-          <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Dispute", this.props.index)}/>
+          <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Dispute", this.props.index, this.props.workflowIndex)}/>
           </div>);
 
         allowReflectionOptions = (<div>
 
-          <Dropdown options={reflectionValues} onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index)} selectedValue={this.props.TaskActivityData.TA_allow_reflection[0]}/>
+          <Dropdown options={reflectionValues} onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_allow_reflection[0]}/>
           <label>Who can reflect</label><br />
           <label>Students</label><Checkbox />
           <label>Instructors</label><Checkbox />
@@ -236,10 +236,10 @@ class TaskDetailsComponent extends React.Component{
           <label>Number of Editors</label>
           <br />
           <NumericInput
-              value={this.props.getReflectNumberofParticipants(this.props.index)}
+              value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)}
               min={1}
               size={6}
-              onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index)}
+              onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)}
               />
             <br />
             {showConsol}
@@ -261,7 +261,7 @@ class TaskDetailsComponent extends React.Component{
             <label>Field Justification Instructions</label>
             <textarea className="big-text-field"
               value={this.props.TaskActivityData.TA_fields[index].justification_instructions}
-              onChange={this.props.changeInputFieldData.bind(this,'justification_instructions',this.props.index, index)}></textarea>
+              onChange={this.props.changeInputFieldData.bind(this,'justification_instructions',this.props.index, index, this.props.workflowIndex)}></textarea>
           </div>)
 
         }
@@ -275,15 +275,16 @@ class TaskDetailsComponent extends React.Component{
                 size={6}
                 value={this.props.TaskActivityData.TA_fields[index].numeric_min}
 
-                onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
+                onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
                 }
                 />
+              <br />
               <label>Max</label>
               <NumericInput
                   value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                   min={0}
                   size={6}
-                  onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index )}
+                  onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex)}
                   />
               </div>);
 
@@ -300,7 +301,7 @@ class TaskDetailsComponent extends React.Component{
                   size={6}
                   value={this.props.TaskActivityData.TA_fields[index].numeric_min}
 
-                  onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index)
+                  onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
                   }
                   />
                 <label>Max</label>
@@ -308,7 +309,7 @@ class TaskDetailsComponent extends React.Component{
                     value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                     min={0}
                     size={6}
-                    onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index )}
+                    onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex )}
                     />
                 </div>);
           }
@@ -320,7 +321,7 @@ class TaskDetailsComponent extends React.Component{
 
               <Dropdown key={index+300}
                 options={assessmentTypeValues}
-                onChange={this.props.changeDropdownFieldData.bind(this, 'assessment_type', this.props.index, index)}
+                onChange={this.props.changeDropdownFieldData.bind(this, 'assessment_type', this.props.index, index, this.props.workflowIndex)}
                 selectedValue={this.props.TaskActivityData.TA_fields[index].assessment_type} />
 
               <br />
@@ -338,7 +339,7 @@ class TaskDetailsComponent extends React.Component{
                     <label>Field Name</label> <br />
                     <input type="text" style={style} placeholder="Field Name"
                       value={this.props.TaskActivityData.TA_fields[index].title}
-                      onChange={this.props.changeFieldName.bind(this,this.props.index,index)}></input>
+                      onChange={this.props.changeFieldName.bind(this,this.props.index,index, this.props.workflowIndex)}></input>
                   </div>
 
                   <div className="inner">
@@ -346,7 +347,7 @@ class TaskDetailsComponent extends React.Component{
 
                     <Dropdown key={index}
                       options={fieldTypeValues}
-                      onChange={this.props.changeDropdownFieldData.bind(this, 'field_type', this.props.index,index)}
+                      onChange={this.props.changeDropdownFieldData.bind(this, 'field_type', this.props.index,index, this.props.workflowIndex)}
                       selectedValue={this.props.TaskActivityData.TA_fields[index].field_type} />
                     <br />
                     {fieldTypeOptions}
@@ -354,20 +355,20 @@ class TaskDetailsComponent extends React.Component{
 
                   <div className="inner">
                   <label>Requires Justification ?</label>
-                  <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index)} />
+                  <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index, this.props.workflowIndex)} />
                   </div>
 
                   <div className = "inner block">
                     <label >Field Instructions (optional)</label>
                     <textarea className="big-text-field" placeholder="Type the instructions here..."
-                      onChange={this.props.changeInputFieldData.bind(this, 'instructions', this.props.index,index)}
+                      onChange={this.props.changeInputFieldData.bind(this, 'instructions', this.props.index,index, this.props.workflowIndex)}
                       value={this.props.TaskActivityData.TA_fields[index].instructions}></textarea>
                   </div>
 
                   <div className="inner block">
                     <label>Field Rubric</label>
                     <textarea className="big-text-field" placeholder="Type the rubric here..."
-                      onChange={this.props.changeInputFieldData.bind(this,this.props.index, index)}
+                      onChange={this.props.changeInputFieldData.bind(this,this.props.index, index, this.props.workflowIndex)}
                       value={this.props.TaskActivityData.TA_fields[index].rubric}
                       ></textarea>
                   </div>
@@ -377,7 +378,7 @@ class TaskDetailsComponent extends React.Component{
                   <div className="inner block">
                     <label>Default content for the field</label>
                     <textarea className="big-text-field" placeholder="Default content for the field..."
-                      onChange={this.props.changeInputFieldData.bind(this, 'default_content',this.props.index,index)}
+                      onChange={this.props.changeInputFieldData.bind(this, 'default_content',this.props.index,index, this.props.workflowIndex)}
                       value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                       ></textarea>
                   </div>
@@ -388,7 +389,7 @@ class TaskDetailsComponent extends React.Component{
       }, this);
 
 
-      let title = this.state.NewTask ? (<b>{this.props.TaskActivityData.TA_display_name}</b>) : (this.props.TaskActivityData.TA_display_name);
+      let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
         <div className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
@@ -410,14 +411,14 @@ class TaskDetailsComponent extends React.Component{
                     <label>Display name</label>
                     <br />
                     <input type="text" placeholder="Display Name "style={style} value={this.props.TaskActivityData.TA_display_name}
-                            onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index)} ></input><br />
+                            onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index, this.props.workflowIndex)} ></input><br />
                   </div>
 
                   <br />
                   <div className="inner block">
                     <label>Task Instructions</label>
                     <textarea className="big-text-field" placeholder="Type the instructions here..."
-                              onChange={this.props.changeInputData.bind(this,'TA_overall_instructions', this.props.index)}
+                              onChange={this.props.changeInputData.bind(this,'TA_overall_instructions', this.props.index, this.props.workflowIndex)}
                               value={this.props.TaskActivityData.TA_overall_instructions}
                               ></textarea>
                     </div>
@@ -425,7 +426,7 @@ class TaskDetailsComponent extends React.Component{
                     <div className="inner block">
                       <label>Task Rubric</label>
                       <textarea className="big-text-field" placeholder="Type the rubric here..."
-                                onChange={this.props.changeInputData.bind(this,'TA_overall_rubric', this.props.index)}
+                                onChange={this.props.changeInputData.bind(this,'TA_overall_rubric', this.props.index, this.props.workflowIndex)}
                                 value={this.props.TaskActivityData.TA_overall_rubric}
                                 ></textarea>
                       </div>
@@ -434,7 +435,7 @@ class TaskDetailsComponent extends React.Component{
                 {inputFieldsView}
                 <div className="section-divider">
                   <div className="inner block" style={{alignContent:'right'}}>
-                    <button type="button" className="divider" onClick={this.props.addFieldButton.bind(this,this.props.index)}><i className="fa fa-check"></i>Add another field</button>
+                    <button type="button" className="divider" onClick={this.props.addFieldButton.bind(this,this.props.index, this.props.workflowIndex)}><i className="fa fa-check"></i>Add another field</button>
 
                     <br />
                     <br />
@@ -456,7 +457,7 @@ class TaskDetailsComponent extends React.Component{
                       <br />
                       <RadioGroup
                         selectedValue={this.props.TaskActivityData.TA_due_type[0]}
-                        onChange={this.props.changeRadioData.bind(this,'TA_due_type', this.props.index)} >
+                        onChange={this.props.changeRadioData.bind(this,'TA_due_type', this.props.index, this.props.workflowIndex)} >
                         <label>
                           <Radio value="duration" />
                           Expire After
@@ -469,7 +470,7 @@ class TaskDetailsComponent extends React.Component{
                           value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
                           min={0}
                           size={6}
-                          onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index)}
+                          onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index, this.props.workflowIndex)}
                           />
                   </div>
 
@@ -477,7 +478,7 @@ class TaskDetailsComponent extends React.Component{
                     <label>Delay before starting task</label>
                     <br />
                     <RadioGroup selectedValue={this.props.TaskActivityData.TA_start_delay != 0 ? true : 0 }
-                                onChange={ this.props.changeRadioData.bind(this, 'TA_start_delay', this.props.index)}
+                                onChange={ this.props.changeRadioData.bind(this, 'TA_start_delay', this.props.index, this.props.workflowIndex)}
                                 >
                       <label><Radio value={0} ></Radio>Start when prior task is complete</label>
                       <label><Radio value={true} ></Radio>Start after prior task ends by</label>
@@ -487,7 +488,7 @@ class TaskDetailsComponent extends React.Component{
                         value={this.props.TaskActivityData.TA_start_delay}
                         min={0}
                         size={6}
-                        onChange={ this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index)
+                        onChange={ this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index, this.props.workflowIndex)
                         }/>
 
                   </div>
@@ -495,7 +496,7 @@ class TaskDetailsComponent extends React.Component{
                   <div className= "inner">
                     <label>Does everyone get the same problem</label> <br />
                     <RadioGroup selectedValue={this.props.TaskActivityData.TA_one_or_separate} onChange={
-                        this.props.changeRadioData.bind(this,'TA_one_or_separate', this.props.index)
+                        this.props.changeRadioData.bind(this,'TA_one_or_separate', this.props.index, this.props.workflowIndex)
                       }>
                       <label><Radio value={false}/> No</label>
                       <label><Radio value={true} /> Yes</label>
@@ -506,7 +507,7 @@ class TaskDetailsComponent extends React.Component{
                   <br />
                   <div className="inner" >
                     <label>What happens when the task ends</label> <br/>
-                    <Dropdown options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index)}
+                    <Dropdown options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index, this.props.workflowIndex)}
                         value={this.props.TaskActivityData.TA_at_duration_end} />
 
                     {whatIfLateView}
@@ -515,7 +516,7 @@ class TaskDetailsComponent extends React.Component{
                     <div className="inner">
                       <label>Award points just for doing the task on time</label>
 
-                      <Checkbox click={this.props.changeSimpleGradeCheck.bind(this, this.props.index)} />
+                      <Checkbox click={this.props.changeSimpleGradeCheck.bind(this, this.props.index, this.props.workflowIndex)} />
                       <br />
                       {simpleGradeOptionsView}
                     </div>
@@ -527,19 +528,19 @@ class TaskDetailsComponent extends React.Component{
                     <br />
                     <div className="inner">
                       <label>Allow a reflection of this task</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this, "TA_allow_reflection", this.props.index)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'}/>
+                      <Checkbox click={this.props.changeDataCheck.bind(this, "TA_allow_reflection", this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'}/>
                     {allowReflectionOptions}
                     </div>
 
                     <div className="inner">
                         <label>Allow an assessment of this task</label>
-                          <Checkbox click={this.props.changeDataCheck.bind(this,'TA_allow_assessment', this.props.index)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'}/>
+                          <Checkbox click={this.props.changeDataCheck.bind(this,'TA_allow_assessment', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'}/>
                         {allowAssesmentOptions}
                     </div>
 
                     <div className="inner">
                       <label>Allow a revision of this task</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,"TA_allow_revisions",this.props.index) }/>
+                      <Checkbox click={this.props.changeDataCheck.bind(this,"TA_allow_revisions",this.props.index, this.props.workflowIndex) }/>
                     </div>
 
                     <br />
@@ -552,21 +553,21 @@ class TaskDetailsComponent extends React.Component{
                         <br />
                         <Dropdown options={assigneeWhoValues}
                                   selectedValue={this.props.TaskActivityData.TA_assignee_constraint[0]}
-                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraint', this.props.index)}/>
+                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraint', this.props.index, this.props.workflowIndex)}/>
                                   <label>Will this be a group task</label>
-                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index)} isClicked = {this.props.TaskActivityData.TA_assignee_constraint[1] == 'group'}/>
+                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraint[1] == 'group'}/>
                     </div>
 
                     <div className="inner">
                       <label>Should this assignee have a specific relation to an assignee of another task in this problem</label>
                       <br />
                       <label>None</label>
-                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none') } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
+                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex) } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
                       <label>New to Problem</label>
-                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance')}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
+                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
                       <label>Same as</label>
                       <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'same_as');
+                          this.props.checkAssigneeConstraints(this.props.index, 'same_as', this.props.workflowIndex);
                           let newAssignee = this.state.ShowAssigneeConstraintSections;
                           newAssignee[0] = !this.state.ShowAssigneeConstraintSections[0];
                           this.setState({ShowAssigneeConstraintSections: newAssignee});
@@ -574,7 +575,7 @@ class TaskDetailsComponent extends React.Component{
                           style={{marginRight: '8px'}}/>
                       <label>In same group as</label>
                       <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'group_with_member')
+                          this.props.checkAssigneeConstraints(this.props.index, 'group_with_member', this.props.workflowIndex)
                           let newAssignee = this.state.ShowAssigneeConstraintSections;
                           newAssignee[1] = !this.state.ShowAssigneeConstraintSections[1];
                           this.setState({ShowAssigneeConstraintSections: newAssignee});
@@ -582,7 +583,7 @@ class TaskDetailsComponent extends React.Component{
                         style={{marginRight: '8px'}}/>
                       <label>Not in</label>
                       <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'not')
+                          this.props.checkAssigneeConstraints(this.props.index, 'not', this.props.workflowIndex)
                           let newAssignee = this.state.ShowAssigneeConstraintSections;
                           newAssignee[2] = !this.state.ShowAssigneeConstraintSections[2];
                           this.setState({ShowAssigneeConstraintSections: newAssignee});
@@ -590,7 +591,7 @@ class TaskDetailsComponent extends React.Component{
                           style={{marginRight: '8px'}} />
                       <label>Choose from </label>
                       <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'choose_from')
+                          this.props.checkAssigneeConstraints(this.props.index, 'choose_from', this.props.workflowIndex)
                           let newAssignee = this.state.ShowAssigneeConstraintSections;
                           newAssignee[3] = !this.state.ShowAssigneeConstraintSections[3];
                           this.setState({ShowAssigneeConstraintSections: newAssignee});
@@ -610,12 +611,12 @@ class TaskDetailsComponent extends React.Component{
 
                     <div className="inner">
                       <label>Does this lead to a new problem?</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_problem', this.props.index)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
+                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_problem', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
                     </div>
 
                     <div className="inner">
                       <label>Does this lead to a new solution?</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_solution', this.props.index)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
+                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_solution', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
                     </div>
 
                   </div>

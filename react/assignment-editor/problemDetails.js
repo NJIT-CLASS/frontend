@@ -25,22 +25,24 @@ class ProblemDetailsComponent extends React.Component{
           <div className='inner'>
             <label>Problem Name</label>
             <br />
-            <input type="text" placeholder="Name" value={this.props.WorkflowDetails.Name} onChange={this.props.changeWorkflowInputData.bind(this, 'Name', this.props.workflowIndex)}/>
+            <input type="text" placeholder="Name" value={this.props.WorkflowDetails.WA_name} onChange={this.props.changeWorkflowInputData.bind(this, 'WA_name', this.props.workflowIndex)}/>
           </div>
 
           <div className='inner'>
             <label>Problem Type</label>
             <Dropdown options={problemTypeValues}
-                      selectedValue={this.props.WorkflowDetails.Type}
-                      onChange={this.props.changeWorkflowDropdownData.bind(this,'Type',this.props.workflowIndex)}
+                      selectedValue={this.props.WorkflowDetails.WA_type}
+                      onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
                       />
           </div>
-
-            <div className='inner'>
-              <label>Problem Documentation </label>
-              <br />
-              <input type="text" placeholder="Documentation" value={this.props.WorkflowDetails.AA_documentation} onChange={this.props.changeWorkflowInputData.bind(this, 'AA_documentation', this.props.workflowIndex)}/>
-            </div>
+          <br />
+          <div className='inner block'>
+            <label>Description</label>
+            <br />
+            <textarea className="big-text-field" placeholder="Description"
+                      value={this.props.WorkflowDetails.WA_documentation}
+                      onChange={this.props.changeWorkflowInputData.bind(this,"WA_documentation",this.props.workflowIndex)} ></textarea>
+          </div>
 
         </div>
         );
@@ -59,25 +61,19 @@ class ProblemDetailsComponent extends React.Component{
                 <label>How many people per group</label>
                 <br />
                 <NumericInput min={1}
-                              value={this.props.WorkflowDetails.GroupSize}
-                              onChange={this.props.changeWorkflowData.bind(this,'GroupSize',this.props.workflowIndex)}/>
+                              value={this.props.WorkflowDetails.WA_default_group_size}
+                              onChange={this.props.changeWorkflowData.bind(this,'WA_default_group_size',this.props.workflowIndex)}/>
               </div>
 
               <div className='inner'>
                 <label>How many problems of this type</label>
                 <br />
                   <NumericInput min={1}
-                                value={this.props.WorkflowDetails.NumberOfSets}
-                                onChange={this.props.changeWorkflowData.bind(this,'NumberOfSets',this.props.workflowIndex)}/>
+                                value={this.props.WorkflowDetails.WA_number_of_sets}
+                                onChange={this.props.changeWorkflowData.bind(this,'WA_number_of_sets',this.props.workflowIndex)}/>
               </div>
 
-              <div className='inner block'>
-                <label>Description</label>
-                <br />
-                <textarea className="big-text-field" placeholder="Description"
-                          value={this.props.WorkflowDetails.Description}
-                          onChange={this.props.changeWorkflowInputData.bind(this,"Description",this.props.workflowIndex)} ></textarea>
-              </div>
+
 
               {/*<div className='inner block'>
                 <label>Custom Grade Weights (Equal Otherwise)</label>

@@ -36,7 +36,7 @@ exports.TASK_TYPE_TEXT = {
     edit:'Edit',
     comment:"Comment",
     revise_and_resubmit: 'Revise and Resubmit',
-    solve_problem: 'Solve problem',
+    solve_problem: 'Solve Problem',
     grade_problem: 'Grade',
     critique:'Critique',
     graded:'Grades',

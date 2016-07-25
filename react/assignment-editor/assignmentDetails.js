@@ -3,6 +3,7 @@ import Dropdown from 'react-dropdown';
 import NumericInput from 'react-numeric-input';
 import Checkbox from '../shared/checkbox';
 
+
 class AssignmentDetailsComponent extends React.Component{
     constructor(props){
       super(props);
@@ -27,7 +28,7 @@ class AssignmentDetailsComponent extends React.Component{
 
       return (
         <div className="section card-1">
-          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> Assignment Parameters</h2>
+          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
               <div className="inner">
@@ -60,6 +61,7 @@ class AssignmentDetailsComponent extends React.Component{
                   min={1}
                   max={100}
                   size={6}
+
                   onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')}
                   />
               </div>

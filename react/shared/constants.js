@@ -22,7 +22,7 @@ export const TASK_TYPE_TEXT = {
     solve_problem: constants.TASK_TYPE_TEXT.solve_problem,
     edit: constants.TASK_TYPE_TEXT.edit,
     comment:constants.TASK_TYPE_TEXT.comment,
-    COMMENT:constants.TASK_TYPE_TEXT.graded,
+    graded:constants.TASK_TYPE_TEXT.graded,
     revise_and_resubmit: constants.TASK_TYPE_TEXT.revise_and_resubmit,
     critique:constants.TASK_TYPE_TEXT.critique,
     dispute:constants.TASK_TYPE_TEXT.dispute,
