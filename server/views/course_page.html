@@ -2,29 +2,37 @@
 <form name="display_course_info" role="form" class="section" method="POST" action="#">
     <h2 class="title"> {{../courseTitle}} - {{Name}} </h2>
     <div class="section-content">
-	
 
-    
+
+
 
 				 <div name="course_page_description">
 				 {{Description}}
 				 </div>
 				 <br>
-				 
+
 					<ul>
 					{{#each members}}
 					<li class="list-group-item">{{FirstName}} {{LastName}}
 					</li>
-					{{/each}}	
-					
-						
+					{{/each}}
 
-		 
+
+
+
 					 </ul>
-					 
+
 		</div>
 </form>
 
-{{/each}}
 
-	      
+{{/each}}
+{{#if admin}}
+  <div>
+    <a href="/asa/{{courseID}}">
+      <button type="button" onClick=>Add an Assignment</button>
+    </a>
+  </div>
+  {{else}}
+  <div></div>
+{{/if}}

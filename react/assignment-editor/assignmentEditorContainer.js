@@ -23,7 +23,7 @@ class AssignmentEditorContainer extends React.Component{
 
 
       //need to add TA_name, TA_documentation, TA_trigger_consolidation_threshold
-      //@auto-fold here
+
       this.createProblemTask = {
         TA_type: TASK_TYPES.CREATE_PROBLEM,
         TA_name: TASK_TYPE_TEXT.create_problem,
@@ -72,7 +72,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.editProblemTask = {
         TA_type: TASK_TYPES.EDIT,
         TA_name: TASK_TYPE_TEXT.edit,
@@ -121,7 +121,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.commmentProblemTask = {
         TA_type: TASK_TYPES.COMMENT,
         TA_name: TASK_TYPE_TEXT.comment,
@@ -170,7 +170,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.solveProblemTask = {
         TA_type: TASK_TYPES.SOLVE_PROBLEM,
         TA_name: TASK_TYPE_TEXT.solve_problem,
@@ -219,7 +219,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.gradeSolutionTask = {
         TA_type: TASK_TYPES.GRADE_PROBLEM,
         TA_name: TASK_TYPE_TEXT.grade_problem,
@@ -268,7 +268,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.critiqueSolutionTask = {
         TA_type: TASK_TYPES.CRITIQUE,
         TA_name: TASK_TYPE_TEXT.critique,
@@ -317,7 +317,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.needsConsolidationTask = {
         TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
         TA_name: TASK_TYPE_TEXT.needs_consolidation,
@@ -366,7 +366,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.consolidationTask = {
         TA_type: TASK_TYPES.CONSOLIDATION,
         TA_name: TASK_TYPE_TEXT.consolidation,
@@ -416,7 +416,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.disputeTask = {
         TA_type: TASK_TYPES.DISPUTE,
         TA_name: TASK_TYPE_TEXT.dispute,
@@ -465,7 +465,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.resolveDisputeTask = {
         TA_type: TASK_TYPES.RESOLVE_DISPUTE,
         TA_name: TASK_TYPE_TEXT.resolve_dispute,
@@ -515,7 +515,7 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
-      //@auto-fold here
+
       this.completeTask = {
         TA_type: TASK_TYPES.COMPLETED,
         TA_name: TASK_TYPE_TEXT.completed,
@@ -554,7 +554,7 @@ class AssignmentEditorContainer extends React.Component{
 
       //change Description to documentation
       //change all to WA_* format
-      //@auto-fold here
+
       this.blankWorkflow={
         WA_name:'Problem',
         WA_type:'',
@@ -566,7 +566,7 @@ class AssignmentEditorContainer extends React.Component{
         WorkflowStructure: cloneDeep(this.root)
       };
 
-      //@auto-fold here
+
       this.state = {
           PCounter: 0, //this will hold the second digit of the VIS_ID of the Problem tasks, first digit is used as index of array
           SCounter: 0, //this will hold the second digit of the VIS_ID of the Solve tasks, first digit is used as index of array
@@ -589,9 +589,14 @@ class AssignmentEditorContainer extends React.Component{
         };
       }
 
+    componentWillMount(){
+      const options = {
+        uri: this.props.apiUrl
+      };
+    }
 
     ////////////// Task Activity change methods //////////////////////
-    //@auto-fold here
+
     addFieldButton(index, workflowIndex){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields] = {
@@ -618,7 +623,7 @@ class AssignmentEditorContainer extends React.Component{
       })
     }
 
-    //@auto-fold here
+
     addReflection( index, workflowIndex){ // add edit to slot 1 of 4 for nodes
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow.push(cloneDeep(this.editProblemTask));
@@ -639,7 +644,7 @@ class AssignmentEditorContainer extends React.Component{
 
     }
 
-    //@auto-fold here
+
     addAssessment(index, workflowIndex){
       //add a critique task to the tree-array; possibly consolidate and needs consol.
       let newData = this.state.WorkflowDetails;
@@ -664,7 +669,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     addCreate(index, workflowIndex){
       let newData = this.state.WorkflowDetails;
 
@@ -689,7 +694,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     addSolve(index, workflowIndex){
         let newData = this.state.WorkflowDetails;
         let newSolve = cloneDeep(this.solveProblemTask);
@@ -718,7 +723,7 @@ class AssignmentEditorContainer extends React.Component{
         });
     }
 
-    //@auto-fold here
+
     addConsolidationToReflect(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
 
@@ -762,7 +767,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     addConsolidationToAssess(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
 
@@ -807,7 +812,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     addDisputeToReflect(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
 
@@ -835,7 +840,7 @@ class AssignmentEditorContainer extends React.Component{
 
     }
 
-    //@auto-fold here
+
     addDisputeToAssess(parentIndex, workflowIndex){ //all diputes and consolidates need another children[0] from parent Index
       let newData = this.state.WorkflowDetails;
 
@@ -870,7 +875,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     removeReflect(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
       let x = this;
@@ -894,7 +899,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     removeAssess(parentIndex, workflowIndex){
       let x = this;
       let newData = this.state.WorkflowDetails;
@@ -920,7 +925,7 @@ class AssignmentEditorContainer extends React.Component{
 
     }
 
-    //@auto-fold here
+
     removeCreate(parentIndex , workflowIndex){
       let x = this;
       let newData = this.state.WorkflowDetails;
@@ -943,7 +948,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     removeSolve(parentIndex , workflowIndex){
       let x = this;
       let newData = this.state.WorkflowDetails;
@@ -964,7 +969,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-    //@auto-fold here
+
     hasDispute(consoleNode, workflowIndex){
       if(consoleNode.children[0].children[0] !== undefined && this.state.WorkflowDetails[workflowIndex].Workflow[consoleNode.children[0].children[0].model.id].TA_type == TASK_TYPES.DISPUTE){
 
@@ -976,7 +981,7 @@ class AssignmentEditorContainer extends React.Component{
       }
     }
 
-    //@auto-fold here
+
     removeConsolidationfromReflect(parentIndex , workflowIndex){
       let newData = this.state.WorkflowDetails;
       var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node){
@@ -1043,7 +1048,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     removeDisputeFromReflect(parentIndex , workflowIndex){
       let newData = this.state.WorkflowDetails;
       let x =this; //context preserving variable
@@ -1086,7 +1091,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     removeConsolidationfromAssess(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
       let x = this;
@@ -1155,7 +1160,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     removeDisputeFromAssess(parentIndex, workflowIndex){
       let newData = this.state.WorkflowDetails;
       let x = this;
@@ -1196,7 +1201,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     changeReflection(parentIndex, workflowIndex, value){
 
       let newData = this.state.WorkflowDetails;
@@ -1219,7 +1224,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     changeAssessment(parentIndex, workflowIndex, value){
       let newData = this.state.WorkflowDetails;
 
@@ -1240,7 +1245,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     getReflectIndex(parentIndex, workflowIndex){
       var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node){
         return node.model.id == parentIndex;
@@ -1254,7 +1259,7 @@ class AssignmentEditorContainer extends React.Component{
       }
     }
 
-    //@auto-fold here
+
     getAssessIndex(parentIndex, workflowIndex){
       var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node){
         return node.model.id == parentIndex;
@@ -1268,7 +1273,7 @@ class AssignmentEditorContainer extends React.Component{
       }
     }
 
-    //@auto-fold here
+
     getReflectNumberofParticipants(index, workflowIndex){
       let x = this; //root.first chnages this context, so need to save it here
 
@@ -1279,7 +1284,7 @@ class AssignmentEditorContainer extends React.Component{
       return this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant;
     }
 
-    //@auto-fold here
+
     setReflectNumberofParticipants(index, workflowIndex, value){
       let newData = this.state.WorkflowDetails;
       let x = this; //root.first chnages this context, so need to save it here
@@ -1297,7 +1302,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     getAssessNumberofParticipants(index, workflowIndex){
       let x = this;
 
@@ -1308,7 +1313,7 @@ class AssignmentEditorContainer extends React.Component{
       return this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant;
     }
 
-    //@auto-fold here
+
     setAssessNumberofParticipants(index, workflowIndex, value){
       let newData = this.state.WorkflowDetails;
       let x = this; //root.first chnages this context, so need to save it here
@@ -1327,7 +1332,7 @@ class AssignmentEditorContainer extends React.Component{
     }
 
 
-    //@auto-fold here
+
     changeDataCheck(stateField, index, workflowIndex, firstIndex) { //+
       let newData = this.state.WorkflowDetails;
 
@@ -1453,7 +1458,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-    //@auto-fold here
+
     changeDropdownData(stateField,index, workflowIndex, e){
       let newData = this.state.WorkflowDetails;
       if(stateField == 'TA_allow_reflection'){
@@ -1492,7 +1497,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
 
     }
-    //@auto-fold here
+
     checkAssigneeConstraints(index, constraint, workflowIndex){
       let newData = this.state.WorkflowDetails;
 
@@ -1517,7 +1522,7 @@ class AssignmentEditorContainer extends React.Component{
       })
     }
 
-    //@auto-fold here
+
     checkAssigneeConstraintTasks(index, constraint, referId, workflowIndex){
       let newData = this.state.WorkflowDetails;
       let indexInArray = newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint].indexOf(referId);
@@ -1531,7 +1536,7 @@ class AssignmentEditorContainer extends React.Component{
       this.setState({WorkflowDetails: newData});
     }
 
-//@auto-fold here
+
     getAlreadyCreatedTasks(currTaskIndex, workflowIndex){
       let tasksList = [];
 
@@ -1548,7 +1553,7 @@ class AssignmentEditorContainer extends React.Component{
       return tasksList;
     }
 
-//@auto-fold here
+
     changeDropdownFieldData(stateField,index,field, workflowIndex, e){
       let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = e.value;
@@ -1558,7 +1563,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeFieldName(index, field, workflowIndex, e){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[index].TA_fields[field].title= e.target.value;
@@ -1568,7 +1573,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeFieldCheck(stateField,index,field, workflowIndex){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_fields[field][stateField] ? false : true;
@@ -1577,14 +1582,14 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeFileUpload(taskIndex,firstIndex,secondIndex, workflowIndex,val){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[taskIndex].TA_file_upload[firstIndex][secondIndex] = val;
       this.setState({WorkflowDetails: newData});
     }
 
-//@auto-fold here
+
     changeInputData(stateField,index, workflowIndex, e){
       if(stateField == 'TA_display_name'){
         if(e.target.value.length > 50){
@@ -1598,7 +1603,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeInputFieldData(stateField, index, field, workflowIndex, e){
       let newData = this.state.WorkflowDetails;
       if(stateField == 'default_content'){
@@ -1612,7 +1617,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeNumericData(stateField, index, workflowIndex, value){
       let newData = this.state.WorkflowDetails;
       if(stateField == 'TA_due_type'){
@@ -1626,7 +1631,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeNumericFieldData(stateField, index, field, workflowIndex, value){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = value;
@@ -1634,7 +1639,7 @@ class AssignmentEditorContainer extends React.Component{
         WorkflowDetails: newData
       });
     }
-//@auto-fold here
+
     changeRadioData(stateField, index, workflowIndex, val){
       let newData = this.state.WorkflowDetails;
       if(stateField == 'TA_due_type'){
@@ -1648,7 +1653,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeSimpleGradeCheck(index, workflowIndex){
       let newData = this.state.WorkflowDetails;
       let temp = null;
@@ -1666,7 +1671,7 @@ class AssignmentEditorContainer extends React.Component{
       });
     }
 
-//@auto-fold here
+
     changeTASimpleGradeCheck(index, workflowIndex){
 
       let newData = this.state.WorkflowDetails;
@@ -1684,7 +1689,7 @@ class AssignmentEditorContainer extends React.Component{
       })
     }
 
-//@auto-fold here
+
     changeTASimpleGradePoints(index, workflowIndex,val){
         let newData = this.state.WorkflowDetails;
         if(val == 0){
@@ -1766,7 +1771,7 @@ class AssignmentEditorContainer extends React.Component{
     this.setState({CurrentWorkflowIndex: value});
   }
 
-  //@auto-fold here
+
   changeWorkflowData(stateField,workflowIndex, value){
     let newWorkflowDetails = this.state.WorkflowDetails;
     newWorkflowDetails[workflowIndex][stateField] = value;
@@ -1775,7 +1780,7 @@ class AssignmentEditorContainer extends React.Component{
     });
   }
 
-  //@auto-fold here
+
   changeWorkflowInputData(stateField,workflowIndex, e){
     if(stateField == 'WA_name'){
       if(e.target.value.length > 30){
@@ -1789,7 +1794,7 @@ class AssignmentEditorContainer extends React.Component{
     });
   }
 
-  //@auto-fold here
+
   changeWorkflowDropdownData(stateField, workflowIndex, e){
     let newWorkflowDetails = this.state.WorkflowDetails;
     newWorkflowDetails[workflowIndex][stateField] = e.value;
@@ -1799,6 +1804,7 @@ class AssignmentEditorContainer extends React.Component{
   }
 
   render(){
+
       let tabListAr = [];
       let tabPanelAr = [];
       let workflowsView = null;
@@ -1930,10 +1936,7 @@ class AssignmentEditorContainer extends React.Component{
 
       return (
         <div>
-
-
-
-
+{this.props.CourseID}- {this.props.UserID}-{this.props.apiUrl}
           <div className='placeholder'></div>
           <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
                                       changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}

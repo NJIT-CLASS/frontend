@@ -38,7 +38,8 @@ exports.get = (req, res) => {
             res.render('course_page', {
                 sectionList: sectionList,
                 courseID: req.params.Id,
-                courseTitle: body.Course.Title
+                admin: (req.App.user.type == "teacher" ||  req.App.user.type == "instructor") ? true : false,
+                courseTitle: body.Course.Name
             });
         });
     });

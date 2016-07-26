@@ -52,7 +52,8 @@ const assignmentEditorContainerEl = document.getElementById('assignment-editor-c
 
 if(assignmentEditorContainerEl){
   const userId = assignmentEditorContainerEl.dataset.userId;
+  const courseId = assignmentEditorContainerEl.dataset.courseId;
   const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
 
-  ReactDOM.render(<AssignmentEditorContainer UserID={userId} apiUrl={apiUrl}/>,assignmentEditorContainerEl);
+  ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl}/>,assignmentEditorContainerEl);
 }

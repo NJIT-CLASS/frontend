@@ -30,7 +30,8 @@ const pages = [
     'view-your-grade',
     'completed-task',
     'consolidate-the-grades',
-    'assignment-editor'
+    'assignment-editor',
+    'assign-to-section'
 ];
 
 var pageConfigs = [];

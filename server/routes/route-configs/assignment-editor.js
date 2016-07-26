@@ -1,7 +1,7 @@
 const handler = require('../route-handlers/assignment-editor');
 
 module.exports = {
-    route: '/asa',
+    route: '/asa/:courseId', //will also need userId
     title: 'Assignment Editor',
     routeHandler: handler,
     access: {
