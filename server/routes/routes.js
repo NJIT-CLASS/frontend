@@ -31,7 +31,8 @@ const pages = [
     'completed-task',
     'consolidate-the-grades',
     'assignment-editor',
-    'assign-to-section'
+    'assign-to-section',
+    'course-assignments'
 ];
 
 var pageConfigs = [];

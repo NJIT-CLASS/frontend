@@ -27,11 +27,51 @@
 
 
 {{/each}}
+
+<div class="section">
+    <h2 class="title">Course Assignments</h2>
+    <div class="section-content">
+
+
+
+		<div class="col-xs-6">
+
+
+
+        		<ul>
+
+				  {{#each assignmentsList}}
+
+					<li class="list-group-item">
+					<a href="/assign-to-section/{{AssignmentID}}?courseId={{CourseID}}">{{Name}}</a>
+				    </li>
+
+                   {{/each}}
+
+
+
+                </ul>
+
+        </div>
+
+
+
+    </div>
+</div>
+
 {{#if admin}}
-  <div>
-    <a href="/asa/{{courseID}}">
-      <button type="button" onClick=>Add an Assignment</button>
-    </a>
+  <div style="display:block">
+    <div>
+      <a href="/asa/{{courseID}}">
+        <button type="button" onClick=>Add an Assignment</button>
+      </a>
+    </div>
+    <br />
+    <!-- <div >
+      <a href="/course-assignments/{{courseID}}">
+        <button type="button" onClick=>View Assignments</button>
+      </a>
+    </div> -->
   </div>
   {{else}}
   <div></div>

@@ -5,6 +5,5 @@ set dbHost=localhost
 set database=pla
 set serverPort=3000
 redis-server
-start runFront.bat
 cd backend
 npm start

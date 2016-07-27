@@ -2,6 +2,7 @@
 // will be submitted from this component. This component has no views, it only contains data and components.
 
 import React from 'react';
+import request from 'request';
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
@@ -571,17 +572,20 @@ class AssignmentEditorContainer extends React.Component{
           PCounter: 0, //this will hold the second digit of the VIS_ID of the Problem tasks, first digit is used as index of array
           SCounter: 0, //this will hold the second digit of the VIS_ID of the Solve tasks, first digit is used as index of array
           CurrentWorkflowIndex: 0,
+          SubmitSuccess: false,
+          SaveSuccess: false,
+          SubmitError: false,
           Workflow: standardWorkflow,
           AssignmentActivityData: {
-            AA_userID: this.props.userId,
+            AA_userID: parseInt(this.props.UserID),
             AA_name:'Assignment',
-            AA_course:'',
+            AA_course:parseInt(this.props.CourseID),
             AA_instructions:'',
             AA_type:'',
             AA_display_name: '',
-            AA_section:[],
-            AA_semester: [],
-            AA_grade_distribution: [],
+            AA_section: null,
+            AA_semester: null,
+            AA_grade_distribution: null,
             AA_documentation: '',
             NumberofWorkflows: 1
           },
@@ -589,10 +593,33 @@ class AssignmentEditorContainer extends React.Component{
         };
       }
 
-    componentWillMount(){
+
+    onSubmit(){
+      console.log('clicked');
+
+      let sendData = cloneDeep(this.state.AssignmentActivityData);
+      sendData.WorkflowActivity = this.state.WorkflowDetails;
+        console.log(typeof(sendData.AA_course) === 'number')
       const options = {
-        uri: this.props.apiUrl
-      };
+          method: 'POST',
+          uri: this.props.apiUrl + '/api/assignment/create',
+          body: {
+              assignment: sendData
+          },
+          json: true
+        };
+
+        request(options, (err, res, body) => {
+          console.log(res, err)
+          if(err == null && res.statusCode == 200 ){
+            console.log('Submitted Successfully');
+            this.setState({SubmitSuccess: true});
+          }
+          else{
+            console.log('Submit failed');
+            this.setState({SubmitError: true});
+          }
+        });
     }
 
     ////////////// Task Activity change methods //////////////////////
@@ -1804,21 +1831,85 @@ class AssignmentEditorContainer extends React.Component{
   }
 
   render(){
+    let infoMessage = null;
+    console.log(typeof(this.props.UserID) === 'number')
+    console.log(typeof(this.props.CourseID) === 'number')
 
-      let tabListAr = [];
-      let tabPanelAr = [];
-      let workflowsView = null;
+    if(this.state.SubmitSuccess){
+      infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully created assignment! </span>);
+    }
+    if(this.state.SubmitError){
+      infoMessage = (<span onClick={() => {this.setState({SubmitError: false})}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+    }
+    let tabListAr = [];
+    let tabPanelAr = [];
+    let workflowsView = null;
 
-      if(this.state.WorkflowDetails.length == 1){
-        let tasksView = this.state.WorkflowDetails[0].Workflow.map( function(task, index){
+    if(this.state.WorkflowDetails.length == 1){
+      let tasksView = this.state.WorkflowDetails[0].Workflow.map( function(task, index){
+        // will probably need to move this into problemDetails.js to support
+        // multiple workflows
+        if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
+          return null;
+        }
+        if(Object.keys(task).length !== 0 ){
+        return (<TaskDetailsComponent key={index} index={index}
+                                      workflowIndex={0}
+                                      TaskActivityData={task}
+                                      isOpen={false}
+                                      changeNumericData={this.changeNumericData.bind(this)}
+                                      changeInputData={this.changeInputData.bind(this)}
+                                      changeDropdownData={this.changeDropdownData.bind(this)}
+                                      changeTASimpleGradeCheck={this.changeTASimpleGradeCheck.bind(this)}
+                                      changeTASimpleGradePoints={this.changeTASimpleGradePoints.bind(this)}
+                                      changeInputFieldData={this.changeInputFieldData.bind(this)}
+                                      changeNumericFieldData={this.changeNumericFieldData.bind(this)}
+                                      changeDropdownFieldData={this.changeDropdownFieldData.bind(this)}
+                                      changeFieldName={this.changeFieldName.bind(this)}
+                                      changeFieldCheck={this.changeFieldCheck.bind(this)}
+                                      changeFileUpload={this.changeFileUpload.bind(this)}
+                                      changeDataCheck={this.changeDataCheck.bind(this)}
+                                      addFieldButton={this.addFieldButton.bind(this)}
+                                      changeRadioData={this.changeRadioData.bind(this)}
+                                      changeSimpleGradeCheck={this.changeSimpleGradeCheck.bind(this)}
+                                      getReflectNumberofParticipants = {this.getReflectNumberofParticipants.bind(this)}
+                                      setReflectNumberofParticipants = {this.setReflectNumberofParticipants.bind(this)}
+                                      getAssessNumberofParticipants = {this.getAssessNumberofParticipants.bind(this)}
+                                      setAssessNumberofParticipants = {this.setAssessNumberofParticipants.bind(this)}
+                                      checkAssigneeConstraints = {this.checkAssigneeConstraints.bind(this)}
+                                      checkAssigneeConstraintTasks = {this.checkAssigneeConstraintTasks.bind(this)}
+                                      getAlreadyCreatedTasks = {this.getAlreadyCreatedTasks.bind(this)}
+                              />);
+          }
+          else{
+            return null;
+          }
+      },this);
+
+      workflowsView = (
+        <div>
+          <ProblemDetailsComponent workflowIndex={0}
+                                   WorkflowDetails={this.state.WorkflowDetails[0]}
+                                   NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
+                                   changeWorkflowData= {this.changeWorkflowData.bind(this)}
+                                   changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
+                                   changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
+
+                                   />
+          {tasksView}
+         </div>)
+    }
+    else{
+      this.state.WorkflowDetails.forEach(function(workflow,index){
+        let tasksView = workflow.Workflow.map( function(task, taskIndex){
           // will probably need to move this into problemDetails.js to support
           // multiple workflows
           if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
             return null;
           }
           if(Object.keys(task).length !== 0 ){
-          return (<TaskDetailsComponent key={index} index={index}
-                                        workflowIndex={0}
+          return (<TaskDetailsComponent key={index + "-" + taskIndex} index={taskIndex}
+                                        workflowIndex={index}
                                         TaskActivityData={task}
                                         isOpen={false}
                                         changeNumericData={this.changeNumericData.bind(this)}
@@ -1850,105 +1941,50 @@ class AssignmentEditorContainer extends React.Component{
             }
         },this);
 
-        workflowsView = (
-          <div>
-            <ProblemDetailsComponent workflowIndex={0}
-                                     WorkflowDetails={this.state.WorkflowDetails[0]}
-                                     NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
-                                     changeWorkflowData= {this.changeWorkflowData.bind(this)}
-                                     changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
-                                     changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
+          tabListAr.push(<Tab>{workflow.WA_name}</Tab>);
+          tabPanelAr.push(
+            <TabPanel>
+              <div className="placeholder">
+              <ProblemDetailsComponent workflowIndex={index}
+                                       WorkflowDetails={workflow}
+                                       NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
+                                       changeWorkflowData= {this.changeWorkflowData.bind(this)}
+                                       changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
+                                       changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)} />
+               <br />
+               <br />
+               {tasksView}
+              </div>
+            </TabPanel>);
+      },this);
 
-                                     />
-            {tasksView}
-           </div>)
-      }
-      else{
-        this.state.WorkflowDetails.forEach(function(workflow,index){
-          let tasksView = workflow.Workflow.map( function(task, taskIndex){
-            // will probably need to move this into problemDetails.js to support
-            // multiple workflows
-            if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
-              return null;
-            }
-            if(Object.keys(task).length !== 0 ){
-            return (<TaskDetailsComponent key={index + "-" + taskIndex} index={taskIndex}
-                                          workflowIndex={index}
-                                          TaskActivityData={task}
-                                          isOpen={false}
-                                          changeNumericData={this.changeNumericData.bind(this)}
-                                          changeInputData={this.changeInputData.bind(this)}
-                                          changeDropdownData={this.changeDropdownData.bind(this)}
-                                          changeTASimpleGradeCheck={this.changeTASimpleGradeCheck.bind(this)}
-                                          changeTASimpleGradePoints={this.changeTASimpleGradePoints.bind(this)}
-                                          changeInputFieldData={this.changeInputFieldData.bind(this)}
-                                          changeNumericFieldData={this.changeNumericFieldData.bind(this)}
-                                          changeDropdownFieldData={this.changeDropdownFieldData.bind(this)}
-                                          changeFieldName={this.changeFieldName.bind(this)}
-                                          changeFieldCheck={this.changeFieldCheck.bind(this)}
-                                          changeFileUpload={this.changeFileUpload.bind(this)}
-                                          changeDataCheck={this.changeDataCheck.bind(this)}
-                                          addFieldButton={this.addFieldButton.bind(this)}
-                                          changeRadioData={this.changeRadioData.bind(this)}
-                                          changeSimpleGradeCheck={this.changeSimpleGradeCheck.bind(this)}
-                                          getReflectNumberofParticipants = {this.getReflectNumberofParticipants.bind(this)}
-                                          setReflectNumberofParticipants = {this.setReflectNumberofParticipants.bind(this)}
-                                          getAssessNumberofParticipants = {this.getAssessNumberofParticipants.bind(this)}
-                                          setAssessNumberofParticipants = {this.setAssessNumberofParticipants.bind(this)}
-                                          checkAssigneeConstraints = {this.checkAssigneeConstraints.bind(this)}
-                                          checkAssigneeConstraintTasks = {this.checkAssigneeConstraintTasks.bind(this)}
-                                          getAlreadyCreatedTasks = {this.getAlreadyCreatedTasks.bind(this)}
-                                  />);
-              }
-              else{
-                return null;
-              }
-          },this);
-
-            tabListAr.push(<Tab>{workflow.WA_name}</Tab>);
-            tabPanelAr.push(
-              <TabPanel>
-                <div className="placeholder">
-                <ProblemDetailsComponent workflowIndex={index}
-                                         WorkflowDetails={workflow}
-                                         NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
-                                         changeWorkflowData= {this.changeWorkflowData.bind(this)}
-                                         changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
-                                         changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)} />
-                 <br />
-                 <br />
-                 {tasksView}
-                </div>
-              </TabPanel>);
-        },this);
-
-        workflowsView =  (<Tabs onSelect={this.handleSelect.bind(this)}
-              selectedIndex={this.state.CurrentWorkflowIndex} >
-          <TabList className="big-text">
-            {tabListAr}
-          </TabList>
-          {tabPanelAr}
-        </Tabs>);
-      }
+      workflowsView =  (<Tabs onSelect={this.handleSelect.bind(this)}
+            selectedIndex={this.state.CurrentWorkflowIndex} >
+        <TabList className="big-text">
+          {tabListAr}
+        </TabList>
+        {tabPanelAr}
+      </Tabs>);
+    }
 
 
 
 
       return (
         <div>
-{this.props.CourseID}- {this.props.UserID}-{this.props.apiUrl}
+          {infoMessage}
           <div className='placeholder'></div>
           <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
+                                      Courses={this.state.Courses}
                                       changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
                                       changeAssignmentInput={this.changeAssignmentInput.bind(this)}
                                       changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
-
                                           />
           <br />
           {workflowsView}
           <br />
 
-
+          <button type="button" className="divider"onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
         </div>
       );
     }

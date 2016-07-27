@@ -299,10 +299,10 @@ class SuperComponent extends React.Component {
           }
 
           if(this.state.SaveSuccess){
-            infoMessage = (<span style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}>Your work has been saved and will be loaded when you return </span>);
+            infoMessage = (<span onClick={()=> {this.setState({SaveSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}>Your work has been saved and will be loaded when you return </span>);
           }
           if(this.state.SubmitSuccess){
-            infoMessage = (<span style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted for grading! </span>);
+            infoMessage = (<span  onClick={()=> {this.setState({SubmitSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted for grading! </span>);
           }
 
           if(this.state.TaskStatus != "Complete"){

@@ -2,6 +2,10 @@ const async = require('async');
 
 exports.get = (req, res) => {
     req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{
+      let assignmentsArray = [];
+    req.App.api.get('/getAssignments/' + req.params.Id, (err, statusCode, assignmentsBody) => {
+
+        assignmentsArray =  assignmentsBody.Assignments;
         var sectionList = [];
         var apiCalls = {};
         console.log(body);
@@ -38,9 +42,11 @@ exports.get = (req, res) => {
             res.render('course_page', {
                 sectionList: sectionList,
                 courseID: req.params.Id,
+                assignmentsList: assignmentsArray,
                 admin: (req.App.user.type == "teacher" ||  req.App.user.type == "instructor") ? true : false,
                 courseTitle: body.Course.Name
             });
         });
+      });
     });
 };

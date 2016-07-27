@@ -99,7 +99,7 @@ class TemplateContainer extends React.Component {
             TaskActivityID: body.taskActivityID,
             CourseName: body.courseName,
             CourseNumber: body.courseNumber,
-            AssignmentTitle: body.assignmentTitle,
+            AssignmentTitle: body.assignmentName,
             AssignmentID: body.assignmentID,
             AssignmentDescription: body.assignmentDescription,
             TaskActivityType: body.taskActivityType,

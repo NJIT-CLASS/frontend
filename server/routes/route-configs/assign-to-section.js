@@ -1,7 +1,7 @@
 const handler = require('../route-handlers/assign-to-section');
 
 module.exports = {
-    route: '/assign-to-section/:userId',
+    route: '/assign-to-section/:assignmentId',
     title: 'Assign to Section',
     routeHandler: handler,
     access: {

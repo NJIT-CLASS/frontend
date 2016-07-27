@@ -48,13 +48,16 @@ button {
     outline: none;
   }*/
 
-.tab {
-  border-style: none;
-  border: hidden;
-  width: 100%;
-  border: 0;
-}
+  .tab{
+    border-style: none;
+    background-color: #ffffff;
+    border: hidden;
+    width: 40%;
 
+    .children{
+      border-style: none;
+    }
+  }
 
 
 .invisible{

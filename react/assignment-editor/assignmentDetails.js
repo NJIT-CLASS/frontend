@@ -39,11 +39,6 @@ class AssignmentDetailsComponent extends React.Component{
                   ></input>
               </div>
 
-              <div className="inner">
-                <label>Course</label>
-                <Dropdown options={courseList} selectedValue={this.props.AssignmentActivityData.AA_course}
-                          onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_course')}/>
-              </div>
 
               <div className="inner">
                 <label>Assignment Type</label>

@@ -42,7 +42,6 @@ class TaskDetailsComponent extends React.Component{
       let style={marginRight: "10px",
                 marginLeft:'10px'};
       let instyle = {display: "inline-block"};
-
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
@@ -391,6 +390,7 @@ class TaskDetailsComponent extends React.Component{
 
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
+        
         <div className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
                                                                  NewTask: false});}} >{title}</h2>

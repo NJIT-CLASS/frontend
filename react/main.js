@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import ClassPageContainer from './shared/class-page-container';
-
 import AssignmentContainer from './create-assignment/assignment-container';
 import CourseContainer from './create-course/course-container';
 import TranslationContainer from './translation/translation-container';
 import TemplateContainer from './task-template/TemplateContainer';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
+import AssignToSectionContainer from './assign-to-section/AssigntoSection';
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 
@@ -56,4 +56,14 @@ if(assignmentEditorContainerEl){
   const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
 
   ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl}/>,assignmentEditorContainerEl);
+}
+const assignToSectionContainerEl = document.getElementById('assign-to-section-container');
+
+if(assignToSectionContainerEl){
+  const userId = assignToSectionContainerEl.dataset.userId;
+  const courseId = assignToSectionContainerEl.dataset.courseId;
+  const assignmentId = assignToSectionContainerEl.dataset.assignmentId;
+  const apiUrl = assignToSectionContainerEl.dataset.apiUrl;
+
+  ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl}/>,assignToSectionContainerEl);
 }
