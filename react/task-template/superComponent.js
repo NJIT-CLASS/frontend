@@ -220,6 +220,7 @@ class SuperComponent extends React.Component {
     }
 
     handleContentChange(index,event) {
+
       //updates task data with new user input in grading fields
       if(this.state.TaskActivityFields[index] != null && this.state.TaskActivityFields[index].field_type == "numeric"){
           if(isNaN(event.target.value)){
@@ -229,7 +230,9 @@ class SuperComponent extends React.Component {
               return;
           }
         }
-
+      if(typeof(event.target.value) === 'string' && event.target.value.length > 45000){
+        return;
+      }
       let newTaskData = this.state.TaskData;
       newTaskData[index][0] = event.target.value;
       this.setState({
@@ -238,6 +241,9 @@ class SuperComponent extends React.Component {
       }
 
       handleJustificationChange(index,event) {
+        if(event.target.value.length > 45000){
+          return;
+        }
         //updates task data with new user input in justification fields
         let newTaskData = this.state.TaskData;
         newTaskData[index][1] = event.target.value;

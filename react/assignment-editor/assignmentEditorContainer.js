@@ -9,6 +9,7 @@ import ProblemDetailsComponent from './problemDetails';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import {cloneDeep} from 'lodash';
 var TreeModel = require('tree-model');
+import ModalInfo from '../assignment-records/info-modal';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 
 
@@ -1592,6 +1593,9 @@ class AssignmentEditorContainer extends React.Component{
 
 
     changeFieldName(index, field, workflowIndex, e){
+      if(e.target.value > 1000){
+        return;
+      }
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[index].TA_fields[field].title= e.target.value;
       newData[workflowIndex].Workflow[index].TA_fields.field_titles[field] = e.target.value;
@@ -1618,6 +1622,9 @@ class AssignmentEditorContainer extends React.Component{
 
 
     changeInputData(stateField,index, workflowIndex, e){
+      if(e.target.value.length > 45000){
+        return;
+      }
       if(stateField == 'TA_display_name'){
         if(e.target.value.length > 50){
           return;
@@ -1632,6 +1639,9 @@ class AssignmentEditorContainer extends React.Component{
 
 
     changeInputFieldData(stateField, index, field, workflowIndex, e){
+      if(e.target.value.length > 45000){
+        return;
+      }
       let newData = this.state.WorkflowDetails;
       if(stateField == 'default_content'){
         newData[workflowIndex].Workflow[index].TA_fields[field][stateField][0] = e.target.value;
@@ -1740,6 +1750,9 @@ class AssignmentEditorContainer extends React.Component{
 /////////////   Assignment Details Functions  //////////////////////////////////
 
     changeAssignmentInput(fieldName, event){
+      if(event.target.value.length > 45000){
+        return;
+      }
       if(fieldName == 'AA_name'){
         if(event.target.value.length > 255){
           return;
@@ -1769,6 +1782,9 @@ class AssignmentEditorContainer extends React.Component{
         }
         // uncomment this only when multiple workflows are properly handled !
         if(fieldName == 'NumberofWorkflows'){
+          if(value>100){
+            return;
+          }
           let difference = this.state.AssignmentActivityData.NumberofWorkflows - value;
           console.log(difference);
           if(difference > 0){
@@ -1809,6 +1825,9 @@ class AssignmentEditorContainer extends React.Component{
 
 
   changeWorkflowInputData(stateField,workflowIndex, e){
+    if(e.target.value.length > 45000){
+      return;
+    }
     if(stateField == 'WA_name'){
       if(e.target.value.length > 30){
         return;
@@ -1832,8 +1851,6 @@ class AssignmentEditorContainer extends React.Component{
 
   render(){
     let infoMessage = null;
-    console.log(typeof(this.props.UserID) === 'number')
-    console.log(typeof(this.props.CourseID) === 'number')
 
     if(this.state.SubmitSuccess){
       infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully created assignment! </span>);

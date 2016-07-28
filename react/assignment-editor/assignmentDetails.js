@@ -27,7 +27,7 @@ class AssignmentDetailsComponent extends React.Component{
 
 
       return (
-        <div className="section card-1">
+        <div className="section">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">

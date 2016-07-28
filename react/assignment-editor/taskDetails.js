@@ -367,7 +367,7 @@ class TaskDetailsComponent extends React.Component{
                   <div className="inner block">
                     <label>Field Rubric</label>
                     <textarea className="big-text-field" placeholder="Type the rubric here..."
-                      onChange={this.props.changeInputFieldData.bind(this,this.props.index, index, this.props.workflowIndex)}
+                      onChange={this.props.changeInputFieldData.bind(this,'rubric',this.props.index, index, this.props.workflowIndex)}
                       value={this.props.TaskActivityData.TA_fields[index].rubric}
                       ></textarea>
                   </div>
@@ -390,8 +390,8 @@ class TaskDetailsComponent extends React.Component{
 
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
-        
-        <div className="section card-1">
+
+        <div className="section">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
                                                                  NewTask: false});}} >{title}</h2>
               <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>

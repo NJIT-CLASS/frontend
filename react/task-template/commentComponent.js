@@ -19,9 +19,9 @@ class CommentComponent extends React.Component{
 
   render(){
     return (  <div className="comment animate-fast fadeInUp">
-        <div className="title">{this.state.Comment.Author}    <div className="timestamp">{this.state.Comment.Timestamp}</div> </div>
+        <div className="title">{this.props.Comment.Author}    <div className="timestamp">{this.props.Comment.Timestamp}</div> </div>
 
-        <div className="regular-text comtext">{this.state.Comment.Content}</div>
+        <div className="regular-text comtext">{this.props.Comment.Content}</div>
       </div>);
   }
 

@@ -271,9 +271,9 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder"></div>
-                <CommentComponent />
-                <CommentComponent />
-                <CommentComponent />
+                <CommentComponent Comment={{Author:'User1', Timestamp:'May 6, 2013 9:43am' ,Content: 'I really liked your problem. It was very intriguing.'}}/>
+                <CommentComponent Comment={{Author:'User2', Timestamp:'May 6, 2013 11:09am' ,Content: 'I agree. I would have never thought of this.'}}/>
+                <CommentComponent Comment={{Author:'Instructor', Timestamp:'May 6, 2013 3:32pm' ,Content: 'Your approach of the problem is very unique. Well done.'}}/>
               </TabPanel>
 
 
