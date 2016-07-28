@@ -27,13 +27,14 @@ class CourseContainer extends React.Component {
             body: {
                 userid: this.props.userId,
                 number: courseNumber,
-                title: courseName
+                title: courseName,
+                organizationid:1
             },
             json: true
         };
 
         request(options, (err, res, body) => {
-            const courseId = body.result[0]['LAST_INSERT_ID()'];
+            const courseId = body.NewCourse;
 
             this.setState({
                 courseId: courseId,
@@ -51,16 +52,17 @@ class CourseContainer extends React.Component {
                 courseid: this.state.courseId,
                 semesterid: 1, // TODO: make this not static
                 name: section.name,
-                description: section.description
+                description: section.description,
+                organizationid: 1
             },
             json: true
         };
 
         request(options, (err, res, body) => {
-            const courseSectionId = body.result[0]['LAST_INSERT_ID()'];
+            const courseSectionId = body.NewSection;
 
             const memberOptions = {
-                method: 'PUT',
+                method: 'POST',
                 uri: this.props.apiUrl + '/api/course/adduser',
                 body: {
                     sectionid: courseSectionId

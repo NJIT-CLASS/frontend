@@ -8,9 +8,19 @@ button {
     font-size: 18px;
     padding: 8px;
     font-weight: 300;
+    margin: 5px;
+    height:auto;
+
+
 
     .error {
         border-color: #ed5565;
+    }
+
+    .in-line {
+      float: left;
+      padding: 5px;
+      margin: 10px;
     }
 
     &.success {
@@ -24,5 +34,45 @@ button {
 
     &:hover {
         cursor: pointer;
+
     }
+}
+
+.dispute{
+  background-color: #00AB8D !important;
+}
+/*.dispute:hover {
+    box-shadow: 0 0 5px #ed5565;
+    border-color: #ed5565;
+    border-radius: 3px 3px 0 0;
+    outline: none;
+  }*/
+
+  .tab{
+    border-style: none;
+    background-color: #ffffff;
+    border: hidden;
+    width: 40%;
+
+    .children{
+      border-style: none;
+    }
+  }
+
+
+.invisible{
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 10px;
+  width:100%;
+  display:flex;
+  align-self: flex-end;
+
+  table tr{
+    border: hidden;
+
+  }
+  table tr td {
+    border: hidden;
+  }
 }

@@ -29,14 +29,14 @@ class TaskDetails extends React.Component {
 
     }
     reset(){
-        window.location('/dashboard') ; 
+        window.location('/dashboard') ;
     }
 
 createAssingment() {
     let Assingment = this.state.currentTask;
         const options = {
             method: 'POST',
-            uri: 'http://162.243.45.215:8080' + '/assignment/create',
+            uri: this.props.apiUrl + '/assignment/create',
             body: {
                 Name: Assingment.name,
                 Description: Assingment.desc,
@@ -49,11 +49,11 @@ createAssingment() {
         request(options, (err, res, body) => {
             // TODO: add error handling
             console.log("Result status code:", res.status);
-            
+
         });
     }
 
-    
+
     updateCTA(data,inputType){
         let task =this.state.currentTask;
         if(inputType === 'name'){
@@ -76,7 +76,7 @@ createAssingment() {
         assignmentDetail.push(this.state.currentTask);
         console.log(this.state.assignmentDetail);
         this.props.nextTask();
-        
+
     }
 
     lastTask(){
@@ -84,7 +84,7 @@ createAssingment() {
         assignmentDetail.push(this.state.currentTask);
         console.log(this.state.assignmentDetail);
         this.props.nextTask();
-        
+
     }
 
     addThree(){
@@ -112,7 +112,7 @@ createAssingment() {
     getDesc(e){
         this.updateCTA(e.target.value,'desc');
     }
-    
+
 
 	render(){
         let content = null;
@@ -133,8 +133,8 @@ createAssingment() {
                             <div>
                                 <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
-                            </div>                            
-                           
+                            </div>
+
 
 
                             </div>
@@ -155,12 +155,12 @@ createAssingment() {
                                         <div className="col-sm-10">
                                             <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
                                         </div>
-                                    </div>     
+                                    </div>
                                 </div>
 
                                 </div>
                                 </div>
-                    
+
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -197,8 +197,8 @@ createAssingment() {
                             <div>
                                 <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
-                            </div>                            
-                           
+                            </div>
+
 
 
                             </div>
@@ -219,12 +219,12 @@ createAssingment() {
                                         <div className="col-sm-10">
                                             <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
                                         </div>
-                                    </div>     
+                                    </div>
                                 </div>
 
                                 </div>
                                 </div>
-                    
+
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -260,8 +260,8 @@ createAssingment() {
                             <div>
                                 <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
-                            </div>                            
-                           
+                            </div>
+
 
 
                             </div>
@@ -282,12 +282,12 @@ createAssingment() {
                                         <div className="col-sm-10">
                                             <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
                                         </div>
-                                    </div>     
+                                    </div>
                                 </div>
 
                                 </div>
                                 </div>
-                    
+
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -323,8 +323,8 @@ createAssingment() {
                             <div>
                                 <textarea name="desc" onChange={this.getDesc.bind(this)}  required>
                                 </textarea>
-                            </div>                            
-                           
+                            </div>
+
 
 
                             </div>
@@ -345,12 +345,12 @@ createAssingment() {
                                         <div className="col-sm-10">
                                             <input className="form-control" onChange={this.spDate.bind(this)} name="field_startDate" id="field_startDate" type="date"></input>
                                         </div>
-                                    </div>     
+                                    </div>
                                 </div>
 
                                 </div>
                                 </div>
-                    
+
                     <div className="section">
                         <h3 className="title">Who can complete this task?</h3>
                         <div className="section-content">
@@ -370,7 +370,7 @@ createAssingment() {
                     </div>
 
                     </div>);
-                break; 
+                break;
                 case "done":
                     window.location.href = '/dashboard';
                     break;

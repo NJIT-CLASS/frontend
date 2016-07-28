@@ -1,6 +1,7 @@
 const handlebars = require('express-handlebars');
-
+const moment = require('moment');
 const consts = require('../utils/constants');
+
 
 exports.setup = (translate) => {
     const helperFunctions = {};
@@ -26,6 +27,9 @@ exports.setup = (translate) => {
         if (arg1 === arg2) {
             return options.fn(this);
         }
+    };
+    helperFunctions.dateFormat = function(date) {
+      return moment(date, "YYYY-MM-DD  HH:mm:ss").format("MMMM Do, YYYY h:mm a");
     };
 
     return handlebars.create({

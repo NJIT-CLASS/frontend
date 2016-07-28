@@ -13,7 +13,6 @@ const pages = [
     'confirm-password-reset',
     'course-page',
     'create-account',
-    'completed-task',
     'create-problem',
     'solve-problem',
     'edit-problem',
@@ -21,7 +20,19 @@ const pages = [
     'grade-problem',
     'revise-and-edit',
     'masquerade',
-    'stop-masquerading',
+    'stop-masquerading',    'task-template',
+    'create-a-problem',
+    'edit-the-problem',
+    'solve-the-problem',
+    'grade-the-response',
+    'dispute-your-grade',
+    'resolve-the-dispute',
+    'view-your-grade',
+    'completed-task',
+    'consolidate-the-grades',
+    'assignment-editor',
+    'assign-to-section',
+    'course-assignments'
 ];
 
 var pageConfigs = [];

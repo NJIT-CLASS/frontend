@@ -1,7 +1,8 @@
+const consts = require('../../utils/constants');
 const handler = require('../route-handlers/completed-task');
 
 module.exports = {
-    route: '/task',
+    route:  '/task/'+ consts.TASK_TYPES.COMPLETED +'/:taskId',
     title: 'Completed Task',
     routeHandler: handler,
     access: {
@@ -10,6 +11,6 @@ module.exports = {
         students: true,
         loggedOut: false
     },
-    icon: '',
+    icon: 'fa-pencil',
     sidebar: false
 };

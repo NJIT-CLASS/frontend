@@ -17,7 +17,7 @@ class AssignmentContainer extends React.Component {
     createWorkflow(){
         let createProbTask = {
             type:TASK_TYPES.CREATE_PROBLEM,
-            name:null,            
+            name:null,
             taDue:null,
             taStart:null,
             taEnd:'late',
@@ -29,7 +29,7 @@ class AssignmentContainer extends React.Component {
         };
         let solveProbTask = {
             type:TASK_TYPES.SOLVE_PROBLEM,
-            name:null,            
+            name:null,
             taDue:null,
             taStart:null,
             taEnd:'late',
@@ -41,7 +41,7 @@ class AssignmentContainer extends React.Component {
         };
         let editProbTask = {
             type:TASK_TYPES.EDIT,
-            name:null,            
+            name:null,
             taDue:null,
             taStart:null,
             taEnd:'late',
@@ -53,7 +53,7 @@ class AssignmentContainer extends React.Component {
         };
         let gradeProbTask = {
             type:TASK_TYPES.GRADE_PROBLEM,
-            name:null,            
+            name:null,
             taDue:null,
             taStart:null,
             taEnd:'late',
@@ -66,7 +66,7 @@ class AssignmentContainer extends React.Component {
         let workflows = [createProbTask,gradeProbTask,solveProbTask,editProbTask];
         this.setState({
             workflows : workflows,
-            visibleWorkflowIndex: 0            
+            visibleWorkflowIndex: 0
         })
     }
 
@@ -77,14 +77,14 @@ class AssignmentContainer extends React.Component {
             visibleWorkflowIndex: oldIndex + 1
             });
         }
-        
+
     }
 
     reset(){
         this.setState ({
             workflows: [],
             visibleWorkflowIndex: null});
-        
+
     }
     // selectWorkflow(index=null) {
     //     this.setState({

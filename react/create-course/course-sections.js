@@ -10,7 +10,7 @@ class CourseSections extends React.Component {
         super(props);
 
         this.state = {
-            sections: props.sections,
+            sections: this.props.sections,
             sectionShowingIndex: null,
             newSectionShowing: true
         };
@@ -35,7 +35,7 @@ class CourseSections extends React.Component {
     render() {
         if ((this.state.sectionShowingIndex === null && this.state.newSectionShowing) || this.state.sectionShowingIndex !== null || this.state.sections.length === 0) {
             return (
-                <CourseSection 
+                <CourseSection
                     section={this.state.sections[this.state.sectionShowingIndex]}
                     createSection={this.createSection.bind(this)}
                     apiUrl={this.props.apiUrl}
