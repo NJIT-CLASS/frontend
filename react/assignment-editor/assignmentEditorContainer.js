@@ -3,14 +3,14 @@
 
 import React from 'react';
 import request from 'request';
+import {cloneDeep} from 'lodash';
+var TreeModel = require('tree-model');
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
-import {cloneDeep} from 'lodash';
-var TreeModel = require('tree-model');
-import ModalInfo from '../assignment-records/info-modal';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 
 
 class AssignmentEditorContainer extends React.Component{
@@ -19,16 +19,22 @@ class AssignmentEditorContainer extends React.Component{
     constructor(props){
       super(props);
 
-      this.tree = new TreeModel();
-      this.root = this.tree.parse({id:0});
-      this.nullNode = this.tree.parse({id: -1});
+      /*
+        Props:
+            - UserID
+            - CourseID
+            - apiUrl
+      */
+
+      this.tree = new TreeModel(); //this is the tree making object. It is not a tree structure but has the tree methods
+      this.root = this.tree.parse({id:0}); // this is the root of the tree structure. A copy is made for each workflow
+      this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
 
 
       //need to add TA_name, TA_documentation, TA_trigger_consolidation_threshold
-
-      this.createProblemTask = {
-        TA_type: TASK_TYPES.CREATE_PROBLEM,
-        TA_name: TASK_TYPE_TEXT.create_problem,
+      this.blankTask = {
+        TA_type: '',
+        TA_name: '',
         SimpleGradePointReduction: 0,
         AllowConsolidations: [false, false],
         TA_file_upload: [[0,"mandatory"],[0,'optional']],
@@ -36,13 +42,13 @@ class AssignmentEditorContainer extends React.Component{
         TA_start_delay:0,
         TA_at_duration_end: 'late',
         TA_what_if_late: 'Keep same participant',
-        TA_display_name: 'Create Problem',
+        TA_display_name: '',
         TA_one_or_separate: false,
-        TA_assignee_constraint: ['student','individual',{}],
+        TA_assignee_constraint: ['','',{}],
         TA_simple_grade: 'none',
         TA_is_final_grade: false,
-        TA_overall_instructions: 'test',
-        TA_overall_rubric: 'y',
+        TA_overall_instructions: '',
+        TA_overall_rubric: '',
         TA_allow_reflection: ['none',"don't wait"],
         TA_allow_assessment: 'none',
         TA_allow_revisions: false,
@@ -51,7 +57,7 @@ class AssignmentEditorContainer extends React.Component{
         TA_allow_dispute:false,
         TA_leads_to_new_problem: false,
         TA_leads_to_new_solution:false,
-        TA_visual_id: 'P1',
+        TA_visual_id: '',
         TA_fields: {
           number_of_fields: 1,
           field_titles: [''],
@@ -74,6 +80,21 @@ class AssignmentEditorContainer extends React.Component{
         }
       };
 
+      // this function cusotmizes the generic task tempate above to the type of task it needs;
+      var createTaskObject = function(TA_type, TA_name, TA_display_name, TA_at_duration_end, TA_what_if_late, TA_assignee_constraint,TA_is_final_grade){
+        let newTask = cloneDeep(this.blankTask)
+        newTask.TA_name = TA_name;
+        newTask.TA_type = TA_type;
+        newTask.TA_display_name = TA_display_name;
+        newTask.TA_at_duration_end = TA_at_duration_end;
+        newTask.TA_what_if_late = TA_what_if_late;
+        newTask.TA_assignee_constraint = TA_assignee_constraint;
+        newTask.TA_is_final_grade = TA_is_final_grade;
+
+        return newTask;
+      }
+
+      this.createProblemTask = createTaskObject(TASK_TYPES.CREATE_PROBLEM,TASK_TYPE_TEXT.create_problem, 'Create Problem','late', 'Keep same participant' ,['student', 'individual',{}], false);
 
       this.editProblemTask = {
         TA_type: TASK_TYPES.EDIT,
@@ -565,13 +586,11 @@ class AssignmentEditorContainer extends React.Component{
         WA_default_group_size: 1,
         WA_grade_distribution:{},
         Workflow: standardWorkflow,
-        WorkflowStructure: cloneDeep(this.root)
+        WorkflowStructure: cloneDeep(this.root) //this is the tree structure for that particular workflow
       };
 
 
       this.state = {
-          PCounter: 0, //this will hold the second digit of the VIS_ID of the Problem tasks, first digit is used as index of array
-          SCounter: 0, //this will hold the second digit of the VIS_ID of the Solve tasks, first digit is used as index of array
           CurrentWorkflowIndex: 0,
           SubmitSuccess: false,
           SaveSuccess: false,

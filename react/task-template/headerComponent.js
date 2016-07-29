@@ -4,6 +4,15 @@
  */
 import React from 'react';
 
+/*  Props: (from TemplateContainer)
+        - AssignmentTitle
+        - CourseNumber
+        - CourseName
+        - SemesterName
+        - AssignmentDescription
+
+*/
+
 class HeaderComponent extends React.Component {
     constructor(props) {
         super(props);

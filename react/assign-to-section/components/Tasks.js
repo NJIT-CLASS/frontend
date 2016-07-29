@@ -1,3 +1,7 @@
+/* This Component gets the timing input for the tasks. It is flexible enough to be used in a map or forEach.
+* It gets its data and functions from AssignToSectionContainer
+*/
+
 import React from 'react';
 import NumericInput from 'react-numeric-input';
 var moment = require('moment');
@@ -6,6 +10,17 @@ import Datetime from 'react-datetime';
 class Tasks extends React.Component {
   constructor(props){
     super(props);
+
+    /* Props: (from AssignToSectionContainer)
+            - Tasks
+            - index
+            - workflowIndex
+            -onChangeCalendarTasks
+            -onChangeCertainTimeTasks
+            -onChangeMultipleTasks
+            -onChangeExpireNumberOfDaysTasks
+
+    */
   }
 
 render(){

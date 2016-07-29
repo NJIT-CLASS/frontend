@@ -1,10 +1,12 @@
 /*
-This Container is the main component.It holds all the other components and decides what to render depending.
+This is the Container for the task template page. It loads all the other components and puts the apporpriate data in them.
+This Container also has the GET calls to fetch the data and passes it down to the other Components. The page uses tabs for
+future stuff.
 
 */
 import React from 'react';
 import request from 'request';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants'; //contains constants and their values
 var ReactTabs = require('react-tabs');
 var Tab = ReactTabs.Tab;
 var Tabs = ReactTabs.Tabs;
@@ -13,26 +15,14 @@ var TabPanel = ReactTabs.TabPanel;
 
 //Input Components: These can be interactive with the user;
 import SuperComponent from './superComponent';
-/* DEAD ONES
-import CreateProblemComponent from './createProblemComponent';
-import EditProblemComponent from './editProblemComponent';
-import SolveProblemComponent from './solveProblemComponent';
-import GradeSolutionComponent from './gradeSolutionComponent';
-import ResolveGradeComponent from './resolveGradeComponent';
-import DisputeComponent from './disputeComponent';
-*/
 
 //Display Components: These only display data retrived from the database. Not interactive.
 
 import SuperViewComponent from './superViewComponent';
-import HeaderComponent from './headerComponent'
-import ResponseComponent from './responseComponent';
+import HeaderComponent from './headerComponent';
 import GradedComponent from './gradedComponent';
-import DisputeViewComponent from './disputeViewComponent';
 import ErrorComponent from './errorComponent';
 import CommentComponent from './commentComponent';
-import ResolutionViewComponent from './resolutionViewComponent';
-import WorkflowTable from '../assignment-records/workflowTable';
 
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
@@ -47,14 +37,18 @@ const completedContainer = document.getElementById('completed-task-container');
 
 /* Make all the methods that will call the api to get the appropriate data  here */
 
+/*      PROPS:
+            - TaskID
+            - SectionID
+            - UserID
+              (from main.js)
+*/
+
 class TemplateContainer extends React.Component {
       constructor(props) {
           super(props);
           this.state = {
-              //universal variables - used in all the components
-              //Need to pass in TaskID,SectionID, UserID from HTML, route-handler, and main.js
-              TaskActivityID: null,
-              Loaded: false,
+              Loaded: false, //this variable is set to true when the page succesfully fetches data from the backend
               CourseID: null,
               CourseName: '',
               CourseNumber: '',
@@ -72,11 +66,12 @@ class TemplateContainer extends React.Component {
       }
 
       getHeaderData() {
+        //this function makes an API call and saves the data into appropriate state variables
 
         const options = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/taskInstanceTemplate/main/' + this.props.TaskID,
-            qs: {
+            qs: { //query strings
               courseID: this.props.CourseID,
               userID: this.props.UserID,
               sectionID:this.props.SectionID
@@ -96,7 +91,6 @@ class TemplateContainer extends React.Component {
           this.setState({
             //set create's task data to pass down
             Loaded:true,
-            TaskActivityID: body.taskActivityID,
             CourseName: body.courseName,
             CourseNumber: body.courseNumber,
             AssignmentTitle: body.assignmentName,
@@ -115,6 +109,8 @@ class TemplateContainer extends React.Component {
 
 
       getTasks(){
+        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+        // for rendering
         const options = {
                   method: 'GET',
                   uri: this.props.apiUrl + '/api/superCall/'+ this.props.TaskID,
@@ -140,22 +136,21 @@ class TemplateContainer extends React.Component {
         });
       }
 
-      componentWillMount() { //get the database data before component renders
+      componentWillMount() { // this function is called before the component renders, so that the page renders with the appropriate state data
         this.getHeaderData();
         this.getTasks();
 
       }
 
       render(){
-        console.log(this.state.Data);
         let renderComponents = null;
         let gradeViews = null;
         let numberOfGradingTasks = 0;
 
-        if(this.state.Error){
+        if(this.state.Error){ // if there was an error in the data fetching calls, show the Error Component
           return(<ErrorComponent />)
         }
-        if(!this.state.Loaded){
+        if(!this.state.Loaded){ // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
           return(
             <div></div>
           );
@@ -163,7 +158,10 @@ class TemplateContainer extends React.Component {
 
         if(this.state.Data != null){
           let gradesViewIndex = null;
-          renderComponents = this.state.Data.map(function(task,idx){ //this task -> previous... -> first task
+          renderComponents = this.state.Data.map(function(task,idx){
+            // Goes over the array of tasks(starting from first task to this task)
+            // and gives the Components an appropriate title.
+            // Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
               let compString = null;
 
               switch(task.TaskActivity.Type){
@@ -265,12 +263,12 @@ class TemplateContainer extends React.Component {
                                   AssignmentTitle = {this.state.AssignmentTitle}
                                   AssignmentDescription = {this.state.AssignmentDescription}
                                   TaskActivityType = {this.state.TaskActivityType}
-                                  SemesterName={this.state.SemesterName}
-                                  TaskActivityVisualID= {this.state.TaskActivityVisualID} />
+                                  SemesterName={this.state.SemesterName} />
                     {renderComponents}
               </TabPanel>
               <TabPanel>
                 <div className="placeholder"></div>
+                {/*  Future work to support comments*/}
                 <CommentComponent Comment={{Author:'User1', Timestamp:'May 6, 2013 9:43am' ,Content: 'I really liked your problem. It was very intriguing.'}}/>
                 <CommentComponent Comment={{Author:'User2', Timestamp:'May 6, 2013 11:09am' ,Content: 'I agree. I would have never thought of this.'}}/>
                 <CommentComponent Comment={{Author:'Instructor', Timestamp:'May 6, 2013 3:32pm' ,Content: 'Your approach of the problem is very unique. Well done.'}}/>
@@ -290,6 +288,6 @@ class TemplateContainer extends React.Component {
 
 
 }
-/*render the components with the appropriate props*/
+
 
 export default TemplateContainer;

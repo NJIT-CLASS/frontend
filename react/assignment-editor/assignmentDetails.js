@@ -18,11 +18,8 @@ class AssignmentDetailsComponent extends React.Component{
     //assignment details functions
 
     render(){
-      let style={marginRight: "10px",
-                marginLeft:'10px'};
-      let instyle = {display: "inline-block"};
 
-      let courseList = ['CS 288', 'CS 341', 'CS 113'];
+      let courseList = ['CS 288', 'CS 341', 'CS 113']; // fake data
       let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
 
 

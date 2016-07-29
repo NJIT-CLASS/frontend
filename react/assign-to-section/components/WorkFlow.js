@@ -1,3 +1,6 @@
+/* This component shows the input for workflows. It gets its data from the Assign to Section Container
+*/
+
 import React from 'react';
 var moment = require('moment');
 import Dropdown from 'react-dropdown';
@@ -7,6 +10,15 @@ import Datetime from 'react-datetime';
 class WorkFlow extends React.Component {
   constructor(props){
     super(props);
+
+    /*  Props: (from AssignToSectionContainer)
+             - WorkFlow
+            - workflowIndex
+            - onChangeCalendarWorkFlow
+            -onChangeStartNowWorkFlow
+            -onChangeStartLaterWorkFlow
+
+    */
   }
 
 render(){
@@ -14,11 +26,12 @@ render(){
   let StartNow = null;
 
   var today= Datetime.moment();
-  var valid = function( current ){
+  var valid = function( current ){ //this function is used in Datetime to block out days before and including today
+
     return current.isAfter( today );
   };
 
-  if(this.props.WorkFlow.StartLater)
+  if(this.props.WorkFlow.StartLater) //show this only if Start Later option has been selected
    {
      CalendarView =
      (

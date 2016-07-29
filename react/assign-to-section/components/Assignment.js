@@ -1,3 +1,7 @@
+/*  This Component collects the Assignment timing data. There should be only one per AssignToSectionContainer.
+It gets its functions and data from its parent.
+*/
+
 import React from 'react'
 var moment = require('moment');
 import request from 'request';
@@ -8,18 +12,29 @@ var CheckBoxList = require('react-checkbox-list');
 class Assignment extends React.Component {
   constructor(props){
     super(props);
+
+    /*
+      Props: (from AssignToSectionContainer)
+            - Assignment
+            - SectionsList
+            - onChangeCalendarAssignment
+            - onChangeStartLaterAssignment
+            - onChangeStartNowAssignment
+            - onChangeAssigmentName
+            - onChangeSectionAssignment
+    */
 }
 
 
 
 render(){
 let CalendarView =  null;
-let Section = [
+let Section = [ //fake data
     {value:'cs280', label: 'CS280'},
     {value:'cs332', label: 'CS332'}
   ];
-  var yesterday = Datetime.moment().subtract(1,'day');
-  var valid = function( current ){
+  var yesterday = Datetime.moment();
+  var valid = function( current ){  //this function is used in Datetime to block out days before and including today
     return current.isAfter( yesterday );
   };
 
@@ -32,7 +47,7 @@ let Section = [
         <Datetime
               open={true}
               defaultValue={moment().add(3, 'days').format("MM/DD/YYYY")+(' 11:59 PM')}
-              renderDay={this.renderDay}
+              renderDay={this.renderDay} 
               renderMonth={this.renderMonth}
               renderYear={this.renderYear}
               isValidDate={ valid }

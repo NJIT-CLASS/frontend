@@ -1,5 +1,7 @@
+/*  This component should be rendered whenever an error is detected.
+    It simply displays an error message. No state, props or logic.
+*/
 import React from 'react';
-
 
 class ErrorComponent extends React.Component {
     constructor(props) {
@@ -7,6 +9,10 @@ class ErrorComponent extends React.Component {
 
         this.state = {};
     }
+
+    /*    Props:
+              - none
+    */
 
     render() {
       return (<div className = "section error-component animate fadeInUp" >

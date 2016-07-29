@@ -1,3 +1,7 @@
+/*  This is the main Container for the Assign to section page. It displays the appropriate Components
+* depending on the data it fetches from the database. This Container also contains the onChange function
+* that are passed down to its Components, so any changes made to those functions should be in here.
+*/
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Tasks from './components/Tasks.js';
@@ -11,9 +15,15 @@ class AssignToSectionContainer extends React.Component
   constructor(props)
   {
     super(props);
+    /*
+      Props:
+            - apiUrl
+            - CourseID
+            - AssignmentID
+    */
 
     this.state=
-    {
+    { //structure of the data being passes in from the database
       Assignment:{
         StartNow:false,
         StartLater:false,
@@ -51,7 +61,7 @@ class AssignToSectionContainer extends React.Component
   }
 }
 
-  componentWillMount(){
+  componentWillMount(){ //gets the appropraite assignment structure from the database before rendering the page
      const options = {
        method: 'GET',
         uri: this.props.apiUrl +'/api/getAssignToSection/',
@@ -64,7 +74,6 @@ class AssignToSectionContainer extends React.Component
       };
 
       request(options, (err, res, body) => {
-        console.log(body);
         let workflows = Object.keys(body.taskActivityCollection).map(function(key){
           let tasks = body.taskActivityCollection[key].map(function(task){
             return {ID: task.taskActivityID,
@@ -95,11 +104,10 @@ class AssignToSectionContainer extends React.Component
   }
 
   onSubmit(){
-    console.log('clicked')
-
+    //saves the state data to the database
     const options = {
       method: 'POST',
-      uri: /*this.props.apiUrl*/ 'http://localhost:3000/api' +'/getAssignToSection/submit/',
+      uri: this.props.apiUrl +'api/getAssignToSection/submit/',
       body:{
         assignmentid: this.props.AssignmentID,
         sectionIDs: this.state.Assignment.Section,
@@ -121,8 +129,10 @@ class AssignToSectionContainer extends React.Component
     return
   }
 
-  onChangeCalendarAssignment(dateString)
+//////////////// Functions used in the Assignment Component ////////////////////
+  onChangeCalendarAssignment(dateString) //dateString is supplied by Datetime module
   {
+
     let newA = this.state.Assignment;
     newA.Time = dateString.format("YYYY-MM-DD HH:mm:ss");
     this.setState({Assignment: newA});
@@ -146,14 +156,14 @@ class AssignToSectionContainer extends React.Component
     this.setState({Assignment: newA});
   }
 
-  onChangeAssigmentName(Name)
+  onChangeAssigmentName(e) //e is event that is automatically passed in
   {
     let newA = this.state.Assignment;
-    newA.AssigmentName = Name.target.value;
+    newA.AssigmentName = e.target.value;
     this.setState({Assignment: newA});
   }
 
-  onChangeSectionAssignment(Section)
+  onChangeSectionAssignment(Section) //Section is automatically passed in by CheckBoxList module
   {
     console.log(Section);
     let newA = this.state.Assignment;
@@ -161,7 +171,11 @@ class AssignToSectionContainer extends React.Component
     this.setState({Assignment: newA});
   }
 
-  onChangeCalendarTasks(index, workflowIndex, dateString)
+//----------------------------------------------------------------------------
+
+/////////////// Functions used in Tasks Component /////////////////////////////
+  onChangeCalendarTasks(index, workflowIndex, dateString) //index is task's index in the tasks array, workflowIndex is index in WorkFlow array
+    // dateString automatically passed in by Datetime module
   {
     let newA = this.state.WorkFlow;
     newA[workflowIndex].Tasks[index].Time = dateString.format("YYYY-MM-DD HH:mm:ss");
@@ -170,7 +184,7 @@ class AssignToSectionContainer extends React.Component
     this.setState({Tasks: newA});
   }
 
-  onChangeMultipleTasks(index, workflowIndex, value)
+  onChangeMultipleTasks(index, workflowIndex, value) // value automatically passed in by NumericInput
   {
     let newA = this.state.WorkFlow;
     if (value > 100)
@@ -203,7 +217,10 @@ class AssignToSectionContainer extends React.Component
     this.setState({Tasks: newA});
   }
 
-  onChangeCalendarWorkFlow( workflowIndex,dateString)
+//-----------------------------------------------------------------------------
+
+/////////// Functions used in WorkFlow Component ///////////////////////////////
+  onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
   {
     let newA = this.state.WorkFlow;
     newA[workflowIndex].Time = dateString.format("YYYY-MM-DD HH:mm:ss");;
@@ -227,6 +244,8 @@ class AssignToSectionContainer extends React.Component
     newA[workflowIndex].Time = moment().format('YYYY-MM-DD HH:mm:ss');
     this.setState({WorkFlow: newA});
   }
+
+  //--------------------------------------------------------------------------
 
   render()
   {
@@ -277,8 +296,9 @@ class AssignToSectionContainer extends React.Component
         </span>
         <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>
       </div>
-      //Assign to Section by Krzysztof Andres.
+
     )
   }
 }
+//Assign to Section by Krzysztof Andres.
 export default AssignToSectionContainer;

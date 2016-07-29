@@ -1,6 +1,8 @@
-/* This Component is an invisible container holding a bunch of GradeView Components.
-* It has a GET method that gets the apporpriate data and feeds it to the GradeViewComponents.
+/* This Component is an invisible container holding a bunch of SuperViewComponents
+* It is used because there are usually multiple graders, and this Componentshows them side by side
 * This is shown after all grades have been submitted.
+* NOTE: Will probably need to rework this to make compatible with any task that has mutliple partcipants(number-of_participants > 1),
+        since now any task can have multiple partcipants
 */
 
 import React from 'react';

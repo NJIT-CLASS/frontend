@@ -36,12 +36,13 @@ class SuperViewComponent extends React.Component {
     let tdata = this.props.TaskData;
     let tAdata = this.props.TaskActivityFields;
     if(!tdata || tdata == "{}" || !tAdata || tAdata == "{}" || Object.keys(tdata).length === 0 && tdata.constructor === Object ){
-
+      // this checks to make sure all the necessary data isn't empty. If it is, it will cause errors, so set the Error state to true
+      // to prevent rendering
       this.setState({Error: true});
       return ;
     }
     else {
-      if(tdata.constructor !== Object){
+      if(tdata.constructor !== Object){ //if the TaskData is not an object, it mut be a JSON, so parse it before continuing
         tdata = JSON.parse(this.props.TaskData)
       }
       if(tAdata.constructor !== Object){
@@ -50,7 +51,7 @@ class SuperViewComponent extends React.Component {
 
 
       for(let i = 0; i< tAdata.number_of_fields;i++){
-        if(tdata[i] == null){
+        if(tdata[i] == null){       //make sure that the number of fields in the Task matches the number of fields in the Task activity
           this.setState({Error: true});
           return;
         }
@@ -66,15 +67,16 @@ class SuperViewComponent extends React.Component {
   render(){
     let content = null;
 
-    if(this.state.Error){
+    if(this.state.Error){ // if there was an error loading the data, show an Error component
         return(<ErrorComponent />);
     }
-    let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
-
+    let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){ //go over the fields and display the data appropriately
+      // this is a bunch of conditionals that check the fields in the TA fields object.
+      // NOTE: Add better indexes to the divs and inputs so React won't give the warning message
       let justification = null;
       let fieldTitle = '';
-      if(this.state.TaskActivityFields[idx].show_title){
-        if(this.state.TaskActivityFields[idx].assessment_type != null){
+      if(this.state.TaskActivityFields[idx].show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
+        if(this.state.TaskActivityFields[idx].assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
           fieldTitle = title +" Grade";
         }
         else{
@@ -150,7 +152,7 @@ class SuperViewComponent extends React.Component {
 
 
 
-      if(this.state.ShowContent){
+      if(this.state.ShowContent){ //if the title is clicked on, this will be false and the content won't be shown
         content = (<div className="section-content">
                       <div name="problem-text" className="regular-text">{fields}</div>
                       <br />

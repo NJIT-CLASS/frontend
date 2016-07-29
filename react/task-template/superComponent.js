@@ -112,14 +112,14 @@ class SuperComponent extends React.Component {
     }
 
     saveData(e){
-
-      e.preventDefault();
-      //if task is complete, don't allow saving
+      // function makes a POST call and sends in the state variables which hold the user's input
+      e.preventDefault(); //standard JavaScript behavior
+      //if task is complete, don't allow saving new data
       if(this.state.TaskStatus == "Complete"){
         return ;
       }
 
-      let validData = this.isValidData();
+      let validData = this.isValidData(); //checks to see if data is valid before submitting
 
       if(validData){
         const options = {
@@ -196,10 +196,10 @@ class SuperComponent extends React.Component {
     }
 
 
-    modalToggle(){
-      //shows or hides error message popup(modal)
-      this.setState({InputError:false})
-    }
+    // modalToggle(){ //not used
+    //   //shows or hides error message popup(modal)
+    //   this.setState({InputError:false})
+    // }
 
     toggleRubric(){
       //shows or hides the task activity rubric
@@ -230,7 +230,7 @@ class SuperComponent extends React.Component {
               return;
           }
         }
-      if(typeof(event.target.value) === 'string' && event.target.value.length > 45000){
+      if(typeof(event.target.value) === 'string' && event.target.value.length > 45000){ // checks to see if the input is a reasonable length
         return;
       }
       let newTaskData = this.state.TaskData;
@@ -241,7 +241,7 @@ class SuperComponent extends React.Component {
       }
 
       handleJustificationChange(index,event) {
-        if(event.target.value.length > 45000){
+        if(event.target.value.length > 45000){ //checks to see if input is reasosnable length, makes sure browser doesn't crash on long input
           return;
         }
         //updates task data with new user input in justification fields
@@ -286,7 +286,6 @@ class SuperComponent extends React.Component {
     render(){
           let content= null;
           let infoMessage = null;
-
           let TA_rubric = null;
           let TA_instructions = null;
           let formButtons =  null;
@@ -319,7 +318,7 @@ class SuperComponent extends React.Component {
             </div>);
           }
 
-          if(this.props.Rubric != '' && this.props.Rubric != null){
+          if(this.props.Rubric != '' && this.props.Rubric != null){ //if no Rubric
             let TA_rubric_content = null;
             if(this.state.ShowRubric){
                 TA_rubric_content = (<div className="regular-text" key={"rubric"}> {this.props.Rubric}</div>);
@@ -354,8 +353,8 @@ class SuperComponent extends React.Component {
 
 
 
-            if(this.state.TaskActivityFields[idx].show_title){
-              if(this.state.TaskActivityFields[idx].assessment_type != null){
+            if(this.state.TaskActivityFields[idx].show_title){ //shoudl the title be displayed or not
+              if(this.state.TaskActivityFields[idx].assessment_type != null){ //add "Grade" to assess fields to make pretty
                 fieldTitleText = title +" Grade";
               }
               else{
@@ -369,7 +368,7 @@ class SuperComponent extends React.Component {
             }
 
 
-            if(this.state.TaskActivityFields[idx].rubric != ''){
+            if(this.state.TaskActivityFields[idx].rubric != ''){ //if Rubric is empty, don't show anything
               let rubric_content = null;
               let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
@@ -405,7 +404,7 @@ class SuperComponent extends React.Component {
               }
             }
 
-            if(this.state.TaskActivityFields[idx].instructions != ''){
+            if(this.state.TaskActivityFields[idx].instructions != ''){ //if instructions are empty, don't display anything
               instructions = (
                 <div>
                   <br />
@@ -419,11 +418,11 @@ class SuperComponent extends React.Component {
             if(this.state.TaskActivityFields[idx].field_type == "numeric"){
                 let fieldInput = null;
                 if(this.state.TaskData[idx][0] == null){
-                  fieldInput = (<input type="text"  key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                  fieldInput = (<input type="number"  key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
                   </input>);
                 }
                 else{
-                  fieldInput = (<input type="text"  key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                  fieldInput = (<input type="number"  key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
                   </input>);
                 }
 
@@ -471,7 +470,7 @@ class SuperComponent extends React.Component {
             }
 
             else if(this.state.TaskActivityFields[idx].field_type == "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
-
+              // decides how to display information given the type of assessment it is
               if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
                 let fieldInput = null;
 
@@ -608,7 +607,7 @@ class SuperComponent extends React.Component {
             content = (<div></div>)
           }
 
-          return(
+          return( //main render return()
             <div className="animate fadeInUp">
               {infoMessage}
               <form  role="form" className="section card-1" action="#" onSubmit={this.submitData.bind(this)}>

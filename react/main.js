@@ -1,3 +1,9 @@
+/*
+This file loads all the React pages. It checks to see which element id is on the page and renders the appropriate Component.
+It also gets the data(connected from the page's html and route-handler file) and passes it down as props.
+If a new react page is created , it will need to be added here.
+*/
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -15,10 +21,10 @@ if (assignmentContainerEl) {
     ReactDOM.render(<AssignmentContainer />, assignmentContainerEl);
 }
 
-const courseContainerEl = document.getElementById('create-course-container');
+const courseContainerEl = document.getElementById('create-course-container'); //get id from .html file
 
 if (courseContainerEl) {
-    const userId = courseContainerEl.dataset.userId;
+    const userId = courseContainerEl.dataset.userId; //in here variables are camelCase, in html variables are hyphened, -
     const apiUrl = courseContainerEl.dataset.apiUrl;
 
     ReactDOM.render(<CourseContainer userId={userId} apiUrl={apiUrl}/>, courseContainerEl);
