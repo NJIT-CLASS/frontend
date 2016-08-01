@@ -13,7 +13,8 @@ class ToggleSwitch extends React.Component{
 
 
   render(){
-    return(<div className={this.state.Clicked ? "toggle-switch true" : "toggle-switch false"} style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
+    return(<div className={this.state.Clicked ? "toggle-switch true" : "toggle-switch false"} style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={(e) => {
+        e.preventDefault();
         this.setState({Clicked: this.state.Clicked ? false : true});
         this.props.click();
       }} >

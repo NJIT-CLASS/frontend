@@ -1,8 +1,8 @@
 import React from 'react';
-import NumericInput from 'react-numeric-input';
 import Dropdown from 'react-dropdown';
 var moment = require('moment');
 import Checkbox from '../shared/checkbox';
+import NumberField from '../shared/numberField';
 import ToggleSwitch from './toggleSwitch';
 var CheckBoxList = require('react-checkbox-list');
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
@@ -81,7 +81,7 @@ class TaskDetailsComponent extends React.Component{
             <label>Points</label><input type="radio"></input>
             <label>Percentage</label><input type="radio"></input>
             <br />
-            <NumericInput
+            <NumberField
                 value={2}
                 min={0}
                 size={6} />
@@ -104,10 +104,10 @@ class TaskDetailsComponent extends React.Component{
           <br />
           <label>Number of Assessors</label>
           <br />
-          <NumericInput
+          <NumberField
             value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
             min={1}
-            size={6}
+            max={20}
             onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
             <br />
             {showConsol}
@@ -119,10 +119,10 @@ class TaskDetailsComponent extends React.Component{
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
           <label>Reduce this by what % per day late</label><br />
-          <NumericInput
+          <NumberField
               value={this.props.TaskActivityData.SimpleGradePointReduction}
               min={0}
-              size={6}
+              max={100}
               onChange={this.props.changeTASimpleGradePoints.bind(this, this.props.index, this.props.workflowIndex)} />
           <br />
           <label>No Points If Late</label>
@@ -185,17 +185,17 @@ class TaskDetailsComponent extends React.Component{
           <div style={{display: "inline-block"}}>
             <div className="inner" style={instyle}>
               <label> How many required files</label> <br />
-              <NumericInput
+              <NumberField
                   min={0}
-                  size={6}
+                  max={10}
                   onChange={this.props.changeFileUpload.bind(this, this.props.index,0,0, this.props.workflowIndex)}
                   value={this.props.TaskActivityData.TA_file_upload[0][0]} />
             </div>
             <div className="inner" style={instyle}>
               <label> Maximum number of optional files</label> <br />
-              <NumericInput
+              <NumberField
                   min={0}
-                  size={6}
+                  max={10}
                   onChange={this.props.changeFileUpload.bind(this, this.props.index,1,0, this.props.workflowIndex)}
                   value={this.props.TaskActivityData.TA_file_upload[1][0]} />
 
@@ -234,10 +234,10 @@ class TaskDetailsComponent extends React.Component{
           <br />
           <label>Number of Editors</label>
           <br />
-          <NumericInput
+          <NumberField
               value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)}
               min={1}
-              size={6}
+              max={20}
               onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)}
               />
             <br />
@@ -268,21 +268,19 @@ class TaskDetailsComponent extends React.Component{
         if(this.props.TaskActivityData.TA_fields[index].field_type == "numeric"){
           fieldTypeOptions = (<div>
             <label>Min</label>
-            <NumericInput
-
+            <NumberField
                 min={0}
-                size={6}
+                max={100}
                 value={this.props.TaskActivityData.TA_fields[index].numeric_min}
-
                 onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
                 }
                 />
               <br />
               <label>Max</label>
-              <NumericInput
+              <NumberField
                   value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                   min={0}
-                  size={6}
+                  max={100}
                   onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex)}
                   />
               </div>);
@@ -294,20 +292,18 @@ class TaskDetailsComponent extends React.Component{
           if(this.props.TaskActivityData.TA_fields[index].assessment_type == 'grade'){
             assessmentTypeView  = (<div>
               <label>Min</label>
-              <NumericInput
-
+              <NumberField
                   min={0}
-                  size={6}
+                  max={100}
                   value={this.props.TaskActivityData.TA_fields[index].numeric_min}
-
                   onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
                   }
                   />
                 <label>Max</label>
-                <NumericInput
+                <NumberField
                     value={this.props.TaskActivityData.TA_fields[index].numeric_max}
                     min={0}
-                    size={6}
+                    max={100}
                     onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex )}
                     />
                 </div>);
@@ -466,10 +462,10 @@ class TaskDetailsComponent extends React.Component{
 
                       </RadioGroup>
                       <br />
-                      <NumericInput
+                      <NumberField
                           value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
                           min={0}
-                          size={6}
+                          max={200}
                           onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index, this.props.workflowIndex)}
                           />
                   </div>
@@ -484,10 +480,10 @@ class TaskDetailsComponent extends React.Component{
                       <label><Radio value={true} ></Radio>Start after prior task ends by</label>
                     </RadioGroup>
 
-                    <NumericInput
+                    <NumberField
                         value={this.props.TaskActivityData.TA_start_delay}
                         min={0}
-                        size={6}
+                        max={200}
                         onChange={ this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index, this.props.workflowIndex)
                         }/>
 

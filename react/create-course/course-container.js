@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'request';
 
-import {clone} from 'lodash';
+import {clone, cloneDeep} from 'lodash';
 
 import Container from './container';
 
@@ -20,14 +20,14 @@ class CourseContainer extends React.Component {
 
 
     createCourse(courseName, courseNumber) {
-
+      console.log('create ourse', courseName, courseNumber)
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/course/create',
             body: {
                 userid: this.props.userId,
                 number: courseNumber,
-                title: courseName,
+                Name: courseName,
                 organizationid:1
             },
             json: true
@@ -37,7 +37,7 @@ class CourseContainer extends React.Component {
             const courseId = body.NewCourse;
 
             this.setState({
-                courseId: courseId,
+                courseId: courseId.CourseID,
                 courseName: courseName,
                 courseNumber: courseNumber
             });
@@ -50,7 +50,7 @@ class CourseContainer extends React.Component {
             uri: this.props.apiUrl + '/api/course/createsection',
             body: {
                 courseid: this.state.courseId,
-                semesterid: 1, // TODO: make this not static
+                semesterid: section.semesterId.value, // TODO: make this not static
                 name: section.name,
                 description: section.description,
                 organizationid: 1
@@ -59,19 +59,21 @@ class CourseContainer extends React.Component {
         };
 
         request(options, (err, res, body) => {
-            const courseSectionId = body.NewSection;
+            const courseSectionId = body.result.SectionID;
 
             const memberOptions = {
                 method: 'POST',
                 uri: this.props.apiUrl + '/api/course/adduser',
                 body: {
-                    sectionid: courseSectionId
+                    sectionid: courseSectionId,
+                    courseid: this.state.courseId
+
                 },
                 json: true
             }
 
             for (let i = 0; i < section.members.length; i++) {
-                let newMemberOptions = clone(memberOptions);
+                let newMemberOptions = cloneDeep(memberOptions);
                 newMemberOptions.body.email = section.members[i].email;
 
                 request(newMemberOptions);

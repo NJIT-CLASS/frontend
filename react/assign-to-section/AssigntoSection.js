@@ -107,7 +107,7 @@ class AssignToSectionContainer extends React.Component
     //saves the state data to the database
     const options = {
       method: 'POST',
-      uri: this.props.apiUrl +'api/getAssignToSection/submit/',
+      uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
       body:{
         assignmentid: this.props.AssignmentID,
         sectionIDs: this.state.Assignment.Section,

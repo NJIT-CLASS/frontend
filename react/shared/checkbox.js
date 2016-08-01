@@ -1,5 +1,5 @@
 import React from 'react';
-//have to go into react-checkbox-list node_module and manually alter checkboxes to match style 
+//have to go into react-checkbox-list node_module and manually alter checkboxes to match style
 class Checkbox extends React.Component{
   constructor(props){
     super(props);
@@ -21,7 +21,8 @@ class Checkbox extends React.Component{
       checkedValue = this.state.Clicked;
     }
 
-    return(<div className={checkedValue ? "checkbox checked" : "checkbox"}  style={styles} onClick={() => {
+    return(<div className={checkedValue ? "checkbox checked" : "checkbox"}  style={styles} onClick={(e) => {
+      e.preventDefault();
       this.setState({
         Clicked: this.state.Clicked ? false: true
       });

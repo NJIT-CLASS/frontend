@@ -10,7 +10,6 @@ import request from 'request';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import ErrorComponent from './errorComponent';
 import SuperViewComponent from './superViewComponent';
-import GradeViewComponent from './gradeViewComponent';
 
 class GradedComponent extends React.Component {
   constructor(props){

@@ -1,6 +1,8 @@
+/* This Component is contains the workflow input fields. It gets its data and functions from the AssignmentEditorContainer.
+*/
 import React from 'react';
 import Dropdown from 'react-dropdown';
-import NumericInput from 'react-numeric-input';
+import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
 
 class ProblemDetailsComponent extends React.Component{
@@ -60,7 +62,8 @@ class ProblemDetailsComponent extends React.Component{
               <div className='inner'>
                 <label>How many people per group</label>
                 <br />
-                <NumericInput min={1}
+                <NumberField min={1}
+                              max={25}
                               value={this.props.WorkflowDetails.WA_default_group_size}
                               onChange={this.props.changeWorkflowData.bind(this,'WA_default_group_size',this.props.workflowIndex)}/>
               </div>
@@ -68,7 +71,8 @@ class ProblemDetailsComponent extends React.Component{
               <div className='inner'>
                 <label>How many problems of this type</label>
                 <br />
-                  <NumericInput min={1}
+                  <NumberField min={1}
+                                max={20}
                                 value={this.props.WorkflowDetails.WA_number_of_sets}
                                 onChange={this.props.changeWorkflowData.bind(this,'WA_number_of_sets',this.props.workflowIndex)}/>
               </div>

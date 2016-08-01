@@ -40,3 +40,7 @@ jspm_packages
 fallback_settings.js
 
 .build
+
+runFront.bat
+
+runBack.bat

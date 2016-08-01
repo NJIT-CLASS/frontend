@@ -1,6 +1,8 @@
+/* This Component is contains the assignment input fields. It gets its data and functions from the AssignmentEditorContainer.
+*/
 import React from 'react';
 import Dropdown from 'react-dropdown';
-import NumericInput from 'react-numeric-input';
+import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
 
 
@@ -8,14 +10,16 @@ class AssignmentDetailsComponent extends React.Component{
     constructor(props){
       super(props);
 
+      /*
+      Props:
+            -
+      */
+
       this.state = {
         ShowContent: true,
         NumberofWorkflows: 1
       };
     }
-
-
-    //assignment details functions
 
     render(){
 
@@ -48,14 +52,11 @@ class AssignmentDetailsComponent extends React.Component{
               <div className='inner'>
                 <label> How Many Different Types of Problems</label>
                 <br />
-                <NumericInput
-                  value={this.props.AssignmentActivityData.NumberofWorkflows}
-                  min={1}
-                  max={100}
-                  size={6}
+                <NumberField min={1}
+                            max={100}
+                            value={this.props.AssignmentActivityData.NumberofWorkflows}
+                            onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')} />
 
-                  onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')}
-                  />
               </div>
 
               <div className="inner block">
