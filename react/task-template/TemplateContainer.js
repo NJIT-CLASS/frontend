@@ -80,14 +80,11 @@ class TemplateContainer extends React.Component {
         };
 
         request(options, (err, res, body) => {
-          console.log(err,res);
 
           if(res.statusCode == 400){
               this.setState({Error: true});
               return;
           }
-
-
           this.setState({
             //set create's task data to pass down
             Loaded:true,
@@ -126,7 +123,7 @@ class TemplateContainer extends React.Component {
             return;
           }
           else{
-            let currentTaskStatus = bod.superTask[0].Status;
+            let currentTaskStatus = bod.superTask[bod.superTask.length - 1].Status;
             let taskList = bod.superTask;
             this.setState({
               Data: taskList,
@@ -152,7 +149,11 @@ class TemplateContainer extends React.Component {
         }
         if(!this.state.Loaded){ // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
           return(
-            <div></div>
+            <div>
+            <div className="placeholder"></div>
+              <i style={{marginLeft: '50%'}} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
+              <span className="sr-only" >Loading...</span>
+            </div>
           );
         }
 
@@ -246,7 +247,7 @@ class TemplateContainer extends React.Component {
         }
 
         return(
-          <div className="super-container">
+          <div>
             <Tabs
               onSelect={this.handleSelect}
               selectedIndex={0}

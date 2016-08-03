@@ -52,7 +52,7 @@ class ProblemDetailsComponent extends React.Component{
 
 
       return (
-        <div className="section">
+        <div className="section card-1">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className='section-divider'>

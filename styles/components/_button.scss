@@ -4,6 +4,7 @@ button {
     border-radius: 3px;
     border-color: #1ab394;
     float: right;
+    align-self: flex-end;
     color: #ffffff;
     font-size: 18px;
     padding: 8px;
@@ -74,47 +75,5 @@ button {
   }
   table tr td {
     border: hidden;
-  }
-}
-
-.input-group{
-  display: block;
-
-
-  .input-group-btn{
-    display:inline-block;
-    margin: 10px 0px;
-
-    vertical-align: top;
-    button{
-      background-color: #E6E6E6;
-      margin:0px;
-      height:38px;
-      width:30px !important;
-      text-align: center;
-      border-radius: 0;
-      border: 1px solid #999999;
-
-        i{
-          color: #404040;
-          height:10px;
-          margin-left: auto;
-          margin-right: auto;
-          margin-bottom: 10px;
-        }
-    }
-    button:hover{
-      background-color: #cccccc;
-    }
-  }
-
-  input {
-    display:inline-block;
-    vertical-align: top;
-    text-align: center;
-    height:38px;
-    width:120px;
-    padding:10px 0px !important;
-
   }
 }

@@ -109,7 +109,8 @@ class SuperViewComponent extends React.Component {
         );
 
       }
-      else if(this.props.TaskActivityFields[idx].field_type == "numeric"){
+      else if(this.state.TaskActivityFields[idx].field_type== "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
+
         if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
           let fieldView = (<div>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
@@ -143,7 +144,59 @@ class SuperViewComponent extends React.Component {
             </div>
           );
         }
+        else if(this.state.TaskActivityFields[idx].assessment_type == "pass"){
+          let fieldView = (<div>
+            <div key={idx + 600}><b>{fieldTitle}</b></div>
+            <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
+            </div>
+            <br />
+            {justification}
+          </div>);
+
+
+          return (<div key={idx+200}>
+              {fieldView}
+              <br key={idx+500}/>
+            </div>
+          );
+        }
+        else if(this.state.TaskActivityFields[idx].assessment_type == "evaluation"){
+          let fieldView = (<div>
+            <div key={idx + 600}><b>{fieldTitle}</b></div>
+            <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
+            </div>
+            <br />
+            {justification}
+          </div>);
+
+
+          return (<div key={idx+200}>
+              {fieldView}
+              <br key={idx+500}/>
+            </div>
+          );
+        }
+        else{
+          return(<div> Hi</div>);
+        }
       }
+      else if(this.state.TaskActivityFields[idx].field_type == "numeric"){
+
+          let fieldView = (<div>
+            <div key={idx + 600}><b>{fieldTitle}</b></div>
+            <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
+            </div>
+            <br />
+            {justification}
+          </div>);
+
+
+          return (<div key={idx+200}>
+              {fieldView}
+              <br key={idx+500}/>
+            </div>
+          );
+        }
       else{
         return (<div></div>);
       }

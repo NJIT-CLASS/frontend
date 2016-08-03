@@ -1,6 +1,6 @@
 echo Starting server
 set dbUser=alan
-set dbPass=101660
+set dbPass=pass
 set dbHost=localhost
 set database=pla
 set serverPort=3000

@@ -46,7 +46,6 @@ class SuperComponent extends React.Component {
 
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
-        console.log(tdata, tAdata)
         //checks to see if either data prop is null
         if(!tdata ){
           tdata = {};
@@ -284,6 +283,8 @@ class SuperComponent extends React.Component {
         }
 
     render(){
+
+          console.log(this.state.TaskData)
           let content= null;
           let infoMessage = null;
           let TA_rubric = null;
@@ -376,7 +377,7 @@ class SuperComponent extends React.Component {
                 rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
               }
 
-              rubricView = ( <div>
+              rubricView = ( <div key={1200}>
                   <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)}> {rubricButtonText}</button>
                   <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
                     {rubric_content}
@@ -406,7 +407,7 @@ class SuperComponent extends React.Component {
 
             if(this.state.TaskActivityFields[idx].instructions != ''){ //if instructions are empty, don't display anything
               instructions = (
-                <div>
+                <div key ={1100}>
                   <br />
                   <div className="regular-text"><b>{fieldTitleText} Instructions:</b> {this.state.TaskActivityFields[idx].instructions}</div>
                   <br />
@@ -414,6 +415,7 @@ class SuperComponent extends React.Component {
               );
             }
 
+            //////// Depending on field type, render different things
 
             if(this.state.TaskActivityFields[idx].field_type == "numeric"){
                 let fieldInput = null;
@@ -561,7 +563,7 @@ class SuperComponent extends React.Component {
                     {instructions}
                     {rubricView}
                     <br />
-                    <label>Choose from one of the labels below</label> <br />
+                    <label>Choose from one of the labels below</label>
                     <Dropdown key={idx+1000}
                               options={labels}
                               selectedValue={this.state.TaskData[idx][0]}

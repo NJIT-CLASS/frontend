@@ -3,7 +3,7 @@
 */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input';
+import NumberField from '../../shared/numberField'
 var moment = require('moment');
 import Datetime from 'react-datetime';
 
@@ -56,7 +56,7 @@ render(){
     StartNow =
     (
       <div>
-        <NumericInput min={0} max={100} value= {this.props.Tasks.Time / 1440} onChange={this.props.onChangeMultipleTasks.bind(this,this.props.index, this.props.workflowIndex)}/>
+        <NumberField min={0} max={100} value= {this.props.Tasks.Time / 1440} onChange={this.props.onChangeMultipleTasks.bind(this,this.props.index, this.props.workflowIndex)}/>
         <h6 style={style}> Days </h6>
       </div>
     )

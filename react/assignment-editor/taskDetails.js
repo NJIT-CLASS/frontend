@@ -3,7 +3,7 @@ import Dropdown from 'react-dropdown';
 var moment = require('moment');
 import Checkbox from '../shared/checkbox';
 import NumberField from '../shared/numberField';
-import ToggleSwitch from './toggleSwitch';
+import ToggleSwitch from '../shared/toggleSwitch';
 var CheckBoxList = require('react-checkbox-list');
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
@@ -11,8 +11,8 @@ import {RadioGroup, Radio} from 'react-radio-group';
 class TaskDetailsComponent extends React.Component{
 
   // PROPS:
-//  - all the methods
-//  - index, TaskActivityData, Opened
+  //  - all the methods
+  //  - index, TaskActivityData, Opened
 
     constructor(props){
       super(props);
@@ -387,12 +387,17 @@ class TaskDetailsComponent extends React.Component{
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
 
-        <div className="section">
+        <div className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
                                                                  NewTask: false});}} >{title}</h2>
-              <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
-
+              <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>{/* this decides whether to hide the content or not. task-hiding displays nothing*/}
                 <div className="section-divider">
+                  <div className="inner">
+                    <label>Display name</label>
+                    <br />
+                    <input type="text" placeholder="Display Name "style={style} value={this.props.TaskActivityData.TA_display_name}
+                            onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index, this.props.workflowIndex)} ></input><br />
+                  </div>
                   <div className="inner">
                     <label>Does this task require any file uploads?</label>
                     <Checkbox isChecked={this.state.FileUp} click={ ()=>{
@@ -402,13 +407,6 @@ class TaskDetailsComponent extends React.Component{
                         }}  />
                   </div>
                   {fileUploadOptions}
-
-                  <div className="inner " >
-                    <label>Display name</label>
-                    <br />
-                    <input type="text" placeholder="Display Name "style={style} value={this.props.TaskActivityData.TA_display_name}
-                            onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index, this.props.workflowIndex)} ></input><br />
-                  </div>
 
                   <br />
                   <div className="inner block">
