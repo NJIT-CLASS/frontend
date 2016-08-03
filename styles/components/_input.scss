@@ -3,7 +3,11 @@ input[type=password],
 input[type=email],
 input[type=date],
 textarea {
-    width: 400px;
+    width: 20vw;
+    @media screen and (max-width: 600px) {
+      width: calc(100vw - 90px;);
+     }
+    height: 13%;
     font-size: 18px;
     box-sizing: border-box;
     padding: 10px;
@@ -31,39 +35,67 @@ textarea {
     }
 }
 
-.react-numeric-input{
-      input {
-        height:35px !important;
-        width:150px;
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: 5px !important;
-
-      }
-      b { display: inline !important;
-          margin-left: 8px !important;
-          margin-right: 8px !important;
-          height: 33px !important;
-          margin-top: 3px !important;
-          border-radius: 2px 2px 0 0 !important;
-          border-width : 1px 1px 0 1px !important;
-       }
-
-
-
-}
 
 .big-text-field {
-  width: 50%;
-  height: 150px;
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
+  width: 65%;
+  height: 20%;
+  font-size: 18px;
   box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #e5e6e7;
   line-height: 1.5;
-  overflow: auto;
-  display:block;
-  max-width: 80%;
-  max-height: 15%;
-  font-size: 14px;
+  overflow:auto;
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+.input-group{
+  display: block;
+
+
+  .input-group-btn{
+    display:inline-block;
+    margin: 10px 0px;
+
+    vertical-align: top;
+    button{
+      background-color: #E6E6E6;
+      margin:0px;
+      height:38px;
+      width:30px !important;
+      text-align: center;
+      border-radius: 0;
+      border: 1px solid #999999;
+
+        i{
+          color: #404040;
+          height:10px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 10px;
+        }
+    }
+    button:hover{
+      background-color: #cccccc;
+    }
+  }
+
+  input {
+    display:inline-block;
+    vertical-align: top;
+    text-align: center;
+    height:38px;
+    width:120px;
+    padding:10px 0px !important;
+
+  }
+}
+
+
 .react-rater {
   display: inline-block;
   line-height: normal;

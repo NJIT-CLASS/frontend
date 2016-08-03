@@ -17,10 +17,14 @@
     }
 
     .container {
+      @media screen and (max-width: 600px) {
+        margin:2px;
+      }
         margin: 10px;
         display: flex;
         flex-wrap: wrap;
         align-items: flex-start;
+        justify-content: flex-start;
         position: relative;
     }
 }

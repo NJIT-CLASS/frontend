@@ -93,6 +93,7 @@ class AssignmentEditorContainer extends React.Component {
         };
 
         let x = this; //context preserving variable, needed when using inside function
+
         // this function cusotmizes the generic task tempate above to the type of task it needs;
         var createTaskObject = function(TA_type, TA_name, TA_display_name, TA_at_duration_end, TA_what_if_late, TA_assignee_constraint, TA_is_final_grade) {
             let newTask = cloneDeep(x.blankTask)
@@ -107,630 +108,59 @@ class AssignmentEditorContainer extends React.Component {
             return newTask;
         }
 
+      //////////// Defining all Task Types Here /////////
         this.createProblemTask = createTaskObject(TASK_TYPES.CREATE_PROBLEM, TASK_TYPE_TEXT.create_problem, 'Create Problem', 'late', 'Keep same participant', [
             'student', 'individual', {}
         ], false);
 
-        this.editProblemTask = {
-            TA_type: TASK_TYPES.EDIT,
-            TA_name: TASK_TYPE_TEXT.edit,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Edit Problem',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Edit this problem',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'P1.1',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.editProblemTask = createTaskObject(TASK_TYPES.EDIT,TASK_TYPE_TEXT.edit, 'Edit Problem', 'late', 'Keep same participant', [
+            'instructor', 'group', {}
+        ], false);
 
-        this.commmentProblemTask = {
-            TA_type: TASK_TYPES.COMMENT,
-            TA_name: TASK_TYPE_TEXT.comment,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Comment on Problem',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Comment on this problem',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'P1.1',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.commmentProblemTask = createTaskObject(TASK_TYPES.COMMENT,TASK_TYPE_TEXT.comment, 'Comment on Problem', 'late', 'Keep same participant', [
+            'instructor', 'group', {}
+        ], false);
 
-        this.solveProblemTask = {
-            TA_type: TASK_TYPES.SOLVE_PROBLEM,
-            TA_name: TASK_TYPE_TEXT.solve_problem,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Solve the Problem',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Solve this problem',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.solveProblemTask = createTaskObject(TASK_TYPES.SOLVE_PROBLEM,TASK_TYPE_TEXT.solve_problem, 'Solve the Problem', 'late', 'Keep same participant', [
+            'student', 'individual', {}
+        ], false);
 
-        this.gradeSolutionTask = {
-            TA_type: TASK_TYPES.GRADE_PROBLEM,
-            TA_name: TASK_TYPE_TEXT.grade_problem,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Grade the Solution',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Grade this response',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 2,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.1',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: 'grade',
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "assessment",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.gradeSolutionTask = createTaskObject(TASK_TYPES.GRADE_PROBLEM,TASK_TYPE_TEXT.grade_problem, 'Grade the Solution', 'late', 'Keep same participant', [
+            'student', 'individual', {}
+        ], true);
 
-        this.critiqueSolutionTask = {
-            TA_type: TASK_TYPES.CRITIQUE,
-            TA_name: TASK_TYPE_TEXT.critique,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Critique Solution',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Critique this student\'s response',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 2,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.1',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.critiqueSolutionTask = createTaskObject(TASK_TYPES.CRITIQUE,TASK_TYPE_TEXT.critique, 'Critique the Solution', 'late', 'Keep same participant', [
+            'student', 'individual', {}
+        ], true);
 
-        this.needsConsolidationTask = {
-            TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
-            TA_name: TASK_TYPE_TEXT.needs_consolidation,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Needs Consolidation',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Determine whether the grades need consolidation',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.2',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.needsConsolidationTask = createTaskObject(TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPE_TEXT.needs_consolidation, 'Needs Consolidation', null, null, [
+            'student', 'individual', {}
+        ], true);
 
-        this.consolidationTask = {
-            TA_type: TASK_TYPES.CONSOLIDATION,
-            TA_name: TASK_TYPE_TEXT.consolidation,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Consolidate',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            SimpleGradePointReduction: 0,
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Consolidate',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.3',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.consolidationTask = createTaskObject(TASK_TYPES.CONSOLIDATION,TASK_TYPE_TEXT.consolidation, 'Consolidate', 'late', 'Keep same participant', [
+            'student', 'individual', {}
+        ], true);
 
-        this.disputeTask = {
-            TA_type: TASK_TYPES.DISPUTE,
-            TA_name: TASK_TYPE_TEXT.dispute,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'resolved',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Dispute your grades',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Dispute',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.4',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.disputeTask = createTaskObject(TASK_TYPES.DISPUTE,TASK_TYPE_TEXT.dispute, 'Dispute the Grades', 'resolved', 'Consider Resolved', [
+            'student', 'individual', {}
+        ], false);
 
-        this.resolveDisputeTask = {
-            TA_type: TASK_TYPES.RESOLVE_DISPUTE,
-            TA_name: TASK_TYPE_TEXT.resolve_dispute,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Resolve',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            SimpleGradePointReduction: 0,
-            TA_is_final_grade: false,
-            TA_overall_instructions: 'Resolve the Dispute',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'S1.5',
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40',
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
-        };
+        this.resolveDisputeTask = createTaskObject(TASK_TYPES.RESOLVE_DISPUTE, TASK_TYPE_TEXT.resolve_dispute, 'Resolve the Dispute', 'late', 'Keep same participant', [
+            'student', 'individual', {}
+        ], true);
 
-        this.completeTask = {
-            TA_type: TASK_TYPES.COMPLETED,
-            TA_name: TASK_TYPE_TEXT.completed,
-            SimpleGradePointReduction: 0,
-            AllowConsolidations: [
-                false, false
-            ],
-            TA_file_upload: [
-                [
-                    0, "mandatory"
-                ],
-                [0, 'optional']
-            ],
-            TA_due_type: [
-                'duration', 4320
-            ],
-            TA_start_delay: 0,
-            TA_at_duration_end: 'late',
-            TA_what_if_late: 'Keep same participant',
-            TA_display_name: 'Complete',
-            TA_one_or_separate: false,
-            TA_assignee_constraint: [
-                'student', 'individual', {}
-            ],
-            TA_simple_grade: 'none',
-            TA_is_final_grade: false,
-            TA_overall_instructions: '',
-            TA_overall_rubric: '',
-            TA_allow_reflection: [
-                'none', "don't wait"
-            ],
-            TA_allow_assessment: 'none',
-            TA_allow_revisions: false,
-            TA_number_participant: 1,
-            TA_function_type: 'max',
-            TA_allow_dispute: false,
-            TA_leads_to_new_problem: false,
-            TA_leads_to_new_solution: false,
-            TA_visual_id: 'C1',
-            TA_fields: {
-                number_of_fields: 0,
-                field_titles: []
-            }
-        };
+        this.completeTask = createTaskObject(TASK_TYPES.COMPLETED, TASK_TYPE_TEXT.completed, 'Complete', null, null, [
+            'student', 'individual', {}
+        ], false);
+
+       ///----------------------
 
         let standardWorkflow = [cloneDeep(this.createProblemTask)];
         // let standardWorkflow = [this.createProblemTask, this.editProblemTask, this.solveProblemTask, this.gradeSolutionTask,
         //   this.needsConsolidationTask, this.consolidationTask, this.disputeTask, this.resolveDisputeTask, this.completeTask];
 
 
-
+        //template for the standard workflow
         this.blankWorkflow = {
             WA_name: 'Problem',
             WA_type: '',
@@ -766,11 +196,13 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     onSubmit() {
-        console.log('clicked');
-
         let sendData = cloneDeep(this.state.AssignmentActivityData);
         sendData.WorkflowActivity = this.state.WorkflowDetails;
-        console.log(typeof(sendData.AA_course) === 'number')
+        //need to add Completed task to each workflow
+        sendData.WorkflowActivity.forEach((workflow, idx) => {
+          workflow.Workflow.push(this.createNewCompleteTask(idx));
+        });
+
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/assignment/create',
@@ -781,9 +213,9 @@ class AssignmentEditorContainer extends React.Component {
         };
 
         request(options, (err, res, body) => {
-            console.log(res, err)
             if (err == null && res.statusCode == 200) {
                 console.log('Submitted Successfully');
+                document.body.scrollTop = document.documentElement.scrollTop = 0;
                 this.setState({SubmitSuccess: true});
             } else {
                 console.log('Submit failed');
@@ -796,8 +228,8 @@ class AssignmentEditorContainer extends React.Component {
     addAssessment(index, workflowIndex) {
         //add a critique task to the tree-array; possibly consolidate and needs consol.
         let newData = this.state.WorkflowDetails;
-
-        newData[workflowIndex].Workflow.push(cloneDeep(this.gradeSolutionTask));
+        let newTask = this.createNewTask(this.gradeSolutionTask,parentIndex, workflowIndex, 'Comment on');
+        newData[workflowIndex].Workflow.push(newTask);
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == index;
@@ -822,9 +254,8 @@ class AssignmentEditorContainer extends React.Component {
 
     addConsolidationToReflect(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-
-        newData[workflowIndex].Workflow.push(cloneDeep(this.needsConsolidationTask));
-        newData[workflowIndex].Workflow.push(cloneDeep(this.consolidationTask));
+        newData[workflowIndex].Workflow.push(this.createNewTask(this.needsConsolidationTask, parentIndex, workflowIndex, 'Needs Consolidation of'));
+        newData[workflowIndex].Workflow.push(this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate'));
 
         let consolidateNode = this.tree.parse({
             id: newData[workflowIndex].Workflow.length - 2,
@@ -890,8 +321,8 @@ class AssignmentEditorContainer extends React.Component {
     addDisputeToReflect(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
 
-        newData[workflowIndex].Workflow.push(cloneDeep(this.disputeTask));
-        newData[workflowIndex].Workflow.push(cloneDeep(this.resolveDisputeTask));
+        newData[workflowIndex].Workflow.push(this.createNewTask(this.disputeTask, parentIndex, workflowIndex, 'Dispute of '));
+        newData[workflowIndex].Workflow.push(this.createNewTask(this.resolveDisputeTask,parentIndex, workflowIndex, 'Resolve Dispute of'));
 
         let disputeNode = this.tree.parse({
             id: newData[workflowIndex].Workflow.length - 2,
@@ -919,9 +350,11 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
+
     addReflection(index, workflowIndex) { // add edit to slot 1 of 4 for nodes
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow.push(cloneDeep(this.editProblemTask));
+        let newTask = this.createNewTask(this.editProblemTask,index, workflowIndex, 'Edit')
+        newData[workflowIndex].Workflow.push(newTask);
 
         let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == index;
@@ -942,7 +375,7 @@ class AssignmentEditorContainer extends React.Component {
     addSolve(index, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         let newSolve = cloneDeep(this.solveProblemTask);
-        newData[workflowIndex].Workflow.push(cloneDeep(this.solveProblemTask));
+        newData[workflowIndex].Workflow.push(newSolve);
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == index;
@@ -974,9 +407,9 @@ class AssignmentEditorContainer extends React.Component {
         let newTask = {};
 
         if (value == 'grade') {
-            newTask = this.gradeSolutionTask;
+            newTask = this.createNewTask(this.gradeSolutionTask,parentIndex, workflowIndex, 'Grade');
         } else if (value == 'critique') {
-            newTask = this.critiqueSolutionTask;
+            newTask = this.createNewTask(this.critiqueSolutionTask,parentIndex, workflowIndex, 'Critique');
         } else {
             return;
         }
@@ -996,14 +429,27 @@ class AssignmentEditorContainer extends React.Component {
         let newTask = {};
 
         if (value == 'comment') {
-            newTask = this.commmentProblemTask;
+            newTask = this.createNewTask(this.commmentProblemTask,parentIndex, workflowIndex, 'Comment on');
         } else if (value == 'edit') {
-            newTask = this.editProblemTask;
+          newTask = this.createNewTask(this.editProblemTask, parentIndex, workflowIndex, 'Edit');
         }
 
         newData[workflowIndex].Workflow[changeIndex] = newTask;
 
         this.setState({WorkflowDetails: newData});
+    }
+    createNewTask(taskType, index, workflowIndex, string){
+      let prevTaskName = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_name;
+      let newTask = cloneDeep(taskType);
+      newTask.TA_name = string+" "+ prevTaskName;
+      newTask.TA_display_name =string+" "+prevTaskName;
+      return newTask;
+    }
+    createNewCompleteTask(workflowIndex){
+      let newTask = cloneDeep(this.completeTask);
+      newTask.TA_name = "Workflow " + (workflowIndex + 1) + " Complete"
+      newTask.TA_display_name = "Workflow " + (workflowIndex + 1) + " Complete"
+      return newTask;
     }
 
     getAssessIndex(parentIndex, workflowIndex) {
@@ -1975,7 +1421,7 @@ class AssignmentEditorContainer extends React.Component {
         let tasksView = workflow.Workflow.map( function(task, taskIndex){
           // will probably need to move this into problemDetails.js to support
           // multiple workflows
-          if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
+          if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || task.TA_type == TASK_TYPES.COMPLETED){
             return null;
           }
           if(Object.keys(task).length !== 0 ){
@@ -2054,7 +1500,7 @@ class AssignmentEditorContainer extends React.Component {
           <br />
           {workflowsView}
           <br />
-          <button type="button" className="divider"onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
+          <button type="button" action="#" className="divider"onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
         </div>
       );
     }

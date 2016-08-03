@@ -1,5 +1,5 @@
 <form name="currentCourseList" role="form" class="section" method="POST" action="#">
-    <h2 class="title">Current Courses</h2>
+    <h2 class="title">{{__ "Current Courses"}}</h2>
     <div class="section-content">
 
 
@@ -40,10 +40,17 @@
 		<div class="col-xs-6">
 
 		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">
-		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
+		 <thead><tr><th>{{__ "Assignment"}}</th><th>{{__ "Type"}}</th><th>{{__ "Course"}}</th><th>{{__ "Due Date"}}</th> </tr></thead>
 		<tbody>
       {{#each pendingTasksList}}
-      <tr><td><a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{AssignmentInstance.Assignment.Name}}</td><td>{{TaskActivity.Name}}</td><td>{{AssignmentInstance.Section.Course.Name}}</td><td>{{dateFormat EndDate}}</td><tr>
+      <tr>
+        <td data-label={{__ 'Assignment'}}>
+          <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{AssignmentInstance.Assignment.Name}}
+        </td>
+        <td>{{TaskActivity.Name}}</td>
+        <td data-label={{__ 'Course'}}>{{AssignmentInstance.Section.Course.Name}}</td>
+        <td>{{dateFormat EndDate}}</td>
+      <tr>
         {{/each}}
       <!--
 			 <tr class="odd"><td><a href="/createproblem">Test Assignment 2 - Test</a></td><td>Create Problem</td><td>IS 350 — Capstone Test — Spring 2016 Simulated</td><td><span title="Sun, Feb 14, 2016 8:05 PM">2 days </span></td> </tr>
