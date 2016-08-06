@@ -39,13 +39,10 @@ class TaskDetailsComponent extends React.Component{
 
 
     render(){
-      let style={marginRight: "10px",
-                marginLeft:'10px'};
-      let instyle = {display: "inline-block"};
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
-      let onTaskEndValues = [{value:'late', label: "Late"},{value:'resolved', label: 'Resolved'},{value:'abandon', label: 'Abandon'},{value:'complete', label:'Complete'}];
+      let onTaskEndValues = [{value:'late', label: 'Late'},{value:'resolved', label: 'Resolved'},{value:'abandon', label: 'Abandon'},{value:'complete', label:'Complete'}];
       let onLateValues = [{value:'Keep same participant', label:'Keep Same Participant'}, {value:'Allocate new participant', label: 'Allocate New Participant'}, {value:'Allocate to instructor', label: 'Allocate to Instructor'},{value: 'Allocate to different group member', label: 'Allocate to Different Group Member'}, {value: 'Consider resolved', label: 'Consider Resolved'}];
       let reflectionValues = [{value: 'edit', label:'Edit'},{value:'comment', label:'Comment'}];
       let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'}];
@@ -65,57 +62,13 @@ class TaskDetailsComponent extends React.Component{
       let inSameGroupAsOptions = null;
       let notInOptions = null;
       let chooseFromOptions = null;
+      let assigneeRelations = null;
 
 
       let fileUploadOptions= (<div style={{display:'inline-block',
                                           width:'100px'}}></div>);
 
-      if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
-        let showConsol= this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
-          <div>
-            <label>Should the assessments be consolidated</label>
-            <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index, this.props.workflowIndex)}/>
-            <br />
-            <label>Grading Threshold</label>
-            <br />
-            <label>Points</label><input type="radio"></input>
-            <label>Percentage</label><input type="radio"></input>
-            <br />
-            <NumberField
-                value={2}
-                min={0}
-                size={6} />
-              <br />
-            <label>To be consolidated, the grade should be: </label>
-            <Dropdown options={['max','sum','average']} />
-          </div>) : null;
-
-        let showDispute = (<div>
-          <label> Can students dispute this reflection </label>
-          <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index, this.props.workflowIndex)}/>
-          </div>);
-
-        allowAssesmentOptions = (<div>
-          <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
-          <label>Who can assess</label>
-          <br />
-          <label>Students</label><Checkbox />
-          <label>Instructors</label><Checkbox />
-          <br />
-          <label>Number of Assessors</label>
-          <br />
-          <NumberField
-            value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
-            min={1}
-            max={20}
-            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
-            <br />
-            {showConsol}
-            <br />
-            {showDispute}
-        </div>)
-      }
-
+    /// TA Simple Grade Display Logic
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
           <label>Reduce this by what % per day late</label><br />
@@ -129,7 +82,7 @@ class TaskDetailsComponent extends React.Component{
             <Checkbox click={this.props.changeTASimpleGradeCheck.bind(this, this.props.index, this.props.workflowIndex)} />
           </div>);
       }
-
+      //TA Assignee Contsraint Display Logic
       if(this.state.ShowAssigneeConstraintSections[0]){
         sameAsOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
           {taskCreatedList.map(function(task){
@@ -179,11 +132,60 @@ class TaskDetailsComponent extends React.Component{
       </div>);
       }
 
+      if(this.props.index != 0){ //if it's the first task, don't show assignee contraint relation part
+        assigneeRelations = (<div className="inner">
+          <label>Should this assignee have a specific relation to an assignee of another task in this problem</label>
+          <br />
+          <label>None</label>
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex) } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
+          <label>New to Problem</label>
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
+          <label>Same as</label>
+          <Checkbox click={()=> {
+              this.props.checkAssigneeConstraints(this.props.index, 'same_as', this.props.workflowIndex);
+              let newAssignee = this.state.ShowAssigneeConstraintSections;
+              newAssignee[0] = !this.state.ShowAssigneeConstraintSections[0];
+              this.setState({ShowAssigneeConstraintSections: newAssignee});
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['same_as'] ? true : false }
+              style={{marginRight: '8px'}}/>
+          <label>In same group as</label>
+          <Checkbox click={()=> {
+              this.props.checkAssigneeConstraints(this.props.index, 'group_with_member', this.props.workflowIndex)
+              let newAssignee = this.state.ShowAssigneeConstraintSections;
+              newAssignee[1] = !this.state.ShowAssigneeConstraintSections[1];
+              this.setState({ShowAssigneeConstraintSections: newAssignee});
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['group_with_member'] ? true : false }
+            style={{marginRight: '8px'}}/>
+          <label>Not in</label>
+          <Checkbox click={()=> {
+              this.props.checkAssigneeConstraints(this.props.index, 'not', this.props.workflowIndex)
+              let newAssignee = this.state.ShowAssigneeConstraintSections;
+              newAssignee[2] = !this.state.ShowAssigneeConstraintSections[2];
+              this.setState({ShowAssigneeConstraintSections: newAssignee});
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not'] ? true : false }
+              style={{marginRight: '8px'}} />
+          <label>Choose from </label>
+          <Checkbox click={()=> {
+              this.props.checkAssigneeConstraints(this.props.index, 'choose_from', this.props.workflowIndex)
+              let newAssignee = this.state.ShowAssigneeConstraintSections;
+              newAssignee[3] = !this.state.ShowAssigneeConstraintSections[3];
+              this.setState({ShowAssigneeConstraintSections: newAssignee});
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['choose_from'] ? true : false }
+                />
 
+              <br />
+          {sameAsOptions}
+          {inSameGroupAsOptions}
+          {notInOptions}
+          {chooseFromOptions}
+        </div>)
+
+      }
+      // TA File Upload Display Logic
       if(this.state.FileUp){
         fileUploadOptions = (
           <div style={{display: "inline-block"}}>
-            <div className="inner" style={instyle}>
+            <div className="inner"  >
               <label> How many required files</label> <br />
               <NumberField
                   min={0}
@@ -191,7 +193,7 @@ class TaskDetailsComponent extends React.Component{
                   onChange={this.props.changeFileUpload.bind(this, this.props.index,0,0, this.props.workflowIndex)}
                   value={this.props.TaskActivityData.TA_file_upload[0][0]} />
             </div>
-            <div className="inner" style={instyle}>
+            <div className="inner"  >
               <label> Maximum number of optional files</label> <br />
               <NumberField
                   min={0}
@@ -203,16 +205,65 @@ class TaskDetailsComponent extends React.Component{
           </div>);
       }
 
+      //TA At Duration End Display Logic to show TA What if Late
       if(this.props.TaskActivityData.TA_at_duration_end == 'late'){
         whatIfLateView = (<div>
           <label> What happens if late</label>
         <Dropdown options={onLateValues}
           onChange={ this.props.changeDropdownData.bind(this,'TA_what_if_late',this.props.index, this.props.workflowIndex)}
-            value={this.props.TaskActivityData.TA_what_if_late} />
+           />
           </div>
         )
       }
 
+      //TA Allow Assessment Display Logic
+      if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
+        let showConsol= this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
+          <div>
+            <label>Should the assessments be consolidated</label>
+            <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index, this.props.workflowIndex)}/>
+            <br />
+            <label>Grading Threshold</label>
+            <br />
+            <label>Points</label><input type="radio"></input>
+            <label>Percentage</label><input type="radio"></input>
+            <br />
+            <NumberField
+                value={2}
+                min={0}
+                size={6} />
+              <br />
+            <label>To be consolidated, the grade should be: </label>
+            <Dropdown options={['max','sum','average']} />
+          </div>) : null;
+
+        let showDispute = (<div>
+          <label> Can students dispute this reflection </label>
+          <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index, this.props.workflowIndex)}/>
+          </div>);
+
+        allowAssesmentOptions = (<div>
+          <Dropdown options={assessmentValues}  onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_allow_assessment} />
+          <label>Who can assess</label>
+          <br />
+          <label>Students</label><Checkbox />
+          <label>Instructors</label><Checkbox />
+          <br />
+          <label>Number of Assessors</label>
+          <br />
+          <NumberField
+            value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
+            min={1}
+            max={20}
+            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
+            <br />
+            {showConsol}
+            <br />
+            {showDispute}
+        </div>)
+      }
+
+      // TA Allow reflection Display Logic
       if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
 
         let showConsol= this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
@@ -332,7 +383,7 @@ class TaskDetailsComponent extends React.Component{
 
                   <div className="inner" >
                     <label>Field Name</label> <br />
-                    <input type="text" style={style} placeholder="Field Name"
+                    <input type="text"   placeholder="Field Name"
                       value={this.props.TaskActivityData.TA_fields[index].title}
                       onChange={this.props.changeFieldName.bind(this,this.props.index,index, this.props.workflowIndex)}></input>
                   </div>
@@ -386,7 +437,6 @@ class TaskDetailsComponent extends React.Component{
 
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
-
         <div className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
                                                                  NewTask: false});}} >{title}</h2>
@@ -395,11 +445,11 @@ class TaskDetailsComponent extends React.Component{
                   <div className="inner">
                     <label>Display name</label>
                     <br />
-                    <input type="text" placeholder="Display Name "style={style} value={this.props.TaskActivityData.TA_display_name}
+                    <input type="text" placeholder="Display Name "  value={this.props.TaskActivityData.TA_display_name}
                             onChange={this.props.changeInputData.bind(this,'TA_display_name', this.props.index, this.props.workflowIndex)} ></input><br />
                   </div>
                   <div className="inner">
-                    <label>Does this task require any file uploads?</label>
+                    <label>Are any file uploads required?</label>
                     <Checkbox isChecked={this.state.FileUp} click={ ()=>{
                         this.setState({
                           FileUp: this.state.FileUp ? false: true
@@ -502,7 +552,7 @@ class TaskDetailsComponent extends React.Component{
                   <div className="inner" >
                     <label>What happens when the task ends</label> <br/>
                     <Dropdown options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index, this.props.workflowIndex)}
-                        value={this.props.TaskActivityData.TA_at_duration_end} />
+                       />
 
                     {whatIfLateView}
                     </div>
@@ -552,53 +602,7 @@ class TaskDetailsComponent extends React.Component{
                                   <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraint[1] == 'group'}/>
                     </div>
 
-                    <div className="inner">
-                      <label>Should this assignee have a specific relation to an assignee of another task in this problem</label>
-                      <br />
-                      <label>None</label>
-                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex) } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
-                      <label>New to Problem</label>
-                      <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
-                      <label>Same as</label>
-                      <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'same_as', this.props.workflowIndex);
-                          let newAssignee = this.state.ShowAssigneeConstraintSections;
-                          newAssignee[0] = !this.state.ShowAssigneeConstraintSections[0];
-                          this.setState({ShowAssigneeConstraintSections: newAssignee});
-                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['same_as'] ? true : false }
-                          style={{marginRight: '8px'}}/>
-                      <label>In same group as</label>
-                      <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'group_with_member', this.props.workflowIndex)
-                          let newAssignee = this.state.ShowAssigneeConstraintSections;
-                          newAssignee[1] = !this.state.ShowAssigneeConstraintSections[1];
-                          this.setState({ShowAssigneeConstraintSections: newAssignee});
-                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['group_with_member'] ? true : false }
-                        style={{marginRight: '8px'}}/>
-                      <label>Not in</label>
-                      <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'not', this.props.workflowIndex)
-                          let newAssignee = this.state.ShowAssigneeConstraintSections;
-                          newAssignee[2] = !this.state.ShowAssigneeConstraintSections[2];
-                          this.setState({ShowAssigneeConstraintSections: newAssignee});
-                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not'] ? true : false }
-                          style={{marginRight: '8px'}} />
-                      <label>Choose from </label>
-                      <Checkbox click={()=> {
-                          this.props.checkAssigneeConstraints(this.props.index, 'choose_from', this.props.workflowIndex)
-                          let newAssignee = this.state.ShowAssigneeConstraintSections;
-                          newAssignee[3] = !this.state.ShowAssigneeConstraintSections[3];
-                          this.setState({ShowAssigneeConstraintSections: newAssignee});
-                        }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['choose_from'] ? true : false }
-                            />
-
-                          <br />
-                      {sameAsOptions}
-                      {inSameGroupAsOptions}
-                      {notInOptions}
-                      {chooseFromOptions}
-                    </div>
-
+                    {assigneeRelations}
 
                     <br />
                     <br />

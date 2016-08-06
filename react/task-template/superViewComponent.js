@@ -85,19 +85,19 @@ class SuperViewComponent extends React.Component {
       }
       if(this.state.TaskActivityFields[idx].requires_justification){
         if(this.state.TaskData[idx][1] == ''){
-          justification = (<div></div>);
+          justification = (<div key={idx + 655}></div>);
         }
         else{
-          justification = (<div className="faded-big">{this.state.TaskData[idx][1]}</div>)
+          justification = (<div key={idx + 655} className="faded-big">{this.state.TaskData[idx][1]}</div>)
         }
       }
 
       if(this.state.TaskActivityFields[idx].field_type == "text"){
-        let fieldView = (<div>
+        let fieldView = (<div key={idx + 1000}>
           <div key={idx + 600}><b>{fieldTitle}</b></div>
           <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
           </div>
-          <br />
+          <br key={idx+550}/>
           {justification}
         </div>);
 
@@ -112,11 +112,11 @@ class SuperViewComponent extends React.Component {
       else if(this.state.TaskActivityFields[idx].field_type== "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
 
         if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
-          let fieldView = (<div>
+          let fieldView = (<div key={idx + 1000}>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
             <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
             </div>
-            <br />
+            <br key={idx+550}/>
             {justification}
           </div>);
 
@@ -129,11 +129,11 @@ class SuperViewComponent extends React.Component {
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
           let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
-          let fieldView = (<div>
+          let fieldView = (<div key={idx + 1000}>
             <div key={idx + 600}><b>{fieldTitle}   </b>
                <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} interactive={false} />
             </div>
-            <br />
+            <br key={idx+550}/>
             {justification}
           </div>);
 
@@ -145,11 +145,11 @@ class SuperViewComponent extends React.Component {
           );
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "pass"){
-          let fieldView = (<div>
+          let fieldView = (<div key={idx + 1000}>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
             <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
             </div>
-            <br />
+            <br key={idx+550}/>
             {justification}
           </div>);
 
@@ -161,11 +161,11 @@ class SuperViewComponent extends React.Component {
           );
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "evaluation"){
-          let fieldView = (<div>
+          let fieldView = (<div key={idx + 1000}>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
             <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
             </div>
-            <br />
+            <br key={idx+550}/>
             {justification}
           </div>);
 
@@ -177,16 +177,16 @@ class SuperViewComponent extends React.Component {
           );
         }
         else{
-          return(<div> Hi</div>);
+          return(<div key={idx + 1000}> Hi</div>);
         }
       }
       else if(this.state.TaskActivityFields[idx].field_type == "numeric"){
 
-          let fieldView = (<div>
+          let fieldView = (<div key={idx + 1000}>
             <div key={idx + 600}><b>{fieldTitle}</b></div>
             <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
             </div>
-            <br />
+            <br key={idx+550}/>
             {justification}
           </div>);
 
@@ -206,18 +206,18 @@ class SuperViewComponent extends React.Component {
 
 
       if(this.state.ShowContent){ //if the title is clicked on, this will be false and the content won't be shown
-        content = (<div className="section-content">
-                      <div name="problem-text" className="regular-text">{fields}</div>
-                      <br />
+        content = (<div key={this.props.index + 2003} className="section-content">
+                      <div key={this.props.index + 2004} name="problem-text" className="regular-text">{fields}</div>
+                      <br key={this.props.index + 2005}/>
                     </div>);
       }
       else{
-        content=(<div></div>);
+        content=(<div key={this.props.index + 2003}></div>);
       }
 
       return (
-        <div className="section animate fadeInUp card-1">
-          <h2 className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
+        <div key={this.props.index + 2001}className="section animate fadeInUp card-1" >
+          <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
             {content}
         </div>
     );

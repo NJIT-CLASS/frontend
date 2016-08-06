@@ -151,7 +151,7 @@ class TemplateContainer extends React.Component {
           return(
             <div>
             <div className="placeholder"></div>
-              <i style={{marginLeft: '50%'}} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
+              <i style={{marginLeft: '45%'}} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
               <span className="sr-only" >Loading...</span>
             </div>
           );
@@ -195,7 +195,8 @@ class TemplateContainer extends React.Component {
 
 
               if(idx == this.state.Data.length - 1){
-                return (<SuperComponent    TaskID = {this.props.TaskID}
+                return (<SuperComponent
+                                            TaskID = {this.props.TaskID}
                                             UserID = {this.props.UserID}
                                             ComponentTitle={compString}
                                             TaskData = {task.Data}
@@ -212,7 +213,8 @@ class TemplateContainer extends React.Component {
                 return null;
               }
               else{
-                return (<SuperViewComponent
+                return (<SuperViewComponent key={idx+2000}
+                                    index={idx}
                                     ComponentTitle={compString}
                                     TaskData={task.Data}
                                     TaskActivityFields={task.TaskActivity.Fields}/>)

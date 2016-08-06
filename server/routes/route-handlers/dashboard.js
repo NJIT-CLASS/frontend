@@ -1,4 +1,10 @@
 exports.get = (req, res) => {
+    if( req.App.user === undefined){
+      res.redirect('/');
+      return;
+      
+    }
+
     req.App.api.get('/getCourseCreated/' + req.App.user.userId, (err, statusCode, body) => {
         var courseList = [];
         var completedTasksList = [];

@@ -31,6 +31,38 @@ exports.setup = (translate) => {
     helperFunctions.dateFormat = function(date) {
       return moment(date, "YYYY-MM-DD  HH:mm:ss").format("MMMM Do, YYYY h:mm a");
     };
+    helperFunctions.cutLength = function(str) {
+      if (str.length > 25){
+        return str.substring(0,25) + '...';
+      }
+      else{
+        return str;
+      }
+    };
+    helperFunctions.chain = function() {
+      var helpers = [];
+      var args = Array.prototype.slice.call(arguments);
+      var argsLength = args.length;
+      var index;
+      var arg;
+
+      for (index = 0, arg = args[index];
+           index < argsLength;
+           arg = args[++index]) {
+        if (Handlebars.helpers[arg]) {
+          helpers.push(Handlebars.helpers[arg]);
+        } else {
+          args = args.slice(index);
+          break;
+        }
+      }
+
+      while (helpers.length) {
+        args = [helpers.pop().apply(Handlebars.helpers, args)];
+      }
+
+      return args.shift();
+    };
 
     return handlebars.create({
         layoutsDir: `${consts.ROOT_DIRECTORY_PATH}/views/layouts/`,

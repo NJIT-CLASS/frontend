@@ -11,6 +11,11 @@ button {
     font-weight: 300;
     margin: 5px;
     height:auto;
+    @media screen and (max-width: 600px){
+      margin-top: 8px;
+      margin-bottom: 8px;
+      width: 100%;
+    }
 
 
 
@@ -37,17 +42,21 @@ button {
         cursor: pointer;
 
     }
-}
+  }
 
-.dispute{
-  background-color: #00AB8D !important;
-}
-/*.dispute:hover {
-    box-shadow: 0 0 5px #ed5565;
-    border-color: #ed5565;
-    border-radius: 3px 3px 0 0;
-    outline: none;
-  }*/
+  .dispute{
+    background-color: #00AB8D !important;
+  }
+  /*.dispute:hover {
+      box-shadow: 0 0 5px #ed5565;
+      border-color: #ed5565;
+      border-radius: 3px 3px 0 0;
+      outline: none;
+    }*/
+
+  .login-button{
+      width: fit-content;
+  }
 
   .tab{
     border-style: none;
@@ -60,20 +69,27 @@ button {
     }
   }
 
-
-.invisible{
-  overflow: hidden;
-  box-sizing: border-box;
-  margin: 10px;
-  width:100%;
-  display:flex;
-  align-self: flex-end;
-
-  table tr{
-    border: hidden;
-
+  .outside-button{
+    @media screen and (max-width: 600px){
+    display: block;
+    width: 96%;
+    margin-left: 9px;
   }
-  table tr td {
-    border: hidden;
   }
-}
+
+  .invisible{
+    overflow: hidden;
+    box-sizing: border-box;
+    margin: 10px;
+    width:100%;
+    display:flex;
+    align-self: flex-end;
+
+    table tr{
+      border: hidden;
+
+    }
+    table tr td {
+      border: hidden;
+    }
+  }

@@ -6,8 +6,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-
     #language-picker {
+      @media screen and (max-width: 600px){
+        height: 20px;
+        top: 0;
+        right: 0;
+
+      }
         align-self: flex-end;
         position: absolute;
         bottom: 0;
@@ -18,7 +23,7 @@
 
             & > a.selected {
                 background-color: #F3F3F4;
-                
+
                 &:hover {
                     color: #2E4051;
                 }

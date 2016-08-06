@@ -177,6 +177,7 @@ class AssignmentEditorContainer extends React.Component {
             SubmitSuccess: false,
             SaveSuccess: false,
             SubmitError: false,
+            Loaded: false,
             Workflow: standardWorkflow,
             AssignmentActivityData: {
                 AA_userID: parseInt(this.props.UserID),
@@ -195,6 +196,22 @@ class AssignmentEditorContainer extends React.Component {
         };
     }
 
+    componentWillMount(){
+      //get components and semesters
+      this.setState({
+        Loaded: true
+      });
+    }
+    componentDidMount(){
+      //this sets the default problem structure
+      this.changeDataCheck("TA_allow_reflection", 0, 0);
+      this.changeDataCheck('TA_leads_to_new_solution', 0,0);
+      this.changeDataCheck("TA_allow_assessment", 2, 0);
+      this.changeDataCheck("Assess_Consolidate", 2, 0);
+      this.changeDataCheck("Assess_Dispute", 2, 0);
+
+    }
+
     onSubmit() {
         let sendData = cloneDeep(this.state.AssignmentActivityData);
         sendData.WorkflowActivity = this.state.WorkflowDetails;
@@ -202,7 +219,7 @@ class AssignmentEditorContainer extends React.Component {
         sendData.WorkflowActivity.forEach((workflow, idx) => {
           workflow.Workflow.push(this.createNewCompleteTask(idx));
         });
-
+        console.log(sendData);
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/assignment/create',
@@ -228,7 +245,7 @@ class AssignmentEditorContainer extends React.Component {
     addAssessment(index, workflowIndex) {
         //add a critique task to the tree-array; possibly consolidate and needs consol.
         let newData = this.state.WorkflowDetails;
-        let newTask = this.createNewTask(this.gradeSolutionTask,parentIndex, workflowIndex, 'Comment on');
+        let newTask = this.createNewTask(this.gradeSolutionTask,index, workflowIndex, 'Grade');
         newData[workflowIndex].Workflow.push(newTask);
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
@@ -252,7 +269,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    addConsolidationToReflect(parentIndex, workflowIndex) {
+    addConsolidation(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow.push(this.createNewTask(this.needsConsolidationTask, parentIndex, workflowIndex, 'Needs Consolidation of'));
         newData[workflowIndex].Workflow.push(this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate'));
@@ -318,7 +335,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    addDisputeToReflect(parentIndex, workflowIndex) {
+    addDispute(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
 
         newData[workflowIndex].Workflow.push(this.createNewTask(this.disputeTask, parentIndex, workflowIndex, 'Dispute of '));
@@ -506,7 +523,27 @@ class AssignmentEditorContainer extends React.Component {
         }
     }
 
-    removeConsolidationfromReflect(parentIndex, workflowIndex) {
+    removeAssess(parentIndex, workflowIndex) {
+        let x = this;
+        let newData = this.state.WorkflowDetails;
+        var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == parentIndex;
+        });
+
+        let assessIndex = selectedNode.children[1].model.id;
+
+        selectedNode.children[1].walk(function(node) {
+            x.cleanAssigneeConstraints(node.model.id, workflowIndex);
+            newData[workflowIndex].Workflow[node.model.id] = {};
+        });
+
+        selectedNode.children[1] = this.nullNode;
+
+        this.setState({WorkflowDetails: newData});
+
+    }
+
+    removeConsolidation(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
@@ -588,7 +625,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    removeDisputeFromReflect(parentIndex, workflowIndex) {
+    removeDispute(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         let x = this; //context preserving variable
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
@@ -689,7 +726,7 @@ class AssignmentEditorContainer extends React.Component {
 
         if (value <= 1 && newData[workflowIndex].Workflow[index].AllowConsolidations[0] == true) {
             newData[workflowIndex].Workflow[index].AllowConsolidations[0] = false;
-            this.removeConsolidationfromReflect(this.getReflectIndex(index, workflowIndex));
+            this.removeConsolidation(this.getReflectIndex(index, workflowIndex));
         }
 
         this.setState({WorkflowDetails: newData});
@@ -697,7 +734,7 @@ class AssignmentEditorContainer extends React.Component {
     //------------------------------------------------------------------------
 
 
-
+/*
     addConsolidationToAssess(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
 
@@ -780,25 +817,7 @@ class AssignmentEditorContainer extends React.Component {
 
         this.setState({WorkflowDetails: newData});
     }
-    removeAssess(parentIndex, workflowIndex) {
-        let x = this;
-        let newData = this.state.WorkflowDetails;
-        var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
-            return node.model.id == parentIndex;
-        });
 
-        let assessIndex = selectedNode.children[1].model.id;
-
-        selectedNode.children[1].walk(function(node) {
-            x.cleanAssigneeConstraints(node.model.id, workflowIndex);
-            newData[workflowIndex].Workflow[node.model.id] = {};
-        });
-
-        selectedNode.children[1] = this.nullNode;
-
-        this.setState({WorkflowDetails: newData});
-
-    }
     removeConsolidationfromAssess(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         let x = this;
@@ -898,7 +917,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-
+*/
     ////////////// Task Activity change methods //////////////////////////////
 
     addFieldButton(index, workflowIndex) {
@@ -928,7 +947,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
 
-    changeDataCheck(stateField, index, workflowIndex, firstIndex) { //+
+    changeDataCheck(stateField, index, workflowIndex, firstIndex) {
         let newData = this.state.WorkflowDetails;
 
         switch (stateField) {
@@ -985,10 +1004,10 @@ class AssignmentEditorContainer extends React.Component {
             case "Reflect_Consolidate":
                 {
                     if (newData[workflowIndex].Workflow[index].AllowConsolidations[0]) {
-                        this.removeConsolidationfromReflect(this.getReflectIndex(index, workflowIndex), workflowIndex);
+                        this.removeConsolidation(this.getReflectIndex(index, workflowIndex), workflowIndex);
                         newData[workflowIndex].Workflow[index].AllowConsolidations[0] = false;
                     } else {
-                        this.addConsolidationToReflect(this.getReflectIndex(index, workflowIndex), workflowIndex);
+                        this.addConsolidation(this.getReflectIndex(index, workflowIndex), workflowIndex);
                         newData[workflowIndex].Workflow[index].AllowConsolidations[0] = true;
                     }
                 }
@@ -999,10 +1018,10 @@ class AssignmentEditorContainer extends React.Component {
                     let reflectIndex = this.getReflectIndex(index, workflowIndex);
                     if (newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute) {
                         newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = false;
-                        this.removeDisputeFromReflect(reflectIndex, workflowIndex);
+                        this.removeDispute(reflectIndex, workflowIndex);
                     } else {
                         newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = true;
-                        this.addDisputeToReflect(reflectIndex, workflowIndex);
+                        this.addDispute(reflectIndex, workflowIndex);
                     }
 
                 }
@@ -1011,10 +1030,10 @@ class AssignmentEditorContainer extends React.Component {
             case "Assess_Consolidate":
                 {
                     if (newData[workflowIndex].Workflow[index].AllowConsolidations[1]) {
-                        this.removeConsolidationfromReflect(this.getAssessIndex(index, workflowIndex), workflowIndex);
+                        this.removeConsolidation(this.getAssessIndex(index, workflowIndex), workflowIndex);
                         newData[workflowIndex].Workflow[index].AllowConsolidations[1] = false;
                     } else {
-                        this.addConsolidationToReflect(this.getAssessIndex(index, workflowIndex), workflowIndex);
+                        this.addConsolidation(this.getAssessIndex(index, workflowIndex), workflowIndex);
                         newData[workflowIndex].Workflow[index].AllowConsolidations[1] = true;
                     }
                 }
@@ -1025,10 +1044,10 @@ class AssignmentEditorContainer extends React.Component {
                     let assessIndex = this.getAssessIndex(index, workflowIndex);
                     if (newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute) {
                         newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = false;
-                        this.removeDisputeFromReflect(assessIndex, workflowIndex);
+                        this.removeDispute(assessIndex, workflowIndex);
                     } else {
                         newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = true;
-                        this.addDisputeToReflect(assessIndex, workflowIndex);
+                        this.addDispute(assessIndex, workflowIndex);
                     }
                 }
                 break;
@@ -1121,16 +1140,19 @@ class AssignmentEditorContainer extends React.Component {
     getAlreadyCreatedTasks(currTaskIndex, workflowIndex) {
         let tasksList = [];
 
-        this.state.WorkflowDetails[workflowIndex].Workflow.forEach(function(task, idx) {
-            if (idx != currTaskIndex) {
-                if (task != {}) {
-                    if (task.TA_display_name !== undefined) {
-                        tasksList.push({value: idx, label: task.TA_display_name});
-                    }
-                }
-            }
+        for(let q = 0; q < currTaskIndex; q++){
+          if (q == currTaskIndex) {
+            break;
+          }
 
-        });
+          if (this.state.WorkflowDetails[workflowIndex].Workflow[q] != {}) {
+              if (this.state.WorkflowDetails[workflowIndex].Workflow[q].TA_display_name !== undefined) {
+                tasksList.push({value: q, label: this.state.WorkflowDetails[workflowIndex].Workflow[q].TA_display_name});
+              }
+            }
+        }
+
+
         return tasksList;
     }
 
@@ -1358,6 +1380,16 @@ class AssignmentEditorContainer extends React.Component {
     if(this.state.SubmitError){
       infoMessage = (<span onClick={() => {this.setState({SubmitError: false})}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
     }
+
+    if(!this.state.Loaded){
+      return(
+        <div>
+        <div className="placeholder"></div>
+          <i style={{marginLeft: '50%'}} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
+          <span className="sr-only" >Loading...</span>
+        </div>
+      );
+    }
     let tabListAr = [];
     let tabPanelAr = [];
     let workflowsView = null;
@@ -1484,9 +1516,6 @@ class AssignmentEditorContainer extends React.Component {
       </Tabs>);
     }
 
-
-
-
       return (
         <div>
           {infoMessage}
@@ -1500,7 +1529,7 @@ class AssignmentEditorContainer extends React.Component {
           <br />
           {workflowsView}
           <br />
-          <button type="button" action="#" className="divider"onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
+          <button type="button" action="#" className="outside-button" onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
         </div>
       );
     }

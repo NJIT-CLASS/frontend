@@ -14,6 +14,9 @@
     }
 
     .title {
+      @media screen and (max-width: 600px) {
+        padding: 20px 20px;
+      }
         border-bottom: 1px solid #e7eaec;
         font-size: 20px;
         font-weight: 400px;
@@ -64,8 +67,9 @@
 
       @media screen and (max-width: 600px) {
           table {
-            width: calc(100vw - 35px);
+            width: calc(100vw - 45px);
             border:  0;
+            padding: 0px 20px;
           }
 
           table thead {
