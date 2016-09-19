@@ -4,7 +4,7 @@
     box-sizing: border-box;
     margin: 10px;
     width: auto;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: $mobile-brk) {
       margin: 3px;
     }
 
@@ -14,7 +14,7 @@
     }
 
     .title {
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: $mobile-brk) {
         padding: 20px 20px;
       }
         border-bottom: 1px solid #e7eaec;
@@ -27,12 +27,12 @@
     }
 
     p {
-        max-width: 600px;
+        max-width: $mobile-brk;
 
     }
 
     .section-content {
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: $mobile-brk) {
         padding: 10px 12px;
       }
         padding: 20px 30px;
@@ -65,7 +65,7 @@
           letter-spacing: 1px;
       }
 
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: $mobile-brk) {
           table {
             width: calc(100vw - 45px);
             border:  0;

@@ -7,7 +7,7 @@
     right: 0;
     bottom: 0;
     #language-picker {
-      @media screen and (max-width: 600px){
+      @media screen and (max-width: $mobile-brk){
         height: 20px;
         top: 0;
         right: 0;

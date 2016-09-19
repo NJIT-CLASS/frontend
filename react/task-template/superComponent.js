@@ -610,9 +610,9 @@ class SuperComponent extends React.Component {
           }
 
           return( //main render return()
-            <div className="animate fadeInUp">
+            <div className="">
               {infoMessage}
-              <form  role="form" className="section card-1" action="#" onSubmit={this.submitData.bind(this)}>
+              <form  role="form" className="section card-2" action="#" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>

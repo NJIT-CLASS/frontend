@@ -123,6 +123,8 @@ class TemplateContainer extends React.Component {
             return;
           }
           else{
+            
+
             let currentTaskStatus = bod.superTask[bod.superTask.length - 1].Status;
             let taskList = bod.superTask;
             this.setState({

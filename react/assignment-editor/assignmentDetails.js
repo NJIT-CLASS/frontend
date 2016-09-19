@@ -12,7 +12,9 @@ class AssignmentDetailsComponent extends React.Component{
 
       /*
       Props:
-            -
+            -AssignmentActivityData
+            -Courses
+            - Assignment functions
       */
 
       this.state = {
@@ -22,13 +24,31 @@ class AssignmentDetailsComponent extends React.Component{
     }
 
     render(){
+      let coursesView = null;
+      let semesterView = null;
 
-      let courseList = ['CS 288', 'CS 341', 'CS 113']; // fake data
+      let semesterList = this.props.Semesters;
+      let courseList = this.props.Courses;
       let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
 
+      semesterView = (<div className="inner">
+          <label>Semester</label>
+          <Dropdown options={semesterList} selectedValue={this.props.AssignmentActivityData.AA_semester}
+            onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
+            />
+        </div>);
+
+      if(this.props.Courses){
+      coursesView = (<div className="inner">
+          <label>Course</label>
+          <Dropdown options={courseList} selectedValue={this.props.AssignmentActivityData.AA_course}
+            onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+            />
+        </div>);
+      }
 
       return (
-        <div className="section card-1">
+        <div className="section ">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
@@ -40,7 +60,8 @@ class AssignmentDetailsComponent extends React.Component{
                   ></input>
               </div>
 
-
+              {coursesView}
+              {semesterView}
               <div className="inner">
                 <label>Assignment Type</label>
                 <Dropdown options={problemTypeList} selectedValue={this.props.AssignmentActivityData.AA_type}

@@ -17,7 +17,7 @@
     }
 
     .container {
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width:$mobile-brk) {
         margin:2px;
       }
         margin: 10px;

@@ -20,8 +20,22 @@ class ProblemDetailsComponent extends React.Component{
 
     render(){
       let problemTypeValues=['Essay','Multiple Choice','Short Answer','Computer Program'];
+      let gradingTasks = this.props.getFinalGradeTasks(this.props.workflowIndex);
 
+      let gradeDistView = null;
       let multipleWorkflowsView = null;
+
+      gradeDistView = gradingTasks.map(function(task, index){
+          return(
+            <li className="thin-number-field" key={"probDet" + index}>
+              <label style={{marginRight: '8px'}} key={"probDet-" + index}> {task.name} </label>
+              <NumberField  key = {"probDet-NumF "+index} allowDecimals={true}  step={0.01}
+                            onChange={this.props.changeWorkflowGradeDist.bind(this,this.props.workflowIndex, task.id)}
+                            value={task.weight} />
+            </li>
+          )
+      }, this);
+
       if(this.props.NumberofWorkflows > 1){
         multipleWorkflowsView = (<div>
           <div className='inner'>
@@ -52,7 +66,7 @@ class ProblemDetailsComponent extends React.Component{
 
 
       return (
-        <div className="section card-1">
+        <div className="section ">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className='section-divider'>
@@ -77,7 +91,7 @@ class ProblemDetailsComponent extends React.Component{
                                 onChange={this.props.changeWorkflowData.bind(this,'WA_number_of_sets',this.props.workflowIndex)}/>
               </div>
 
-
+              {gradeDistView}
 
               {/*<div className='inner block'>
                 <label>Custom Grade Weights (Equal Otherwise)</label>

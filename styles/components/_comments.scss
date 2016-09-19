@@ -4,8 +4,8 @@
   margin: 10px;
   padding:8px;
   width:75%;
-  @media screen and (max-width: 600px){
-    width:98vw;    
+  @media screen and (max-width: $mobile-brk){
+    width:98vw;
   }
   height:auto;
 

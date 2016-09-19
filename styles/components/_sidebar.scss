@@ -57,7 +57,7 @@
 
 
     &.collapsed:not(.transition) {
-        @media screen and (max-width: 600px) {
+        @media screen and (max-width: $mobile-brk) {
           flex: 0 0 0px;
         }
         flex: 0 0 60px;

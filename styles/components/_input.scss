@@ -5,7 +5,7 @@ input[type=date],
 input[type=number],
 textarea {
     width: 20vw;
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: $mobile-brk) {
       width: calc(100vw - 57px;);
      }
     height: 13%;
@@ -38,7 +38,7 @@ textarea {
 
 
 .big-text-field {
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: $mobile-brk) {
     width: 100%;
   }
   width: 65%;
@@ -58,7 +58,6 @@ textarea {
   display: block;
   align-items: center;
 
-
   .input-group-btn{
     display:inline-block;
     margin: 10px 0px;
@@ -67,7 +66,7 @@ textarea {
     button{
       background-color: #E6E6E6;
       margin:0px;
-      height:38px;
+      height:35px;
       width:30px !important;
       text-align: center;
       border-radius: 0;
@@ -87,15 +86,15 @@ textarea {
   }
 
   input {
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: $mobile-brk) {
       width: calc(100% - 63px);
     }
-    display:inline-block;
+    display: inline-block;
     vertical-align: top;
     text-align: center;
-    height:38px;
+    height:35px;
     width:120px;
-    padding:10px 0px !important;
+    padding: 10px 0px !important;
   }
 
   input[type=number]::-webkit-inner-spin-button,
@@ -106,6 +105,10 @@ textarea {
 
 }
 
+.thin-number-field{
+  padding:1px 30px !important;
+  margin:0px;
+}
 
 .react-rater {
   display: inline-block;

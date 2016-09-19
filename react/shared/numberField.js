@@ -12,16 +12,25 @@ import React from 'react';
         Value:this.props.value
       }
    }
-   //this.props.onChange
-    //min
-    //max
-    //value
-    //props speed in milliseconds
+   // PROPS:
+   //onChange
+   // allowDecimals
+   //min
+   //max
+   //value
+  // step
+   //speed (in milliseconds)
     //
 
    onValChange(value){
      if(!isNaN(value)){
-       let inputValue = parseInt(value);
+      let inputValue = null;
+       if(this.props.allowDecimals){
+         inputValue = parseFloat(value);
+       }
+       else{
+         inputValue = parseInt(value);
+       }
        if(inputValue >= this.props.min && inputValue <= this.props.max){
          this.setState({
            Value: inputValue
@@ -50,24 +59,23 @@ import React from 'react';
    }
 
    decrementVal(e){
-
      e.preventDefault();
-     if(this.state.Value == ''){
-       this.onValChange((this.props.min));
+     if(this.state.Value === ''){
+       this.onValChange(this.props.min);
      }
      else{
-       this.onValChange((--this.state.Value));
+       this.onValChange(this.state.Value - this.props.step);
     }
 
    }
 
    incrementVal(e){
      e.preventDefault();
-     if(this.state.Value == ''){
-       this.onValChange((this.props.min));
+     if(this.state.Value === ''){
+       this.onValChange(this.props.min);
      }
      else{
-       this.onValChange((++this.state.Value));
+       this.onValChange(this.state.Value + this.props.step);
     }
    }
 
@@ -118,7 +126,7 @@ import React from 'react';
            <i aria-hidden="true">  -  </i>
          </button>
      </span>
-     <input ref="input" placeholder={"max. " + this.props.max} type="number" pattern="[0-9]*" onChange={this.onTextChange.bind(this)} value={this.state.Value} min={this.props.min} max={this.props.max} />
+     <input ref="input" placeholder={"max. " + this.props.max} type="text" pattern="[0-9.]*" onChange={this.onTextChange.bind(this)} value={this.props.allowDecimals ? this.state.Value.toFixed(2) : this.state.Value} min={this.props.min} max={this.props.max} />
      <span className="input-group-btn">
          <button type="button" className="btn" data-type="plus"
          onMouseDown={this.incrementButtonDown.bind(this)}
@@ -137,7 +145,9 @@ import React from 'react';
       value: 1,
       min: -200,
       max: 200,
-      speed: 80
+      speed: 200,
+      step: 1,
+      allowDecimals: false
   };
 
  export default NumberField;
