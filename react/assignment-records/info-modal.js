@@ -13,7 +13,7 @@ class ModalInfo extends React.Component{
   }
 
   componentWillReceiveProps(props) {
-   return;
+    return;
  }
 
   modalToggle(){

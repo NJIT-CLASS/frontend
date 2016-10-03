@@ -9,6 +9,9 @@ import request from 'request';
 import Assignment from './components/Assignment.js';
 import WorkFlow from './components/WorkFlow.js';
 var moment = require('moment');
+//import ModalInfo from '../assignment-records/info-modal';
+import {TASK_TYPES, TASK_TYPE_TEXT} from '../shared/constants';
+
 
 class AssignToSectionContainer extends React.Component
 {
@@ -28,6 +31,7 @@ class AssignToSectionContainer extends React.Component
         StartNow:false,
         StartLater:false,
         Section:[],
+        Semester: null,
         Time:0,
         AssigmentName:""
       },
@@ -57,11 +61,15 @@ class AssignToSectionContainer extends React.Component
     }],
   }],
     Sections: null,
+    SubmitSuccess:false,
+    SubmitError: false,
     DataLoaded: false
   }
 }
 
   componentWillMount(){ //gets the appropraite assignment structure from the database before rendering the page
+    let semestersArray = null;
+
      const options = {
        method: 'GET',
         uri: this.props.apiUrl +'/api/getAssignToSection/',
@@ -70,19 +78,26 @@ class AssignToSectionContainer extends React.Component
           assignmentid: this.props.AssignmentID
         },
         json: true
-
+      };
+      const semOptions = {
+          method: 'GET',
+          uri: this.props.apiUrl + '/api/semester',
+          json: true
       };
 
       request(options, (err, res, body) => {
         let workflows = Object.keys(body.taskActivityCollection).map(function(key){
           let tasks = body.taskActivityCollection[key].map(function(task){
-            return {ID: task.taskActivityID,
+            return {
+              ID: task.taskActivityID,
+              Type:task.type,
               Name: task.name,
               StartNow:false,
               StartLater:false,
               Time:0,
-              TimeArray:[]};
-          },this);
+              TimeArray:[]
+            };
+          }, this);
 
           return {
             id: key,
@@ -94,12 +109,21 @@ class AssignToSectionContainer extends React.Component
 
         }, this);
 
+        request(semOptions, (err2, res2, bod2) => {
+          semestersArray = bod2.Semesters.map(function(sem){
+            return ( {value: sem.SemesterID, label: sem.Name} );
+          });
 
-        this.setState(
-          {WorkFlow:workflows,
-           Sections: body.sectionIDs,
-          DataLoaded: true}
-         );
+          let newA= this.state.Assignment;
+          newA.AssigmentName = body.assignment.DisplayName;
+          this.setState({
+            Assignment: newA,
+            Semesters:semestersArray,
+            WorkFlow:workflows,
+             Sections: body.sectionIDs,
+            DataLoaded: true
+          });
+        });
        });
   }
 
@@ -115,12 +139,14 @@ class AssignToSectionContainer extends React.Component
         wf_timing: this.state.WorkFlow
       },
       json: true
-
     };
 
       request(options, (err, res, body) => {
         if(res.statusCode === 200){
           console.log('Submit worked');
+          this.setState({
+            SubmitSuccess: true
+          });
         }
         else{
           console.log('Something went wrong');
@@ -163,9 +189,14 @@ class AssignToSectionContainer extends React.Component
     this.setState({Assignment: newA});
   }
 
+  onChangeSemesterAssignment(val){
+    let newA = this.state.Assignment;
+    newA.Semester = val;
+    this.setState({Assignment: newA});
+  }
+
   onChangeSectionAssignment(Section) //Section is automatically passed in by CheckBoxList module
   {
-    console.log(Section);
     let newA = this.state.Assignment;
     newA.Section = Section;
     this.setState({Assignment: newA});
@@ -249,14 +280,25 @@ class AssignToSectionContainer extends React.Component
 
   render()
   {
+    let infoMessage = null;
 
     if(!this.state.DataLoaded){
       return (<div></div>);
     }
-
+    if(this.state.SubmitSuccess){
+      infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted! </span>);
+    }
+    if(this.state.SubmitError){
+      infoMessage = (<span onClick={() => {this.setState({SubmitError: false})}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+    }
     let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
     {
       let tasks = workflow.Tasks.map(function(task, index){
+        console.log(task);
+        if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
+          return null;
+        }
+
         return (
             <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
             onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
@@ -264,6 +306,7 @@ class AssignToSectionContainer extends React.Component
             onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
             onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)} />
         );
+
       },this);
 
       return (
@@ -280,14 +323,17 @@ class AssignToSectionContainer extends React.Component
 
     return (
       <div style={{display:'inline-block'}}>
+        {infoMessage}
         <span>
           <Assignment Assignment={this.state.Assignment}
           SectionsList={this.state.Sections}
+          Semesters={this.state.Semesters}
           onChangeCalendarAssignment ={this.onChangeCalendarAssignment.bind(this)}
           onChangeStartLaterAssignment={this.onChangeStartLaterAssignment.bind(this)}
           onChangeStartNowAssignment = {this.onChangeStartNowAssignment.bind(this)}
           onChangeAssigmentName = {this.onChangeAssigmentName.bind(this)}
           onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
+          onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
           />
         </span>
 

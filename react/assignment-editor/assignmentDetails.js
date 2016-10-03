@@ -3,6 +3,7 @@
 import React from 'react';
 import Dropdown from 'react-dropdown';
 import NumberField from '../shared/numberField';
+import ToggleSwitch from '../shared/toggleSwitch';
 import Checkbox from '../shared/checkbox';
 
 
@@ -19,6 +20,7 @@ class AssignmentDetailsComponent extends React.Component{
 
       this.state = {
         ShowContent: true,
+        ShowAdvanced: false,
         NumberofWorkflows: 1
       };
     }
@@ -31,12 +33,14 @@ class AssignmentDetailsComponent extends React.Component{
       let courseList = this.props.Courses;
       let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
 
-      semesterView = (<div className="inner">
-          <label>Semester</label>
+      semesterView = (
+        <div className="inner">
+          <label>Restrict to a Semester</label>
           <Dropdown options={semesterList} selectedValue={this.props.AssignmentActivityData.AA_semester}
             onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
             />
-        </div>);
+        </div>
+      );
 
       if(this.props.Courses){
       coursesView = (<div className="inner">
@@ -61,7 +65,6 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               {coursesView}
-              {semesterView}
               <div className="inner">
                 <label>Assignment Type</label>
                 <Dropdown options={problemTypeList} selectedValue={this.props.AssignmentActivityData.AA_type}
@@ -99,6 +102,20 @@ class AssignmentDetailsComponent extends React.Component{
                 <div className="text-false">No</div>
               </div>*/}
               <br />
+              <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
+              <br />
+              <ToggleSwitch click={ ()=> {
+                  this.setState({ShowAdvanced : this.state.ShowAdvanced ? false : true});
+                }} />
+              <br />
+              <div className={this.state.ShowAdvanced ? "section-divider" : "task-hiding"}>
+                {semesterView}
+                <br />
+                <br />
+                <br />
+
+
+              </div>
             </div>
 
           </div>

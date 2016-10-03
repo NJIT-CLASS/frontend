@@ -2,6 +2,7 @@
 */
 import React from 'react';
 import Dropdown from 'react-dropdown';
+import ToggleSwitch from '../shared/toggleSwitch';
 import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
 

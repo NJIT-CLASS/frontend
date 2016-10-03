@@ -147,6 +147,7 @@ app.use((req, res, next) => {
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
             req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
+            req.App.user.admin = user.Admin;
 
             next();
         });
@@ -176,8 +177,7 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-
-        if (req.App.user && req.App.user.type === 'student' && !options.studentAccessible) {
+        if (req.App.user &&  !options[req.App.user.type])  {
             return res.sendStatus(404);
         }
 
@@ -238,8 +238,9 @@ app.use(function(req, res, next) {
                             options = options ? options : {};
                             options.loggedOut = route.access.loggedOut;
                             options.route = route.route;
-                            options.studentAccessible = route.access.students;
-
+                            options.student = route.access.students;
+                            options.teacher = route.access.instructors;
+                            options.admin = route.access.admins;
                             // if the render doesn't set the title then set it by the route
                             if (!('title' in options)) {
                                 options.title = `${route.title} | CLASS Learning System`;

@@ -29,15 +29,19 @@ class Assignment extends React.Component {
 
 render(){
 let CalendarView =  null;
-let Section = [ //fake data
-    {value:'cs280', label: 'CS280'},
-    {value:'cs332', label: 'CS332'}
-  ];
-  var yesterday = Datetime.moment();
-  var valid = function( current ){  //this function is used in Datetime to block out days before and including today
-    return current.isAfter( yesterday );
-  };
 
+var yesterday = Datetime.moment();
+var valid = function( current ){  //this function is used in Datetime to block out days before and including today
+    return current.isAfter( yesterday );
+};
+
+let semesterView = (<div className="inner">
+          <label>Semester</label>
+          <Dropdown options={this.props.Semesters} selectedValue={this.props.Assignment.Semester}
+            onChange={this.props.onChangeSemesterAssignment.bind(this)}
+            />
+        </div>
+      );
 
   if(this.props.Assignment.StartLater)
   {
@@ -47,7 +51,7 @@ let Section = [ //fake data
         <Datetime
               open={true}
               defaultValue={moment().add(3, 'days').format("MM/DD/YYYY")+(' 11:59 PM')}
-              renderDay={this.renderDay} 
+              renderDay={this.renderDay}
               renderMonth={this.renderMonth}
               renderYear={this.renderYear}
               isValidDate={ valid }
@@ -76,6 +80,12 @@ let Section = [ //fake data
                   <input type="text" name="AssigmentName" value={this.props.Assignment.AssigmentName} onChange = {this.props.onChangeAssigmentName.bind(this)}>
                   </input>
                 </form>
+              </td>
+            </tr>
+
+            <tr className="children">
+              <td className="children">
+                {semesterView}
               </td>
             </tr>
 

@@ -22,6 +22,8 @@ import React from 'react';
    //speed (in milliseconds)
     //
 
+
+
    onValChange(value){
      if(!isNaN(value)){
       let inputValue = null;

@@ -27,6 +27,8 @@ class TaskDetailsComponent extends React.Component{
             Reflection: ['none', null]
           }],
           SimpleGradePointReduction: 0,
+          CurrentFieldSelection: null,
+          CurrentTaskFieldSelection: null,
           ShowAssigneeConstraintSections: [false,false,false,false], //same as, in same group as, not in, choose from
           ShowAdvanced: false,
           ShowContent: this.props.isOpen ? true : false
@@ -34,11 +36,21 @@ class TaskDetailsComponent extends React.Component{
     }
 
 
-
+    // shouldComponentUpdate(nextProps, nextState){
+    //
+    //   Object.keys(this.props.TaskActivityData).forEach(function(key){
+    //     if(this.props.TaskActivityData[key] !== nextProps.TaskActivityData[key]){
+    //       return true;
+    //     }
+    //   },this);
+    //
+    //   return false || (this.state != nextState);
+    // }
 
 
 
     render(){
+      console.log("Rendering tasks Comp: #",this.props.index)
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
@@ -47,6 +59,7 @@ class TaskDetailsComponent extends React.Component{
       let reflectionValues = [{value: 'edit', label:'Edit'},{value:'comment', label:'Comment'}];
       let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'}];
       let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}];
+      let consolidationTypeValues = [{value:'max', label:'Max'},{value:'min',label:'Min'},{value: 'avg', label: 'Average'}, {value:'other', label:'Other'}];
       //display logic
 
       let taskCreatedList = this.props.getAlreadyCreatedTasks(this.props.index, this.props.workflowIndex);
@@ -69,6 +82,43 @@ class TaskDetailsComponent extends React.Component{
                                           width:'100px'}}></div>);
 
     /// TA Simple Grade Display Logic
+
+    //IN PROGRESS Link Default Content
+
+
+      let fieldSelectionList = this.props.getTaskFields(this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(function(field){
+          return (<label>
+            {field.label} <Radio value={field.value} />
+            </label>
+          );
+        });
+      let fieldSelection = (
+        <RadioGroup key={"taskFieldDefault" + 1} onChange={(value)=>{
+            this.setState({
+              CurrentTaskFieldSelection: value
+            });
+        }} >
+        {fieldSelectionList}
+        </RadioGroup>
+      );
+
+      let defaultContentWrapper = (<div>
+        <RadioGroup key={"taskFieldDefault" + 2} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value)=>{
+            this.setState({
+              CurrentTaskFieldSelection: value
+            });
+        }}>
+          {
+              taskCreatedList.map(function(task){
+              return (<label> {task.label}<Radio value={task.value}/></label>);
+                }, this)
+          }
+
+        </RadioGroup>
+
+        </div>
+      );
+
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
           <label>Reduce this by what % per day late</label><br />
@@ -218,24 +268,43 @@ class TaskDetailsComponent extends React.Component{
 
       //TA Allow Assessment Display Logic
       if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
+        let consolidateOptions = (
+          <div>
+          <label>Grading Threshold</label>
+        <br />
+          <RadioGroup
+            selectedValue={this.props.TaskActivityData.TA_trigger_consolidation_threshold[1]}
+            onChange={this.props.changeRadioData.bind(this, 'TA_trigger_consolidation_threshold', this.props.index, this.props.workflowIndex)}
+            >
+            <label> Points
+              <Radio value="points" />
+            </label>
+            <label> Percent
+              <Radio value="percent" />
+            </label>
+
+          </RadioGroup>
+        <br />
+        <NumberField
+            value={2}
+            min={0}
+            max={100}
+            onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold', this.props.index, this.props.workflowIndex)}
+            size={6} />
+          <br />
+        <label>To be consolidated, the grade should be: </label>
+        <Dropdown options={consolidationTypeValues} onChange={this.props.changeDropdownData.bind(this, 'TA_function_type_Assess', this.props.index,this.props.workflowIndex)} />
+      </div>);
         let showConsol= this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
+
           <div>
             <label>Should the assessments be consolidated</label>
             <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Consolidate", this.props.index, this.props.workflowIndex)}/>
             <br />
-            <label>Grading Threshold</label>
-            <br />
-            <label>Points</label><input type="radio"></input>
-            <label>Percentage</label><input type="radio"></input>
-            <br />
-            <NumberField
-                value={2}
-                min={0}
-                size={6} />
-              <br />
-            <label>To be consolidated, the grade should be: </label>
-            <Dropdown options={['max','sum','average']} />
-          </div>) : null;
+            {this.props.TaskActivityData.AllowConsolidations[1] ? consolidateOptions : null}
+          </div>
+            )
+             : null;
 
         let showDispute = (<div>
           <label> Can students dispute this reflection </label>
@@ -288,7 +357,7 @@ class TaskDetailsComponent extends React.Component{
           <label>Students</label><Checkbox />
           <label>Instructors</label><Checkbox />
           <br />
-          <label>Number of Editors</label>
+          <label>Number of Students</label>
           <br />
           <NumberField
               value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)}
@@ -433,6 +502,13 @@ class TaskDetailsComponent extends React.Component{
                       value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                       ></textarea>
                   </div>
+
+                  <div className="inner block">
+                    <label>Default content from other task</label>
+                      { defaultContentWrapper}
+                      {fieldSelection}
+                  </div>
+
                   <br />
                   <br />
                 </div>
@@ -442,7 +518,7 @@ class TaskDetailsComponent extends React.Component{
 
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
-        <div className="section ">
+        <div className="section">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
                                                                  NewTask: false});}} >{title}</h2>
               <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>{/* this decides whether to hide the content or not. task-hiding displays nothing*/}
