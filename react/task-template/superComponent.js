@@ -62,7 +62,7 @@ class SuperComponent extends React.Component {
           tAdata = JSON.parse(this.props.TaskActivityFields)
         }
 
-        //checks to see if either task activity data is empty. This would only be caused by an error
+        //checks to see if     task activity data is empty. This would only be caused by an error
         if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
           this.setState({Error: true});
           return;

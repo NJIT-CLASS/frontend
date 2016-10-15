@@ -123,11 +123,20 @@ class TemplateContainer extends React.Component {
             return;
           }
           else{
-
-
-            let currentTaskStatus = bod.superTask[bod.superTask.length - 1].Status;
             let taskList = bod.superTask;
-            console.log(bod.superTask)
+            let currentTask = bod.superTask[bod.superTask.length - 1]
+            let currentTaskStatus = currentTask.Status;
+
+            currentTask.Data.field_titles.forEach(function(field, index){
+              if(currentTask.Data[index].default_refers_to[0] !== null && currentTask.Data[index].default_refers_to[1] !== null){
+                //make get call to get Field Data[default_refers_to[0]][default_refers_to[1]]
+                // put results into currentTask.Data[index].default_content=[rsult1, result2]
+                
+              }
+            });
+
+            taskList[taskList.length -1] = currentTask;
+
             this.setState({
               Data: taskList,
               TaskStatus: currentTaskStatus

@@ -1,6 +1,10 @@
 //The main component of the assignment editor. This calls the other components and passes in the methods defined here. The data is all made here and
 // will be submitted from this component. This component has no views, it only contains data and components.
 
+
+
+// TODO
+// add belogns_to_subworkflow
 import React from 'react';
 import request from 'request';
 import {cloneDeep, isEmpty, indexOf} from 'lodash';
@@ -24,10 +28,40 @@ class AssignmentEditorContainer extends React.Component {
             - CourseID
             - apiUrl
       */
+        //These are the indexes of the nodes in the tree.
+        // Defines as consants in case they need to be changed later.
+        this.REFLECT_IDX = 0;
+        this.ASSESS_IDX = 1;
+        this.CONSOL_DISP_IDX = 2;
+        this.CREATE_IDX = 3;
+        this.SOLVE_IDX =4;
 
         this.tree = new TreeModel(); //this is the tree making object. It is not a tree structure but has the tree methods
         this.root = this.tree.parse({id: 0}); // this is the root of the tree structure. A copy is made for each workflow
         this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
+
+
+        //default Task.Data structure (used to be Task.TA_fields)
+
+        this.defaultFields = {
+            title: 'Field',
+            show_title: false,
+            assessment_type: null,
+            numeric_min: '0',
+            numeric_max: '40', //why strings ?
+            rating_max: '5',
+            list_of_labels: 'Easy, Medium, Difficult',
+            field_type: "text",
+            requires_justification: false,
+            instructions: '',
+            rubric: '',
+            justification_instructions: '',
+            default_refers_to: [
+                null, null
+            ],
+            default_content: ['', '']
+        };
+
 
         //need to add TA_name, TA_documentation, TA_trigger_consolidation_threshold
         this.blankTask = {
@@ -38,25 +72,8 @@ class AssignmentEditorContainer extends React.Component {
             TA_overall_rubric: '',
             TA_fields: {
                 number_of_fields: 1,
-                field_titles: [''],
-                0: {
-                    title: '',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: '0',
-                    numeric_max: '40', //why strings ?
-                    rating_max: '5',
-                    list_of_labels: 'Easy, Medium, Difficult',
-                    field_type: "text",
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
+                field_titles: [this.defaultFields.title],
+                0: cloneDeep(this.defaultFields)
             },
             SimpleGradePointReduction: 0,
             AllowConsolidations: [
@@ -77,7 +94,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_what_if_late: 'Keep same participant',
 
             TA_one_or_separate: false,
-            TA_assignee_constraint: [
+            TA_assignee_constraints: [
                 '', '', {}
             ],
             TA_simple_grade: 'none',
@@ -100,14 +117,14 @@ class AssignmentEditorContainer extends React.Component {
         let x = this; //context preserving variable, needed when using inside function
 
         // this function cusotmizes the generic task tempate above to the type of task it needs;
-        var createTaskObject = function(TA_type, TA_name, TA_display_name, TA_at_duration_end, TA_what_if_late, TA_assignee_constraint, TA_is_final_grade) {
+        var createTaskObject = function(TA_type, TA_name, TA_display_name, TA_at_duration_end, TA_what_if_late, TA_assignee_constraints, TA_is_final_grade) {
             let newTask = cloneDeep(x.blankTask)
             newTask.TA_name = TA_name;
             newTask.TA_type = TA_type;
             newTask.TA_display_name = TA_display_name;
             newTask.TA_at_duration_end = TA_at_duration_end;
             newTask.TA_what_if_late = TA_what_if_late;
-            newTask.TA_assignee_constraint = TA_assignee_constraint;
+            newTask.TA_assignee_constraints = TA_assignee_constraints;
             newTask.TA_is_final_grade = TA_is_final_grade;
 
             return newTask;
@@ -179,6 +196,7 @@ class AssignmentEditorContainer extends React.Component {
 
         this.state = {
             CurrentWorkflowIndex: 0,
+            LastTaskChanged: 0,
             SubmitSuccess: false,
             SubmitButtonShow: true,
             SaveSuccess: false,
@@ -253,7 +271,7 @@ class AssignmentEditorContainer extends React.Component {
       this.changeDataCheck("TA_allow_assessment", 2, 0);
       this.changeDataCheck("Assess_Consolidate", 2, 0);
       this.changeDataCheck("Assess_Dispute", 2, 0);
-
+      return;
     }
 
     onSubmit() {
@@ -280,8 +298,8 @@ class AssignmentEditorContainer extends React.Component {
 
 
           workflow.Workflow.forEach(function(task){
-              Object.keys(task.TA_assignee_constraint[2]).forEach(function(constr){
-                task.TA_assignee_constraint[2][constr] = task.TA_assignee_constraint[2][constr].map(function(id){
+              Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr){
+                task.TA_assignee_constraints[2][constr] = task.TA_assignee_constraints[2][constr].map(function(id){
                   return (mapping[id]);
                 });
               });
@@ -331,10 +349,20 @@ class AssignmentEditorContainer extends React.Component {
             }
         });
     }
+  ///////////////////////////////////////////////////////////////////////////
+  ////////////// Tree Methods //////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
 
-    ////////////// Tree Methods //////////////////////////////////////////////
-    addAssessment(index, workflowIndex) {
-        //add a critique task to the tree-array; possibly consolidate and needs consol.
+  //The root of the tree is this.root. Each node can be modeled as a node with up to five children:
+    // 1st Child - Reflection Type
+    // 2nd Child - Assessment Type
+    // 3rd Child - (Needs Consolidation and Consolidation) && || (Dispute and Resolve Dispute)
+    // 4th Child - Create Problem
+    // 5th Child - Solve Problem
+    // These indexes are rigid, so non-occupied branches are filles with this.nullNode
+
+
+    addAssessment(index, workflowIndex) {//add to slot 2 of 5 ( [1])
         let newData = this.state.WorkflowDetails;
         let newTask = this.createNewTask(this.gradeSolutionTask,index, workflowIndex, 'Grade');
         newData[workflowIndex].Workflow.push(newTask);
@@ -343,19 +371,13 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == index;
         });
 
-        if (selectedNode.children[0] === undefined) {
-            selectedNode.children[0] = this.nullNode;
+        if (selectedNode.children[this.REFLECT_IDX] === undefined) {
+            selectedNode.children[this.REFLECT_IDX] = this.nullNode;
         }
 
-        if (selectedNode.children[1] !== undefined && selectedNode.children[1] !== this.nullNode) {
-            selectedNode.children[1].children[1] = this.tree.parse({
-                id: newData[workflowIndex].Workflow.length - 1
-            });
-        } else {
-            selectedNode.children[1] = this.tree.parse({
-                id: newData[workflowIndex].Workflow.length - 1
-            });
-        }
+        selectedNode.children[this.ASSESS_IDX] = this.tree.parse({
+            id: newData[workflowIndex].Workflow.length - 1
+        });
 
         this.setState({WorkflowDetails: newData});
     }
@@ -365,38 +387,39 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow.push(this.createNewTask(this.needsConsolidationTask, parentIndex, workflowIndex, 'Needs Consolidation of'));
         newData[workflowIndex].Workflow.push(this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate'));
 
-        let consolidateNode = this.tree.parse({
-            id: newData[workflowIndex].Workflow.length - 2,
-            children: [
-                {
-                    id: newData[workflowIndex].Workflow.length - 1
-                }
-            ]
+        let needsConsolidateNode = this.tree.parse({
+            id: newData[workflowIndex].Workflow.length - 2
         });
+
+        let consolidateNode = this.tree.parse({
+          id: newData[workflowIndex].Workflow.length - 1
+        });
+
+        needsConsolidateNode.children[this.REFLECT_IDX] = this.nullNode; //fil the previous nodes
+        needsConsolidateNode.children[this.ASSESS_IDX] = this.nullNode;
+        needsConsolidateNode.children[this.CONSOL_DISP_IDX] = consolidateNode;
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
         });
 
-        if (selectedNode.children[0] === undefined || selectedNode.children[0].model.id == -1) { //special case of adding consol after instructor has already added a reflect to reflection task
-            selectedNode.children[0] = consolidateNode;
-        } else if (newData[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.DISPUTE) {
-            if (selectedNode.children[0].children[1] === undefined || selectedNode.children[0].children[1].model.id == -1) {
-                let temp = selectedNode.children[0];
-                selectedNode.children[0] = consolidateNode;
-                selectedNode.children[0].children[0].children[0] = temp;
-            } else {
-                let temp = selectedNode.children[0];
-                let temp2 = selectedNode.children[0].children[1];
+        if (selectedNode.children[this.REFLECT_IDX] === undefined) {
+            selectedNode.children[this.REFLECT_IDX] = this.nullNode;
+        }
 
-                selectedNode.children[0] = consolidateNode;
-                selectedNode.children[0].children[0].children[0] = temp;
-                selectedNode.children[0].children[1] = temp2;
-            }
-        } else {
-            let temp = selectedNode.children[0];
-            selectedNode.children[0] = consolidateNode;
-            selectedNode.children[0].children[1] = temp;
+        if (selectedNode.children[this.ASSESS_IDX] === undefined) {
+            selectedNode.children[this.ASSESS_IDX] = this.nullNode;
+        }
+
+        if(selectedNode.children[this.CONSOL_DISP_IDX] === undefined || selectedNode.children[this.CONSOL_DISP_IDX] === this.nullNode){
+          selectedNode.children[this.CONSOL_DISP_IDX] = needsConsolidateNode;
+        }
+        else if(selectedNode.children[this.CONSOL_DISP_IDX] !== undefined){
+          let temp = selectedNode.children[this.CONSOL_DISP_IDX];
+          selectedNode.children[this.CONSOL_DISP_IDX] = needsConsolidateNode;
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.REFLECT_IDX] = this.nullNode;
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.ASSESS_IDX] = this.nullNode;
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX] = temp;
         }
 
         this.setState({WorkflowDetails: newData});
@@ -411,20 +434,24 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == index;
         });
 
-        if (selectedNode.children[0] === undefined) {
+        if (selectedNode.children[this.REFLECT_IDX] === undefined) {
             selectedNode.addChild(this.nullNode);
         }
 
-        if (selectedNode.children[1] === undefined) {
+        if (selectedNode.children[this.ASSESS_IDX] === undefined) {
             selectedNode.addChild(this.nullNode);
         }
 
-        selectedNode.children[2] = this.tree.parse({
+        if (selectedNode.children[this.CONSOL_DISP_IDX] === undefined) {
+            selectedNode.addChild(this.nullNode);
+        }
+
+        selectedNode.children[this.CREATE_IDX] = this.tree.parse({
             id: newData[workflowIndex].Workflow.length - 1
         });
 
         this.setState({WorkflowDetails: newData});
-    }
+        }
 
     addDispute(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
@@ -433,32 +460,40 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow.push(this.createNewTask(this.resolveDisputeTask,parentIndex, workflowIndex, 'Resolve Dispute of'));
 
         let disputeNode = this.tree.parse({
-            id: newData[workflowIndex].Workflow.length - 2,
-            children: [
-                {
-                    id: newData[workflowIndex].Workflow.length - 1
-                }
-            ]
+            id: newData[workflowIndex].Workflow.length - 2
         });
+        let resolveNode = this.tree.parse({
+            id: newData[workflowIndex].Workflow.length - 1
+        });
+        disputeNode.children[this.REFLECT_IDX] = this.nullNode;
+        disputeNode.children[this.ASSESS_IDX] = this.nullNode;
+        disputeNode.children[this.CONSOL_DISP_IDX] = resolveNode;
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
         });
 
-        if (selectedNode.children[0] === undefined || selectedNode.children[0] === this.nullNode) { //special case of adding consol after instructor has already added a reflect to reflection task
-            selectedNode.children[0] = disputeNode;
+        if (selectedNode.children[this.REFLECT_IDX] === undefined) {
+            selectedNode.children[this.REFLECT_IDX] = this.nullNode;
+        }
 
-        } else if (newData[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION) {
-            selectedNode.children[0].children[0].children[0] = disputeNode;
-        } else {
-            let temp = selectedNode.children[0];
-            selectedNode.children[0] = disputeNode;
-            selectedNode.children[0].children[1] = temp;
+        if (selectedNode.children[this.ASSESS_IDX] === undefined) {
+            selectedNode.children[this.ASSESS_IDX] = this.nullNode;
+        }
+
+        if (selectedNode.children[this.CONSOL_DISP_IDX] === undefined || selectedNode.children[this.CONSOL_DISP_IDX] === this.nullNode) { //special case of adding consol after instructor has already added a reflect to reflection task
+            selectedNode.children[this.CONSOL_DISP_IDX] = disputeNode;
+
+        } else if (selectedNode.children[this.CONSOL_DISP_IDX] !== undefined) {
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.REFLECT_IDX] = this.nullNode;
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.ASSESS_IDX] = this.nullNode;
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX] = disputeNode;
+
         }
 
     }
 
-    addReflection(index, workflowIndex) { // add edit to slot 1 of 4 for nodes
+    addReflection(index, workflowIndex) { // add to slot 1 of 5 for nodes ([0])
         let newData = this.state.WorkflowDetails;
         let newTask = this.createNewTask(this.editProblemTask,index, workflowIndex, 'Edit')
         newData[workflowIndex].Workflow.push(newTask);
@@ -467,15 +502,11 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == index;
         });
 
-        if (selectedNode.children[0] !== undefined && selectedNode.children[0] !== this.nullNode) { // special case of reflecting  a reflect
-            selectedNode.children[0].children[1] = this.tree.parse({
-                id: (newData[workflowIndex].Workflow.length - 1)
-            });
-        } else {
-            selectedNode.children[0] = this.tree.parse({
+
+        selectedNode.children[this.REFLECT_IDX] = this.tree.parse({
                 id: (newData[workflowIndex].Workflow.length - 1)
             }); //general case
-        }
+
         this.setState({WorkflowDetails: newData});
     }
 
@@ -488,24 +519,27 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == index;
         });
 
-        if (selectedNode.children[0] === undefined) {
+        if (selectedNode.children[this.REFLECT_IDX] === undefined) {
             selectedNode.addChild(this.nullNode);
         }
 
-        if (selectedNode.children[1] === undefined) {
+        if (selectedNode.children[this.ASSESS_IDX] === undefined) {
             selectedNode.addChild(this.nullNode);
         }
 
-        if (selectedNode.children[2] === undefined) {
+        if (selectedNode.children[this.CONSOL_DISP_IDX] === undefined) {
             selectedNode.addChild(this.nullNode);
         }
-
-        selectedNode.children[3] = this.tree.parse({
+        if (selectedNode.children[this.CREATE_IDX] === undefined) {
+            selectedNode.addChild(this.nullNode);
+        }
+        selectedNode.children[this.SOLVE_IDX] = this.tree.parse({
             id: newData[workflowIndex].Workflow.length - 1
         });
 
         this.setState({WorkflowDetails: newData});
     }
+
 
     changeAssessment(parentIndex, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
@@ -550,7 +584,7 @@ class AssignmentEditorContainer extends React.Component {
       let prevTaskName = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_name;
       let newTask = cloneDeep(taskType);
       let newText = string+" "+ prevTaskName;
-      if(newText.length > 25){ //need to do this because of database limit
+      if(newText.length > 255){ //need to do this because of database limit
         switch(taskType.TA_type){
           case TASK_TYPES.EDIT:
             newText = string + ' Problem';
@@ -599,17 +633,10 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[1].model.id].TA_type == TASK_TYPES.GRADE_PROBLEM || this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[1].model.id].TA_type == TASK_TYPES.CRITIQUE) {
-            return selectedNode.children[1].model.id;
-        } else if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[1].model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[1].model.id].TA_type == TASK_TYPES.DISPUTE) {
-            return selectedNode.children[1].children[1].model.id;
-        }
+        return selectedNode.children[this.ASSESS_IDX].model.id;
+
     }
-/////------>
-//////
-/////
-/////
-/////
+
     getConsolidationIndex(reflect, index, workflowIndex){
         let targetIndex = null;
         if(reflect){
@@ -622,7 +649,7 @@ class AssignmentEditorContainer extends React.Component {
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == targetIndex;
         });
-        return selectedNode.children[0].children[0];
+        return selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX];
     }
 
     getAssessNumberofParticipants(index, workflowIndex) {
@@ -640,11 +667,7 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.EDIT || this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.COMMENT) {
-            return selectedNode.children[0].model.id;
-        } else if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.DISPUTE) {
-            return selectedNode.children[0].children[1].model.id;
-        }
+        return selectedNode.children[this.REFLECT_IDX].model.id;
     }
 
     getReflectNumberofParticipants(index, workflowIndex) {
@@ -658,12 +681,16 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     hasDispute(consoleNode, workflowIndex) {
-        if (consoleNode.children[0].children[0] !== undefined && this.state.WorkflowDetails[workflowIndex].Workflow[consoleNode.children[0].children[0].model.id].TA_type == TASK_TYPES.DISPUTE) {
+        if(consoleNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX] === undefined || consoleNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX] === this.nullNode){
+          return null;
+        }
 
-            return true;
+        else if (this.state.WorkflowDetails[workflowIndex].Workflow[consoleNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE) {
+
+            return consoleNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX];
         } else {
 
-            return false;
+            return null;
         }
     }
 
@@ -674,14 +701,14 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        let assessIndex = selectedNode.children[1].model.id;
+        let assessIndex = selectedNode.children[this.ASSESS_IDX].model.id;
 
-        selectedNode.children[1].walk(function(node) {
+        selectedNode.children[this.ASSESS_IDX].walk(function(node) {
             x.cleanAssigneeConstraints(node.model.id, workflowIndex);
             newData[workflowIndex].Workflow[node.model.id] = {};
         });
 
-        selectedNode.children[1] = this.nullNode;
+        selectedNode.children[this.ASSESS_IDX] = this.nullNode;
 
         this.setState({WorkflowDetails: newData});
 
@@ -697,54 +724,30 @@ class AssignmentEditorContainer extends React.Component {
             return;
         }
         let x = this; //context variable
-        let needsConsoleIndex = selectedNode.children[0].model.id;
-        let consoleIndex = selectedNode.children[0].children[0].model.id;
+        let needsConsoleIndex = selectedNode.children[this.CONSOL_DISP_IDX].model.id;
+        let consoleIndex = selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id;
+        let dispNode = this.hasDispute(selectedNode.children[this.CONSOL_DISP_IDX], workflowIndex);
+        if (dispNode !== null) {
 
-        if (this.hasDispute(selectedNode.children[0], workflowIndex)) {
-            let temp = selectedNode.children[0].children[0].children[0];
-            if (selectedNode.children[0].children[1] == undefined) {
-
-                selectedNode.children[0].walk(function(node) {
-                    if (node.model.id == selectedNode.children[0].children[0].children[0].model.id) {
+                selectedNode.children[this.CONSOL_DISP_IDX].walk(function(node) {
+                    if (node.model.id == dispNode.model.id) {
                         return false;
                     }
                     if (node != x.nullNode) {
                         newData[workflowIndex].Workflow[node.model.id] = {};
                     }
                 })
+                selectedNode.children[this.CONSOL_DISP_IDX] = dispNode;
 
-                selectedNode.children[0] = temp;
-            } else {
-                selectedNode.children[0].walk(function(node) {
-                    if (node.model.id == selectedNode.children[0].children[0].children[0].model.id) {
-                        return false;
-                    }
-                    if (node != x.nullNode) {
-                        newData[workflowIndex].Workflow[node.model.id] = {};
-                    }
-                })
 
-                let temp2 = selectedNode.children[0].children[1];
-                selectedNode.children[0] = temp;
-                selectedNode.children[0].children[1] = temp2;
-            }
         } else {
-            if (selectedNode.children[0].children[1] != undefined) {
-                let temp = selectedNode.children[0].children[1];
-                selectedNode.children[0].walk(function(node) {
+                selectedNode.children[this.CONSOL_DISP_IDX].walk(function(node) {
                     if (node != x.nullNode) {
                         newData[workflowIndex].Workflow[node.model.id] = {};
                     }
                 });
-                selectedNode.children[0] = temp;
-            } else {
-                selectedNode.children[0].walk(function(node) {
-                    if (node != x.nullNode) {
-                        newData[workflowIndex].Workflow[node.model.id] = {};
-                    }
-                });
-                selectedNode.children[0] = this.nullNode;
-            }
+                selectedNode.children[this.CONSOL_DISP_IDX] = this.nullNode;
+
         }
 
         this.setState({WorkflowDetails: newData});
@@ -758,13 +761,13 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        let createIndex = selectedNode.children[2].model.id;
+        let createIndex = selectedNode.children[this.CREATE_IDX].model.id;
 
-        selectedNode.children[2].walk(function(node) {
+        selectedNode.children[this.CREATE_IDX].walk(function(node) {
             x.cleanAssigneeConstraints(node.model.id, workflowIndex);
             newData[workflowIndex].Workflow[node.model.id] = {};
         });
-        selectedNode.children[2].drop();
+        selectedNode.children[this.CREATE_IDX].drop();
 
         this.setState({WorkflowDetails: newData});
     }
@@ -776,30 +779,21 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].model.id].TA_type == TASK_TYPES.DISPUTE) {
-            if (selectedNode.children[0].children[1] !== undefined && (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].children[1].model.id].TA_type === TASK_TYPES.EDIT || this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].children[1].model.id].TA_type === TASK_TYPES.COMMENT)) {
-                let temp = selectedNode.children[0].children[1];
-                selectedNode.children[0].walk(function(node) {
-                    if (node != x.nullNode) {
-                        newData[workflowIndex].Workflow[node.model.id] = {};
-                    }
-                });
-                selectedNode.children[0] = temp;
-            } else {
-                selectedNode.children[0].walk(function(node) {
-                    if (node != x.nullNode) {
-                        newData[workflowIndex].Workflow[node.model.id] = {};
-                    }
-                });
-            }
+        if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE) {
+              selectedNode.children[this.CONSOL_DISP_IDX].walk(function(node) {
+                if (node != x.nullNode) {
+                  newData[workflowIndex].Workflow[node.model.id] = {};
+                  }
+              });
+            selectedNode.children[this.CONSOL_DISP_IDX] = this.nullNode;
         } else {
-            if (this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[0].children[0].children[0].model.id].TA_type == TASK_TYPES.DISPUTE) {
-                selectedNode.children[0].children[0].children[0].walk(function(node) {
-                    if (node != x.nullNode) {
-                        newData[workflowIndex].Workflow[node.model.id] = {};
-                    }
-                });
-            } else {}
+          selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].walk(function(node) {
+            if (node != x.nullNode) {
+              newData[workflowIndex].Workflow[node.model.id] = {};
+              }
+          });
+
+        selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX] = this.nullNode;
         }
 
         this.setState({WorkflowDetails: newData});
@@ -812,14 +806,14 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        let reflectIndex = selectedNode.children[0].model.id;
+        let reflectIndex = selectedNode.children[this.REFLECT_IDX].model.id;
 
-        selectedNode.children[0].walk(function(node) {
+        selectedNode.children[this.REFLECT_IDX].walk(function(node) {
             x.cleanAssigneeConstraints(node.model.id, workflowIndex);
             newData[workflowIndex].Workflow[node.model.id] = {};
         })
 
-        selectedNode.children[0] = this.nullNode;
+        selectedNode.children[this.REFLECT_IDX] = this.nullNode;
 
         this.setState({WorkflowDetails: newData});
     }
@@ -831,13 +825,13 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        let createIndex = selectedNode.children[3].model.id;
+        let createIndex = selectedNode.children[this.SOLVE_IDX].model.id;
 
-        selectedNode.children[3].walk(function(node) {
+        selectedNode.children[this.SOLVE_IDX].walk(function(node) {
             x.cleanAssigneeConstraints(node.model.id, workflowIndex);
             newData[workflowIndex].Workflow[node.model.id] = {};
         });
-        selectedNode.children[3].drop();
+        selectedNode.children[this.SOLVE_IDX].drop();
 
         this.setState({WorkflowDetails: newData});
     }
@@ -875,33 +869,21 @@ class AssignmentEditorContainer extends React.Component {
 
         this.setState({WorkflowDetails: newData});
     }
-    //------------------------------------------------------------------------
+    //--------------------END TREE METHODS--------------------------------------
 
-
+    ///////////////////////////////////////////////////////////////////////////
     ////////////// Task Activity change methods //////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
 
     addFieldButton(index, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields] = {
-            title: '',
-            show_title: false,
-            assessment_type: null,
-            numeric_min: 0,
-            numeric_max: 0,
-            rating_max: 5,
-            list_of_labels: 'Easy, Medium, Difficult',
-            field_type: "text",
-            requires_justification: false,
-            instructions: '',
-            rubric: '',
-            justification_instructions: '',
-            default_refers_to: [
-                null, null
-            ],
-            default_content: ['', '']
-        };
+        let field = newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields];
+        newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields] = cloneDeep(this.defaultFields);
+        let titleString = newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields].title + (" " + (newData[workflowIndex].Workflow[index].TA_fields.number_of_fields +1))
+         newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields].title = titleString;
         newData[workflowIndex].Workflow[index].TA_fields.number_of_fields += 1;
-        newData[workflowIndex].Workflow[index].TA_fields.field_titles.push('');
+        newData[workflowIndex].Workflow[index].TA_fields.field_titles.push(titleString);
 
         this.setState({WorkflowDetails: newData})
     }
@@ -1011,7 +993,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
                 break;
 
-            case "TA_assignee_constraint":
+            case "TA_assignee_constraints":
                 {
                     if (newData[workflowIndex].Workflow[index][stateField][1] != 'group') {
                         newData[workflowIndex].Workflow[index][stateField][1] = 'group';
@@ -1046,7 +1028,7 @@ class AssignmentEditorContainer extends React.Component {
                 this.changeAssessment(index, workflowIndex, e.value);
               }
               break;
-          case 'TA_assignee_constraint':
+          case 'TA_assignee_constraints':
             newData[workflowIndex].Workflow[index][stateField][0] = e.value;
             break;
           case 'TA_function_type_Assess':
@@ -1074,7 +1056,7 @@ class AssignmentEditorContainer extends React.Component {
       let newData = this.state.WorkflowDetails;
       //need to go into tree here and get index
       let target = reflect ? this.getReflectIndex(index, workflowIndex) : this.getAssessIndex(index, workflowIndex); // index of child (reflect/assess) node
-      newData[workflowIndex].Workflow[target]['TA_assignee_constraint'][0] = e.value;
+      newData[workflowIndex].Workflow[target]['TA_assignee_constraints'][0] = e.value;
       this.setState({WorkflowDetails: newData});
     }
 
@@ -1083,14 +1065,14 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     cleanAssigneeConstraints(deleteTaskIndex, workflowIndex) {
-        //will need to go through list of workflows, go to TA_assignee_constraint[2], go through ALL constraints keys, check if index is in the array, if it is, pop it
+        //will need to go through list of workflows, go to TA_assignee_constraints[2], go through ALL constraints keys, check if index is in the array, if it is, pop it
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow.forEach(function(task) {
             if (Object.keys(task).length > 0) {
-                Object.keys(task.TA_assignee_constraint[2]).forEach(function(key) {
-                    let inArray = task.TA_assignee_constraint[2][key].indexOf(deleteTaskIndex);
+                Object.keys(task.TA_assignee_constraints[2]).forEach(function(key) {
+                    let inArray = task.TA_assignee_constraints[2][key].indexOf(deleteTaskIndex);
                     if (inArray > -1) {
-                        task.TA_assignee_constraint[2][key].splice(inArray, 1);
+                        task.TA_assignee_constraints[2][key].splice(inArray, 1);
                     }
                 });
             }
@@ -1104,16 +1086,16 @@ class AssignmentEditorContainer extends React.Component {
         let newData = this.state.WorkflowDetails;
 
         if (constraint === 'none') {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraint[2] = {};
+            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2] = {};
             this.setState({WorkflowDetails: newData});
             return;
 
         }
 
-        if (newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint] === undefined) {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint] = [];
+        if (newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint] === undefined) {
+            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint] = [];
         } else {
-            delete newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint];
+            delete newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint];
         }
 
         this.setState({WorkflowDetails: newData})
@@ -1121,12 +1103,12 @@ class AssignmentEditorContainer extends React.Component {
 
     checkAssigneeConstraintTasks(index, constraint, referId, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        let indexInArray = newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint].indexOf(referId);
+        let indexInArray = newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].indexOf(referId);
 
         if (indexInArray > -1) {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint].splice(indexInArray, 1);
+            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].splice(indexInArray, 1);
         } else {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraint[2][constraint].push(referId);
+            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].push(referId);
         }
         this.setState({WorkflowDetails: newData});
     }
@@ -1139,6 +1121,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeFieldName(index, field, workflowIndex, e) {
+      e.preventDefault();
         if (e.target.value > 1000) {
             return;
         }
@@ -1150,9 +1133,8 @@ class AssignmentEditorContainer extends React.Component {
 
     changeFieldCheck(stateField, index, field, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_fields[field][stateField]
-            ? false
-            : true;
+        newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = !this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_fields[field][stateField];
+
         this.setState({WorkflowDetails: newData});
     }
 
@@ -1163,11 +1145,14 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeInputData(stateField, index, workflowIndex, e) {
+      e.preventDefault();
+
         if (e.target.value.length > 45000) {
             return;
         }
         if (stateField == 'TA_display_name') {
-            if (e.target.value.length > 25) {
+            if (e.target.value.length > 255
+) {
                 return;
             }
         }
@@ -1177,6 +1162,8 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeInputFieldData(stateField, index, field, workflowIndex, e) {
+      e.preventDefault();
+
         if (e.target.value.length > 45000) {
             return;
         }
@@ -1196,8 +1183,13 @@ class AssignmentEditorContainer extends React.Component {
           case 'TA_due_type':
             newData[workflowIndex].Workflow[index][stateField][1] = value * 1440;
             break;
-          case 'TA_trigger_consolidation_threshold':
-            newData[workflowIndex].Workflow[index][stateField][0] = value;
+          case 'TA_trigger_consolidation_threshold_reflect':
+          let targetIndex1 = this.getReflectIndex(index, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][0] = value;
+            break;
+          case 'TA_trigger_consolidation_threshold_assess':
+          let targetIndex2 = this.getAssessIndex(index, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][0] = value;
             break;
           default:
             newData[workflowIndex].Workflow[index][stateField] = value;
@@ -1218,8 +1210,13 @@ class AssignmentEditorContainer extends React.Component {
           case 'TA_due_type':
             newData[workflowIndex].Workflow[index][stateField][0] = val;
             break;
-          case 'TA_trigger_consolidation_threshold':
-            newData[workflowIndex].Workflow[index][stateField][1] = val;
+          case 'TA_trigger_consolidation_threshold_reflect':
+            let targetIndex1 = this.getReflectIndex(index, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][1] = val;
+            break;
+          case 'TA_trigger_consolidation_threshold_assess':
+          let targetIndex2 = this.getAssessIndex(index, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][1] = val;
             break;
           case 'StartDelay':
               {
@@ -1308,7 +1305,12 @@ class AssignmentEditorContainer extends React.Component {
         return fieldList;
     }
 
+    setDefaultField(defIndex, fieldIndex, taskIndex, workflowIndex,val){
+      let newData = this.state.WorkflowDetails;
+      newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defIndex] = val;
+      this.setState({WorkflowDetails: newData});
 
+    }
 
   //-----------------------------------------------------------------------------
 
@@ -1469,6 +1471,7 @@ class AssignmentEditorContainer extends React.Component {
               if(Object.keys(task).length !== 0 ){
               tV.push(<TaskDetailsComponent key={index + "-" + node.model.id} index={node.model.id}
                                             workflowIndex={index}
+                                            LastTaskChanged={this.state.LastTaskChanged}
                                             TaskActivityData={task}
                                             isOpen={false}
                                             changeNumericData={this.changeNumericData.bind(this)}
@@ -1496,52 +1499,13 @@ class AssignmentEditorContainer extends React.Component {
                                             changeAssigneeInChild = {this.changeAssigneeInChild.bind(this)}
                                             getAssigneeInChild = {this.getAssigneeInChild.bind(this)}
                                             getTaskFields = {this.getTaskFields.bind(this)}
+                                            setDefaultField = {this.setDefaultField.bind(this)}
                                     />);
               }
             }
           }, this)
 
-/*          let tasksView = workflow.Workflow.map( function(task, taskIndex){
-            // will probably need to move this into problemDetails.js to support
-            // multiple workflows
-            if(task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || task.TA_type == TASK_TYPES.COMPLETED){
-              return null;
-            }
-            if(Object.keys(task).length !== 0 ){
-            return (<TaskDetailsComponent key={index + "-" + taskIndex} index={taskIndex}
-                                          workflowIndex={index}
-                                          TaskActivityData={task}
-                                          isOpen={false}
-                                          changeNumericData={this.changeNumericData.bind(this)}
-                                          changeInputData={this.changeInputData.bind(this)}
-                                          changeDropdownData={this.changeDropdownData.bind(this)}
-                                          changeTASimpleGradeCheck={this.changeTASimpleGradeCheck.bind(this)}
-                                          changeTASimpleGradePoints={this.changeTASimpleGradePoints.bind(this)}
-                                          changeInputFieldData={this.changeInputFieldData.bind(this)}
-                                          changeNumericFieldData={this.changeNumericFieldData.bind(this)}
-                                          changeDropdownFieldData={this.changeDropdownFieldData.bind(this)}
-                                          changeFieldName={this.changeFieldName.bind(this)}
-                                          changeFieldCheck={this.changeFieldCheck.bind(this)}
-                                          changeFileUpload={this.changeFileUpload.bind(this)}
-                                          changeDataCheck={this.changeDataCheck.bind(this)}
-                                          addFieldButton={this.addFieldButton.bind(this)}
-                                          changeRadioData={this.changeRadioData.bind(this)}
-                                          changeSimpleGradeCheck={this.changeSimpleGradeCheck.bind(this)}
-                                          getReflectNumberofParticipants = {this.getReflectNumberofParticipants.bind(this)}
-                                          setReflectNumberofParticipants = {this.setReflectNumberofParticipants.bind(this)}
-                                          getAssessNumberofParticipants = {this.getAssessNumberofParticipants.bind(this)}
-                                          setAssessNumberofParticipants = {this.setAssessNumberofParticipants.bind(this)}
-                                          checkAssigneeConstraints = {this.checkAssigneeConstraints.bind(this)}
-                                          checkAssigneeConstraintTasks = {this.checkAssigneeConstraintTasks.bind(this)}
-                                          getAlreadyCreatedTasks = {this.getAlreadyCreatedTasks.bind(this)}
-                                          changeAssigneeInChild = {this.changeAssigneeInChild.bind(this)}
-                                          getAssigneeInChild = {this.getAssigneeInChild.bind(this)}
-                                  />);
-              }
-              else{
-                return null;
-              }
-          },this); */
+
 
             tabListAr.push(<Tab>{workflow.WA_name}</Tab>);
             tabPanelAr.push(

@@ -8,6 +8,7 @@ var CheckBoxList = require('react-checkbox-list');
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
 
+
 class TaskDetailsComponent extends React.Component{
 
   // PROPS:
@@ -28,6 +29,7 @@ class TaskDetailsComponent extends React.Component{
           }],
           SimpleGradePointReduction: 0,
           CurrentFieldSelection: null,
+          DefaultFieldForeign: [false], //will be true if want to show Def Content from other tasks
           CurrentTaskFieldSelection: null,
           ShowAssigneeConstraintSections: [false,false,false,false], //same as, in same group as, not in, choose from
           ShowAdvanced: false,
@@ -35,22 +37,13 @@ class TaskDetailsComponent extends React.Component{
       };
     }
 
-
-    // shouldComponentUpdate(nextProps, nextState){
-    //
-    //   Object.keys(this.props.TaskActivityData).forEach(function(key){
-    //     if(this.props.TaskActivityData[key] !== nextProps.TaskActivityData[key]){
-    //       return true;
-    //     }
-    //   },this);
-    //
-    //   return false || (this.state != nextState);
-    // }
-
+    shouldComponentUpdate(nextProps, nextState){
+      console.log(this.props.TaskActivityData, nextProps.TaskActivityData);
+      return true;
+    }
 
 
     render(){
-      console.log("Rendering tasks Comp: #",this.props.index)
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
@@ -86,38 +79,7 @@ class TaskDetailsComponent extends React.Component{
     //IN PROGRESS Link Default Content
 
 
-      let fieldSelectionList = this.props.getTaskFields(this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(function(field){
-          return (<label>
-            {field.label} <Radio value={field.value} />
-            </label>
-          );
-        });
-      let fieldSelection = (
-        <RadioGroup key={"taskFieldDefault" + 1} onChange={(value)=>{
-            this.setState({
-              CurrentTaskFieldSelection: value
-            });
-        }} >
-        {fieldSelectionList}
-        </RadioGroup>
-      );
 
-      let defaultContentWrapper = (<div>
-        <RadioGroup key={"taskFieldDefault" + 2} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value)=>{
-            this.setState({
-              CurrentTaskFieldSelection: value
-            });
-        }}>
-          {
-              taskCreatedList.map(function(task){
-              return (<label> {task.label}<Radio value={task.value}/></label>);
-                }, this)
-          }
-
-        </RadioGroup>
-
-        </div>
-      );
 
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
@@ -187,16 +149,16 @@ class TaskDetailsComponent extends React.Component{
           <label>Should this assignee have a specific relation to an assignee of another task in this problem</label>
           <br />
           <label>None</label>
-          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex) } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraint[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex) } isClicked={ Object.keys(this.props.TaskActivityData.TA_assignee_constraints[2]).length === 0 ? true : false } style={{marginRight: '8px'}}/>
           <label>New to Problem</label>
-          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not_in_workflow_instance'] ? true : false}/>
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not_in_workflow_instance'] ? true : false}/>
           <label>Same as</label>
           <Checkbox click={()=> {
               this.props.checkAssigneeConstraints(this.props.index, 'same_as', this.props.workflowIndex);
               let newAssignee = this.state.ShowAssigneeConstraintSections;
               newAssignee[0] = !this.state.ShowAssigneeConstraintSections[0];
               this.setState({ShowAssigneeConstraintSections: newAssignee});
-            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['same_as'] ? true : false }
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['same_as'] ? true : false }
               style={{marginRight: '8px'}}/>
           <label>In same group as</label>
           <Checkbox click={()=> {
@@ -204,7 +166,7 @@ class TaskDetailsComponent extends React.Component{
               let newAssignee = this.state.ShowAssigneeConstraintSections;
               newAssignee[1] = !this.state.ShowAssigneeConstraintSections[1];
               this.setState({ShowAssigneeConstraintSections: newAssignee});
-            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['group_with_member'] ? true : false }
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['group_with_member'] ? true : false }
             style={{marginRight: '8px'}}/>
           <label>Not in</label>
           <Checkbox click={()=> {
@@ -212,7 +174,7 @@ class TaskDetailsComponent extends React.Component{
               let newAssignee = this.state.ShowAssigneeConstraintSections;
               newAssignee[2] = !this.state.ShowAssigneeConstraintSections[2];
               this.setState({ShowAssigneeConstraintSections: newAssignee});
-            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['not'] ? true : false }
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not'] ? true : false }
               style={{marginRight: '8px'}} />
           <label>Choose from </label>
           <Checkbox click={()=> {
@@ -220,7 +182,7 @@ class TaskDetailsComponent extends React.Component{
               let newAssignee = this.state.ShowAssigneeConstraintSections;
               newAssignee[3] = !this.state.ShowAssigneeConstraintSections[3];
               this.setState({ShowAssigneeConstraintSections: newAssignee});
-            }} isClicked={this.props.TaskActivityData.TA_assignee_constraint[2]['choose_from'] ? true : false }
+            }} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['choose_from'] ? true : false }
                 />
 
               <br />
@@ -274,7 +236,7 @@ class TaskDetailsComponent extends React.Component{
         <br />
           <RadioGroup
             selectedValue={this.props.TaskActivityData.TA_trigger_consolidation_threshold[1]}
-            onChange={this.props.changeRadioData.bind(this, 'TA_trigger_consolidation_threshold', this.props.index, this.props.workflowIndex)}
+            onChange={this.props.changeRadioData.bind(this, 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)}
             >
             <label> Points
               <Radio value="points" />
@@ -289,12 +251,13 @@ class TaskDetailsComponent extends React.Component{
             value={2}
             min={0}
             max={100}
-            onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold', this.props.index, this.props.workflowIndex)}
+            onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)}
             size={6} />
           <br />
         <label>To be consolidated, the grade should be: </label>
         <Dropdown options={consolidationTypeValues} onChange={this.props.changeDropdownData.bind(this, 'TA_function_type_Assess', this.props.index,this.props.workflowIndex)} />
       </div>);
+
         let showConsol= this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
 
           <div>
@@ -336,10 +299,42 @@ class TaskDetailsComponent extends React.Component{
       // TA Allow reflection Display Logic
       if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
 
+        let consolidateOptions = (
+          <div>
+          <label>Grading Threshold</label>
+        <br />
+          <RadioGroup
+            selectedValue={this.props.TaskActivityData.TA_trigger_consolidation_threshold[1]}
+            onChange={this.props.changeRadioData.bind(this, 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)}
+            >
+            <label> Points
+              <Radio value="points" />
+            </label>
+            <label> Percent
+              <Radio value="percent" />
+            </label>
+
+          </RadioGroup>
+        <br />
+        <NumberField
+            value={2}
+            min={0}
+            max={100}
+            onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)}
+            size={6} />
+          <br />
+        <label>To be consolidated, the grade should be: </label>
+        <Dropdown options={consolidationTypeValues} onChange={this.props.changeDropdownData.bind(this, 'TA_function_type_Reflect', this.props.index,this.props.workflowIndex)} />
+      </div>);
+
         let showConsol= this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
           <div>
           <label>Should the reflections be consolidated</label>
-        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index, this.props.workflowIndex)}/></div>) : null;
+        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index, this.props.workflowIndex)}/>
+        <br />
+        {this.props.TaskActivityData.AllowConsolidations[0] ? consolidateOptions : null}
+        </div>
+        ) : null;
 
         let showDispute = (<div>
           <label> Can students dispute this reflection </label>
@@ -373,147 +368,172 @@ class TaskDetailsComponent extends React.Component{
       }
 
 
-
-      let inputFieldsView = this.props.TaskActivityData.TA_fields.field_titles.map(function(field, index){
-        let justificationView = null; //justification textbox for the field
-        let fieldTypeOptions = null; //options that change on Field Type dropbox selection
-        let assessmentTypeView = null; //options that change on assessment type selection
-
-        if(this.props.TaskActivityData.TA_fields[index].requires_justification){
-          justificationView = (
-          <div className = "inner block" key={index + 200}>
-            <label>Field Justification Instructions</label>
-            <textarea className="big-text-field"
-              value={this.props.TaskActivityData.TA_fields[index].justification_instructions}
-              onChange={this.props.changeInputFieldData.bind(this,'justification_instructions',this.props.index, index, this.props.workflowIndex)}></textarea>
-          </div>)
-
-        }
-
-        if(this.props.TaskActivityData.TA_fields[index].field_type == "numeric"){
-          fieldTypeOptions = (<div>
-            <label>Min</label>
-            <NumberField
-                min={0}
-                max={100}
-                value={this.props.TaskActivityData.TA_fields[index].numeric_min}
-                onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
-                }
-                />
-              <br />
-              <label>Max</label>
-              <NumberField
-                  value={this.props.TaskActivityData.TA_fields[index].numeric_max}
-                  min={0}
-                  max={100}
-                  onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex)}
-                  />
-              </div>);
-
-
-        }
-
-        else if(this.props.TaskActivityData.TA_fields[index].field_type == "assessment" || this.props.TaskActivityData.TA_fields[index].field_type == "self assessment"){
-          if(this.props.TaskActivityData.TA_fields[index].assessment_type == 'grade'){
-            assessmentTypeView  = (<div>
-              <label>Min</label>
-              <NumberField
-                  min={0}
-                  max={100}
-                  value={this.props.TaskActivityData.TA_fields[index].numeric_min}
-                  onChange={this.props.changeNumericFieldData.bind(this,'numeric_min', this.props.index, index, this.props.workflowIndex)
-                  }
-                  />
-                <label>Max</label>
-                <NumberField
-                    value={this.props.TaskActivityData.TA_fields[index].numeric_max}
-                    min={0}
-                    max={100}
-                    onChange={ this.props.changeNumericFieldData.bind(this,"numeric_max",this.props.index,index, this.props.workflowIndex )}
-                    />
-                </div>);
+      let inputFieldsView = this.props.TaskActivityData.TA_fields.field_titles.map(function(field, index) {
+          let justificationView = null; //justification textbox for the field
+          let fieldTypeOptions = null; //options that change on Field Type dropbox selection
+          let assessmentTypeView = null; //options that change on assessment type selection
+          let defaultContentView = null;
+          if (this.props.TaskActivityData.TA_fields[index].requires_justification) {
+              justificationView = (
+                  <div className="inner block" key={index + 200}>
+                      <label>Field Justification Instructions</label>
+                      <textarea className="big-text-field" value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.changeInputFieldData.bind(this, 'justification_instructions', this.props.index, index, this.props.workflowIndex)}></textarea>
+                  </div>
+              )
           }
 
+          if (this.props.TaskActivityData.TA_fields[index].field_type == "numeric") {
+              fieldTypeOptions = (
+                  <div>
+                      <label>Min</label>
+                      <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.changeNumericFieldData.bind(this, 'numeric_min', this.props.index, index, this.props.workflowIndex)}/>
+                      <br/>
+                      <label>Max</label>
+                      <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={0} max={100} onChange={this.props.changeNumericFieldData.bind(this, "numeric_max", this.props.index, index, this.props.workflowIndex)}/>
+                  </div>
+              );
 
-          fieldTypeOptions = (<div>
+          } else if (this.props.TaskActivityData.TA_fields[index].field_type == "assessment" || this.props.TaskActivityData.TA_fields[index].field_type == "self assessment") {
+              if (this.props.TaskActivityData.TA_fields[index].assessment_type == 'grade') {
+                  assessmentTypeView = (
+                      <div>
+                          <label>Min</label>
+                          <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.changeNumericFieldData.bind(this, 'numeric_min', this.props.index, index, this.props.workflowIndex)}/>
+                          <label>Max</label>
+                          <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={0} max={100} onChange={this.props.changeNumericFieldData.bind(this, "numeric_max", this.props.index, index, this.props.workflowIndex)}/>
+                      </div>
+                  );
+              }
 
-            <label>Assessment Type</label> <br/>
+              fieldTypeOptions = (
+                  <div>
 
-              <Dropdown key={index+300}
-                options={assessmentTypeValues}
-                onChange={this.props.changeDropdownFieldData.bind(this, 'assessment_type', this.props.index, index, this.props.workflowIndex)}
-                selectedValue={this.props.TaskActivityData.TA_fields[index].assessment_type} />
+                      <label>Assessment Type</label>
+                      <br/>
 
-              <br />
-              {assessmentTypeView}
-          </div>);
+                      <Dropdown key={index + 300} options={assessmentTypeValues} onChange={this.props.changeDropdownFieldData.bind(this, 'assessment_type', this.props.index, index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_fields[index].assessment_type}/>
 
+                      <br/> {assessmentTypeView}
+                  </div>
+              );
 
+          }
 
-        }
+          let fieldSelectionList = this.props.getTaskFields(this.state.CurrentTaskFieldSelection,this.props.workflowIndex).map(function(field){
+              return (<label>
+                {field.label} <Radio value={field.value} />
+                </label>
+              );
+            });
+          let fieldSelection = (
+            <RadioGroup key={"taskFieldDefault" + 1} onChange={(value)=>{
+                this.setState({
+                  CurrentFieldSelection: value
+                });
+                 this.props.setDefaultField(1, index, this.props.index, this.props.workflowIndex,value)
+            }} >
+            {fieldSelectionList}
+            </RadioGroup>
+          );
 
-        return (<div className="section-divider">
+          let defaultContentWrapper = (<div>
+            <RadioGroup key={"taskFieldDefault" + 2} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value)=>{
+                this.setState({
+                  CurrentTaskFieldSelection: value
+                });
+                this.props.setDefaultField(0, index, this.props.index, this.props.workflowIndex,value)
+            }}>
+              {
+                  taskCreatedList.map(function(task){
+                  return (<label> {task.label}<Radio value={task.value}/></label>);
+                    }, this)
+              }
+
+            </RadioGroup>
+
+            </div>
+          );
+
+          if(this.state.DefaultFieldForeign[index]){
+            defaultContentView = (
+              <div className="inner block">
+                  <label>Default content from other task</label>
+                  {defaultContentWrapper}
+                  {fieldSelection}
+              </div>
+            );
+          }
+          else{
+            defaultContentView = (
+              <div className="inner block">
+                  <label>Default content for the field</label>
+                  <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.changeInputFieldData.bind(this, 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]}></textarea>
+              </div>
+            );
+          }
+          return (
+              <div className="section-divider">
                   <h3 className="subheading">Input Fields</h3>
 
-                  <div className="inner" >
-                    <label>Field Name</label> <br />
-                    <input type="text"   placeholder="Field Name"
-                      value={this.props.TaskActivityData.TA_fields[index].title}
-                      onChange={this.props.changeFieldName.bind(this,this.props.index,index, this.props.workflowIndex)}></input>
+                  <div className="inner">
+                      <label>Field Name</label>
+                      <br/>
+                      <input type="text" placeholder="Field Name" value={this.props.TaskActivityData.TA_fields[index].title} onChange={this.props.changeFieldName.bind(this, this.props.index, index, this.props.workflowIndex)}></input>
                   </div>
 
                   <div className="inner">
-                    <label>Field Type</label> <br />
-
-                    <Dropdown key={index}
-                      options={fieldTypeValues}
-                      onChange={this.props.changeDropdownFieldData.bind(this, 'field_type', this.props.index,index, this.props.workflowIndex)}
-                      selectedValue={this.props.TaskActivityData.TA_fields[index].field_type} />
-                    <br />
-                    {fieldTypeOptions}
+                      <label>
+                          Show this name?
+                      </label><br/>
+                      <Checkbox isClicked={this.props.TaskActivityData.TA_fields[index].show_title} click={this.props.changeFieldCheck.bind(this, "show_title", this.props.index, index, this.props.workflowIndex)}/>
                   </div>
 
                   <div className="inner">
-                  <label>Requires Justification ?</label>
-                  <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index, this.props.workflowIndex)} />
+                      <label>Field Type</label>
+                      <br/>
+
+                      <Dropdown key={index} options={fieldTypeValues} onChange={this.props.changeDropdownFieldData.bind(this, 'field_type', this.props.index, index, this.props.workflowIndex)} selectedValue={this.props.TaskActivityData.TA_fields[index].field_type}/>
+                      <br/> {fieldTypeOptions}
                   </div>
 
-                  <div className = "inner block">
-                    <label >Field Instructions (optional)</label>
-                    <textarea className="big-text-field" placeholder="Type the instructions here..."
-                      onChange={this.props.changeInputFieldData.bind(this, 'instructions', this.props.index,index, this.props.workflowIndex)}
-                      value={this.props.TaskActivityData.TA_fields[index].instructions}></textarea>
+                  <div className="inner">
+                      <label>Requires Justification ?</label>
+                      <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index, this.props.workflowIndex)}/>
                   </div>
 
                   <div className="inner block">
-                    <label>Field Rubric</label>
-                    <textarea className="big-text-field" placeholder="Type the rubric here..."
-                      onChange={this.props.changeInputFieldData.bind(this,'rubric',this.props.index, index, this.props.workflowIndex)}
-                      value={this.props.TaskActivityData.TA_fields[index].rubric}
-                      ></textarea>
+                      <label >Field Instructions (optional)</label>
+                      <textarea className="big-text-field" placeholder="Type the instructions here..." onChange={this.props.changeInputFieldData.bind(this, 'instructions', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].instructions}></textarea>
+                  </div>
+
+                  <div className="inner block">
+                      <label>Field Rubric</label>
+                      <textarea className="big-text-field" placeholder="Type the rubric here..." onChange={this.props.changeInputFieldData.bind(this, 'rubric', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].rubric}></textarea>
                   </div>
 
                   {justificationView}
-
-                  <div className="inner block">
-                    <label>Default content for the field</label>
-                    <textarea className="big-text-field" placeholder="Default content for the field..."
-                      onChange={this.props.changeInputFieldData.bind(this, 'default_content',this.props.index,index, this.props.workflowIndex)}
-                      value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                      ></textarea>
-                  </div>
-
-                  <div className="inner block">
-                    <label>Default content from other task</label>
-                      { defaultContentWrapper}
-                      {fieldSelection}
-                  </div>
-
                   <br />
-                  <br />
+                  {defaultContentView}
+                  <div style={{display: 'inline'}}><label>Get the data from another task instead?
+                    <Checkbox isChecked={this.state.DefaultFieldForeign[index]}
+                              click={()=>{
+                                let newData = this.state.DefaultFieldForeign;
+                                newData[index] = !newData[index];
+                                this.setState({
+                                  DefaultFieldForeign: newData
+                                })
+                              }}
+                              />
+                  </label>
                 </div>
-              );
+
+
+                  <br/>
+                  <br/>
+              </div>
+          );
       }, this);
+
 
 
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
@@ -558,9 +578,24 @@ class TaskDetailsComponent extends React.Component{
                 </div>
 
                 {inputFieldsView}
+
+
                 <div className="section-divider">
                   <div className="inner block" style={{alignContent:'right'}}>
-                    <button type="button" className="divider" onClick={this.props.addFieldButton.bind(this,this.props.index, this.props.workflowIndex)}><i className="fa fa-check"></i>Add another field</button>
+                    <button type="button" className="divider" onClick={()=>{
+                        this.props.addFieldButton(this.props.index, this.props.workflowIndex)
+                        let newDefFields = this.state.DefaultFieldForeign;
+                        newDefFields.push(false);
+                        this.setState({
+                          DefaultFieldForeign: newDefFields
+                        });
+                        }
+                      }
+
+                        >
+                        <i className="fa fa-check"></i>
+                        Add another field
+                    </button>
 
                     <br />
                     <br />
@@ -675,10 +710,10 @@ class TaskDetailsComponent extends React.Component{
                         <label>Who can do this task</label>
                         <br />
                         <Dropdown options={assigneeWhoValues}
-                                  value={this.props.TaskActivityData.TA_assignee_constraint[0]}
-                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraint', this.props.index, this.props.workflowIndex)}/>
+                                  value={this.props.TaskActivityData.TA_assignee_constraints[0]}
+                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)}/>
                                   <label>Will this be a group task</label>
-                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraint', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraint[1] == 'group'}/>
+                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'}/>
                     </div>
 
                     {assigneeRelations}

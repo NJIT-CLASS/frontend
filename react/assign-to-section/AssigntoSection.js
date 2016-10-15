@@ -115,7 +115,7 @@ class AssignToSectionContainer extends React.Component
           });
 
           let newA= this.state.Assignment;
-          newA.AssigmentName = body.assignment.DisplayName;
+          newA.AssigmentName = body.assignment.fulfillmentValue.DisplayName;//tempFix - real value is body.assignment.DisplayName
           this.setState({
             Assignment: newA,
             Semesters:semestersArray,
@@ -294,7 +294,6 @@ class AssignToSectionContainer extends React.Component
     let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
     {
       let tasks = workflow.Tasks.map(function(task, index){
-        console.log(task);
         if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
           return null;
         }

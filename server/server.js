@@ -177,9 +177,16 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-        if (req.App.user &&  !options[req.App.user.type])  {
+        if (req.App.user && !options[req.App.user.type]){
+          if ( (req.App.user.admin && options.admin) ) {
+
+          }else{
             return res.sendStatus(404);
+          }
+
         }
+
+
 
         var sidebarNavItems = [];
 

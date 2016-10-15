@@ -2,7 +2,7 @@ exports.get = (req, res) => {
     if( req.App.user === undefined){
       res.redirect('/');
       return;
-      
+
     }
 
     req.App.api.get('/getCourseCreated/' + req.App.user.userId, (err, statusCode, body) => {
@@ -37,7 +37,7 @@ exports.get = (req, res) => {
             if(statusCode2 == 404){
               res.render('dashboard', {
                 courseList: courseList,
-                pendingTasksList: pendingTasksList, //empty
+                pendingTasksList: pendingTasksList,
                 completedTasksList: completedTasksList
               });
               return;
