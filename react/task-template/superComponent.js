@@ -47,17 +47,22 @@ class SuperComponent extends React.Component {
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
         //checks to see if either data prop is null
-        if(!tdata ){
-          tdata = {};
+
+        if(tdata === null || tdata === undefined || tdata == "null" || tdata == '"{}"'){
+          tdata = new Object();
         }
         if(!tAdata){
           this.setState({Error: true});
           return;
         }
 
+
         if(tdata.constructor !== Object){
-          tdata = JSON.parse(this.props.TaskData)
+          console.log("Data not object. Parsing")
+          tdata = JSON.parse(this.props.TaskData);
         }
+
+
         if(tAdata.constructor !== Object){
           tAdata = JSON.parse(this.props.TaskActivityFields)
         }
@@ -114,47 +119,41 @@ class SuperComponent extends React.Component {
       // function makes a POST call and sends in the state variables which hold the user's input
       e.preventDefault(); //standard JavaScript behavior
       //if task is complete, don't allow saving new data
-      if(this.state.TaskStatus == "Complete"){
+      if(this.state.TaskStatus == "complete"){
         return ;
       }
 
-      let validData = this.isValidData(); //checks to see if data is valid before submitting
 
-      if(validData){
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/taskInstanceTemplate/create/save',
-            body: {
-                taskInstanceid: this.props.TaskID,
-                userid: this.props.UserID,
-                taskInstanceData: this.state.TaskData
-            },
-            json: true
-          };
+      const options = {
+          method: 'POST',
+          uri: this.props.apiUrl + '/api/taskInstanceTemplate/create/save',
+          body: {
+              taskInstanceid: this.props.TaskID,
+              userid: this.props.UserID,
+              taskInstanceData: this.state.TaskData
+          },
+          json: true
+        };
 
-        request(options, (err, res, body) => {
-          if(res.statusCode != 200){
-            this.setState({InputError: true});
-            return;
-          }
-          else{
-            this.setState({
-              SaveSuccess: true
-            });
-            return;
-          }
-        });
-      }
-      else{
-        this.setState({InputError: true});
-        return;
-      }
+      request(options, (err, res, body) => {
+        if(res.statusCode != 200){
+          this.setState({InputError: true});
+          return;
+        }
+        else{
+          this.setState({
+            SaveSuccess: true
+          });
+          return;
+        }
+      });
+
     }
 
     submitData(e){
       e.preventDefault();
       //don't allow submit if task is complete
-      if(this.state.TaskStatus == "Complete"){
+      if(this.state.TaskStatus == "complete"){
         return ;
       }
       //check if input is valid
@@ -284,14 +283,13 @@ class SuperComponent extends React.Component {
 
     render(){
 
-          console.log(this.state.TaskData)
           let content= null;
           let infoMessage = null;
           let TA_rubric = null;
           let TA_instructions = null;
           let formButtons =  null;
           let indexer =  "content";
-          let TA_rubricButtonText = this.state.ShowRubric ? "Hide Rubric" : "Show Rubric";
+          let TA_rubricButtonText = this.state.ShowRubric ? "Hide Task Rubric" : "Show Task Rubric";
           //if invalid data, shows error message
 
           if(this.state.Error){
@@ -299,7 +297,7 @@ class SuperComponent extends React.Component {
           }
 
           if(this.state.InputError){
-            infoMessage = (<span style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+            infoMessage = (<span style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Sorry, there was an error sending your response. Please try again.</span>);
             //old Modal style:
             // infoMessage = (<Modal title="Submit Error"  close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
           }
@@ -337,7 +335,7 @@ class SuperComponent extends React.Component {
 
           if(this.props.Instructions != null && this.props.Instructions != '' ){
             TA_instructions = (<div className="regular-text instructions">
-                  <b>Insructions</b>: {this.props.Instructions}
+                  <b>Task Insructions</b>: {this.props.Instructions}
 
             </div>);
           }
@@ -374,7 +372,7 @@ class SuperComponent extends React.Component {
               let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
               if(this.state.FieldRubrics[idx]){
-                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
+                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b> {fieldTitleText} Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
               }
 
               rubricView = ( <div key={1200}>
@@ -559,7 +557,7 @@ class SuperComponent extends React.Component {
                 }
 
                 return(
-                  <div key={idx+200}>
+                  <div key={idx+200} style={{overflow: "visible"}}>
                     {instructions}
                     {rubricView}
                     <br />

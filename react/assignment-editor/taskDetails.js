@@ -5,7 +5,7 @@ import Checkbox from '../shared/checkbox';
 import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 var CheckBoxList = require('react-checkbox-list');
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
 
 
@@ -38,12 +38,27 @@ class TaskDetailsComponent extends React.Component{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-      console.log(this.props.TaskActivityData, nextProps.TaskActivityData);
+      // if(this.state !== nextState || this.props.index === this.props.LastTaskChanged){
+      //   return true;
+      // }
+      // return false;
       return true;
     }
 
 
     render(){
+      let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
+
+      if(!this.state.ShowContent){
+        return (
+          <div className="section">
+              <h2 className="title" onClick={() => {
+                  this.setState({ShowContent: this.state.ShowContent ? false : true,
+                                 NewTask: false});
+                               }}
+                >{title}</h2>
+            </div>);
+      }
       //for future work, change labels to translatable string variables, keep values the sames
       let fieldTypeValues = [{value:'text',label:'Text'},{value:'numeric',label:'Numeric'},{value:'assessment',label:'Assessment'},{value:'self assessment',label:'Self Assessment'}];
       let assessmentTypeValues = [{value:'grade', label:'Numeric Grade'},{value: 'rating', label: 'Rating'},{value:'pass', label:'Pass/Fail'},{value:'evalutation', label: 'Evalutation by labels'}];
@@ -75,11 +90,6 @@ class TaskDetailsComponent extends React.Component{
                                           width:'100px'}}></div>);
 
     /// TA Simple Grade Display Logic
-
-    //IN PROGRESS Link Default Content
-
-
-
 
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
@@ -368,6 +378,138 @@ class TaskDetailsComponent extends React.Component{
       }
 
 
+      ///# Advanced Options View Logic #//////////////
+
+      if(this.state.ShowAdvanced){
+        advancedOptionsView = (
+          <div className="section-divider">
+            <br />
+            <div className="inner">
+                <label>Should this task end at a certain time</label>
+                <br />
+                <RadioGroup
+                  selectedValue={this.props.TaskActivityData.TA_due_type[0]}
+                  onChange={this.props.changeRadioData.bind(this,'TA_due_type', this.props.index, this.props.workflowIndex)} >
+                  <label>
+                    <Radio value="duration" />
+                    Expire After
+                  </label>
+                  <label><Radio value="specific time" />End at this time</label>
+
+                </RadioGroup>
+                <br />
+                <NumberField
+                    value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
+                    min={0}
+                    max={200}
+                    onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index, this.props.workflowIndex)}
+                    />
+            </div>
+
+
+            <div className="inner">
+              <label>Delay before starting task</label>
+              <br />
+              <RadioGroup selectedValue={this.props.TaskActivityData.StartDelay}
+                          onChange={this.props.changeRadioData.bind(this, 'StartDelay', this.props.index, this.props.workflowIndex)}
+                          >
+                <label><Radio value={false} ></Radio>Start when prior task is complete</label>
+                <label><Radio value={true} ></Radio>Start after prior task ends by</label>
+              </RadioGroup>
+              <NumberField  value={this.props.TaskActivityData.TA_start_delay}
+                  min={0}
+                  max={60}
+                  onChange={this.props.changeNumericData.bind(this,'TA_start_delay',this.props.index, this.props.workflowIndex)}
+                />
+            </div>
+
+            <div className= "inner">
+              <label>Does everyone get the same problem</label> <br />
+              <RadioGroup selectedValue={this.props.TaskActivityData.TA_one_or_separate} onChange={
+                  this.props.changeRadioData.bind(this,'TA_one_or_separate', this.props.index, this.props.workflowIndex)
+                }>
+                <label><Radio value={false}/> No</label>
+                <label><Radio value={true} /> Yes</label>
+              </RadioGroup>
+            </div>
+
+            <br/>
+            <br />
+            <div className="inner" >
+              <label>What happens when the task ends</label> <br/>
+              <Dropdown value={this.props.TaskActivityData.TA_at_duration_end} options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index, this.props.workflowIndex)}
+                 />
+
+              {whatIfLateView}
+              </div>
+
+              <div className="inner">
+                <label>Award points just for doing the task on time</label>
+
+                <Checkbox click={this.props.changeSimpleGradeCheck.bind(this, this.props.index, this.props.workflowIndex)} />
+                <br />
+                {simpleGradeOptionsView}
+              </div>
+
+              <div className="inner">
+              </div>
+
+              <br />
+              <br />
+              <div className="inner">
+                <label>Allow a reflection of this task</label>
+                <Checkbox click={this.props.changeDataCheck.bind(this, "TA_allow_reflection", this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'}/>
+              {allowReflectionOptions}
+              </div>
+
+              <div className="inner">
+                  <label>Allow an assessment of this task</label>
+                    <Checkbox click={this.props.changeDataCheck.bind(this,'TA_allow_assessment', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'}/>
+                  {allowAssesmentOptions}
+              </div>
+
+              <div className="inner">
+                <label>Allow a revision of this task</label>
+                <Checkbox click={this.props.changeDataCheck.bind(this,"TA_allow_revisions",this.props.index, this.props.workflowIndex) }/>
+              </div>
+
+              <br />
+              <br />
+
+              <div className="inner">
+                  <label>Assignee Constraints</label>
+                  <br />
+                  <label>Who can do this task</label>
+                  <br />
+                  <Dropdown options={assigneeWhoValues}
+                            value={this.props.TaskActivityData.TA_assignee_constraints[0]}
+                            onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)}/>
+                            <label>Will this be a group task</label>
+                            <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'}/>
+              </div>
+
+              {assigneeRelations}
+
+              <br />
+              <br />
+
+              <div className="inner">
+                <label>Does this lead to a new problem?</label>
+                <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_problem', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
+              </div>
+
+              <div className="inner">
+                <label>Does this lead to a new solution?</label>
+                <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_solution', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
+              </div>
+
+            </div>
+
+        );
+      }
+
+
+
       let inputFieldsView = this.props.TaskActivityData.TA_fields.field_titles.map(function(field, index) {
           let justificationView = null; //justification textbox for the field
           let fieldTypeOptions = null; //options that change on Field Type dropbox selection
@@ -536,7 +678,6 @@ class TaskDetailsComponent extends React.Component{
 
 
 
-      let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
       return (
         <div className="section">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
@@ -609,129 +750,8 @@ class TaskDetailsComponent extends React.Component{
                   </div>
                 </div>
 
+                {advancedOptionsView}
 
-                <div className={this.state.ShowAdvanced ? "section-divider" : "task-hiding"}>
-                  <br />
-                  <div className="inner">
-                      <label>Should this task end at a certain time</label>
-                      <br />
-                      <RadioGroup
-                        selectedValue={this.props.TaskActivityData.TA_due_type[0]}
-                        onChange={this.props.changeRadioData.bind(this,'TA_due_type', this.props.index, this.props.workflowIndex)} >
-                        <label>
-                          <Radio value="duration" />
-                          Expire After
-                        </label>
-                        <label><Radio value="specific time" />End at this time</label>
-
-                      </RadioGroup>
-                      <br />
-                      <NumberField
-                          value={this.props.TaskActivityData.TA_due_type[1] / 1440 }
-                          min={0}
-                          max={200}
-                          onChange={this.props.changeNumericData.bind(this,'TA_due_type',this.props.index, this.props.workflowIndex)}
-                          />
-                  </div>
-
-
-                  <div className="inner">
-                    <label>Delay before starting task</label>
-                    <br />
-                    <RadioGroup selectedValue={this.props.TaskActivityData.StartDelay}
-                                onChange={this.props.changeRadioData.bind(this, 'StartDelay', this.props.index, this.props.workflowIndex)}
-                                >
-                      <label><Radio value={false} ></Radio>Start when prior task is complete</label>
-                      <label><Radio value={true} ></Radio>Start after prior task ends by</label>
-                    </RadioGroup>
-                    <NumberField  value={this.props.TaskActivityData.TA_start_delay}
-                        min={0}
-                        max={60}
-                        onChange={this.props.changeNumericData.bind(this,'TA_start_delay',this.props.index, this.props.workflowIndex)}
-                      />
-                  </div>
-
-                  <div className= "inner">
-                    <label>Does everyone get the same problem</label> <br />
-                    <RadioGroup selectedValue={this.props.TaskActivityData.TA_one_or_separate} onChange={
-                        this.props.changeRadioData.bind(this,'TA_one_or_separate', this.props.index, this.props.workflowIndex)
-                      }>
-                      <label><Radio value={false}/> No</label>
-                      <label><Radio value={true} /> Yes</label>
-                    </RadioGroup>
-                  </div>
-
-                  <br/>
-                  <br />
-                  <div className="inner" >
-                    <label>What happens when the task ends</label> <br/>
-                    <Dropdown value={this.props.TaskActivityData.TA_at_duration_end} options={onTaskEndValues} onChange={this.props.changeDropdownData.bind(this, 'TA_at_duration_end', this.props.index, this.props.workflowIndex)}
-                       />
-
-                    {whatIfLateView}
-                    </div>
-
-                    <div className="inner">
-                      <label>Award points just for doing the task on time</label>
-
-                      <Checkbox click={this.props.changeSimpleGradeCheck.bind(this, this.props.index, this.props.workflowIndex)} />
-                      <br />
-                      {simpleGradeOptionsView}
-                    </div>
-
-                    <div className="inner">
-                    </div>
-
-                    <br />
-                    <br />
-                    <div className="inner">
-                      <label>Allow a reflection of this task</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this, "TA_allow_reflection", this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'}/>
-                    {allowReflectionOptions}
-                    </div>
-
-                    <div className="inner">
-                        <label>Allow an assessment of this task</label>
-                          <Checkbox click={this.props.changeDataCheck.bind(this,'TA_allow_assessment', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'}/>
-                        {allowAssesmentOptions}
-                    </div>
-
-                    <div className="inner">
-                      <label>Allow a revision of this task</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,"TA_allow_revisions",this.props.index, this.props.workflowIndex) }/>
-                    </div>
-
-                    <br />
-                    <br />
-
-                    <div className="inner">
-                        <label>Assignee Constraints</label>
-                        <br />
-                        <label>Who can do this task</label>
-                        <br />
-                        <Dropdown options={assigneeWhoValues}
-                                  value={this.props.TaskActivityData.TA_assignee_constraints[0]}
-                                  onChange={this.props.changeDropdownData.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)}/>
-                                  <label>Will this be a group task</label>
-                                  <Checkbox click={this.props.changeDataCheck.bind(this,'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked = {this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'}/>
-                    </div>
-
-                    {assigneeRelations}
-
-                    <br />
-                    <br />
-
-                    <div className="inner">
-                      <label>Does this lead to a new problem?</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_problem', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
-                    </div>
-
-                    <div className="inner">
-                      <label>Does this lead to a new solution?</label>
-                      <Checkbox click={this.props.changeDataCheck.bind(this,'TA_leads_to_new_solution', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
-                    </div>
-
-                  </div>
                   <br />
 
               </div>

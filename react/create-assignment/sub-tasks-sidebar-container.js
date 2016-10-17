@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TASK_TYPE_TEXT } from '../shared/constants';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 
 class SubTasksSidebarContainer extends React.Component {
     render() {

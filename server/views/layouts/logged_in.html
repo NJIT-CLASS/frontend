@@ -5,8 +5,10 @@
 
         <link rel="icon" type="image/ico" href="/static/favicon.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/medium-draft/dist/medium-draft.css">
         <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
         <link rel="stylesheet" rel="stylesheet/less" href="/static/main.css">
+
     </head>
     <body class="logged-in">
         <div class="main-container" id="app-container" data-api-url="{{ apiUrl }}">
@@ -104,7 +106,6 @@
         {{#each scripts}}
             <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
         {{/each}}
-
         <script src="/static/shared.js" type="text/javascript" charset="utf-8"></script>
     </body>
 </html>

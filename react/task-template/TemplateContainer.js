@@ -6,7 +6,7 @@ future stuff.
 */
 import React from 'react';
 import request from 'request';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants'; //contains constants and their values
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants'; //contains constants and their values
 var ReactTabs = require('react-tabs');
 var Tab = ReactTabs.Tab;
 var Tabs = ReactTabs.Tabs;
@@ -61,9 +61,14 @@ class TemplateContainer extends React.Component {
               SemesterName: '',
               TaskActivityName:'',
               Data:null,
-              Error: false
+              Error: false,
+              TabSelected: 0
           }
+
+
       }
+
+      
 
       getHeaderData() {
         //this function makes an API call and saves the data into appropriate state variables
@@ -127,16 +132,6 @@ class TemplateContainer extends React.Component {
             let currentTask = bod.superTask[bod.superTask.length - 1]
             let currentTaskStatus = currentTask.Status;
 
-            currentTask.Data.field_titles.forEach(function(field, index){
-              if(currentTask.Data[index].default_refers_to[0] !== null && currentTask.Data[index].default_refers_to[1] !== null){
-                //make get call to get Field Data[default_refers_to[0]][default_refers_to[1]]
-                // put results into currentTask.Data[index].default_content=[rsult1, result2]
-                
-              }
-            });
-
-            taskList[taskList.length -1] = currentTask;
-
             this.setState({
               Data: taskList,
               TaskStatus: currentTaskStatus
@@ -176,6 +171,7 @@ class TemplateContainer extends React.Component {
             // and gives the Components an appropriate title.
             // Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
               let compString = null;
+              console.log(task);
 
               switch(task.TaskActivity.Type){
                 case TASK_TYPES.CREATE_PROBLEM:
@@ -207,17 +203,31 @@ class TemplateContainer extends React.Component {
 
 
               if(idx == this.state.Data.length - 1){
-                return (<SuperComponent
-                                            TaskID = {this.props.TaskID}
-                                            UserID = {this.props.UserID}
-                                            ComponentTitle={compString}
-                                            TaskData = {task.Data}
-                                            TaskStatus = {task.Status}
-                                            TaskActivityFields = {task.TaskActivity.Fields}
-                                            Instructions = {task.TaskActivity.Instructions}
-                                            Rubric= {task.TaskActivity.Rubric}
-                                            apiUrl={this.props.apiUrl}
-                                        />);
+                if(task.Status == 'Complete' || task.Status == 'complete'){
+                  return (<SuperViewComponent key={idx+2000}
+                                              index={idx}
+                                              ComponentTitle={compString}
+                                              TaskData = {task.Data}
+                                              Instructions = {task.TaskActivity.Instructions}
+                                              Rubric= {task.TaskActivity.Rubric}
+                                              TaskActivityFields = {task.TaskActivity.Fields}
+
+                                          />);
+                }
+                else{
+                  return (<SuperComponent     key={idx+2000}
+                                              TaskID = {this.props.TaskID}
+                                              UserID = {this.props.UserID}
+                                              ComponentTitle={compString}
+                                              TaskData = {task.Data}
+                                              TaskStatus = {task.Status}
+                                              TaskActivityFields = {task.TaskActivity.Fields}
+                                              Instructions = {task.TaskActivity.Instructions}
+                                              Rubric= {task.TaskActivity.Rubric}
+                                              apiUrl={this.props.apiUrl}
+                                          />);
+                }
+
               }
               else if(task.TaskActivity.Type == TASK_TYPES.GRADE_PROBLEM){
                 numberOfGradingTasks = task.TaskActivity.NumberParticipants;
@@ -227,6 +237,8 @@ class TemplateContainer extends React.Component {
               else{
                 return (<SuperViewComponent key={idx+2000}
                                     index={idx}
+                                    Instructions = {task.TaskActivity.Instructions}
+                                    Rubric= {task.TaskActivity.Rubric}
                                     ComponentTitle={compString}
                                     TaskData={task.Data}
                                     TaskActivityFields={task.TaskActivity.Fields}/>)
@@ -249,6 +261,8 @@ class TemplateContainer extends React.Component {
           let gradedComponentView = (
             <GradedComponent      TaskID = {this.props.TaskID}
                                   UsersTaskData = {gradeViews}
+                                  Instructions = {task.TaskActivity.Instructions}
+                                  Rubric= {task.TaskActivity.Rubric}
                                   TaskActivityFields = {gradeViews[0].TaskActivity.Fields}
                                   TaskStatus = {this.state.Task}
                                   />
@@ -263,8 +277,10 @@ class TemplateContainer extends React.Component {
         return(
           <div>
             <Tabs
-              onSelect={this.handleSelect}
-              selectedIndex={0}
+              onSelect={(tab)=> {
+                this.setState({TabSelected: tab});
+              }}
+              selectedIndex={this.state.TabSelected}
             >
               <TabList className="big-text">
                 <Tab>Task</Tab>
@@ -284,6 +300,7 @@ class TemplateContainer extends React.Component {
               <TabPanel>
                 <div className="placeholder"></div>
                 {/*  Future work to support comments*/}
+
                 <CommentComponent Comment={{Author:'User1', Timestamp:'May 6, 2013 9:43am' ,Content: 'I really liked your problem. It was very intriguing.'}}/>
                 <CommentComponent Comment={{Author:'User2', Timestamp:'May 6, 2013 11:09am' ,Content: 'I agree. I would have never thought of this.'}}/>
                 <CommentComponent Comment={{Author:'Instructor', Timestamp:'May 6, 2013 3:32pm' ,Content: 'Your approach of the problem is very unique. Well done.'}}/>

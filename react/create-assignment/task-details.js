@@ -1,5 +1,5 @@
 import React from 'react';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../shared/constants';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import request from 'request';

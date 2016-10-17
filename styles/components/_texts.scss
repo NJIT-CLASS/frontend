@@ -3,7 +3,8 @@
 }
 .faded-big {
   background-color: #f2f2f3;
-  width:auto;
+  width:65%;
+  word-wrap: break-word;
   height: auto;
   font-size: 18px;
   box-sizing: border-box;
@@ -37,6 +38,8 @@
 
 .regular-text {
   width:auto;
+  margin: 5px;
+  word-wrap: break-word;
   max-width: 1200px;
   font-size: 16px;
   line-height: 1.5;

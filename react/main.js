@@ -15,6 +15,8 @@ import TemplateContainer from './task-template/TemplateContainer';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
 
+
+
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 
 if (assignmentContainerEl) {

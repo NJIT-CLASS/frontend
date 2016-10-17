@@ -15,7 +15,7 @@ import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
-import {TASK_TYPES, TASK_TYPE_TEXT} from '../shared/constants';
+import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 
 class AssignmentEditorContainer extends React.Component {
 
@@ -584,7 +584,7 @@ class AssignmentEditorContainer extends React.Component {
       let prevTaskName = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_name;
       let newTask = cloneDeep(taskType);
       let newText = string+" "+ prevTaskName;
-      if(newText.length > 255){ //need to do this because of database limit
+      if(newText.length > 254){ //need to do this because of database limit
         switch(taskType.TA_type){
           case TASK_TYPES.EDIT:
             newText = string + ' Problem';
@@ -876,87 +876,87 @@ class AssignmentEditorContainer extends React.Component {
     ///////////////////////////////////////////////////////////////////////////
 
 
-    addFieldButton(index, workflowIndex) {
+    addFieldButton(taskIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        let field = newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields];
-        newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields] = cloneDeep(this.defaultFields);
-        let titleString = newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields].title + (" " + (newData[workflowIndex].Workflow[index].TA_fields.number_of_fields +1))
-         newData[workflowIndex].Workflow[index].TA_fields[newData[workflowIndex].Workflow[index].TA_fields.number_of_fields].title = titleString;
-        newData[workflowIndex].Workflow[index].TA_fields.number_of_fields += 1;
-        newData[workflowIndex].Workflow[index].TA_fields.field_titles.push(titleString);
+        let field = newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields];
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields] = cloneDeep(this.defaultFields);
+        let titleString = newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title + (" " + (newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields +1))
+         newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title = titleString;
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields += 1;
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.push(titleString);
 
-        this.setState({WorkflowDetails: newData})
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeDataCheck(stateField, index, workflowIndex, firstIndex) {
+    changeDataCheck(stateField, taskIndex, workflowIndex, firstIndex) {
         let newData = this.state.WorkflowDetails;
 
         switch (stateField) {
             case "TA_allow_reflection":
                 {
-                    if (newData[workflowIndex].Workflow[index][stateField][0] != 'none') {
-                        this.removeReflect(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField][0] = 'none';
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[0] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex][stateField][0] != 'none') {
+                        this.removeReflect(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField][0] = 'none';
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
 
                     } else {
-                        newData[workflowIndex].Workflow[index][stateField][0] = 'edit';
-                        this.addReflection(index, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField][0] = 'edit';
+                        this.addReflection(taskIndex, workflowIndex);
                     }
                 }
                 break;
 
             case "TA_allow_assessment":
                 {
-                    if (newData[workflowIndex].Workflow[index][stateField] != 'none') {
-                        this.removeAssess(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = 'none';
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[1] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex][stateField] != 'none') {
+                        this.removeAssess(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = 'none';
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
 
                     } else {
-                        this.addAssessment(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = 'grade';
+                        this.addAssessment(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
                     }
                 }
                 break;
             case "TA_leads_to_new_problem":
                 {
-                    if (newData[workflowIndex].Workflow[index][stateField]) {
-                        this.removeCreate(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
+                        this.removeCreate(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = false;
                     } else {
-                        this.addCreate(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = true;
+                        this.addCreate(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = true;
                     }
                 }
                 break;
             case "TA_leads_to_new_solution":
                 {
-                    if (newData[workflowIndex].Workflow[index][stateField]) {
-                        this.removeSolve(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
+                        this.removeSolve(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = false;
                     } else {
-                        this.addSolve(index, workflowIndex);
-                        newData[workflowIndex].Workflow[index][stateField] = true;
+                        this.addSolve(taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = true;
                     }
                 }
                 break;
 
             case "Reflect_Consolidate":
                 {
-                    if (newData[workflowIndex].Workflow[index].AllowConsolidations[0]) {
-                        this.removeConsolidation(this.getReflectIndex(index, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[0] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0]) {
+                        this.removeConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
                     } else {
-                        this.addConsolidation(this.getReflectIndex(index, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[0] = true;
+                        this.addConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = true;
                     }
                 }
                 break;
 
             case "Reflect_Dispute":
                 {
-                    let reflectIndex = this.getReflectIndex(index, workflowIndex);
+                    let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex);
                     if (newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute) {
                         newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = false;
                         this.removeDispute(reflectIndex, workflowIndex);
@@ -970,19 +970,19 @@ class AssignmentEditorContainer extends React.Component {
 
             case "Assess_Consolidate":
                 {
-                    if (newData[workflowIndex].Workflow[index].AllowConsolidations[1]) {
-                        this.removeConsolidation(this.getAssessIndex(index, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[1] = false;
+                    if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1]) {
+                        this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
                     } else {
-                        this.addConsolidation(this.getAssessIndex(index, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[index].AllowConsolidations[1] = true;
+                        this.addConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = true;
                     }
                 }
                 break;
 
             case 'Assess_Dispute':
                 {
-                    let assessIndex = this.getAssessIndex(index, workflowIndex);
+                    let assessIndex = this.getAssessIndex(taskIndex, workflowIndex);
                     if (newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute) {
                         newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = false;
                         this.removeDispute(assessIndex, workflowIndex);
@@ -995,77 +995,77 @@ class AssignmentEditorContainer extends React.Component {
 
             case "TA_assignee_constraints":
                 {
-                    if (newData[workflowIndex].Workflow[index][stateField][1] != 'group') {
-                        newData[workflowIndex].Workflow[index][stateField][1] = 'group';
+                    if (newData[workflowIndex].Workflow[taskIndex][stateField][1] != 'group') {
+                        newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'group';
                     } else {
-                        newData[workflowIndex].Workflow[index][stateField][1] = 'individual';
+                        newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'individual';
                     }
                 }
                 break;
 
             default:
-                newData[workflowIndex].Workflow[index][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[index][stateField]
+                newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
                     ? false
                     : true;
                 break;
         }
 
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeDropdownData(stateField, index, workflowIndex, e) {
+    changeDropdownData(stateField, taskIndex, workflowIndex, e) {
         let newData = this.state.WorkflowDetails;
         switch (stateField) {
           case "TA_allow_reflection":
               {
-                newData[workflowIndex].Workflow[index][stateField][0] = e.value;
-                this.changeReflection(index, workflowIndex, e.value);
+                newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
+                this.changeReflection(taskIndex, workflowIndex, e.value);
               }
               break;
           case 'TA_allow_assessment':
               {
-                newData[workflowIndex].Workflow[index][stateField] = e.value;
-                this.changeAssessment(index, workflowIndex, e.value);
+                newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+                this.changeAssessment(taskIndex, workflowIndex, e.value);
               }
               break;
           case 'TA_assignee_constraints':
-            newData[workflowIndex].Workflow[index][stateField][0] = e.value;
+            newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
             break;
           case 'TA_function_type_Assess':
             {
-              let targetIndex = this.getAssessIndex(index,workflowIndex);
+              let targetIndex = this.getAssessIndex(taskIndex,workflowIndex);
               newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
             }
             break;
             case 'TA_function_type_Reflect':
               {
-                let targetIndex = this.getReflectIndex(index,workflowIndex);
+                let targetIndex = this.getReflectIndex(taskIndex,workflowIndex);
                 newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
               }
               break;
           default:
-              newData[workflowIndex].Workflow[index][stateField] = e.value;
+              newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
               break;
       }
 
-      this.setState({WorkflowDetails: newData});
+      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeAssigneeInChild(reflect, index, workflowIndex, e){ //special setter function that changes the assignee constraints of the child Reflect/Assess node
+    changeAssigneeInChild(reflect, taskIndex, workflowIndex, e){ //special setter function that changes the assignee constraints of the child Reflect/Assess node
       //if called by a Reflection node, reflect will be true, if Assessment node, reflect is false
       let newData = this.state.WorkflowDetails;
-      //need to go into tree here and get index
-      let target = reflect ? this.getReflectIndex(index, workflowIndex) : this.getAssessIndex(index, workflowIndex); // index of child (reflect/assess) node
+      //need to go into tree here and get taskIndex
+      let target = reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex); // taskIndex of child (reflect/assess) node
       newData[workflowIndex].Workflow[target]['TA_assignee_constraints'][0] = e.value;
-      this.setState({WorkflowDetails: newData});
+      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    getAssigneeInChild(reflect, index, workflowIndex){
-      return (reflect ? this.getReflectIndex(index, workflowIndex) : this.getAssessIndex(index, workflowIndex));
+    getAssigneeInChild(reflect, taskIndex, workflowIndex){
+      return (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
     }
 
     cleanAssigneeConstraints(deleteTaskIndex, workflowIndex) {
-        //will need to go through list of workflows, go to TA_assignee_constraints[2], go through ALL constraints keys, check if index is in the array, if it is, pop it
+        //will need to go through list of workflows, go to TA_assignee_constraints[2], go through ALL constraints keys, check if taskIndex is in the array, if it is, pop it
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow.forEach(function(task) {
             if (Object.keys(task).length > 0) {
@@ -1078,90 +1078,89 @@ class AssignmentEditorContainer extends React.Component {
             }
         });
 
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
 
-    checkAssigneeConstraints(index, constraint, workflowIndex) {
+    checkAssigneeConstraints(taskIndex, constraint, workflowIndex) {
         let newData = this.state.WorkflowDetails;
 
         if (constraint === 'none') {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2] = {};
-            this.setState({WorkflowDetails: newData});
+            newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2] = {};
+            this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
             return;
 
         }
 
-        if (newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint] === undefined) {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint] = [];
+        if (newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] === undefined) {
+            newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
         } else {
-            delete newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint];
+            delete newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint];
         }
 
-        this.setState({WorkflowDetails: newData})
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    checkAssigneeConstraintTasks(index, constraint, referId, workflowIndex) {
+    checkAssigneeConstraintTasks(taskIndex, constraint, referId, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        let indexInArray = newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].indexOf(referId);
+        let indexInArray = newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].indexOf(referId);
 
         if (indexInArray > -1) {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].splice(indexInArray, 1);
+            newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].splice(indexInArray, 1);
         } else {
-            newData[workflowIndex].Workflow[index].TA_assignee_constraints[2][constraint].push(referId);
+            newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].push(referId);
         }
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeDropdownFieldData(stateField, index, field, workflowIndex, e) {
+    changeDropdownFieldData(stateField, taskIndex, field, workflowIndex, e) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = e.value;
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.value;
 
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeFieldName(index, field, workflowIndex, e) {
+    changeFieldName(taskIndex, field, workflowIndex, e) {
       e.preventDefault();
         if (e.target.value > 1000) {
             return;
         }
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[field].title = e.target.value;
-        newData[workflowIndex].Workflow[index].TA_fields.field_titles[field] = e.target.value;
-        this.setState({WorkflowDetails: newData});
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[field].title = e.target.value;
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles[field] = e.target.value;
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeFieldCheck(stateField, index, field, workflowIndex) {
+    changeFieldCheck(stateField, taskIndex, field, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = !this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_fields[field][stateField];
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = !this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField];
 
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
     changeFileUpload(taskIndex, firstIndex, secondIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[taskIndex].TA_file_upload[firstIndex][secondIndex] = val;
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeInputData(stateField, index, workflowIndex, e) {
+    changeInputData(stateField, taskIndex, workflowIndex, e) {
       e.preventDefault();
 
         if (e.target.value.length > 45000) {
             return;
         }
         if (stateField == 'TA_display_name') {
-            if (e.target.value.length > 255
-) {
+            if (e.target.value.length > 254) {
                 return;
             }
         }
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index][stateField] = e.target.value;
-        this.setState({WorkflowDetails: newData});
+        newData[workflowIndex].Workflow[taskIndex][stateField] = e.target.value;
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeInputFieldData(stateField, index, field, workflowIndex, e) {
+    changeInputFieldData(stateField, taskIndex, field, workflowIndex, e) {
       e.preventDefault();
 
         if (e.target.value.length > 45000) {
@@ -1169,110 +1168,110 @@ class AssignmentEditorContainer extends React.Component {
         }
         let newData = this.state.WorkflowDetails;
         if (stateField == 'default_content') {
-            newData[workflowIndex].Workflow[index].TA_fields[field][stateField][0] = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField][0] = e.target.value;
         } else {
-            newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.target.value;
         }
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeNumericData(stateField, index, workflowIndex, value) {
+    changeNumericData(stateField, taskIndex, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
 
         switch(stateField){
           case 'TA_due_type':
-            newData[workflowIndex].Workflow[index][stateField][1] = value * 1440;
+            newData[workflowIndex].Workflow[taskIndex][stateField][1] = value * 1440;
             break;
           case 'TA_trigger_consolidation_threshold_reflect':
-          let targetIndex1 = this.getReflectIndex(index, workflowIndex);
+          let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][0] = value;
             break;
           case 'TA_trigger_consolidation_threshold_assess':
-          let targetIndex2 = this.getAssessIndex(index, workflowIndex);
+          let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][0] = value;
             break;
           default:
-            newData[workflowIndex].Workflow[index][stateField] = value;
+            newData[workflowIndex].Workflow[taskIndex][stateField] = value;
             break;
           }
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeNumericFieldData(stateField, index, field, workflowIndex, value) {
+    changeNumericFieldData(stateField, taskIndex, field, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[index].TA_fields[field][stateField] = value;
-        this.setState({WorkflowDetails: newData});
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = value;
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeRadioData(stateField, index, workflowIndex, val) {
+    changeRadioData(stateField, taskIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
         switch(stateField){
           case 'TA_due_type':
-            newData[workflowIndex].Workflow[index][stateField][0] = val;
+            newData[workflowIndex].Workflow[taskIndex][stateField][0] = val;
             break;
           case 'TA_trigger_consolidation_threshold_reflect':
-            let targetIndex1 = this.getReflectIndex(index, workflowIndex);
+            let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][1] = val;
             break;
           case 'TA_trigger_consolidation_threshold_assess':
-          let targetIndex2 = this.getAssessIndex(index, workflowIndex);
+          let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][1] = val;
             break;
           case 'StartDelay':
               {
-                newData[workflowIndex].Workflow[index][stateField] = val;
-                newData[workflowIndex].Workflow[index]['TA_start_delay'] = (val ? 1 : 0);
+                newData[workflowIndex].Workflow[taskIndex][stateField] = val;
+                newData[workflowIndex].Workflow[taskIndex]['TA_start_delay'] = (val ? 1 : 0);
               }
           default:
-            newData[workflowIndex].Workflow[index][stateField] = val;
+            newData[workflowIndex].Workflow[taskIndex][stateField] = val;
             break;
 
 
         }
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeSimpleGradeCheck(index, workflowIndex) {
+    changeSimpleGradeCheck(taskIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         let temp = null;
-        if (this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_simple_grade == 'none') {
+        if (this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_simple_grade == 'none') {
             temp = "exists";
         } else {
             temp = 'none';
         }
 
-        newData[workflowIndex].Workflow[index].TA_simple_grade = temp;
-        newData[workflowIndex].Workflow[index].SimpleGradePointReduction = 0;
-        this.setState({WorkflowDetails: newData});
+        newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = temp;
+        newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 0;
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeTASimpleGradeCheck(index, workflowIndex) {
+    changeTASimpleGradeCheck(taskIndex, workflowIndex) {
 
         let newData = this.state.WorkflowDetails;
-        if (newData[workflowIndex].Workflow[index].TA_simple_grade != 'off_per_day(100)') {
-            newData[workflowIndex].Workflow[index].TA_simple_grade = 'off_per_day(100)';
-            newData[workflowIndex].Workflow[index].SimpleGradePointReduction = 100;
+        if (newData[workflowIndex].Workflow[taskIndex].TA_simple_grade != 'off_per_day(100)') {
+            newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = 'off_per_day(100)';
+            newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 100;
         } else {
-            newData[workflowIndex].Workflow[index].TA_simple_grade = 'off_per_day(5)';
-            newData[workflowIndex].Workflow[index].SimpleGradePointReduction = 5;
+            newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = 'off_per_day(5)';
+            newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 5;
         }
 
-        this.setState({WorkflowDetails: newData})
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeTASimpleGradePoints(index, workflowIndex, val) {
+    changeTASimpleGradePoints(taskIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
         if (val == 0) {
-            newData[workflowIndex].Workflow[index].TA_simple_grade = 'exists';
+            newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = 'exists';
 
         } else {
-            newData[workflowIndex].Workflow[index].TA_simple_grade = 'off_per_day(' + val + ')';
+            newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = 'off_per_day(' + val + ')';
 
         }
 
-        newData[workflowIndex].Workflow[index].SimpleGradePointReduction = val;
+        newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = val;
 
-        this.setState({WorkflowDetails: newData});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
 
@@ -1298,8 +1297,8 @@ class AssignmentEditorContainer extends React.Component {
       if(currTaskIndex == null){
         return [];
       }
-        let fieldList = this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_fields.field_titles.map(function(title, index){
-          return {value: index, label: title};
+        let fieldList = this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_fields.field_titles.map(function(title, taskIndex){
+          return {value: taskIndex, label: title};
         });
 
         return fieldList;
@@ -1308,7 +1307,7 @@ class AssignmentEditorContainer extends React.Component {
     setDefaultField(defIndex, fieldIndex, taskIndex, workflowIndex,val){
       let newData = this.state.WorkflowDetails;
       newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defIndex] = val;
-      this.setState({WorkflowDetails: newData});
+      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
 
@@ -1321,7 +1320,7 @@ class AssignmentEditorContainer extends React.Component {
             return;
         }
         if (fieldName == 'AA_name') {
-            if (event.target.value.length > 255) {
+            if (event.target.value.length > 254) {
                 return;
             }
         }
