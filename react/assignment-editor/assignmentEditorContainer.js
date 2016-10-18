@@ -298,6 +298,7 @@ class AssignmentEditorContainer extends React.Component {
 
 
           workflow.Workflow.forEach(function(task){
+            console.log(task);
               Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr){
                 task.TA_assignee_constraints[2][constr] = task.TA_assignee_constraints[2][constr].map(function(id){
                   return (mapping[id]);
@@ -315,8 +316,6 @@ class AssignmentEditorContainer extends React.Component {
           workflow.Workflow = newWorkflow;
 
         });
-
-
 
 
 
@@ -643,13 +642,13 @@ class AssignmentEditorContainer extends React.Component {
           targetIndex = this.getReflectIndex(index,workflowIndex);
         }
         else{
-          targetIndex = this.getReflectIndex(index,workflowIndex);
+          targetIndex = this.getAssessIndex(index,workflowIndex);
         }
 
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == targetIndex;
         });
-        return selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX];
+        return selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id;
     }
 
     getAssessNumberofParticipants(index, workflowIndex) {
@@ -1033,16 +1032,16 @@ class AssignmentEditorContainer extends React.Component {
             break;
           case 'TA_function_type_Assess':
             {
-              let targetIndex = this.getAssessIndex(taskIndex,workflowIndex);
+              let targetIndex = this.getConsolidationIndex(false,taskIndex,workflowIndex);
               newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
             }
             break;
-            case 'TA_function_type_Reflect':
-              {
-                let targetIndex = this.getReflectIndex(taskIndex,workflowIndex);
-                newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
-              }
-              break;
+          case 'TA_function_type_Reflect':
+            {
+              let targetIndex = this.getConsolidationIndex(true, taskIndex,workflowIndex);
+              newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
+            }
+            break;
           default:
               newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
               break;
@@ -1078,7 +1077,7 @@ class AssignmentEditorContainer extends React.Component {
             }
         });
 
-        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+        this.setState({WorkflowDetails: newData, LastTaskChanged: deleteTaskIndex});
 
     }
 
@@ -1210,11 +1209,11 @@ class AssignmentEditorContainer extends React.Component {
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = val;
             break;
           case 'TA_trigger_consolidation_threshold_reflect':
-            let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
-            newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][1] = val;
+            let targetIndex1 = this.getConsolidationIndex(true,taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex1].TA_trigger_consolidation_threshold[1] = val;
             break;
           case 'TA_trigger_consolidation_threshold_assess':
-          let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
+            let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][1] = val;
             break;
           case 'StartDelay':
@@ -1381,6 +1380,8 @@ class AssignmentEditorContainer extends React.Component {
       let newWorkflowDetails = this.state.WorkflowDetails;
       newWorkflowDetails[workflowIndex].WA_grade_distribution[taskIndex] = value;
       this.setState({WorkflowDetails: newWorkflowDetails});
+
+
     } // this is special for the grade distribution object
 
     changeWorkflowInputData(stateField, workflowIndex, e) {
@@ -1403,21 +1404,42 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newWorkflowDetails});
     }
 
-    getFinalGradeTasks(workflowIndex){ //gets a list of all the tasks that will be accounted for in grading distribution
+    getFinalGradeTasks (workflowIndex, oldNumber){
+      let tasks = this.getFinalGradeTasksArray(workflowIndex);
+
+      // if(oldNumber != tasks.length){
+      //  let newGradeDist = {};
+      //  tasks.map(function(task){
+      //    newGradeDist[task.id] = task.weight;
+      //  });
+      //  let newData = this.state.WorkflowDetails;
+      //  newData[workflowIndex].WA_grade_distribution = newGradeDist;
+      //  this.setState({
+      //    WorkflowDetails: newData
+      //  });
+      // }
+
+      return tasks;
+    }
+
+    getFinalGradeTasksArray(workflowIndex){ //gets a list of all the tasks that will be accounted for in grading distribution
                                       //and returns an array of task objects with an id, name and weight
       let newArray = new Array();
-      let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE, TASK_TYPES.CONSOLIDATION, TASK_TYPES.RESOLVE_DISPUTE];
+      let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM];
       this.state.WorkflowDetails[workflowIndex].Workflow.forEach(function(task, index){
-          if(indexOf(assessmentTypes,task.TA_type) != -1){
+        if(Object.keys(task).length >0){
+          if(indexOf(assessmentTypes,task.TA_type) != -1 || task.TA_simple_grade != 'none'){
             newArray.push({id: index, name: task.TA_display_name, weight: 0.0});
           }
+        }
       });
 
       for(let i = 0; i<newArray.length; i++){
-        newArray[i].weight = 1.0/newArray.length;
+        newArray[i].weight = 1.00/newArray.length;
       }
-      return newArray;
+        return newArray;
     }
+
 
     ///---------------------------------------------------------------------------
 

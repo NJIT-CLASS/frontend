@@ -1,7 +1,7 @@
 const consts = require('../../utils/constants');
 exports.get = (req, res) => {
   res.render('task-template', {
-      scripts: ['/static/react_apps.js',"https://unpkg.com/medium-draft/dist/medium-draft.js"],
+      scripts: ['/static/react_apps.js'],
       userId: req.App.user.userId,
       taskId: req.params.taskId,
       courseId: req.query.courseId,

@@ -64,11 +64,8 @@ class TemplateContainer extends React.Component {
               Error: false,
               TabSelected: 0
           }
+        }
 
-
-      }
-
-      
 
       getHeaderData() {
         //this function makes an API call and saves the data into appropriate state variables

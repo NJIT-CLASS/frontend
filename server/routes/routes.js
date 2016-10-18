@@ -32,7 +32,8 @@ const pages = [
     'consolidate-the-grades',
     'assignment-editor',
     'assign-to-section',
-    'course-assignments'
+    'course-assignments',
+    'testing-ground'
 ];
 
 var pageConfigs = [];

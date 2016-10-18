@@ -13,11 +13,10 @@ class ProblemDetailsComponent extends React.Component{
       //numWorkflows
       // this.props.workflowIndex
       this.state = {
-        ShowContent: true
+        ShowContent: true,
+        NumGradingTasks: -100
       };
     }
-
-
 
     render(){
       let problemTypeValues=['Essay','Multiple Choice','Short Answer','Computer Program'];
@@ -26,16 +25,19 @@ class ProblemDetailsComponent extends React.Component{
       let gradeDistView = null;
       let multipleWorkflowsView = null;
 
-      gradeDistView = gradingTasks.map(function(task, index){
-          return(
-            <li className="thin-number-field" key={"probDet" + index}>
-              <label style={{marginRight: '8px'}} key={"probDet-" + index}> {task.name} </label>
-              <NumberField  key = {"probDet-NumF "+index} allowDecimals={true}  step={0.01}
-                            onChange={this.props.changeWorkflowGradeDist.bind(this,this.props.workflowIndex, task.id)}
-                            value={task.weight} />
-            </li>
-          )
-      }, this);
+      if(gradingTasks.length > 1){
+        gradeDistView = gradingTasks.map(function(task, index){
+            return(
+              <li className="thin-number-field" key={"probDet" + index}>
+                <label style={{marginRight: '8px'}} key={"probDet-" + index}> {task.name} </label>
+                <NumberField  key = {"probDet-NumF "+index} allowDecimals={true} step={0.05}
+                              onChange={this.props.changeWorkflowGradeDist.bind(this,this.props.workflowIndex, task.id)}
+                              value={task.weight} />
+              </li>
+            )
+        }, this);
+      }
+
 
       if(this.props.NumberofWorkflows > 1){
         multipleWorkflowsView = (<div>

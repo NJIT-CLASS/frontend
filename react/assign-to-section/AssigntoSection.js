@@ -114,7 +114,7 @@ class AssignToSectionContainer extends React.Component
           });
 
           let newA= this.state.Assignment;
-          newA.AssigmentName = body.assignment.fulfillmentValue.DisplayName;//tempFix - real value is body.assignment.DisplayName
+          newA.AssigmentName = body.assignment.DisplayName;
           this.setState({
             Assignment: newA,
             Semesters:semestersArray,

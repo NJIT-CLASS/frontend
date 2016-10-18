@@ -14,7 +14,7 @@ import TranslationContainer from './translation/translation-container';
 import TemplateContainer from './task-template/TemplateContainer';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
-
+import TestingGroundContainer from './testing/test';
 
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
@@ -74,4 +74,10 @@ if(assignToSectionContainerEl){
   const apiUrl = assignToSectionContainerEl.dataset.apiUrl;
 
   ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl}/>,assignToSectionContainerEl);
+}
+
+const testingGroundContainerEl = document.getElementById('testing-container');
+
+if(testingGroundContainerEl){
+  ReactDOM.render(<TestingGroundContainer />, testingGroundContainerEl);
 }
