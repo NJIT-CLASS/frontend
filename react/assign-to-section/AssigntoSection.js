@@ -139,6 +139,7 @@ class AssignToSectionContainer extends React.Component
       },
       json: true
     };
+    console.log(this.state.WorkFlow)
 
       request(options, (err, res, body) => {
         if(res.statusCode === 200){

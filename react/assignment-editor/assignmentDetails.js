@@ -5,7 +5,7 @@ import Dropdown from 'react-dropdown';
 import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 import Checkbox from '../shared/checkbox';
-
+import ReactTooltip from 'react-tooltip';
 
 class AssignmentDetailsComponent extends React.Component{
     constructor(props){
@@ -57,7 +57,9 @@ class AssignmentDetailsComponent extends React.Component{
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
               <div className="inner">
-                <label>Assignment Name</label>
+                <label >Assignment Name</label>
+                <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Here is the name for this assignment' data-for='test'></i>
+                  <ReactTooltip id='test' effect='solid'/>
                 <br />
                 <input placeholder="Name" type="text" value={this.props.AssignmentActivityData.AA_name}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
@@ -66,7 +68,8 @@ class AssignmentDetailsComponent extends React.Component{
 
               {coursesView}
               <div className="inner">
-                <label>Assignment Type</label>
+                <label>Assignment Type</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Specify a type' data-for='AA_type'></i>
+                  <ReactTooltip id='AA_type' effect='solid'/>
                 <Dropdown options={problemTypeList} selectedValue={this.props.AssignmentActivityData.AA_type}
                   onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
                   />

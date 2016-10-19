@@ -170,8 +170,9 @@ class SuperComponent extends React.Component {
             },
             json: true
           };
-
+          console.log("sending data", this.state.TaskData)
         request(options, (err, res, body) => {
+
           if(res.statusCode != 200){
             this.setState({InputError: true});
             return;

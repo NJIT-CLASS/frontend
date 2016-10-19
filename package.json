@@ -30,7 +30,7 @@
     "react": "^15.3.0",
     "react-addons-css-transition-group": "^15.3.0",
     "react-checkbox-list": "0.0.2",
-    "react-datetime": "^2.5.0",
+    "react-datetime": "^2.6.0",
     "react-dom": "^15.3.0",
     "react-dropdown": "^1.1.0",
     "react-numeric-input": "^2.0.4",
@@ -40,6 +40,7 @@
     "react-select": "^1.0.0-beta14",
     "react-star-rating-component": "^1.0.0",
     "react-tabs": "^0.7.0",
+    "react-tooltip": "^3.2.1",
     "redis": "^2.6.2",
     "request": "^2.74.0",
     "tree-model": "^1.0.4"

@@ -15,6 +15,7 @@ import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
+
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 
 class AssignmentEditorContainer extends React.Component {
@@ -275,8 +276,11 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     onSubmit() {
-
-
+        if(this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)){
+          console.log("CourseID null");
+          this.setState({SubmitError: true});
+          return ;
+        }
       //Place Workflows in AssignmentActivityData object for compatability with backend call
         let sendData = cloneDeep(this.state.AssignmentActivityData);
         sendData.WorkflowActivity = cloneDeep(this.state.WorkflowDetails);
@@ -1315,6 +1319,7 @@ class AssignmentEditorContainer extends React.Component {
 //////////////////   Assignment Details Functions  //////////////////////////////////
 
     changeAssignmentInput(fieldName, event) {
+      let newData = this.state.AssignmentActivityData;
         if (event.target.value.length > 45000) {
             return;
         }
@@ -1322,8 +1327,9 @@ class AssignmentEditorContainer extends React.Component {
             if (event.target.value.length > 254) {
                 return;
             }
+            newData.AA_display_name = event.target.value;
         }
-        let newData = this.state.AssignmentActivityData;
+
         newData[fieldName] = event.target.value;
         this.setState({AssignmentActivityData: newData});
     }
@@ -1532,7 +1538,8 @@ class AssignmentEditorContainer extends React.Component {
             tabPanelAr.push(
               <TabPanel>
                 <div className="placeholder">
-                <ProblemDetailsComponent workflowIndex={index}
+                <ProblemDetailsComponent key={"Workflows" + index}
+                                         workflowIndex={index}
                                          WorkflowDetails={workflow}
                                          NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
                                          changeWorkflowData= {this.changeWorkflowData.bind(this)}
