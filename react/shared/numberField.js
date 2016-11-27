@@ -21,7 +21,11 @@ import React from 'react';
   // step
    //speed (in milliseconds)
     //
-
+    componentWillReceiveProps(nextProps){
+      if(this.state.Value != nextProps.value){
+        this.setState({Value: nextProps.value});
+      }
+    }
 
 
    onValChange(value){

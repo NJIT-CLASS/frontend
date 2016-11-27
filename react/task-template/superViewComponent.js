@@ -103,20 +103,22 @@ class SuperViewComponent extends React.Component {
     let TA_instructions = null;
     let TA_rubricButtonText = this.state.ShowRubric ? "Hide Task Rubric" : "Show Task Rubric";
 
-
-
     if(this.state.Error){ // if there was an error loading the data, show an Error component
         return(<ErrorComponent />);
     }
 
-    if(this.props.Rubric  != null && this.props.Rubric != ''){ //if no Rubric
+    if(this.props.Rubric != '' && this.props.Rubric != null){ //if no Rubric
       let TA_rubric_content = null;
       if(this.state.ShowRubric){
-          TA_rubric_content = (<div className="regular-text" key={"rubric"}> {this.props.Rubric }</div>);
+          TA_rubric_content = (
+            <div>
+              <div className="boldfaces">Task Rubric:</div><div className="regular-text rubric" key={"rubric"}> {this.props.Rubric}</div>
+            </div>
+            );
 
         }
 
-        TA_rubric = ( <div key={"rubric"}>
+        TA_rubric = ( <div key={"rub"}>
             <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)}  key={"button"}> {TA_rubricButtonText}</button>
             <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
             {TA_rubric_content}
@@ -126,13 +128,13 @@ class SuperViewComponent extends React.Component {
     }
 
     if(this.props.Instructions != null && this.props.Instructions != '' ){
-      TA_instructions = (<div className="regular-text instructions">
-            <b>Task Insructions</b>: {this.props.Instructions}
+      TA_instructions = (
+        <div >
+            <div className="boldfaces">Task Instructions:</div><div className="regular-text instructions">{this.props.Instructions}
+              </div>
 
       </div>);
     }
-
-
 
     let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){ //go over the fields and display the data appropriately
       // this is a bunch of conditionals that check the fields in the TA fields object.
@@ -140,6 +142,8 @@ class SuperViewComponent extends React.Component {
       let fieldTitle = '';
       let rubricView = null;
       let instructions = null;
+      let completeFieldView = null;
+      let contentView = null;
 
       if(this.state.TaskActivityFields[idx].show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
         if(this.state.TaskActivityFields[idx].assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
@@ -180,9 +184,6 @@ class SuperViewComponent extends React.Component {
         );
       }
 
-
-
-
       if(this.state.TaskActivityFields[idx].requires_justification){
         if(this.state.TaskData[idx][1] == ''){
           justification = (<div key={idx + 655}></div>);
@@ -193,105 +194,47 @@ class SuperViewComponent extends React.Component {
       }
 
       if(this.state.TaskActivityFields[idx].field_type == "text"){
-        let fieldView = (<div key={idx + 1000}>
-          <div key={idx + 600}><b>{fieldTitle}</b></div>
-
-            {instructions}
-            {rubricView}
-
-          <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
+        contentView = (
+          <div className="field-content" key={idx + 1000}>
+            <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
+            </div>
           </div>
-          <br key={idx+550}/>
-          {justification}
-        </div>);
-
-
-        return (<div key={idx+200}>
-          {fieldView}
-          <br key={idx+500}/>
-        </div>
         );
-
       }
       else if(this.state.TaskActivityFields[idx].field_type== "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
 
         if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
-          let fieldView = (<div key={idx + 1000}>
-            <div key={idx + 600}><b>{fieldTitle}</b></div>
-              {instructions}
-              {rubricView}
-
-            <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
-            </div>
-            <br key={idx+550}/>
-            {justification}
-          </div>);
-
-
-          return (<div key={idx+200}>
-              {fieldView}
-              <br key={idx+500}/>
+          contentView = (
+            <div className="field-content" key={idx + 1000}>
+              <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
+              </div>
             </div>
           );
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
           let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
-          let fieldView = (<div key={idx + 1000}>
-            {instructions}
-            {rubricView}
-
-
-            <div key={idx + 600}><b>{fieldTitle}   </b>
-               <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} interactive={false} />
-            </div>
-            <br key={idx+550}/>
-            {justification}
-          </div>);
-
-
-          return (<div key={idx+200}>
-              {fieldView}
-              <br key={idx+500}/>
+          contentView = (
+            <div className="field-content" key={idx + 1000}>
+              <div key={idx + 600}><b>{fieldTitle}   </b>
+                 <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} interactive={false} />
+              </div>
             </div>
           );
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "pass"){
-          let fieldView = (<div key={idx + 1000}>
-            <div key={idx + 600}><b>{fieldTitle}</b></div>
-              {instructions}
-              {rubricView}
 
-
-            <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
-            </div>
-            <br key={idx+550}/>
-            {justification}
-          </div>);
-
-
-          return (<div key={idx+200}>
-              {fieldView}
-              <br key={idx+500}/>
+          contentView = (
+            <div className="field-content" key={idx + 1000}>
+              <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}</div>
             </div>
           );
+
         }
         else if(this.state.TaskActivityFields[idx].assessment_type == "evaluation"){
-          let fieldView = (<div key={idx + 1000}>
-            <div key={idx + 600}><b>{fieldTitle}</b></div>
-              {instructions}
-              {rubricView}
-
-
-            <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
-            </div>
-            <br key={idx+550}/>
-            {justification}
-          </div>);
-
-
-          return (<div key={idx+200}>
-              {fieldView}
-              <br key={idx+500}/>
+          contentView = (
+            <div className="field-content" key={idx + 1000}>
+              <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
+              </div>
             </div>
           );
         }
@@ -301,28 +244,30 @@ class SuperViewComponent extends React.Component {
       }
       else if(this.state.TaskActivityFields[idx].field_type == "numeric"){
 
-          let fieldView = (<div key={idx + 1000}>
-            <div key={idx + 600}><b>{fieldTitle}</b></div>
-              {instructions}
-              {rubricView}
-
-
+        contentView = (
+          <div className="field-content" key={idx + 1000}>
             <div key={idx} className="faded-small"> {this.state.TaskData[idx][0]}
             </div>
-            <br key={idx+550}/>
-            {justification}
-          </div>);
-
-
-          return (<div key={idx+200}>
-              {fieldView}
-              <br key={idx+500}/>
-            </div>
-          );
+          </div>
+        );
         }
       else{
-        return (<div></div>);
+        contentView = (<div className="field-content" key={idx + 1000}></div>);
       }
+
+      completeFieldView =  (
+        <div key={idx+200}>
+          {instructions}
+          {rubricView}
+          <br/>
+          {contentView}
+          <br key={idx+500}/>
+          {justification}
+          <br />
+        </div>
+        );
+
+        return completeFieldView;
 
     }, this);
 

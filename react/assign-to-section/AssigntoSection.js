@@ -128,18 +128,40 @@ class AssignToSectionContainer extends React.Component
 
   onSubmit(){
     //saves the state data to the database
+
+
+    let timingArray = this.state.WorkFlow.map(function(Workflow){
+
+      let work_task = Workflow.Tasks.map(function(tk){
+        return {
+          id: tk.ID,
+          DueType: tk.TimeArray
+        };
+      });
+
+      return {
+        id: Workflow.id,
+        startDate: Workflow.Time,
+        tasks: work_task
+      };
+    });
+
+    let newData = {
+      assignmentid: this.props.AssignmentID,
+      sectionIDs: this.state.Assignment.Section,
+      startDate: this.state.Assignment.Time,
+      wf_timing: {
+        workflows: timingArray
+      }
+    };
+
+
     const options = {
       method: 'POST',
       uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
-      body:{
-        assignmentid: this.props.AssignmentID,
-        sectionIDs: this.state.Assignment.Section,
-        startDate: this.state.Assignment.Time,
-        wf_timing: this.state.WorkFlow
-      },
+      body: newData,
       json: true
     };
-    console.log(this.state.WorkFlow)
 
       request(options, (err, res, body) => {
         if(res.statusCode === 200){
@@ -280,6 +302,7 @@ class AssignToSectionContainer extends React.Component
 
   render()
   {
+
     let infoMessage = null;
 
     if(!this.state.DataLoaded){

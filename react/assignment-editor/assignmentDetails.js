@@ -1,7 +1,7 @@
 /* This Component is contains the assignment input fields. It gets its data and functions from the AssignmentEditorContainer.
 */
 import React from 'react';
-import Dropdown from 'react-dropdown';
+import Select from 'react-select';
 import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 import Checkbox from '../shared/checkbox';
@@ -17,7 +17,6 @@ class AssignmentDetailsComponent extends React.Component{
             -Courses
             - Assignment functions
       */
-
       this.state = {
         ShowContent: true,
         ShowAdvanced: false,
@@ -36,42 +35,56 @@ class AssignmentDetailsComponent extends React.Component{
       semesterView = (
         <div className="inner">
           <label>Restrict to a Semester</label>
-          <Dropdown options={semesterList} selectedValue={this.props.AssignmentActivityData.AA_semester}
+          <Select options={semesterList}
+             value={this.props.AssignmentActivityData.AA_semester}
             onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
+            clearable={false}
+            searchable={false}
             />
         </div>
       );
 
       if(this.props.Courses){
-      coursesView = (<div className="inner">
+      coursesView = (<div>
           <label>Course</label>
-          <Dropdown options={courseList} selectedValue={this.props.AssignmentActivityData.AA_course}
-            onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+          <Select options={courseList}
+                  value={this.props.AssignmentActivityData.AA_course}
+                  placeholder={"Select a Course"}
+                  onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+                  clearable={false}
+                  searchable={false}
             />
+
         </div>);
       }
 
       return (
-        <div className="section ">
+        <div className="section card-1">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
               <div className="inner">
                 <label >Assignment Name</label>
                 <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Here is the name for this assignment' data-for='test'></i>
-                  <ReactTooltip id='test' effect='solid'/>
+                  <ReactTooltip id='test' effect='solid' />
                 <br />
                 <input placeholder="Name" type="text" value={this.props.AssignmentActivityData.AA_name}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
                   ></input>
               </div>
 
-              {coursesView}
+              <div className="inner">
+                {coursesView}
+              </div>
+
               <div className="inner">
                 <label>Assignment Type</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Specify a type' data-for='AA_type'></i>
                   <ReactTooltip id='AA_type' effect='solid'/>
-                <Dropdown options={problemTypeList} selectedValue={this.props.AssignmentActivityData.AA_type}
+                <Select options={problemTypeList}
+                  value={this.props.AssignmentActivityData.AA_type}
                   onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
+                  clearable={false}
+                  searchable={false}
                   />
               </div>
 
@@ -105,12 +118,14 @@ class AssignmentDetailsComponent extends React.Component{
                 <div className="text-false">No</div>
               </div>*/}
               <br />
+              {/*}
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <ToggleSwitch click={ ()=> {
                   this.setState({ShowAdvanced : this.state.ShowAdvanced ? false : true});
                 }} />
               <br />
+              */}
               <div className={this.state.ShowAdvanced ? "section-divider" : "task-hiding"}>
                 {semesterView}
                 <br />

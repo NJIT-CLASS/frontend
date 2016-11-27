@@ -1,7 +1,7 @@
 /* This Component is contains the workflow input fields. It gets its data and functions from the AssignmentEditorContainer.
 */
 import React from 'react';
-import Dropdown from 'react-dropdown';
+import Select from 'react-select';
 import ToggleSwitch from '../shared/toggleSwitch';
 import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
@@ -13,14 +13,14 @@ class ProblemDetailsComponent extends React.Component{
       //numWorkflows
       // this.props.workflowIndex
       this.state = {
-        ShowContent: true,
-        NumGradingTasks: -100
+        ShowContent: true
       };
     }
 
+
     render(){
       let problemTypeValues=['Essay','Multiple Choice','Short Answer','Computer Program'];
-      let gradingTasks = this.props.getFinalGradeTasks(this.props.workflowIndex);
+      let gradingTasks = this.props.GradingTasks;
 
       let gradeDistView = null;
       let multipleWorkflowsView = null;
@@ -30,8 +30,9 @@ class ProblemDetailsComponent extends React.Component{
             return(
               <li className="thin-number-field" key={"probDet" + index}>
                 <label style={{marginRight: '8px'}} key={"probDet-" + index}> {task.name} </label>
-                <NumberField  key = {"probDet-NumF "+index} allowDecimals={true} step={0.05}
-                              onChange={this.props.changeWorkflowGradeDist.bind(this,this.props.workflowIndex, task.id)}
+                <NumberField  key = {"probDet-NumF "+index} allowDecimals={false}
+                              min={0} max={100}
+                              onChange={this.props.changeWorkflowGradeDist.bind(this, this.props.workflowIndex, task.id, index)}
                               value={task.weight} />
               </li>
             )
@@ -49,7 +50,7 @@ class ProblemDetailsComponent extends React.Component{
 
           <div className='inner'>
             <label>Problem Type</label>
-            <Dropdown options={problemTypeValues}
+            <Select options={problemTypeValues}
                       selectedValue={this.props.WorkflowDetails.WA_type}
                       onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
                       />
@@ -69,7 +70,7 @@ class ProblemDetailsComponent extends React.Component{
 
 
       return (
-        <div className="section ">
+        <div className="section card-1">
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} Parameters</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className='section-divider'>

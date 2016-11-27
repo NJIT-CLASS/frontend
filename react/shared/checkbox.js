@@ -9,7 +9,16 @@ class Checkbox extends React.Component{
     }
   }
 
-
+  // componentDidMount(){
+  //   if(this.props.isClicked == true){
+  //     this.props.click();
+  //   }
+  // }
+  componentWillReceiveProps(nextProps){
+    if(this.state.Clicked != nextProps.isClicked){
+      this.setState({Clicked: nextProps.isClicked});
+    }
+  }
 
   render(){
     let checkedValue = false;

@@ -24,9 +24,6 @@
 @import 'components/animate';
 @import 'components/comments';
 
-
-
-
 // pages
 @import 'pages/create_account';
 @import 'pages/home';
@@ -41,6 +38,12 @@
 @import 'pages/task';
 @import 'pages/solveproblem';
 
+// external components
+
+@import 'external/dropdown';
+@import 'external/media';
+@import 'external/react_select';
+@import 'external/toolbar';
 
 
 // vendor

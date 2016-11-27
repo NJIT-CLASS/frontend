@@ -321,7 +321,11 @@ class SuperComponent extends React.Component {
           if(this.props.Rubric != '' && this.props.Rubric != null){ //if no Rubric
             let TA_rubric_content = null;
             if(this.state.ShowRubric){
-                TA_rubric_content = (<div className="regular-text" key={"rubric"}> {this.props.Rubric}</div>);
+                TA_rubric_content = (
+                  <div>
+                    <div className="boldfaces">Task Rubric:</div><div className="regular-text rubric" key={"rubric"}> {this.props.Rubric}</div>
+                  </div>
+                  );
 
               }
 
@@ -335,13 +339,13 @@ class SuperComponent extends React.Component {
           }
 
           if(this.props.Instructions != null && this.props.Instructions != '' ){
-            TA_instructions = (<div className="regular-text instructions">
-                  <b>Task Insructions</b>: {this.props.Instructions}
+            TA_instructions = (
+              <div >
+                  <div className="boldfaces">Task Instructions:</div><div className="regular-text instructions">{this.props.Instructions}
+                    </div>
 
             </div>);
           }
-
-
 
           //creating all input fields here
           let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
@@ -350,7 +354,8 @@ class SuperComponent extends React.Component {
             let instructions = null;
             let fieldTitleText = '';
             let fieldTitle = null;
-
+            let completeFieldView = null;
+            let contentView = null;
 
 
             if(this.state.TaskActivityFields[idx].show_title){ //shoudl the title be displayed or not
@@ -363,7 +368,7 @@ class SuperComponent extends React.Component {
 
               fieldTitle = (<div>
                 <br />
-                <div key={idx + 600}><b>{fieldTitleText}</b></div>
+                <div key={idx + 600}>{fieldTitleText}</div>
               </div>);
             }
 
@@ -372,8 +377,15 @@ class SuperComponent extends React.Component {
               let rubric_content = null;
               let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
               let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
+
               if(this.state.FieldRubrics[idx]){
-                rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b> {fieldTitleText} Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
+                rubric_content = (
+                  <div key={this.state.TaskActivityFields[idx].title}>
+                    <div className="boldfaces"> {fieldTitleText} Rubric: </div>
+                      <div className="regular-text rubric">
+                        {this.state.TaskActivityFields[idx].rubric}
+                      </div>
+                  </div>);
               }
 
               rubricView = ( <div key={1200}>
@@ -381,10 +393,19 @@ class SuperComponent extends React.Component {
                   <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
                     {rubric_content}
                   </ReactCSSTransitionGroup>
-
                 </div>
               );
+            }
 
+            if(this.state.TaskActivityFields[idx].instructions != ''){ //if instructions are empty, don't display anything
+              instructions = (
+                  <div key ={1100}>
+                     <div className="boldfaces">{fieldTitleText} Instructions:</div>
+                     <div className="regular-text instructions">
+                       {this.state.TaskActivityFields[idx].instructions}
+                     </div>
+                   </div>
+              );
             }
 
             if(this.state.TaskActivityFields[idx].requires_justification){
@@ -404,15 +425,7 @@ class SuperComponent extends React.Component {
               }
             }
 
-            if(this.state.TaskActivityFields[idx].instructions != ''){ //if instructions are empty, don't display anything
-              instructions = (
-                <div key ={1100}>
-                  <br />
-                  <div className="regular-text"><b>{fieldTitleText} Instructions:</b> {this.state.TaskActivityFields[idx].instructions}</div>
-                  <br />
-                </div>
-              );
-            }
+
 
             //////// Depending on field type, render different things
 
@@ -426,22 +439,9 @@ class SuperComponent extends React.Component {
                   fieldInput = (<input type="number"  key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
                   </input>);
                 }
-
-                return (
-                  <div key={idx+200}>
-                    {instructions}
-                    {rubricView}
-                    <br/>
-                    <div key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
-                    <br key={idx+500}/>
-                    {justification}
-                    <br />
-                    <br />
-                  </div>
-                  );
-
-
-
+                contentView = (
+                  <div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
+                );
             }
             else if(this.state.TaskActivityFields[idx].field_type == "text"){
               let fieldInput = null;
@@ -454,20 +454,8 @@ class SuperComponent extends React.Component {
                 </textarea>)
               }
 
-              return (<div key={idx+200}>
+              contentView = (<div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>)
 
-                <div key={idx + 600}><b>{fieldTitleText}</b></div>
-                {instructions}
-
-                {rubricView}
-                <br/>
-                {fieldInput}
-                <br key={idx+500}/>
-                {justification}
-                <br />
-                <br />
-              </div>
-              );
             }
 
             else if(this.state.TaskActivityFields[idx].field_type == "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
@@ -485,70 +473,38 @@ class SuperComponent extends React.Component {
                   </input>);
                 }
 
-                return (
-                  <div key={idx+200}>
-                    {instructions}
-                    {rubricView}
-                    <br/>
-                    <div key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
-                    <br key={idx+500}/>
-                    {justification}
-                    <br />
-                    <br />
-                  </div>
-                  );
+                contentView = (<div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>);
                 }
 
                 else if(this.state.TaskActivityFields[idx].assessment_type == "rating"){
                   let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
                   let nameStr = "rate" + idx;
-                  return (
-                    <div key={idx+200}>
 
-                      {instructions}
-
-                      {rubricView}
-                      <br/>
-                      <div key={idx + 600}><b>{fieldTitleText}   </b>
-                        <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} /><br />
-
-                      </div>
-                      <br key={idx+500}/>
-                      {justification}
-                      <br />
-                      <br />
+                  contentView = (
+                    <div className="field-content" key={idx + 600}><b>{fieldTitleText}   </b>
+                      <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} /><br />
                     </div>
                   );
+
                 }
 
                 else if(this.state.TaskActivityFields[idx].assessment_type == "pass"){
-
-                  return(
-                    <div key={idx+200}>
-                      {instructions}
-                      {rubricView}
-                      <br />
-
-                      <div className='true-checkbox'>
-                        <RadioGroup selectedValue={this.state.TaskData[idx][0]} onChange={
-                        (val) => {
-                          let newData = this.state.TaskData;
-                          newData[idx][0] = val;
-                          this.setState({TaskData: newData});
+                  contentView = (
+                    <div className="field-content" key={idx+2000}>
+                    <div className='true-checkbox'>
+                      <RadioGroup selectedValue={this.state.TaskData[idx][0]} onChange={
+                      (val) => {
+                        let newData = this.state.TaskData;
+                        newData[idx][0] = val;
+                        this.setState({TaskData: newData});
                         }
                       }>
                       <label >Pass <Radio value={"pass"} /> </label>
                       <label >Fail <Radio value={"fail"}/> </label>
 
                     </RadioGroup>
-                      </div>
-
-                      <br key={idx+500}/>
-                      {justification}
-                      <br />
-                      <br />
                     </div>
-
+                  </div>
                   );
               }
               else if(this.state.TaskActivityFields[idx].assessment_type == "evaluation"){
@@ -557,35 +513,40 @@ class SuperComponent extends React.Component {
                   labels = labels.split(',');
                 }
 
-                return(
-                  <div key={idx+200} style={{overflow: "visible"}}>
-                    {instructions}
-                    {rubricView}
-                    <br />
-                    <label>Choose from one of the labels below</label>
-                    <Dropdown key={idx+1000}
-                              options={labels}
-                              selectedValue={this.state.TaskData[idx][0]}
-                              value={this.state.TaskData[idx][0]}
-                              onChange={ (e) => {
-                                let newData = this.state.TaskData;
-                                newData[idx][0] = e.value;
-                                this.setState({
-                                  TaskData: newData
-                                });
-                              }}
-                      />
-
-                    <br key={idx+500}/>
-                    {justification}
-                    <br />
-                    <br />
+                contentView = ( <div className="field-content">
+                  <label>Choose from one of the labels below</label>
+                  <Dropdown key={idx+1000}
+                            options={labels}
+                            selectedValue={this.state.TaskData[idx][0]}
+                            value={this.state.TaskData[idx][0]}
+                            onChange={ (e) => {
+                              let newData = this.state.TaskData;
+                              newData[idx][0] = e.value;
+                              this.setState({
+                                TaskData: newData
+                              });
+                            }}
+                    />
                   </div>
-
                 );
-              }
 
+              }
             }
+
+            completeFieldView =  (
+              <div key={idx+200}>
+                {instructions}
+                {rubricView}
+                <br/>
+                {contentView}
+                <br key={idx+500}/>
+                {justification}
+                <br />
+              </div>
+              );
+
+              return completeFieldView;
+
           }, this);
 
           if(this.state.TaskStatus == "Complete"){
@@ -594,12 +555,8 @@ class SuperComponent extends React.Component {
 
           if(this.state.ShowContent){
             content = (<div className="section-content">
-
               {TA_instructions}
-
                 {TA_rubric}
-
-              <br />
                 {fields}
                 {formButtons}
            </div>);
@@ -611,7 +568,7 @@ class SuperComponent extends React.Component {
           return( //main render return()
             <div className="">
               {infoMessage}
-              <form  role="form" className="section card-2" action="#" onSubmit={this.submitData.bind(this)}>
+              <form  role="form" className="section card-1" action="#" onSubmit={this.submitData.bind(this)}>
                 <div className="placeholder"></div>
                 <div onClick={this.toggleContent.bind(this)}>
                   <h2 className="title">{this.props.ComponentTitle} </h2>
