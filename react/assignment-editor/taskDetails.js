@@ -83,7 +83,7 @@ class TaskDetailsComponent extends React.Component{
                   this.setState({ShowContent: this.state.ShowContent ? false : true,
                                  NewTask: false});
                                }}
-                >{title}                        {this.props.index}</h2>
+                >{title}</h2>
             </div>);
       }
       //for future work, change labels to translatable string variables, keep values the sames
@@ -93,7 +93,7 @@ class TaskDetailsComponent extends React.Component{
       let onLateValues = [{value:'keep_same_participant', label:'Keep Same Participant'}, {value:'allocate_new_participant_from_contigency_pool', label: 'Allocate New Participant'}, {value:'allocate_to_instructor', label: 'Allocate to Instructor'},{value: 'allocate_to different_person_in_same_group', label: 'Allocate to Different Group Member'}];
       let reflectionValues = [{value: 'edit', label:'Edit'},{value:'comment', label:'Comment'}];
       let assessmentValues = [{value:'grade',label:'Grade'},{value: 'critique', label: 'Critique'}];
-      let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}];
+      let assigneeWhoValues = [{value:'student', label:'Student'}, {value:'instructor', label: 'Instructor'}, {value: 'both', label: 'Both Instructor and Students'}];
       let consolidationTypeValues = [{value:'max', label:'Max'},{value:'min',label:'Min'},{value: 'avg', label: 'Average'}, {value:'other', label:'Other'}];
       //display logic
 
@@ -360,7 +360,7 @@ class TaskDetailsComponent extends React.Component{
         let consolidateOptions = (
           <div>
           <label>Grading Threshold</label>
-        <br />
+          <br />
           <RadioGroup
             selectedValue={this.state.GradingThreshold[0]}
             onChange={ (val) =>{
@@ -421,12 +421,10 @@ class TaskDetailsComponent extends React.Component{
           <label>Who will reflect</label><br />
             <Select   options={assigneeWhoValues}
                       value={this.props.getAssigneeInChild(true, this.props.index, this.props.workflowIndex)}
-                      onChange={this.props.changeAssigneeInChild.bind(this,true, this.props.index, this.props.workflowIndex)}
+                      onChange={this.props.changeAssigneeInChild.bind(this, true, this.props.index, this.props.workflowIndex)}
                       clearable={false}
                       searchable={false}/>
 
-          <label>Students</label><Checkbox />
-          <label>Instructors</label><Checkbox />
           <br />
           <label>Number of Students</label>
           <br />
@@ -479,7 +477,7 @@ class TaskDetailsComponent extends React.Component{
               <RadioGroup selectedValue={this.props.TaskActivityData.StartDelay}
                           onChange={this.props.changeRadioData.bind(this, 'StartDelay', this.props.index, this.props.workflowIndex)}
                           >
-                <label><Radio value={false} ></Radio>Start when prior task is complete</label>
+                <label><Radio value={false} ></Radio>Start when prior task is complete</label><br/>
                 <label><Radio value={true} ></Radio>Start after prior task ends by</label>
               </RadioGroup>
               <NumberField  value={this.props.TaskActivityData.TA_start_delay}
@@ -761,7 +759,7 @@ class TaskDetailsComponent extends React.Component{
                   </div>
 
                   <div className="inner">
-                      <label>Requires Justification ?</label>
+                      <label>Requires Justification ?</label><br />
                       <Checkbox click={this.props.changeFieldCheck.bind(this, 'requires_justification', this.props.index, index, this.props.workflowIndex)}
                         isClicked={this.props.TaskActivityData.TA_fields[index].requires_justification}/>
                   </div>
@@ -793,7 +791,7 @@ class TaskDetailsComponent extends React.Component{
       return (
         <div  key={"Main View of Task " + this.props.index + " in " + this.props.workflowIndex} className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
-                                                                 NewTask: false});}} >{title}           {this.props.index}</h2>
+                                                                 NewTask: false});}} >{title}</h2>
               <div className="section-content">{/* this decides whether to hide the content or not. task-hiding displays nothing*/}
                 <div className="section-divider">
                   <div className="inner">

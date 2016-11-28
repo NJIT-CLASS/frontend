@@ -291,14 +291,14 @@ class AssignmentEditorContainer extends React.Component {
       tree2.walk(function(node){
         let ob = new Object();
 
-        if(node.model.id!= -1){
+
             if(node.parent !== undefined){
             ob['parent'] = node.parent.model.id;
             }
 
             ob['id'] = node.model.id;
             flatty.push(ob);
-          }
+
       });
 
       let temp = {hi: flatty};
@@ -307,8 +307,9 @@ class AssignmentEditorContainer extends React.Component {
       let tempObj = JSON.parse(tempStringed);
       let newFlatty = tempObj.hi;
 
+      console.log(flatty);
       let altered = flatToNested.convert(newFlatty);
-
+      console.log(altered);
       let newTree = this.tree.parse(altered);
       console.log(newTree);
       newTree.walk(function(nd){
@@ -340,17 +341,18 @@ class AssignmentEditorContainer extends React.Component {
               newWorkflow.push(workflow.Workflow[task.model.id]);
               task.model.id = counter++;
 
-              // Uncomment this and below for tree flattening
 
-              // let ob = new Object();
-              // if(task.parent !== undefined){
-              // ob['parent'] = task.parent.model.id;
-              // }
-              //
-              // ob['id'] = task.model.id;
-              // flatty.push(ob);
             }
 
+            // Uncomment this and below for tree flattening
+
+            // let ob = new Object();
+            // if(task.parent !== undefined){
+            // ob['parent'] = task.parent.model.id;
+            // }
+            //
+            // ob['id'] = task.model.id;
+            // flatty.push(ob);
           }, this);
 
           //Clean AssigneeConstraints and Grade Dist on frontend secondIndex
@@ -699,7 +701,7 @@ class AssignmentEditorContainer extends React.Component {
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == targetIndex;
         });
-        return selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id;
+        return selectedNode.children[this.CONSOL_DISP_IDX].model.id;
     }
 
     getAssessNumberofParticipants(index, workflowIndex) {
@@ -1061,11 +1063,15 @@ class AssignmentEditorContainer extends React.Component {
       //need to go into tree here and get taskIndex
       let target = reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex); // taskIndex of child (reflect/assess) node
       newData[workflowIndex].Workflow[target]['TA_assignee_constraints'][0] = e.value;
-      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+      this.setState({
+        WorkflowDetails: newData,
+        LastTaskChanged: taskIndex
+      });
     }
 
     getAssigneeInChild(reflect, taskIndex, workflowIndex){
-      return (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
+      let targetIndex = (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
+      return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
     }
 
     cleanAssigneeConstraints(stateData, deleteTaskIndex, workflowIndex) {
