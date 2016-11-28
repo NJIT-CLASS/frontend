@@ -8,15 +8,15 @@
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
 import React from 'react';
 import request from 'request';
-import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
-var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/
-                                        //              https://github.com/joaonuno/tree-model-js
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
+var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
+let FlatToNested = require('flat-to-nested');
+let flatToNested = new FlatToNested();
 
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
-
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 
 class AssignmentEditorContainer extends React.Component {
@@ -283,6 +283,39 @@ class AssignmentEditorContainer extends React.Component {
       return;
     }
 
+    getMeTheTree(){
+
+      let tree2 = this.state.WorkflowDetails[0].WorkflowStructure;
+      let flatty = [];
+
+      tree2.walk(function(node){
+        let ob = new Object();
+
+        if(node.model.id!= -1){
+            if(node.parent !== undefined){
+            ob['parent'] = node.parent.model.id;
+            }
+
+            ob['id'] = node.model.id;
+            flatty.push(ob);
+          }
+      });
+
+      let temp = {hi: flatty};
+      let tempStringed = JSON.stringify(temp);
+
+      let tempObj = JSON.parse(tempStringed);
+      let newFlatty = tempObj.hi;
+
+      let altered = flatToNested.convert(newFlatty);
+
+      let newTree = this.tree.parse(altered);
+      console.log(newTree);
+      newTree.walk(function(nd){
+        console.log(nd.model.id);
+      });
+    }
+
     onSubmit() {
         if(this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)){
           console.log("CourseID null");
@@ -298,12 +331,26 @@ class AssignmentEditorContainer extends React.Component {
           let counter = 0;
           let mapping = {};
           let newWorkflow = new Array();
+          let flatty = [];
+
           workflow.WorkflowStructure.walk(function(task){
             if(task.model.id != -1){
+
               mapping[task.model.id] = counter;
               newWorkflow.push(workflow.Workflow[task.model.id]);
               task.model.id = counter++;
+
+              // Uncomment this and below for tree flattening
+
+              // let ob = new Object();
+              // if(task.parent !== undefined){
+              // ob['parent'] = task.parent.model.id;
+              // }
+              //
+              // ob['id'] = task.model.id;
+              // flatty.push(ob);
             }
+
           }, this);
 
           //Clean AssigneeConstraints and Grade Dist on frontend secondIndex
@@ -327,7 +374,8 @@ class AssignmentEditorContainer extends React.Component {
           workflow.WA_grade_distribution = newGradeDist;
           workflow.Workflow = newWorkflow;
 
-          workflow.WorkflowStructure = JSON.stringify(workflow.WorkflowStructure);
+          // Uncomment this and above for tree flattening
+          //workflow.WorkflowStructure = flatty;
         });
 
 
@@ -1482,7 +1530,7 @@ class AssignmentEditorContainer extends React.Component {
 
   render(){
     let infoMessage = null;
-    let submitButtonView = (<button type="button" action="#" className="outside-button" onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
+    let submitButtonView = (<button type="button" className="outside-button" onClick={this.onSubmit.bind(this)}><i className="fa fa-check">Submit</i></button>
             );
 
     if(this.state.SubmitSuccess){
@@ -1610,6 +1658,7 @@ class AssignmentEditorContainer extends React.Component {
             {workflowsView}
             <br />
             {submitButtonView}
+            <button type="button" onClick={this.getMeTheTree.bind(this)}>Get ME the Tree</button>
         </div>
         );
       }
