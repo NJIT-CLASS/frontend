@@ -1,5 +1,4 @@
 import React from 'react';
-import Dropdown from 'react-dropdown';
 import Select from 'react-select';
 
 var moment = require('moment');
@@ -320,13 +319,34 @@ class TaskDetailsComponent extends React.Component{
             )
              : null;
 
+
+        let numberOfAssessView = null;
+        let assessConstraint = this.props.getAssigneeInChild(false, this.props.index, this.props.workflowIndex)
+        if(assessConstraint == 'student' || assessConstraint == 'both'){
+          numberOfAssessView = (
+          <div>
+            <br />
+            <label>Number of Assessors</label>
+            <br />
+            <NumberField
+              value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
+              min={1}
+              max={20}
+              onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
+            <br />
+            {showConsol}
+          </div>
+          );
+        }
+
         let showDispute = (<div>
           <label> Can students dispute this assessment </label>
           <Checkbox click={this.props.changeDataCheck.bind(this, "Assess_Dispute", this.props.index, this.props.workflowIndex)}
             />
           </div>);
           {/* Come back to this isClicked*/}
-        allowAssesmentOptions = (<div>
+        allowAssesmentOptions = (
+          <div>
           <Select options={assessmentValues}
             onChange={this.props.changeDropdownData.bind(this,'TA_allow_assessment',this.props.index, this.props.workflowIndex)}
             value={this.props.TaskActivityData.TA_allow_assessment}
@@ -339,19 +359,11 @@ class TaskDetailsComponent extends React.Component{
                       onChange={this.props.changeAssigneeInChild.bind(this,false, this.props.index, this.props.workflowIndex)}
                       clearable={false}
                       searchable={false}/>
-          <br />
-          <label>Number of Assessors</label>
-          <br />
-          <NumberField
-            value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)}
-            min={1}
-            max={20}
-            onChange = {this.props.setAssessNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)} />
-            <br />
-            {showConsol}
+            {numberOfAssessView}
             <br />
             {showDispute}
-        </div>)
+          </div>
+        );
       }
 
       // TA Allow reflection Display Logic
@@ -396,6 +408,8 @@ class TaskDetailsComponent extends React.Component{
            />
       </div>);
 
+
+
         let showConsol= this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
           <div>
           <label>Should the reflections be consolidated</label>
@@ -411,6 +425,26 @@ class TaskDetailsComponent extends React.Component{
           <label> Can students dispute this reflection </label>
           <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Dispute", this.props.index, this.props.workflowIndex)}/>
           </div>);{/*Also come back to this &&&&&&&&&&&&&&&&&&&&#%$#%#$%54$%%#$$%+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/}
+
+        let numberOfReflectorsView = null;
+        let reflectConstr = this.props.getAssigneeInChild(true, this.props.index, this.props.workflowIndex);
+
+        if(reflectConstr == 'student' || reflectConstr == 'both'){
+          numberOfReflectorsView = (<div>
+            <br />
+            <label>Number of Students</label>
+            <br />
+            <NumberField
+                value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)}
+                min={1}
+                max={20}
+                onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)}
+                />
+              <br />
+              {showConsol}
+          </div>)
+        }
+
         allowReflectionOptions = (<div>
           <Select options={reflectionValues}
             onChange={this.props.changeDropdownData.bind(this,'TA_allow_reflection',this.props.index, this.props.workflowIndex)}
@@ -425,17 +459,7 @@ class TaskDetailsComponent extends React.Component{
                       clearable={false}
                       searchable={false}/>
 
-          <br />
-          <label>Number of Students</label>
-          <br />
-          <NumberField
-              value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)}
-              min={1}
-              max={20}
-              onChange = {this.props.setReflectNumberofParticipants.bind(this, this.props.index, this.props.workflowIndex)}
-              />
-            <br />
-            {showConsol}
+                    {numberOfReflectorsView}
             <br />
             {showDispute}
         </div>);

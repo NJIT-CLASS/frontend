@@ -81,65 +81,58 @@ class TemplateContainer extends React.Component {
             json: true
         };
 
+        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+        // for rendering
+        const options2 = {
+                  method: 'GET',
+                  uri: this.props.apiUrl + '/api/superCall/'+ this.props.TaskID,
+                  json: true
+              };
+
         request(options, (err, res, body) => {
 
           if(res.statusCode == 400){
               this.setState({Error: true});
               return;
           }
-          this.setState({
-            //set create's task data to pass down
-            Loaded:true,
-            CourseName: body.courseName,
-            CourseNumber: body.courseNumber,
-            AssignmentTitle: body.assignmentName,
-            AssignmentID: body.assignmentID,
-            AssignmentDescription: body.assignmentDescription,
-            TaskActivityType: body.taskActivityType,
-            SemesterID: body.semesterID,
-            SemesterName: body.semesterName,
-            TaskActivityVisualID: body.taskActivityVisualID
 
+            request(options2, (err, res, bod) => {
 
-          });
+              if(res.statusCode != 200){
+                this.setState({
+                  Error: true
+                });
+                return;
+              }
+              else{
+                let taskList = bod.superTask;
+                let currentTask = bod.superTask[bod.superTask.length - 1]
+                let currentTaskStatus = currentTask.Status;
+
+                this.setState({
+                  Loaded:true,
+                  CourseName: body.courseName,
+                  CourseNumber: body.courseNumber,
+                  AssignmentTitle: body.assignmentName,
+                  AssignmentID: body.assignmentID,
+                  AssignmentDescription: body.assignmentDescription,
+                  TaskActivityType: body.taskActivityType,
+                  SemesterID: body.semesterID,
+                  SemesterName: body.semesterName,
+                  TaskActivityVisualID: body.taskActivityVisualID,
+                  Data: taskList,
+                  TaskStatus: currentTaskStatus
+                });
+              }
+            });
         });
 
       }
 
 
-      getTasks(){
-        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
-        // for rendering
-        const options = {
-                  method: 'GET',
-                  uri: this.props.apiUrl + '/api/superCall/'+ this.props.TaskID,
-                  json: true
-              };
-
-        request(options, (err, res, bod) => {
-
-          if(res.statusCode != 200){
-            this.setState({
-              Error: true
-            });
-            return;
-          }
-          else{
-            let taskList = bod.superTask;
-            let currentTask = bod.superTask[bod.superTask.length - 1]
-            let currentTaskStatus = currentTask.Status;
-
-            this.setState({
-              Data: taskList,
-              TaskStatus: currentTaskStatus
-            });
-          }
-        });
-      }
 
       componentWillMount() { // this function is called before the component renders, so that the page renders with the appropriate state data
         this.getHeaderData();
-        this.getTasks();
 
       }
 
@@ -168,7 +161,6 @@ class TemplateContainer extends React.Component {
             // and gives the Components an appropriate title.
             // Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
               let compString = null;
-              console.log(task);
 
               switch(task.TaskActivity.Type){
                 case TASK_TYPES.CREATE_PROBLEM:

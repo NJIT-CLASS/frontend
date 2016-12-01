@@ -5,7 +5,7 @@ It gets its functions and data from its parent.
 import React from 'react'
 var moment = require('moment');
 import request from 'request';
-import Dropdown from 'react-dropdown';
+import Select from 'react-select';
 import Datetime from 'react-datetime';
 var CheckBoxList = require('react-checkbox-list');
 
@@ -37,8 +37,12 @@ var valid = function( current ){  //this function is used in Datetime to block o
 
 let semesterView = (<div className="inner">
           <label>Semester</label>
-          <Dropdown options={this.props.Semesters} selectedValue={this.props.Assignment.Semester}
+          <Select
+            options={this.props.Semesters}
+            selectedValue={this.props.Assignment.Semester}
             onChange={this.props.onChangeSemesterAssignment.bind(this)}
+            clearable={false}
+            searchable={false}
             />
         </div>
       );

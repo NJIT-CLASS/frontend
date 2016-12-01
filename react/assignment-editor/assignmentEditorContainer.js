@@ -6,6 +6,7 @@
 // TODO
 // add belogns_to_subworkflow
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
+// Assignee constraint second level of checkboxes needs isClicked
 import React from 'react';
 import request from 'request';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
@@ -280,7 +281,9 @@ class AssignmentEditorContainer extends React.Component {
       this.changeDataCheck("TA_allow_assessment", 2, 0);
       this.changeDataCheck("Assess_Consolidate", 2, 0);
       this.changeDataCheck("Assess_Dispute", 2, 0);
+
       return;
+
     }
 
     getMeTheTree(){
@@ -1413,7 +1416,7 @@ class AssignmentEditorContainer extends React.Component {
     } //this handles changing any NumberField data values
 
     checkWorkflowGradeDist(workflowIndex, gradeDistObject, numberFieldIndex, value){
-      console.log("Checking index", numberFieldIndex,"in",gradeDistObject);
+      console.log("Checking index ", numberFieldIndex," in ",gradeDistObject);
       let newWorkflowDetails = this.state.WorkflowDetails;
 
       let newGradeDist = gradeDistObject;

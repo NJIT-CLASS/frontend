@@ -3,7 +3,6 @@
 
 import React from 'react';
 var moment = require('moment');
-import Dropdown from 'react-dropdown';
 import Datetime from 'react-datetime';
 
 

@@ -16,7 +16,6 @@ import AssignmentEditorContainer from './assignment-editor/assignmentEditorConta
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
 import TestingGroundContainer from './testing/test';
 
-
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 
 if (assignmentContainerEl) {
@@ -75,7 +74,7 @@ if(assignToSectionContainerEl){
 
   ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl}/>,assignToSectionContainerEl);
 }
-
+//
 const testingGroundContainerEl = document.getElementById('testing-container');
 
 if(testingGroundContainerEl){

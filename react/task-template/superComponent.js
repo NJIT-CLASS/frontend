@@ -7,7 +7,7 @@ import React from 'react';
 import request from 'request';
 import ErrorComponent from './errorComponent';
 import Checkbox from '../shared/checkbox';
-import Dropdown from 'react-dropdown';
+import Select from 'react-select';
 import Rater from 'react-rater';
 import {RadioGroup, Radio} from 'react-radio-group';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -515,7 +515,7 @@ class SuperComponent extends React.Component {
 
                 contentView = ( <div className="field-content">
                   <label>Choose from one of the labels below</label>
-                  <Dropdown key={idx+1000}
+                  <Select key={idx+1000}
                             options={labels}
                             selectedValue={this.state.TaskData[idx][0]}
                             value={this.state.TaskData[idx][0]}
@@ -526,6 +526,8 @@ class SuperComponent extends React.Component {
                                 TaskData: newData
                               });
                             }}
+                            clearable={false}
+                            searchable={false}
                     />
                   </div>
                 );
