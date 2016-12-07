@@ -139,23 +139,23 @@ class AssignmentEditorContainer extends React.Component {
         ], false);
 
         this.editProblemTask = createTaskObject(TASK_TYPES.EDIT,TASK_TYPE_TEXT.edit, 'Edit Problem', 'late', 'keep_same_participant', [
-            'instructor', 'group', {'not': [1]}
+            'instructor', 'group', {'not': [0]}
         ], false);
 
         this.commmentProblemTask = createTaskObject(TASK_TYPES.COMMENT,TASK_TYPE_TEXT.comment, 'Comment on Problem', 'late', 'keep_same_participant', [
-            'instructor', 'group', {'not': [1]}
+            'instructor', 'group', {'not': [0]}
         ], false);
 
         this.solveProblemTask = createTaskObject(TASK_TYPES.SOLVE_PROBLEM,TASK_TYPE_TEXT.solve_problem, 'Solve the Problem', 'late', 'keep_same_participant', [
-            'student', 'individual', {'not': [1,2] }
+            'student', 'individual', {'not': [0,1] }
         ], false);
 
         this.gradeSolutionTask = createTaskObject(TASK_TYPES.GRADE_PROBLEM,TASK_TYPE_TEXT.grade_problem, 'Grade the Solution', 'late', 'keep_same_participant', [
-            'student', 'individual', {'not': [1,3], 'same_as': [1]}
+            'student', 'individual', {'not': [0,2], 'same_as': [0]}
         ], true);
 
         this.critiqueSolutionTask = createTaskObject(TASK_TYPES.CRITIQUE,TASK_TYPE_TEXT.critique, 'Critique the Solution', 'late', 'keep_same_participant', [
-            'student', 'individual', {'not': [1,3]}
+            'student', 'individual', {'not': [0,2], 'same_as': [0]}
         ], true);
 
         this.needsConsolidationTask = createTaskObject(TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPE_TEXT.needs_consolidation, 'Needs Consolidation', null, null, [
@@ -163,15 +163,15 @@ class AssignmentEditorContainer extends React.Component {
         ], true);
 
         this.consolidationTask = createTaskObject(TASK_TYPES.CONSOLIDATION,TASK_TYPE_TEXT.consolidation, 'Consolidate', 'late', 'keep_same_participant', [
-            'student', 'individual', {'not': [1,3,4]}
+            'student', 'individual', {'not': [0,2,3]}
         ], true);
 
         this.disputeTask = createTaskObject(TASK_TYPES.DISPUTE,TASK_TYPE_TEXT.dispute, 'Dispute the Grades', 'resolved', null, [
-            'student', 'individual', {'same_as':[3]}
+            'student', 'individual', {'same_as':[2]}
         ], false);
 
         this.resolveDisputeTask = createTaskObject(TASK_TYPES.RESOLVE_DISPUTE, TASK_TYPE_TEXT.resolve_dispute, 'Resolve the Dispute', 'late', 'keep_same_participant', [
-            'student', 'individual', {'not':[3]}
+            'student', 'individual', {'not':[6]}
         ], true);
 
         this.completeTask = createTaskObject(TASK_TYPES.COMPLETED, TASK_TYPE_TEXT.completed, 'Complete', null, null, [
@@ -704,7 +704,13 @@ class AssignmentEditorContainer extends React.Component {
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == targetIndex;
         });
-        return selectedNode.children[this.CONSOL_DISP_IDX].model.id;
+
+        if(selectedNode.children[this.CONSOL_DISP_IDX] !== undefined){
+          return selectedNode.children[this.CONSOL_DISP_IDX].model.id;
+        }
+        else{
+          return null;
+        }
     }
 
     getAssessNumberofParticipants(index, workflowIndex) {
@@ -731,6 +737,7 @@ class AssignmentEditorContainer extends React.Component {
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id === x.getReflectIndex(index, workflowIndex);
         });
+
 
         return this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant;
     }
@@ -1337,13 +1344,14 @@ class AssignmentEditorContainer extends React.Component {
 
     getConsolidateValue(taskIndex,workflowIndex, isAssess){
       let targetIndex = null;
-      if(isAssess){
-        targetIndex = this.getAssessIndex(taskIndex, workflowIndex);
+      targetIndex = this.getConsolidationIndex(!isAssess, taskIndex, workflowIndex);
+
+      if(targetIndex !== null){
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].TA_function_type;
       }
       else{
-        targetIndex = this.getReflectIndex(taskIndex, workflowIndex);
+        return null;
       }
-      return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].TA_function_type;
     }
 
 
@@ -1415,6 +1423,16 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newWorkflowDetails});
     } //this handles changing any NumberField data values
 
+    changeWorkflowGradeDist(workflowIndex, taskIndex, numberFieldIndex, value){
+      let newWorkflowDetails = this.state.WorkflowDetails;
+
+      console.log("Chaning workflow distr: ",numberFieldIndex, taskIndex, value);
+      //let newGradeDist = this.state.WorkflowDetails[workflowIndex].WA_grade_distribution;
+      newWorkflowDetails[workflowIndex].WA_grade_distribution[taskIndex] = value;
+      //this.checkWorkflowGradeDist(workflowIndex, newGradeDist, numberFieldIndex, value);
+      this.setState({WorkflowDetails: newWorkflowDetails});
+    } // this is special for the grade distribution object
+
     checkWorkflowGradeDist(workflowIndex, gradeDistObject, numberFieldIndex, value){
       console.log("Checking index ", numberFieldIndex," in ",gradeDistObject);
       let newWorkflowDetails = this.state.WorkflowDetails;
@@ -1445,33 +1463,27 @@ class AssignmentEditorContainer extends React.Component {
       //   }
       // }
 
-        for(var i = 0; i < numOfFields;i++){
-          sum += newGradeDist[distKeys[i]];
-          if(sum  < 100){
-            if(i == (numOfFields - 1)){
-              newGradeDist[distKeys[i]] = 100 - sum;
-            }
-          }
-          else if(sum == 100){
-            newGradeDist[distKeys[i]] = 0;
-          }
-          else if( sum > 100){
-            newGradeDist[distKeys[i]] = sum - 100 ;
-            sum = 100;
-          }
-        }
+        // for(var i = 0; i < numOfFields;i++){
+        //   sum += newGradeDist[distKeys[i]];
+        //   if(sum  < 100){
+        //     if(i == (numOfFields - 1)){
+        //       newGradeDist[distKeys[i]] = 100 - sum;
+        //     }
+        //   }
+        //   else if(sum == 100){
+        //     newGradeDist[distKeys[i]] = 0;
+        //   }
+        //   else if( sum > 100){
+        //     newGradeDist[distKeys[i]] = sum - 100 ;
+        //     sum = 100;
+        //   }
+        // }
 
       newWorkflowDetails[workflowIndex].WA_grade_distribution = newGradeDist;
       this.setState({WorkflowDetails: newWorkflowDetails});
     }
 
-    changeWorkflowGradeDist(workflowIndex, taskIndex, numberFieldIndex, value){
-      console.log("Chaning workflow distr: ",numberFieldIndex, taskIndex, value);
-      let newGradeDist = this.state.WorkflowDetails[workflowIndex].WA_grade_distribution;
-      newGradeDist[taskIndex] = value;
-      this.checkWorkflowGradeDist(workflowIndex, newGradeDist, numberFieldIndex, value);
 
-    } // this is special for the grade distribution object
 
     changeWorkflowInputData(stateField, workflowIndex, e) {
         if (e.target.value.length > 45000) {
@@ -1524,13 +1536,13 @@ class AssignmentEditorContainer extends React.Component {
       if(newArray.length <= 0){
         return [];
       }
+      //
+      // for(let i = 0; i<newArray.length; i++){
+      //   newArray[i].weight = Math.floor(100/newArray.length);
+      // }
+      //
+      //   newArray[newArray.length -1].weight = Math.floor(100/newArray.length) + (100 % newArray.length);
 
-      for(let i = 0; i<newArray.length; i++){
-        newArray[i].weight = Math.floor(100/newArray.length);
-      }
-
-        newArray[newArray.length -1].weight = Math.floor(100/newArray.length) + (100 % newArray.length);
-        // console.log(newArray);
         return newArray;
     }
 

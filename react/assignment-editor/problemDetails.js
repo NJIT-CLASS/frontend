@@ -19,7 +19,7 @@ class ProblemDetailsComponent extends React.Component{
 
 
     render(){
-      let problemTypeValues=['Essay','Multiple Choice','Short Answer','Computer Program'];
+      let problemTypeValues=[{value: 'essay', label: 'Essay'}, {value: 'multiple_choice', label: 'Multiple Choice'}, {value: 'short_answer' ,label: 'Short Answer'},{value: 'program', label: 'Computer Program'}];
       let gradingTasks = this.props.GradingTasks;
 
       let gradeDistView = null;
@@ -51,8 +51,10 @@ class ProblemDetailsComponent extends React.Component{
           <div className='inner'>
             <label>Problem Type</label>
             <Select options={problemTypeValues}
-                      selectedValue={this.props.WorkflowDetails.WA_type}
+                      value={this.props.WorkflowDetails.WA_type}
                       onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
+                      clearable={false}
+                      searchable={false}
                       />
           </div>
           <br />

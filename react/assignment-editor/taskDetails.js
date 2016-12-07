@@ -366,60 +366,61 @@ class TaskDetailsComponent extends React.Component{
         );
       }
 
-      // TA Allow reflection Display Logic
+      // TA Allow Reflection Display Logic
       if(this.props.TaskActivityData.TA_allow_reflection[0] != 'none'){
 
-        let consolidateOptions = (
-          <div>
-          <label>Grading Threshold</label>
-          <br />
-          <RadioGroup
-            selectedValue={this.state.GradingThreshold[0]}
-            onChange={ (val) =>{
-              this.props.changeRadioData('TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex, val);
-              let newGrades = this.state.GradingThreshold;
-              newGrades[0] = val;
-              this.setState({GradingThreshold: newGrades});
+        let showConsol= null;
+        if(this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1){
+          let consolidateOptions = (
+            <div>
+            <label>Grading Threshold</label>
+            <br />
+            <RadioGroup
+              selectedValue={this.state.GradingThreshold[0]}
+              onChange={ (val) =>{
+                this.props.changeRadioData('TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex, val);
+                let newGrades = this.state.GradingThreshold;
+                newGrades[0] = val;
+                this.setState({GradingThreshold: newGrades});
+                }
               }
-            }
-            >
-            <label> Points
-              <Radio value="points" />
-            </label>
-            <label> Percent
-              <Radio value="percent" />
-            </label>
+              >
+              <label> Points
+                <Radio value="points" />
+              </label>
+              <label> Percent
+                <Radio value="percent" />
+              </label>
 
-          </RadioGroup>
-        <br />
-        <NumberField
-            value={2}
-            min={0}
-            max={100}
-            onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)}
-            size={6} />
+            </RadioGroup>
           <br />
-        <label>To be consolidated, the grades should be: </label>
-        <Select options={consolidationTypeValues}
-           clearable={false}
-           searchable={false}
-           value={this.props.getConsolidateValue(this.props.index, this.props.workflowIndex, false)}
-           onChange={this.props.changeDropdownData.bind(this, 'TA_function_type_Reflect', this.props.index,this.props.workflowIndex)}
-           />
-      </div>);
+          <NumberField
+              value={2}
+              min={0}
+              max={100}
+              onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)}
+              size={6} />
+            <br />
+          <label>To be consolidated, the reflections should be: </label>
+          <Select options={consolidationTypeValues}
+             clearable={false}
+             searchable={false}
+             value={this.props.getConsolidateValue(this.props.index, this.props.workflowIndex, false)}
+             onChange={this.props.changeDropdownData.bind(this, 'TA_function_type_Reflect', this.props.index,this.props.workflowIndex)}
+             />
+        </div>);
+        showConsol = (
+                <div>
+                <label>Should the reflections be consolidated</label>
+              <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index, this.props.workflowIndex)}
+                isClicked={this.props.TaskActivityData.AllowConsolidations[0]}
+                />
+              <br />
+              {this.props.TaskActivityData.AllowConsolidations[0] ? consolidateOptions : null}
+              </div>
+            );
+        }
 
-
-
-        let showConsol= this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1 ? (
-          <div>
-          <label>Should the reflections be consolidated</label>
-        <Checkbox click={this.props.changeDataCheck.bind(this, "Reflect_Consolidate", this.props.index, this.props.workflowIndex)}
-          isClicked={this.props.TaskActivityData.AllowConsolidations[0]}
-          />
-        <br />
-        {this.props.TaskActivityData.AllowConsolidations[0] ? consolidateOptions : null}
-        </div>
-        ) : null;
 
         let showDispute = (<div>
           <label> Can students dispute this reflection </label>
