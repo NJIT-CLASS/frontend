@@ -920,14 +920,13 @@ class AssignmentEditorContainer extends React.Component {
                 {
                     if (newData[workflowIndex].Workflow[taskIndex][stateField] != 'none') {
                         newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
-                        newData = this.cleanGradeTasks(newData, workflowIndex);
+                        newData = this.removeGradeDist(newData, workflowIndex);
                         newData[workflowIndex].Workflow[taskIndex][stateField] = 'none';
                         newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
 
                     } else {
                         newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
-                        newData = this.cleanGradeTasks(newData, workflowIndex);
-                        newData = this.state.WorkflowDetails;
+                        newData = this.addGradeDist(newData, workflowIndex);
                         newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
                     }
                 }
@@ -1413,6 +1412,48 @@ class AssignmentEditorContainer extends React.Component {
 
     ////////////////    Workflow (Problem) Details functions    ////////////////////
 
+    addGradeDist(stateData, workflowIndex){
+      stateData[workflowIndex].WA_grade_distribution[stateData[workflowIndex].Workflow.length-1] = 0;
+      console.log(stateData[workflowIndex].WA_grade_distribution);
+      let distKeys = Object.keys(stateData[workflowIndex].WA_grade_distribution);
+      let count = distKeys.length;
+
+      distKeys.forEach(function(task){
+        stateData[workflowIndex].WA_grade_distribution[task] = Math.floor(100/count);
+      });
+
+      stateData[workflowIndex].WA_grade_distribution[distKeys[count-1]] = Math.floor(100/count)+ (100 % count);
+      stateData[workflowIndex].NumberOfGradingTask += 1;
+
+      distKeys = null;
+      count = null;
+
+      return stateData;
+
+    }
+
+    removeGradeDist(stateData, workflowIndex){
+      let gradedTasks = this.getFinalGradeTasksArray(workflowIndex);
+      let count = gradedTasks.length();
+      let newGradeDist = new Object();
+
+      if(count != stateData[workflowIndex].NumberOfGradingTask){
+        gradedTasks.forEach(function(task){
+          newGradeDist[task] = Math.floor(100/count);
+        });
+
+        newGradeDist[gradedTasks[count-1]] =  Math.floor(100/count) + (100%count);
+
+        stateData[workflowIndex].WA_grade_distribution = newGradeDist;
+        stateData[workflowIndex].NumberOfGradingTask = count;
+
+        gradedTasks = null;
+        count = null;
+      }
+
+      return stateData;
+    }
+
     handleSelect(value) { //need this for the tabs that appear on multiple workflows
         this.setState({CurrentWorkflowIndex: value});
     }
@@ -1528,7 +1569,7 @@ class AssignmentEditorContainer extends React.Component {
       this.state.WorkflowDetails[workflowIndex].Workflow.forEach(function(task, index){
         if(Object.keys(task).length >0){
           if(indexOf(assessmentTypes,task.TA_type) != -1 || task.TA_simple_grade != 'none'){
-            newArray.push({id: index, name: task.TA_display_name, weight: 0.0});
+            newArray.push(index);
           }
         }
       });
@@ -1536,12 +1577,6 @@ class AssignmentEditorContainer extends React.Component {
       if(newArray.length <= 0){
         return [];
       }
-      //
-      // for(let i = 0; i<newArray.length; i++){
-      //   newArray[i].weight = Math.floor(100/newArray.length);
-      // }
-      //
-      //   newArray[newArray.length -1].weight = Math.floor(100/newArray.length) + (100 % newArray.length);
 
         return newArray;
     }
@@ -1642,7 +1677,6 @@ class AssignmentEditorContainer extends React.Component {
                 <ProblemDetailsComponent key={"Workflows" + index}
                                          workflowIndex={index}
                                          WorkflowDetails={workflow}
-                                         GradingTasks={this.getFinalGradeTasksArray(index)}
                                          NumberofWorkflows = {this.state.AssignmentActivityData.NumberofWorkflows}
                                          changeWorkflowData= {this.changeWorkflowData.bind(this)}
                                          changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}

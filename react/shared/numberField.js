@@ -127,6 +127,8 @@ import React from 'react';
          <button type="button" className="btn"
           onMouseDown={this.decrementButtonDown.bind(this)}
           onMouseUp={this.decrementButtonUp.bind(this)}
+          onMouseLeave={this.decrementButtonUp.bind(this)}
+          onMouseOut={this.decrementButtonUp.bind(this)}
           onTouchEnd={this.decrementButtonUp.bind(this)}
            >
            <i aria-hidden="true">  -  </i>
@@ -137,6 +139,8 @@ import React from 'react';
          <button type="button" className="btn" data-type="plus"
          onMouseDown={this.incrementButtonDown.bind(this)}
          onMouseUp={this.incrementButtonUp.bind(this)}
+         onMouseLeave={this.incrementButtonUp.bind(this)}
+         onMouseOut={this.incrementButtonUp.bind(this)}
          onTouchEnd={this.incrementButtonUp.bind(this)}
          >
              <i aria-hidden="true"> + </i>

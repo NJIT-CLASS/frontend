@@ -17,10 +17,15 @@ class ProblemDetailsComponent extends React.Component{
       };
     }
 
+    mapTasksToOptions(){
+      return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
+            return {id: task, name: this.props.WorkflowDetails.Workflow[task].TA_display_name, weight: this.props.WorkflowDetails.WA_grade_distribution[task] };
+      },this);
+    }
 
     render(){
       let problemTypeValues=[{value: 'essay', label: 'Essay'}, {value: 'multiple_choice', label: 'Multiple Choice'}, {value: 'short_answer' ,label: 'Short Answer'},{value: 'program', label: 'Computer Program'}];
-      let gradingTasks = this.props.GradingTasks;
+      let gradingTasks = this.mapTasksToOptions();
 
       let gradeDistView = null;
       let multipleWorkflowsView = null;
