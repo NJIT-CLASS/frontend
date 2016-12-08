@@ -131,6 +131,7 @@
 	padding-left: $select-padding-horizontal;
 	padding-right: $select-padding-horizontal;
 	vertical-align: middle;
+	outline: none !important;
 
 	> input {
 		background: none transparent;
@@ -147,7 +148,7 @@
 		-webkit-appearance: none;
 
 		.is-focused & {
-			cursor: text;
+			cursor: default;
 		}
 	}
 
