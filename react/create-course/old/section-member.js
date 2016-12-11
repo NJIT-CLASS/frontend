@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Select from 'react-select';
 
 class SectionMember extends React.Component {
@@ -14,17 +15,16 @@ class SectionMember extends React.Component {
     }
 
     onRoleChange(role) {
-        //alert(role.value);
         this.props.updateMember({
             email: this.props.email,
-            role: role.value
+            role: role
         });
     }
 
     render() {
         var roles = [
-            { value: 'Student', label: 'Student' },
-            { value: 'Instructor', label: 'Instructor' }
+            { value: 'student', label: 'Student' },
+            { value: 'instructor', label: 'Instructor' }
         ];
 
         return (
@@ -35,8 +35,14 @@ class SectionMember extends React.Component {
                     value={this.props.email}
                     onChange={this.onEmailChange.bind(this)}
                 ></input>
-              <Select options={roles} value={this.props.role} onChange={this.onRoleChange.bind(this)} />
-
+                <Select
+                    name="role"
+                    value={this.props.role}
+                    options={roles}
+                    clearable={false}
+                    searchable={false}
+                    onChange={this.onRoleChange.bind(this)}
+                />
             </div>
         );
     }
@@ -44,7 +50,7 @@ class SectionMember extends React.Component {
 
 SectionMember.defaultProps = {
     email: '',
-    role: 'Student'
+    role: 'student'
 };
 
 export default SectionMember;

@@ -49,6 +49,8 @@ button {
   }
 
   .dispute{
+    display:block;
+    margin:10px;
     background-color: #00AB8D !important;
   }
   /*.dispute:hover {
@@ -74,26 +76,11 @@ button {
   }
 
   .outside-button{
-    @media screen and (max-width: $mobile-brk){
-    display: block;
-    width: 96%;
-    margin-left: 9px;
-  }
-  }
-
-  .invisible{
-    overflow: hidden;
-    box-sizing: border-box;
-    margin: 10px;
-    width:100%;
-    display:flex;
-    align-self: flex-end;
-
-    table tr{
-      border: hidden;
-
-    }
-    table tr td {
-      border: hidden;
+    margin-right: 10vw;
+      @media screen and (max-width: $mobile-brk){
+      display: block;
+      width: 96%;
+      margin-left: 9px;
+      margin-right: 0px;
     }
   }

@@ -155,7 +155,7 @@ import React from 'react';
       value: 1,
       min: -200,
       max: 200,
-      speed: 200,
+      speed: 250,
       step: 1,
       allowDecimals: false
   };

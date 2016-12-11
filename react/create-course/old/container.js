@@ -1,4 +1,5 @@
 import React from 'react';
+
 import CourseDetails from './course-details';
 import CourseSections from './course-sections';
 
@@ -14,12 +15,8 @@ class Container extends React.Component {
             courseSectionsEl = (
                 <CourseSections
                     displaySections={this.props.displaySections}
-                    courseName={this.props.courseName}
-                    courseNumber={this.props.courseNumber}
                     sections={this.props.sections}
                     createSection={this.props.createSection}
-                    organizationID={this.props.organizationID}
-                    courseAbb={this.props.courseAbb}
                     apiUrl={this.props.apiUrl}
                 />
             );
@@ -28,13 +25,10 @@ class Container extends React.Component {
         return (
             <div className="course-sections">
                 <CourseDetails
-                    userId={this.props.userId}
-                    displayMessage={this.props.displayMessage}
                     createCourse={this.props.createCourse}
                     courseId={this.props.courseId}
                     courseName={this.props.courseName}
                     courseNumber={this.props.courseNumber}
-                    apiUrl={this.props.apiUrl}
                 />
                 {courseSectionsEl}
             </div>

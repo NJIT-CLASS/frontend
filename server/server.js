@@ -142,10 +142,12 @@ app.use((req, res, next) => {
 
             }
 
-            const user = body.User[0];
+            const user = body.User[0]; // JV - grabbed user's information
             req.App.user.email = user.UserLogin.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
+            req.App.user.country = user.Country;
+            req.App.user.city = user.City;
             req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
             req.App.user.admin = user.Admin;
 
@@ -212,8 +214,13 @@ app.use((req, res, next) => {
                 else {
                     continue;
                 }
-            }
-            else {
+            }else if (req.App.user.type == 'teacher' && req.App.user.admin == 0){
+              if (currentRoute.access.instructors) {
+                  sidebarNavItems.push(currentRoute);
+              }else {
+                  continue;
+              }
+            }else {
                 sidebarNavItems.push(currentRoute);
             }
         }

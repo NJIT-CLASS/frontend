@@ -14,17 +14,13 @@ class CourseContainer extends React.Component {
             courseId: null,
             courseName: '',
             courseNumber: '',
-            displayMessage: null,
-            organization_id: '',
-            courseAbb: '',
-            courseDescription: '',
             sections: []
         };
     }
 
-    createCourse(courseName, courseNumber, courseAbb, courseDescription, organizationid) {
 
-      console.log('create course', courseName, courseNumber)
+    createCourse(courseName, courseNumber) {
+      console.log('create ourse', courseName, courseNumber)
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/course/create',
@@ -32,29 +28,21 @@ class CourseContainer extends React.Component {
                 userid: this.props.userId,
                 number: courseNumber,
                 Name: courseName,
-                organizationid: organizationid,
-                course_abb: courseAbb,
-                course_description: courseDescription
+                organizationid:1
             },
             json: true
         };
 
         request(options, (err, res, body) => {
             const courseId = body.NewCourse;
-              this.setState({
-                  displayMessage: body.Message,
-                  courseId: courseId.CourseID,
-                  courseName: courseName,
-                  courseNumber: courseNumber,
-                  organization_id: organizationid,
-                  courseAbb: courseAbb,
-                  courseDescription: courseDescription
 
-              });
+            this.setState({
+                courseId: courseId.CourseID,
+                courseName: courseName,
+                courseNumber: courseNumber
+            });
         });
-        //alert(this.state.organization_id);
     }
-
 
     createSection(index, section) {
         const options = {
@@ -62,22 +50,24 @@ class CourseContainer extends React.Component {
             uri: this.props.apiUrl + '/api/course/createsection',
             body: {
                 courseid: this.state.courseId,
-                semesterid: section.semesterId, 
+                semesterid: section.semesterId.value, // TODO: make this not static
                 name: section.name,
                 description: section.description,
-                organizationid: this.state.organization_id
+                organizationid: 1
             },
             json: true
         };
 
         request(options, (err, res, body) => {
             const courseSectionId = body.result.SectionID;
+
             const memberOptions = {
                 method: 'POST',
                 uri: this.props.apiUrl + '/api/course/adduser',
                 body: {
                     sectionid: courseSectionId,
                     courseid: this.state.courseId
+
                 },
                 json: true
             }
@@ -85,7 +75,7 @@ class CourseContainer extends React.Component {
             for (let i = 0; i < section.members.length; i++) {
                 let newMemberOptions = cloneDeep(memberOptions);
                 newMemberOptions.body.email = section.members[i].email;
-                newMemberOptions.body.role = section.members[i].role; // set the role
+
                 request(newMemberOptions);
             }
 
@@ -94,6 +84,7 @@ class CourseContainer extends React.Component {
                 return this.setState((previousState) => {
                     let sections = previousState.sections;
                     sections[index] = section;
+
                     return sections;
                 });
             }
@@ -101,6 +92,7 @@ class CourseContainer extends React.Component {
             this.setState((previousState) => {
                 let sections = previousState.sections;
                 sections.push(section);
+
                 return sections;
             });
         });
@@ -109,11 +101,6 @@ class CourseContainer extends React.Component {
     render() {
         return (
             <Container
-                organizationID={this.state.organization_id}
-                courseAbb={this.state.courseAbb}
-                courseDescription={this.state.courseDescription}
-                userId={this.props.userId}
-                displayMessage={this.state.displayMessage}
                 courseId={this.state.courseId}
                 createCourse={this.createCourse.bind(this)}
                 displaySections={this.state.courseId !== null}

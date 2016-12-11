@@ -41,7 +41,11 @@
 	outline: none;
 	overflow: hidden;
 	position: relative;
-	width: 100%;
+	width: 250px;
+	transition: all 200ms ease;
+	@media screen and (max-width: $mobile-brk) {
+		width: calc(100vw - 60px);
+	}
 
 	&:hover {
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);

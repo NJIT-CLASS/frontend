@@ -11,24 +11,28 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
             		<ul>
 
     				  {{#each courseList}}
-
-    					<li class="list-group-item">
-    					<a href="/course_page/{{CourseID}}">{{Name}}</a>
+              {{#if Abbreviations}}
+      					<li class="list-group-item">
+      					<a href="/course_page/{{CourseID}}">{{Abbreviations}} - {{Name}}</a>
+                {{else}}
+                <li class="list-group-item">
+      					<a href="/course_page/{{CourseID}}">{{Name}}</a>
+              {{/if}}
     				    </li>
+                {{else}} <!-- this p tag will be visible if courseList is empty-->
+                  <p>{{__ "You currently have no registered courses"}}</p>
 
-                       {{/each}}
+                {{/each}}
 
                     </ul>
-
             </div>
-
         </div>
     </form>
   </div>
-
+{{#if pendingTasksList}} <!-- this div tag will hidden if pendingTasksList is empty-->
   <div class='flex-section'>
     <form name="pendingTaskList" role="form" class="sectionTable flex-child" method="POST" action="#">
-        <h2 class="title">Pending Tasks</h2>
+        <h2 class="title">{{__ "Pending Tasks"}}</h2>
         <div class="section-content">
 
 
@@ -60,9 +64,10 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
         </div>
     </form>
 
-
+{{/if}}
+{{#if completedTasksList}}  <!-- this div tag will hidden if completedTasksList is empty-->
     <form name="completedTaskList" role="form" class="sectionTable flex-child" method="POST" action="#">
-        <h2 class="title">Completed Tasks</h2>
+        <h2 class="title">{{__ "Completed Tasks"}}</h2>
         <div class="section-content">
 
 
@@ -95,3 +100,4 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
     </form>
   </div>
 </div>
+{{/if}}

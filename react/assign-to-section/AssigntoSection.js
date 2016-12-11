@@ -27,7 +27,7 @@ class AssignToSectionContainer extends React.Component
     this.state=
     { //structure of the data being passes in from the database
       Assignment:{
-        StartNow:false,
+        StartNow:true,
         StartLater:false,
         Section:[],
         Semester: null,
@@ -91,7 +91,7 @@ class AssignToSectionContainer extends React.Component
               ID: task.taskActivityID,
               Type:task.type,
               Name: task.name,
-              StartNow:false,
+              StartNow:true,
               StartLater:false,
               Time:0,
               TimeArray:[]
@@ -100,7 +100,7 @@ class AssignToSectionContainer extends React.Component
 
           return {
             id: key,
-            StartNow:false,
+            StartNow:true,
             StartLater:false,
             Time:0,
             Tasks: tasks
@@ -162,7 +162,7 @@ class AssignToSectionContainer extends React.Component
       body: newData,
       json: true
     };
-
+    console.log(newData);
       request(options, (err, res, body) => {
         if(res.statusCode === 200){
           console.log('Submit worked');

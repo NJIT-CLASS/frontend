@@ -7,14 +7,37 @@ If a new react page is created , it will need to be added here.
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ClassPageContainer from './shared/class-page-container';
+import AddSectionContainer from './add-section/add-section-container';
+import AddUserContainer from './add-user/add-user-container';
 import AssignmentContainer from './create-assignment/assignment-container';
-import CourseContainer from './create-course/course-container';
-import TranslationContainer from './translation/translation-container';
-import TemplateContainer from './task-template/TemplateContainer';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
+import ClassPageContainer from './shared/class-page-container';
+import CourseContainer from './create-course/course-container';
+import TemplateContainer from './task-template/TemplateContainer';
+import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';
+
+
+
+const addsectionContainerEl = document.getElementById('add-section-container');
+
+if(addsectionContainerEl){
+  const userId = addsectionContainerEl.dataset.userId;
+  const apiUrl = addsectionContainerEl.dataset.apiUrl;
+
+  ReactDOM.render(<AddSectionContainer userId={userId} apiUrl={apiUrl}/>,addsectionContainerEl);
+}
+
+const adduserContainerEl = document.getElementById('add-user-container');
+
+if (adduserContainerEl) {
+  const userId = adduserContainerEl.dataset.userId;
+  const apiUrl = adduserContainerEl.dataset.apiUrl;
+  const userType = adduserContainerEl.dataset.userType;
+
+    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType}/>,adduserContainerEl);
+}
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 

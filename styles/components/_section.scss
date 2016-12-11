@@ -161,6 +161,24 @@
 
 
 }
+
+.multi-view-container{
+  overflow-x: scroll;
+  box-sizing: border-box;
+  margin: 10px;
+  width:98%;
+  display:flex;
+  flex-flow: row;
+  align-content: space-around;
+  @media screen and (max-width: $mobile-brk) {
+    margin: 3px;
+    width: calc(97vw);
+  }
+  .child{
+    flex: 1 0 70%;
+  }
+}
+
 .error-component {
     background-color: #ed5565 !important;
     color: #ffffff !important;

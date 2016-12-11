@@ -1,5 +1,5 @@
 exports.get = (req, res) => {
-    res.render('account_management', {
+    res.render('settings', {
         userId: req.App.user.userId,
         userEmail: req.App.user.email,
         userFirstName: req.App.user.firstName,
@@ -8,8 +8,6 @@ exports.get = (req, res) => {
         userCity: req.App.user.city,
         userIsAdmin: true
     });
-
-
 };
 
 exports.post = (req, res) => {
@@ -31,28 +29,29 @@ exports.post = (req, res) => {
                 options.namechangesucceeded = true;
                 options.userFirstName = body.FirstName;
                 options.userLastName = body.LastName;
-                res.render('account_management', options);
+                res.render('settings', options);
             // }
             // else {                  // error
             //     options.statuscode = statusCode;
             //     options.namechangefailed = true;
-            //     res.render('account_management', options);
+            //     res.render('settings', options);
             // }
         });
     }
     else if (req.body.what_was_changed=='email') {
+
         req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
             // console.log(err, statusCode)
             // if(body.Message=='Success') {       // success
                 options.emailchangesucceeded = true;
                 options.userEmail = req.body.field_newEmail;
                 options.statuscode = statusCode;
-                res.render('account_management', options);
+                res.render('settings', options);
             // }
             // else {                      // error
             //     options.emailchangefailed = true;
             //     options.statuscode = statusCode;
-            //     res.render('account_management', options);
+            //     res.render('settings', options);
             // }
         });
     }
@@ -62,12 +61,12 @@ exports.post = (req, res) => {
             if(statusCode==200) {       // success
                 options.adminoptoutsucceeded = true;
                 options.statuscode = statusCode;
-                res.render('account_management', options);
+                res.render('settings', options);
             }
             else {                      // error
                 options.adminoptoutfailed = true;
                 statuscode = statusCode;
-                res.render('account_management', options);
+                res.render('settings', options);
             }
         });
         */
@@ -76,25 +75,33 @@ exports.post = (req, res) => {
 
         // If the "confirm password" doesn't match the new password entered, then alert the user and abort the operation
         if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
-            options.passwordchangemismatch = true;
-            res.render('account_management', options);
+          options.passwordchangesucceeded = true;
+          res.render('settings', options);
             return;
-        }
+         }
 
         req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
             // if(statusCode==200) {       // success
                 options.passwordchangesucceeded = true;
                 options.statuscode = statusCode;
-                res.render('account_management', options);
+                res.render('settings', options);
             // }
             // else {                      // error
             //     options.passwordchangefailed = true;
             //     options.statuscode = statusCode;
-            //     res.render('account_management', options);
+            //     res.render('settings', options);
             // }
         });
     }
+
+    else if (req.body.what_was_changed=='upload-img') {
+
+
+      options.onlyPNG  = true;
+      res.render('settings', options);
+    }
+
     else {
-        res.render('account_management', options);
+        res.render('settings', options);
     }
 };

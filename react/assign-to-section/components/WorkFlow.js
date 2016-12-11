@@ -50,7 +50,7 @@ render(){
 
   return (
     <div className = "section">
-    <h1 className = "title"> Tasks Start Time </h1>
+    <h1 className = "title"> Entire Problem Start Time </h1>
 
       <div className = "section-content">
         <table table border="0" cellPadding="0" cellSpacing="0" className="tab">

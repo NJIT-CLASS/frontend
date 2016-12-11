@@ -4,6 +4,7 @@ class CourseSectionList extends React.Component {
     selectSection(sectionIndex) {
         this.props.selectSection(sectionIndex);
     }
+
     createNewSection() {
         this.props.selectSection();
     }

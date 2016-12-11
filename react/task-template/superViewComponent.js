@@ -287,7 +287,7 @@ class SuperViewComponent extends React.Component {
 
       return (
         <div key={this.props.index + 2001}className="section card-2" >
-          <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}:</h2>
+          <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
             {content}
         </div>
     );

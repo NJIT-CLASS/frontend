@@ -39,7 +39,7 @@ let semesterView = (<div className="inner">
           <label>Semester</label>
           <Select
             options={this.props.Semesters}
-            selectedValue={this.props.Assignment.Semester}
+            value={this.props.Assignment.Semester}
             onChange={this.props.onChangeSemesterAssignment.bind(this)}
             clearable={false}
             searchable={false}

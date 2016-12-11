@@ -177,7 +177,7 @@ class AssignmentEditorContainer extends React.Component {
         ], true);
 
         this.needsConsolidationTask = createTaskObject(TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPE_TEXT.needs_consolidation, 'Needs Consolidation', null, null, [
-            'student', 'individual', {}
+            'student', 'individual', {'same_as': [2]}
         ], true);
 
         this.consolidationTask = createTaskObject(TASK_TYPES.CONSOLIDATION, TASK_TYPE_TEXT.consolidation, 'Consolidate', 'late', 'keep_same_participant', [
@@ -202,7 +202,7 @@ class AssignmentEditorContainer extends React.Component {
         ], true);
 
         this.completeTask = createTaskObject(TASK_TYPES.COMPLETED, TASK_TYPE_TEXT.completed, 'Complete', null, null, [
-            'student', 'individual', {}
+            'student', 'individual', {'same_as': [2]}
         ], false);
 
         ///----------------------
@@ -321,18 +321,11 @@ class AssignmentEditorContainer extends React.Component {
 
         });
 
-        let temp = {
-            hi: flatty
-        };
-        let tempStringed = JSON.stringify(temp);
-
-        let tempObj = JSON.parse(tempStringed);
-        let newFlatty = tempObj.hi;
+        flatty = flatToNested.convert(flatty);
 
         console.log(flatty);
-        let altered = flatToNested.convert(newFlatty);
-        console.log(altered);
-        let newTree = this.tree.parse(altered);
+
+        let newTree = this.tree.parse(flatty);
         console.log(newTree);
         newTree.walk(function(nd) {
             console.log(nd.model.id);
@@ -1454,56 +1447,35 @@ class AssignmentEditorContainer extends React.Component {
         let newWorkflowDetails = this.state.WorkflowDetails;
         //let newGradeDist = this.state.WorkflowDetails[workflowIndex].WA_grade_distribution;
         newWorkflowDetails[workflowIndex].WA_grade_distribution[taskIndex] = value;
-        newWorkflowDetails = this.checkWorkflowGradeDist(workflowIndex, newWorkflowDetails, numberFieldIndex, value);
+        newWorkflowDetails = this.checkWorkflowGradeDist(workflowIndex, newWorkflowDetails, taskIndex, value);
         this.setState({WorkflowDetails: newWorkflowDetails});
     } // this is special for the grade distribution object
 
-    checkWorkflowGradeDist(workflowIndex, stateData, numberFieldIndex, value) {
+    checkWorkflowGradeDist(workflowIndex, stateData, taskChangedIndex, value) {
         let distKeys = Object.keys(stateData[workflowIndex].WA_grade_distribution);
-        let sum = 0;
+        let sum = Object.values(stateData[workflowIndex].WA_grade_distribution).reduce((a, b) => a + b, 0);
         let numOfFields = distKeys.length;
+        let start = distKeys.indexOf(taskChangedIndex);
+        if(sum < 100){
+          let underflow = 100-sum;
+          stateData[workflowIndex].WA_grade_distribution[distKeys[(start +1) % numOfFields]] += underflow;
+        }
+        else if(sum > 100){
+          sum -= 100;
+          let i = (start + 1) % numOfFields;
+          while(sum > 0){
+            if(sum <= stateData[workflowIndex].WA_grade_distribution[distKeys[i]]){
+              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] -= sum;
+              sum = 0;
+            }
+            else{
+              sum -= stateData[workflowIndex].WA_grade_distribution[distKeys[i]];
+              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 0;
+            }
+            i = (i+1)%numOfFields;
+          }
+        }
 
-        if(numberFieldIndex == ( numOfFields - 1)){
-          //add new val to sum and keep adding all fields until sum = 1
-          //if not all fields, remaining fields are 0
-          sum += value;
-          for(var i =0; i < (numOfFields-1);i++){
-            if(sum  < 100){
-              if(i == (numOfFields - 2)){
-                stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 100 - sum;
-              }
-              else{
-                sum += stateData[workflowIndex].WA_grade_distribution[distKeys[i]];
-              }
-            }
-            else if(sum == 100){
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 0;
-            }
-            else if( sum > 100){
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = sum - 100 ;
-              sum = 100;
-            }
-          }
-        }
-        else{
-          for(var i = 0; i < numOfFields;i++){
-            if(sum  < 100){
-              if(i == (numOfFields - 1)){
-                stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 100 - sum;
-              }
-              else{
-                sum += stateData[workflowIndex].WA_grade_distribution[distKeys[i]];
-              }
-            }
-            else if(sum == 100){
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 0;
-            }
-            else if( sum > 100){
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = sum - 100 ;
-              sum = 100;
-            }
-          }
-        }
 
         return stateData;
     }
@@ -1704,7 +1676,6 @@ class AssignmentEditorContainer extends React.Component {
                       />
                     <br/> {workflowsView}
                     <br/> {submitButtonView}
-                    <button type="button" onClick={this.getMeTheTree.bind(this)}>Get ME the Tree</button>
                 </div>
             );
         }
