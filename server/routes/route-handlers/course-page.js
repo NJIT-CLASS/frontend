@@ -8,14 +8,13 @@ exports.get = (req, res) => {
         assignmentsArray =  assignmentsBody.Assignments;
         var sectionList = [];
         var apiCalls = {};
-        console.log(body);
         for (var i=0; i<body.Sections.length; i++){
             sectionList.push(body.Sections[i]);
 
             apiCalls[body.Sections[i].SectionID] = ((Sections) => {
                 return (callback)=> {
-                    req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, body) =>{
-                        var sectionMembers = body.UserSection;
+                    req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, bod) =>{
+                        var sectionMembers = bod.UserSection;
                         var sectionMembersApiCalls = [];
                         for (var q=0; q<sectionMembers.length; q++){
                             sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
@@ -39,12 +38,16 @@ exports.get = (req, res) => {
                 sectionList[i].members=results[currentSectionId];
             }
 
+            
+
             res.render('course_page', {
                 sectionList: sectionList,
                 courseID: req.params.Id,
                 assignmentsList: assignmentsArray,
                 admin: (req.App.user.type == "teacher" ||  req.App.user.type == "instructor") ? true : false,
-                courseTitle: body.Course.Name
+                courseTitle: body.Course.Name,
+                courseNumber: body.Course.Number,
+                courseDescription: body.Course.Description
             });
         });
       });

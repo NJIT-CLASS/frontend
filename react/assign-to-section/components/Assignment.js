@@ -5,6 +5,7 @@ It gets its functions and data from its parent.
 import React from 'react'
 var moment = require('moment');
 import request from 'request';
+import Checkbox from '../../shared/checkbox';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 var CheckBoxList = require('react-checkbox-list');
@@ -25,7 +26,14 @@ class Assignment extends React.Component {
     */
 }
 
-
+isSectionChecked(sectionID){
+  if(this.props.Assignment.Section.indexOf(sectionID) == -1){//not in the list
+    return false;
+  }
+  else{
+    return true;
+  }
+}
 
 render(){
 let CalendarView =  null;
@@ -65,6 +73,12 @@ let semesterView = (<div className="inner">
     )
   }
 
+  let checkBoxList = this.props.SectionsList.map((section)=>{
+    return(<div style={{display: "inline-block"}}>
+      <label>{section.label}</label> <Checkbox isClicked={this.isSectionChecked(section.value)} click={this.props.onChangeSectionAssignment.bind(this, section.value)}/>
+    </div>);
+  })
+
   return (
     <div style={{height: 'fit-content'}} className = "section">
       <h1 className = "title"> Assignment Dates </h1>
@@ -101,9 +115,8 @@ let semesterView = (<div className="inner">
 
             <tr className="children" >
               <td className="children">
-                <CheckBoxList ref="chkboxList" defaultData={this.props.SectionsList} style={{display:'block'}}
-                  onChange = {this.props.onChangeSectionAssignment.bind(this)}
-                />
+
+                {checkBoxList}
               </td>
             </tr>
 

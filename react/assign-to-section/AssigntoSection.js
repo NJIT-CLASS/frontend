@@ -155,7 +155,7 @@ class AssignToSectionContainer extends React.Component
       }
     };
 
-
+    console.log(newData);
     const options = {
       method: 'POST',
       uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
@@ -217,10 +217,16 @@ class AssignToSectionContainer extends React.Component
     this.setState({Assignment: newA});
   }
 
-  onChangeSectionAssignment(Section) //Section is automatically passed in by CheckBoxList module
+  onChangeSectionAssignment(sectionID) //Section is automatically passed in by CheckBoxList module
   {
     let newA = this.state.Assignment;
-    newA.Section = Section;
+    if(newA.Section.indexOf(sectionID) == -1){ //not already in the list of sectionID's
+      newA.Section.push(sectionID);
+    }
+    else{
+      newA.Section.splice(newA.Section.indexOf(sectionID), 1);
+    }
+
     this.setState({Assignment: newA});
   }
 
@@ -333,20 +339,19 @@ class AssignToSectionContainer extends React.Component
 
       return (
         <div>
-          <span>
             <WorkFlow WorkFlow = {workflow} workflowIndex ={workindex}
             onChangeCalendarWorkFlow = {this.onChangeCalendarWorkFlow.bind(this)}
             onChangeStartLaterWorkFlow = {this.onChangeStartLaterWorkFlow.bind(this)}
             onChangeStartNowWorkFlow = {this.onChangeStartNowWorkFlow.bind(this)}/>
-          </span>
+
           {tasks}
         </div>);
     }, this);
 
     return (
-      <div style={{display:'inline-block'}}>
+      <div>
         {infoMessage}
-        <span>
+
           <Assignment Assignment={this.state.Assignment}
           SectionsList={this.state.Sections}
           Semesters={this.state.Semesters}
@@ -357,11 +362,10 @@ class AssignToSectionContainer extends React.Component
           onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
           onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
           />
-        </span>
 
-        <span style={{display:'block'}}>
+
           {workflowView}
-        </span>
+
         <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>
       </div>
 

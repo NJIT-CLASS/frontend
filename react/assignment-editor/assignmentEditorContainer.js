@@ -39,7 +39,7 @@ class AssignmentEditorContainer extends React.Component {
         this.SOLVE_IDX = 4;
 
         this.tree = new TreeModel(); //this is the tree making object. It is not a tree structure but has the tree methods
-        this.root = this.tree.parse({id: 0}); // this is the root of the tree structure. A copy is made for each workflow
+        this.root = this.tree.parse({id: 0, isSubWorkflow: 0}); // this is the root of the tree structure. A copy is made for each workflow
         this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
 
         //default Task.Data structure (used to be Task.TA_fields)
@@ -137,68 +137,46 @@ class AssignmentEditorContainer extends React.Component {
 
         this.editProblemTask = createTaskObject(TASK_TYPES.EDIT, TASK_TYPE_TEXT.edit, 'Edit Problem', 'late', 'keep_same_participant', [
             'instructor',
-            'group', {
-                'not': [0]
-            }
+            'group', {}
         ], false);
 
         this.commmentProblemTask = createTaskObject(TASK_TYPES.COMMENT, TASK_TYPE_TEXT.comment, 'Comment on Problem', 'late', 'keep_same_participant', [
             'instructor',
-            'group', {
-                'not': [0]
-            }
+            'group', {}
         ], false);
 
         this.solveProblemTask = createTaskObject(TASK_TYPES.SOLVE_PROBLEM, TASK_TYPE_TEXT.solve_problem, 'Solve the Problem', 'late', 'keep_same_participant', [
             'student',
-            'individual', {
-                'not': [0, 1]
-            }
+            'individual', {}
         ], false);
 
         this.gradeSolutionTask = createTaskObject(TASK_TYPES.GRADE_PROBLEM, TASK_TYPE_TEXT.grade_problem, 'Grade the Solution', 'late', 'keep_same_participant', [
             'student',
-            'individual', {
-                'not': [
-                    0, 2
-                ],
-                'same_as': [0]
-            }
+            'individual', {}
         ], true);
 
         this.critiqueSolutionTask = createTaskObject(TASK_TYPES.CRITIQUE, TASK_TYPE_TEXT.critique, 'Critique the Solution', 'late', 'keep_same_participant', [
             'student',
-            'individual', {
-                'not': [
-                    0, 2
-                ],
-                'same_as': [0]
-            }
+            'individual', {}
         ], true);
 
         this.needsConsolidationTask = createTaskObject(TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPE_TEXT.needs_consolidation, 'Needs Consolidation', null, null, [
-            'student', 'individual', {'same_as': [2]}
+            'student', 'individual', {}
         ], true);
 
         this.consolidationTask = createTaskObject(TASK_TYPES.CONSOLIDATION, TASK_TYPE_TEXT.consolidation, 'Consolidate', 'late', 'keep_same_participant', [
             'student',
-            'individual', {
-                'not': [0, 2, 3]
-            }
+            'individual', {}
         ], true);
 
         this.disputeTask = createTaskObject(TASK_TYPES.DISPUTE, TASK_TYPE_TEXT.dispute, 'Dispute the Grades', 'resolved', null, [
             'student',
-            'individual', {
-                'same_as': [2]
-            }
+            'individual', {}
         ], false);
 
         this.resolveDisputeTask = createTaskObject(TASK_TYPES.RESOLVE_DISPUTE, TASK_TYPE_TEXT.resolve_dispute, 'Resolve the Dispute', 'late', 'keep_same_participant', [
             'student',
-            'individual', {
-                'not': [6]
-            }
+            'individual', {}
         ], true);
 
         this.completeTask = createTaskObject(TASK_TYPES.COMPLETED, TASK_TYPE_TEXT.completed, 'Complete', null, null, [
@@ -278,20 +256,16 @@ class AssignmentEditorContainer extends React.Component {
                         return ({value: course.CourseID, label: course.Name});
                     });
 
-                    this.setState({Semesters: semestersArray, Courses: coursesArray, Loaded: true});
+                    this.setState({Semesters: semestersArray, Courses: coursesArray});
                 });
             }
 
-            this.setState({Semesters: semestersArray, Courses: null, Loaded: true});
+            this.setState({Semesters: semestersArray, Courses: null});
         });
     }
 
     componentDidMount() {
 
-        // this.changeDataCheck("TA_allow_reflection", 0, 0);
-        // this.changeDataCheck("TA_allow_assessment", 0, 0);
-        // this.changeDataCheck("TA_leads_to_new_problem",0,0);
-        // this.changeDataCheck("TA_leads_to_new_solution",0,0);
 
         //this sets the default problem structure
         this.changeDataCheck("TA_allow_reflection", 0, 0);
@@ -299,7 +273,24 @@ class AssignmentEditorContainer extends React.Component {
         this.changeDataCheck("TA_allow_assessment", 2, 0);
         this.changeDataCheck("Assess_Consolidate", 2, 0);
         this.changeDataCheck("Assess_Dispute", 2, 0);
+        //
+        this.checkAssigneeConstraintTasks(1, 'not', 0, 0);
+        this.checkAssigneeConstraintTasks(2, 'not', 0, 0);
+        this.checkAssigneeConstraintTasks(2, 'not', 1, 0);
+        this.checkAssigneeConstraintTasks(3, 'not', 0, 0);
+        this.checkAssigneeConstraintTasks(3, 'same_as', 0, 0);
+        this.checkAssigneeConstraintTasks(4, 'same_as', 2, 0);
 
+        this.checkAssigneeConstraintTasks(5, 'not', 2, 0);
+        this.checkAssigneeConstraintTasks(5, 'not', 0, 0);
+        this.checkAssigneeConstraintTasks(5, 'not', 3, 0);
+
+        this.checkAssigneeConstraintTasks(6, 'same_as', 2, 0);
+        this.checkAssigneeConstraintTasks(7, 'not', 2, 0);
+
+
+
+        this.setState({ Loaded: true});
         return;
 
     }
@@ -308,7 +299,7 @@ class AssignmentEditorContainer extends React.Component {
 
         let tree2 = this.state.WorkflowDetails[0].WorkflowStructure;
         let flatty = [];
-
+        this.makeSubWorkflows(tree2, 0);
         tree2.walk(function(node) {
             let ob = new Object();
 
@@ -317,6 +308,7 @@ class AssignmentEditorContainer extends React.Component {
             }
 
             ob['id'] = node.model.id;
+            ob['isSubWorkflow'] = node.model.isSubWorkflow;
             flatty.push(ob);
 
         });
@@ -328,8 +320,61 @@ class AssignmentEditorContainer extends React.Component {
         let newTree = this.tree.parse(flatty);
         console.log(newTree);
         newTree.walk(function(nd) {
-            console.log(nd.model.id);
+            console.log(nd.model.id, nd.model.isSubWorkflow);
         });
+    }
+
+    makeSubWorkflows(root, workflowIndex){
+      let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
+      let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
+      let consolDispClass = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
+
+      root.walk({strategy: 'pre'}, function(node){
+        if(node.model.id == -1){
+          return;
+        }
+
+        let defaults = null; // if task is of these types, same 'subworkflow level'
+        switch(this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_type){
+
+          case TASK_TYPES.EDIT:
+          case TASK_TYPES.COMMENT:
+            defaults = consolDispClass;
+            break;
+          case TASK_TYPES.GRADE_PROBLEM:
+          case TASK_TYPES.CRITIQUE:
+            defaults = consolDispClass;
+            break;
+          case TASK_TYPES.NEEDS_CONSOLIDATION:
+          case TASK_TYPES.CONSOLIDATION:
+          case TASK_TYPES.DISPUTE:
+          case TASK_TYPES.RESOLVE_DISPUTE:
+            defaults = consolDispClass;
+            break;
+
+          case TASK_TYPES.CREATE_PROBLEM:
+            defaults = [...reflectClass, TASK_TYPES.SOLVE_PROBLEM];
+            break;
+          case TASK_TYPES.SOLVE_PROBLEM:
+            defaults = assessClass;
+            break;
+        }
+        console.log("defaults for:",this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_type , defaults);
+
+        node.children.forEach(function(child){
+          if(child.model.id == -1){
+            return;
+          }
+          let childType = this.state.WorkflowDetails[workflowIndex].Workflow[child.model.id].TA_type;
+          if(defaults.indexOf(childType) == -1){ //means its not one of the defaults, aka new subworkflow
+            child.model['isSubWorkflow'] = node.model.isSubWorkflow +1;
+          }
+          else{
+            child.model['isSubWorkflow'] = node.model.isSubWorkflow;
+          }
+        }, this);
+
+      }, this);
     }
 
     onSubmit() {
@@ -343,35 +388,83 @@ class AssignmentEditorContainer extends React.Component {
         sendData.WorkflowActivity = cloneDeep(this.state.WorkflowDetails);
 
         ///////// Reduce array and tree into usable parts
+        let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
+        let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
+        let consolDispClass = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
+
+
         sendData.WorkflowActivity.forEach((workflow, index) => {
             let counter = 0;
             let mapping = {};
             let newWorkflow = new Array();
             let flatty = [];
 
-            workflow.WorkflowStructure.walk(function(task) {
+            workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
                 if (task.model.id != -1) {
+                  let defaults = null; // if task is of these types, same 'subworkflow level'
+                  switch(workflow.Workflow[task.model.id].TA_type){
 
-                    mapping[task.model.id] = counter;
-                    newWorkflow.push(workflow.Workflow[task.model.id]);
-                    task.model.id = counter++;
+                    case TASK_TYPES.EDIT:
+                    case TASK_TYPES.COMMENT:
+                      defaults = consolDispClass;
+                      break;
+                    case TASK_TYPES.GRADE_PROBLEM:
+                    case TASK_TYPES.CRITIQUE:
+                      defaults = consolDispClass;
+                      break;
+                    case TASK_TYPES.NEEDS_CONSOLIDATION:
+                    case TASK_TYPES.CONSOLIDATION:
+                    case TASK_TYPES.DISPUTE:
+                    case TASK_TYPES.RESOLVE_DISPUTE:
+                      defaults = consolDispClass;
+                      break;
 
-                }
+                    case TASK_TYPES.CREATE_PROBLEM:
+                      defaults = [...reflectClass, TASK_TYPES.SOLVE_PROBLEM];
+                      break;
+                    case TASK_TYPES.SOLVE_PROBLEM:
+                      defaults = assessClass;
+                      break;
+                  }
 
-                // Uncomment this and below for tree flattening
+                  task.children.forEach(function(child){
+                    if(child.model.id == -1){
+                      return;
+                    }
+                    let childType = workflow.Workflow[child.model.id].TA_type;
+                    if(defaults.indexOf(childType) == -1){ //means its not one of the defaults, aka new subworkflow
+                      child.model['isSubWorkflow'] = task.model.isSubWorkflow + 1;
+                    }
+                    else{
+                      child.model['isSubWorkflow'] = task.model.isSubWorkflow;
+                    }
+                  }, this);
 
-                // let ob = new Object();
-                // if(task.parent !== undefined){
-                // ob['parent'] = task.parent.model.id;
-                // }
-                //
-                // ob['id'] = task.model.id;
-                // flatty.push(ob);
+                  mapping[task.model.id] = counter;
+                  newWorkflow.push(workflow.Workflow[task.model.id]);
+                  task.model.id = counter++;
+
+              }
+
+                //Uncomment this and below for tree flattening
+
+              let ob = new Object();
+              if(task.parent !== undefined){
+              ob['parent'] = task.parent.model.id;
+              }
+
+              ob['id'] = task.model.id;
+              ob['isSubWorkflow'] = task.model.isSubWorkflow;
+
+              flatty.push(ob);
+
+
             }, this);
 
             //Clean AssigneeConstraints and Grade Dist on frontend secondIndex
 
             workflow.Workflow.forEach(function(task) {
+              console.log(task.TA_assignee_constraints[2], task)
                 Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr) {
                     task.TA_assignee_constraints[2][constr] = task.TA_assignee_constraints[2][constr].map(function(id) {
                         return (mapping[id]);
@@ -389,7 +482,7 @@ class AssignmentEditorContainer extends React.Component {
             workflow.Workflow = newWorkflow;
 
             // Uncomment this and above for tree flattening
-            //workflow.WorkflowStructure = flatty;
+            workflow.WorkflowStructure = flatty;
         });
 
         //need to add Completed task to each workflow
@@ -408,15 +501,15 @@ class AssignmentEditorContainer extends React.Component {
             json: true
         };
 
-        request(options, (err, res, body) => {
-            if (err == null && res.statusCode == 200) {
-                document.body.scrollTop = document.documentElement.scrollTop = 0;
-                this.setState({SubmitSuccess: true, SubmitButtonShow: false});
-            } else {
-                console.log('Submit failed');
-                this.setState({SubmitError: true});
-            }
-        });
+        // request(options, (err, res, body) => {
+        //     if (err == null && res.statusCode == 200) {
+        //         document.body.scrollTop = document.documentElement.scrollTop = 0;
+        //         this.setState({SubmitSuccess: true, SubmitButtonShow: false});
+        //     } else {
+        //         console.log('Submit failed');
+        //         this.setState({SubmitError: true});
+        //     }
+        // });
     }
     ///////////////////////////////////////////////////////////////////////////
     ////////////// Tree Methods //////////////////////////////////////////////
@@ -1640,7 +1733,6 @@ class AssignmentEditorContainer extends React.Component {
                 );
                 tabPanelAr.push(
                     <TabPanel key={"tab " + index}>
-                        <div className="placeholder">
                             <ProblemDetailsComponent key={"Workflows" + index} workflowIndex={index}
                               WorkflowDetails={workflow}
                               NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
@@ -1650,7 +1742,6 @@ class AssignmentEditorContainer extends React.Component {
                               changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}/>
                             <br/>
                             <br/> {tV}
-                        </div>
                     </TabPanel>
                 );
             }, this);
@@ -1667,15 +1758,18 @@ class AssignmentEditorContainer extends React.Component {
             return (
                 <div>
                     {infoMessage}
-                    <div className='placeholder'></div>
-                    <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
-                      Courses={this.state.Courses} Semesters={this.state.Semesters}
-                      changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
-                      changeAssignmentInput={this.changeAssignmentInput.bind(this)}
-                      changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
-                      />
-                    <br/> {workflowsView}
-                    <br/> {submitButtonView}
+                    <div className='placeholder'>
+                      <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
+                        Courses={this.state.Courses} Semesters={this.state.Semesters}
+                        changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
+                        changeAssignmentInput={this.changeAssignmentInput.bind(this)}
+                        changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
+                        />
+                      <br/> {workflowsView}
+                      <br/> {submitButtonView}
+                        <button type="button" onClick={this.getMeTheTree.bind(this)}>Get me the Tree</button>
+                    </div>
+
                 </div>
             );
         }

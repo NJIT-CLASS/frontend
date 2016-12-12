@@ -10,7 +10,9 @@ const newSession = function() {
                 client: redisClient,
                 disableTTL: true
             }),
-            secret: consts.REDIS_SECRET
+            secret: consts.REDIS_SECRET,
+            resave: false,
+            saveUninitialized: true
         });
     };
 }();

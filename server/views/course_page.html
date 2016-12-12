@@ -1,78 +1,79 @@
-{{#each sectionList}}
-<form name="display_course_info" role="form" class="section" method="POST" action="#">
-    <h2 class="title"> {{../courseTitle}} - {{Name}} </h2>
-    <div class="section-content">
-
-
-
-
-				 <div name="course_page_description">
-				 {{Description}}
-				 </div>
-				 <br>
-
-					<ul>
-					{{#each members}}
-					<li class="list-group-item">{{FirstName}} {{LastName}}
-					</li>
-					{{/each}}
-
-
-
-
-					 </ul>
-
-		</div>
-</form>
-
-
-{{/each}}
-
-<div class="section">
-    <h2 class="title">Course Assignments</h2>
-    <div class="section-content">
-
-
-
-		<div class="col-xs-6">
-
-
-
-        		<ul>
-
-				  {{#each assignmentsList}}
-
-					<li class="list-group-item">
-					<a href="/assign-to-section/{{AssignmentID}}?courseId={{CourseID}}">{{Name}}</a>
-				    </li>
-
-                   {{/each}}
-
-
-
-                </ul>
-
-        </div>
-
-
-
-    </div>
+<div class="block-container">
+  <div class="course_header">
+    <h2 class="title">{{courseTitle}}</h2>
+    <div class="description">{{courseDescription}}</div>
 </div>
 
-{{#if admin}}
-  <div class="outside-button">
-    <div>
-      <a href="/asa/{{courseID}}">
-        <button type="button" onClick=>Add an Assignment</button>
-      </a>
-    </div>
-    <br />
-    <!-- <div >
-      <a href="/course-assignments/{{courseID}}">
-        <button type="button" onClick=>View Assignments</button>
-      </a>
-    </div> -->
+
+<div class="block-container">
+  <div class="flex-container">
+  {{#each sectionList}}
+  <form name="display_course_info flex-child" role="form" class="section" method="POST" action="#">
+      <h2 class="title">{{Name}}</h2>
+      <div class="section-content">
+
+  				 <div name="course_page_description">
+  				 {{Description}}
+  				 </div>
+  				 <br>
+
+  					<ul>
+  					{{#each members}}
+  					<li class="list-group-item">{{FirstName}} {{LastName}}
+  					</li>
+  					{{/each}}
+
+  					 </ul>
+
+  		</div>
+  </form>
+
+
+  {{/each}}
+
+  {{#if assignmentsList}}
+  <div class="section">
+      <h2 class="title">Course Assignments</h2>
+      <div class="section-content">
+  		<div class="col-xs-6">
+          		<ul>
+  				  {{#each assignmentsList}}
+
+  					<li class="list-group-item">
+  					<a href="/assign-to-section/{{AssignmentID}}?courseId={{CourseID}}">{{Name}}</a>
+  				    </li>
+
+                     {{/each}}
+                  </ul>
+          </div>
+      </div>
   </div>
+
   {{else}}
   <div></div>
-{{/if}}
+
+  {{/if}}
+  </div>
+</div>
+
+
+<div class="block-container">
+
+  {{#if admin}}
+    <div class="outside-button">
+      <div>
+        <a href="/asa/{{courseID}}">
+          <button type="button" onClick=>Add an Assignment</button>
+        </a>
+      </div>
+      <br />
+      <!-- <div >
+        <a href="/course-assignments/{{courseID}}">
+          <button type="button" onClick=>View Assignments</button>
+        </a>
+      </div> -->
+    </div>
+    {{else}}
+    <div></div>
+  {{/if}}
+</div>

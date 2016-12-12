@@ -23,10 +23,11 @@
 @import 'components/texts';
 @import 'components/animate';
 @import 'components/comments';
-@import 'components/my_account';
+@import 'components/layout';
 
 // pages
 @import 'pages/create_account';
+@import 'pages/my_account';
 @import 'pages/home';
 @import 'pages/password_reset';
 @import 'pages/create_course';
@@ -38,6 +39,7 @@
 @import 'pages/dashboard';
 @import 'pages/task';
 @import 'pages/solveproblem';
+@import 'pages/task_template';
 
 // external components
 

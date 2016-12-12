@@ -235,7 +235,7 @@ gulp.task('flowtype', () => {
 gulp.task('flowtype:watch', () => {
     gulp.watch(['server/**/*.js'], ['flowtype']);
 });
- 
+
 gulp.task('sass:watch', () => {
     gulp.watch('./styles/**/*.scss', ['sass']);
 });
@@ -281,12 +281,12 @@ gulp.task('generate:build-fallback-settings', () => {
     {
         type: 'input',
         name: 'redis-secret',
-        message: 'redis secret:'
+        message: 'redis secret (the secret string for cookies stored in Redis):'
     },
     {
         type: 'input',
         name: 'redis-host',
-        message: 'redis host:'
+        message: 'redis host (hostname or location of Redis):'
     },
     {
         type: 'input',
@@ -296,17 +296,17 @@ gulp.task('generate:build-fallback-settings', () => {
     {
         type: 'input',
         name: 'redis-auth',
-        message: 'redis auth:'
+        message: 'redis auth (password for Redis server):'
     },
     {
         type: 'input',
         name: 'server-port',
-        message: 'server port:'
+        message: 'server port (local port that frontend server will run on):'
     },
     {
         type: 'input',
         name: 'api-url',
-        message: 'API url:'
+        message: 'API url (full http://<host>:<port> url of backend server):'
     },
   ];
 
@@ -330,12 +330,12 @@ gulp.task('generate:fallback-settings', () => {
     {
         type: 'input',
         name: 'redis-secret',
-        message: 'redis secret:'
+        message: 'redis secret (the secret string for cookies stored in Redis):'
     },
     {
         type: 'input',
         name: 'redis-host',
-        message: 'redis host:'
+        message: 'redis host (hostname or location of Redis):'
     },
     {
         type: 'input',
@@ -345,17 +345,17 @@ gulp.task('generate:fallback-settings', () => {
     {
         type: 'input',
         name: 'redis-auth',
-        message: 'redis auth:'
+        message: 'redis auth (password for Redis server):'
     },
     {
         type: 'input',
         name: 'server-port',
-        message: 'server port:'
+        message: 'server port (local port that frontend server will run on):'
     },
     {
         type: 'input',
         name: 'api-url',
-        message: 'API url:'
+        message: 'API url (full http://<host>:<port> url of backend server):'
     },
   ];
 

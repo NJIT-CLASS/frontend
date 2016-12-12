@@ -28,6 +28,11 @@ $break-large: 1200px;
 		}
 	}
 }
+
+.assignmentTab{
+	background-color: #000000;
+}
+
 .react-tabs{
   width: 100%;
 }
@@ -35,7 +40,6 @@ $break-large: 1200px;
   width:25%;
   height: 23px;
   border-bottom: none;
-  border-radius: 5px 5px 0 0;
   border-color: #E7EAEC;
   background-color: rgba(201, 201, 207,0.4);
   padding-top: 5px;
@@ -52,12 +56,10 @@ $break-large: 1200px;
 .react-tabs [role=tab][aria-disabled=true] {
   border-color: #d7d7da;
   border-bottom: none;
-  border-radius: 5px 5px 0 0;
   outline: none;
 
 }
 .react-tabs [role=tab]:focus {
-border-radius: 5px 5px 0 0;
 }
 .react-tabs [role=tablist] {
     border-bottom: 1px solid #d7d7da;
@@ -68,6 +70,5 @@ border-radius: 5px 5px 0 0;
     border-color: #d7d7da;
 		background-color:#f3f3f4;
     border-bottom: none;
-    border-radius: 5px 5px 0 0;
     outline: none;
   }

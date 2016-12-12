@@ -142,7 +142,8 @@ class SuperComponent extends React.Component {
         }
         else{
           this.setState({
-            SaveSuccess: true
+            SaveSuccess: true,
+            InputError: false
           });
           return;
         }
@@ -180,6 +181,7 @@ class SuperComponent extends React.Component {
           else{
             this.setState({
               SubmitSuccess: true,
+              InputError: false,
               TaskStatus: "Complete"
             });
             return;
@@ -188,7 +190,9 @@ class SuperComponent extends React.Component {
       }
 
       else{
-        this.setState({InputError: true});
+        this.setState({
+          InputError: true
+        });
         return;
       }
 

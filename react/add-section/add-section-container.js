@@ -2,6 +2,8 @@ import React from 'react';
 import request from 'request';
 import Select from 'react-select';
 import {clone, cloneDeep} from 'lodash';
+
+
 class AddSectionContainer extends React.Component {
   constructor(props) {
       super(props);
@@ -11,6 +13,7 @@ class AddSectionContainer extends React.Component {
         semesters: [],
         semesterId: '',
         semester_name: '',
+        section_identifier:'',
         start_date: '',
         end_date: ''
       }
@@ -53,6 +56,11 @@ class AddSectionContainer extends React.Component {
 
   }
 
+  onSubmit(){
+    //need to make API to handle this
+
+  }
+
   onChangeCourse(course){
     this.setState({selected_course: course.value});
   }
@@ -73,10 +81,16 @@ class AddSectionContainer extends React.Component {
     this.setState({end_date: end.value});
   }
 
+  onSectionIdentifierChange(event){
+    this.setState({
+      section_identifier: event.target.value
+    });
+  }
+
   render() {
 
       let semestersList = clone(this.state.semesters);      // using lodash here
-      semestersList.push({ value: "create", label: 'Create new semester...' });
+      //semestersList.push({ value: "create", label: 'Create new semester...' });
 
 
       let createSection = null;
@@ -85,7 +99,7 @@ class AddSectionContainer extends React.Component {
           <div>
             <label>Section Identifier</label>
             <div>
-            <input type="text"></input>
+            <input type="text" value={this.state.section_identifier} onChange={this.onSectionIdentifierChange.bind(this)}></input>
             </div>
             <label>Semester</label>
             <div>
@@ -97,34 +111,34 @@ class AddSectionContainer extends React.Component {
 
 
       let createSemester = null;
-      if (this.state.semesterId == 'create'){
-        createSemester = (
-          <div>
-            <label>Semester Name</label>
-            <div>
-                <input
-                  type="text"
-                  value={this.state.semester_name}
-                  onChange={this.onChangeSemesterName.bind(this)}/>
-            </div>
-            <label>Start Date</label>
-            <div>
-                <input
-                  type="date"
-                  value={this.state.start_date}
-                  onChange={this.onChangeStartDate.bind(this)}
-                  />
-            </div>
-            <label>End Date</label>
-            <div className="col-sm-10">
-                <input
-                  type="date"
-                  value={this.state.end_date}
-                  onChange={this.onChangeEndDate.bind(this)}/>
-            </div>
-          </div>
-        );
-      }
+      // if (this.state.semesterId == 'create'){
+      //   createSemester = (
+      //     <div>
+      //       <label>Semester Name</label>
+      //       <div>
+      //           <input
+      //             type="text"
+      //             value={this.state.semester_name}
+      //             onChange={this.onChangeSemesterName.bind(this)}/>
+      //       </div>
+      //       <label>Start Date</label>
+      //       <div>
+      //           <input
+      //             type="date"
+      //             value={this.state.start_date}
+      //             onChange={this.onChangeStartDate.bind(this)}
+      //             />
+      //       </div>
+      //       <label>End Date</label>
+      //       <div className="col-sm-10">
+      //           <input
+      //             type="date"
+      //             value={this.state.end_date}
+      //             onChange={this.onChangeEndDate.bind(this)}/>
+      //       </div>
+      //     </div>
+      //   );
+      // }
 
 
 
@@ -139,7 +153,7 @@ class AddSectionContainer extends React.Component {
               <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} searchable={false}/>
               { createSection }
               { createSemester }
-              <button>Submit</button>
+              <button type="button" onClick={this.onSubmit.bind(this)}>Submit</button>
             </div>
             </form>
         </div>

@@ -80,17 +80,17 @@ exports.post = (req, res) => {
             return;
          }
 
-        req.App.api.put('/update/password', {userid: req.App.user.userId, password:req.body.field_newPassword, oldpassword:req.body.field_currentPassword}, (err, statusCode, body) => {
-            // if(statusCode==200) {       // success
+        req.App.api.put('/update/password', {userId: req.App.user.userId, newPasswd:req.body.field_newPassword, oldPasswd :req.body.field_currentPassword}, (err, statusCode, body) => {
+            if(statusCode==200) {       // success
                 options.passwordchangesucceeded = true;
                 options.statuscode = statusCode;
                 res.render('settings', options);
-            // }
-            // else {                      // error
-            //     options.passwordchangefailed = true;
-            //     options.statuscode = statusCode;
-            //     res.render('settings', options);
-            // }
+            }
+            else {                      // error
+                options.passwordchangefailed = true;
+                options.statuscode = statusCode;
+                res.render('settings', options);
+            }
         });
     }
 
