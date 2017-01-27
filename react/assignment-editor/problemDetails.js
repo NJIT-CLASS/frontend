@@ -104,15 +104,6 @@ class ProblemDetailsComponent extends React.Component{
 
               {gradeDistView}
 
-              {/*<div className='inner block'>
-                <label>Custom Grade Weights (Equal Otherwise)</label>
-                <ul>
-                  <li style={{margin: '0px', borderBottom: '0px'}}> <label>Create</label> <input></input></li>
-                  <li style={{borderBottom: '0px'}}> <label>Edit</label> <input></input></li>
-                  <li style={{borderBottom: '0px'}}> <label>Solve</label> <input></input></li>
-                </ul>
-            </div>*/}
-
             </div>
           </div>
         </div>

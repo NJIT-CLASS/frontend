@@ -59,7 +59,7 @@ let semesterView = (<div className="inner">
   {
     CalendarView =
     (
-      <div style={{display: 'block', overflowX:'visible',overflow: 'visible',height: '400px'}}>
+      <div style={{display: 'block', height: '400px'}}>
         <Datetime
               open={true}
               defaultValue={moment().add(3, 'days').format("MM/DD/YYYY")+(' 11:59 PM')}
@@ -80,7 +80,7 @@ let semesterView = (<div className="inner">
   })
 
   return (
-    <div style={{height: 'fit-content'}} className = "section">
+    <div style={{width:'fit-content',height: 'fit-content'}} className = "section">
       <h1 className = "title"> Assignment Dates </h1>
 
       <div className = "section-content">

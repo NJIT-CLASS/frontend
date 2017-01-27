@@ -166,7 +166,7 @@ class CourseDetails extends React.Component {
 
         return (
 
-            <div className="section course-details">
+            <div className="section">
                 <h2 className="title">Course Details</h2>
                 <form className="section-content" onSubmit={this.createCourse.bind(this)}>
 

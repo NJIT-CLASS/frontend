@@ -1,8 +1,7 @@
 <!-- flex-container, flex-section, and flex-child are used to nicely align the
 dashboard section view, Current Courses, Pending and Completed Tasks -->
-<div class="flex-container">
-  <div class='flex-section'>
-    <form name="currentCourseList" role="form" class="section flex-child" method="POST" action="#">
+
+    <form name="currentCourseList" role="form" class="section" method="POST" action="#">
         <h2 class="title">{{__ "Current Courses"}}</h2>
         <div class="section-content">
 
@@ -28,10 +27,10 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
             </div>
         </div>
     </form>
-  </div>
+
 {{#if pendingTasksList}} <!-- this div tag will hidden if pendingTasksList is empty-->
-  <div class='flex-section'>
-    <form name="pendingTaskList" role="form" class="sectionTable flex-child" method="POST" action="#">
+
+    <form name="pendingTaskList" role="form" class="section sectionTable" method="POST" action="#">
         <h2 class="title">{{__ "Pending Tasks"}}</h2>
         <div class="section-content">
 
@@ -66,7 +65,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
 
 {{/if}}
 {{#if completedTasksList}}  <!-- this div tag will hidden if completedTasksList is empty-->
-    <form name="completedTaskList" role="form" class="sectionTable flex-child" method="POST" action="#">
+    <form name="completedTaskList" role="form" class="section full-width" method="POST" action="#">
         <h2 class="title">{{__ "Completed Tasks"}}</h2>
         <div class="section-content">
 
@@ -98,6 +97,5 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
 
         </div>
     </form>
-  </div>
-</div>
+
 {{/if}}

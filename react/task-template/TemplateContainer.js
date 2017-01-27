@@ -44,6 +44,8 @@ const completedContainer = document.getElementById('completed-task-container');
               (from main.js)
 */
 
+
+
 class TemplateContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -62,7 +64,11 @@ class TemplateContainer extends React.Component {
             TaskActivityName: '',
             Data: null,
             Error: false,
-            TabSelected: 0
+            TabSelected: 0,
+            Strings:{
+              load: "Loading",
+              create_prob: "Create the Problem"
+            }
         }
     }
 
@@ -132,19 +138,23 @@ class TemplateContainer extends React.Component {
                 }, this);
 
                 taskList.push(currentTask);
-                this.setState({
-                    Loaded: true,
-                    CourseName: body.courseName,
-                    CourseNumber: body.courseNumber,
-                    AssignmentTitle: body.assignmentName,
-                    AssignmentID: body.assignmentID,
-                    AssignmentDescription: body.assignmentDescription,
-                    TaskActivityType: body.taskActivityType,
-                    SemesterID: body.semesterID,
-                    SemesterName: body.semesterName,
-                    TaskActivityVisualID: body.taskActivityVisualID,
-                    Data: taskList,
-                    TaskStatus: currentTaskStatus
+
+                this.props.__(this.state.Strings, (newStrings) =>{
+                  this.setState({
+                      Loaded: true,
+                      CourseName: body.courseName,
+                      CourseNumber: body.courseNumber,
+                      AssignmentTitle: body.assignmentName,
+                      AssignmentID: body.assignmentID,
+                      AssignmentDescription: body.assignmentDescription,
+                      TaskActivityType: body.taskActivityType,
+                      SemesterID: body.semesterID,
+                      SemesterName: body.semesterName,
+                      TaskActivityVisualID: body.taskActivityVisualID,
+                      Data: taskList,
+                      TaskStatus: currentTaskStatus,
+                      Strings: newStrings
+                  });
                 });
 
             });
@@ -153,7 +163,7 @@ class TemplateContainer extends React.Component {
     }
 
     componentWillMount() { // this function is called before the component renders, so that the page renders with the appropriate state data
-        this.getHeaderData();
+      this.getHeaderData();
 
     }
 
@@ -170,7 +180,7 @@ class TemplateContainer extends React.Component {
                     <i style={{
                         marginLeft: '45%'
                     }} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
-                    <span className="sr-only">Loading...</span>
+                  <span className="sr-only">{this.state.Strings.load}...</span>
                 </div>
             );
         }
@@ -185,7 +195,7 @@ class TemplateContainer extends React.Component {
 
             switch (task.TaskActivity.Type) {
                 case TASK_TYPES.CREATE_PROBLEM:
-                    compString = "Create the Problem";
+                    compString = this.state.Strings.create_prob;
                     break;
                 case TASK_TYPES.EDIT:
                     compString = "Edit the Problem";

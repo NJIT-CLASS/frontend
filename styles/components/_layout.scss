@@ -19,7 +19,7 @@
 .flex-container{
   display: flex;
   flex-direction: row;
-  align-items: space-around;
+  align-items: flex-start;
   flex-wrap: wrap;
   .flex-section{
     display: inline-flex;

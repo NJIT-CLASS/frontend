@@ -2,13 +2,14 @@
     .page-header {
         display: flex;
         align-items: center;
+        width: 100%;
 
         button {
-            margin-left: 10px;
+            margin-left: 200px;
             border: 1px solid #1ab394;
             width: 60px;
             text-align: center;
-
+            display: inline-flex;
             &.unsaved {
                 border-color: #D3927E;
                 background-color: #D3927E;
@@ -21,10 +22,11 @@
 
         .Select {
             width: 100px;
-            margin: 0;
+
         }
 
         .right-container {
+            margin-right: auto;
             margin-left: auto;
             display: flex;
         }

@@ -115,8 +115,11 @@ class TaskDetailsComponent extends React.Component{
       let fileUploadOptions= (<div style={{display:'inline-block',
                                           width:'100px'}}></div>);
 
-    /// TA Simple Grade Display Logic
 
+    // The views defined here will only appear on the page on certain conditions, usually
+    // simple checkbox options
+
+    /// TA Simple Grade Display Logic
       if(this.props.TaskActivityData.TA_simple_grade != 'none'){
         simpleGradeOptionsView = (<div>
           <label>Reduce this by what % per day late</label><br />
@@ -132,9 +135,8 @@ class TaskDetailsComponent extends React.Component{
                       />
           </div>);
       }
+
       //TA Assignee Contsraint Display Logic
-
-
       if(this.props.index != 0){ //if it's the first task, don't show assignee contraint relation part
         if(this.showAssigneeSection('same_as')){
           sameAsOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
@@ -150,6 +152,7 @@ class TaskDetailsComponent extends React.Component{
           }
         </div>  );
         }
+
         if(this.showAssigneeSection('group_with_member')){
           inSameGroupAsOptions = (<div className="checkbox-group inner" style={{marginLeft: '8px'}}>
             {taskCreatedList.map(function(task){
@@ -182,7 +185,7 @@ class TaskDetailsComponent extends React.Component{
             {taskCreatedList.map(function(task){
               return (<div>
                 <label>{task.label}</label>
-                <Checkbox  isClicked={this.isAssigneeConstraintChecked('choose_from', task.value)}
+                <Checkbox isClicked={this.isAssigneeConstraintChecked('choose_from', task.value)}
                   click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value, this.props.workflowIndex)} />
               </div>)
 
@@ -202,19 +205,19 @@ class TaskDetailsComponent extends React.Component{
           <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)}
               isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not_in_workflow_instance'] ? true : false}/>
           <label>Same as</label>
-          <Checkbox click={  this.props.checkAssigneeConstraints.bind(this.props.index, 'same_as', this.props.workflowIndex)}
+          <Checkbox click={  this.props.checkAssigneeConstraints.bind(this, this.props.index, 'same_as', this.props.workflowIndex)}
             isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['same_as'] ? true : false }
               style={{marginRight: '8px'}}/>
           <label>In same group as</label>
-          <Checkbox click={this.props.checkAssigneeConstraints.bind(this.props.index, 'group_with_member', this.props.workflowIndex)}
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'group_with_member', this.props.workflowIndex)}
             isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['group_with_member'] ? true : false }
             style={{marginRight: '8px'}}/>
           <label>Not in</label>
-          <Checkbox click={this.props.checkAssigneeConstraints.bind(this.props.index, 'not', this.props.workflowIndex)}
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not', this.props.workflowIndex)}
              isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not'] ? true : false }
               style={{marginRight: '8px'}} />
           <label>Choose from </label>
-          <Checkbox click={this.props.checkAssigneeConstraints.bind(this.props.index, 'choose_from', this.props.workflowIndex)}
+          <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'choose_from', this.props.workflowIndex)}
             isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['choose_from'] ? true : false }
                 />
               <br />
@@ -222,9 +225,11 @@ class TaskDetailsComponent extends React.Component{
           {inSameGroupAsOptions}
           {notInOptions}
           {chooseFromOptions}
+
         </div>)
 
       }
+
       // TA File Upload Display Logic
       if(this.state.FileUp){
         fileUploadOptions = (
@@ -812,7 +817,6 @@ class TaskDetailsComponent extends React.Component{
       }, this);
 
 
-
       return (
         <div  key={"Main View of Task " + this.props.index + " in " + this.props.workflowIndex} className="section card-1">
             <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
@@ -834,7 +838,6 @@ class TaskDetailsComponent extends React.Component{
                         }}  />
                   </div>
                   {fileUploadOptions}
-
                   <br />
                   <div className="inner block">
                     <label>Task Instructions</label>
@@ -865,9 +868,7 @@ class TaskDetailsComponent extends React.Component{
                         this.setState({
                           DefaultFieldForeign: newDefFields
                         });
-                        }
-                      }
-
+                        }}
                         >
                         <i className="fa fa-check"></i>
                         Add another field

@@ -5,6 +5,7 @@ If a new react page is created , it will need to be added here.
 */
 
 import React from 'react';
+import request from 'request';
 import ReactDOM from 'react-dom';
 
 import AddSectionContainer from './add-section/add-section-container';
@@ -19,9 +20,30 @@ import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';
 
 
+let translationFunction = (objOfStrings, cb) => {
+  const options = {
+    method: 'POST',
+    body:{
+        string: objOfStrings
+    },
+    uri: `${window.location.protocol}//${window.location.host}/api/getTranslatedString`,
+    json: true
+  }
+
+  return request(options, (err,res,body)=>{
+    cb(body);
+  });
+}
+
+// let objct = {
+//               my_account: "My Account",
+//               curr_course: "Current Courses"
+//             };
+// translationFunction(objct, (res) => {
+//   console.log("Testing translate", res );
+// });
 
 const addsectionContainerEl = document.getElementById('add-section-container');
-
 if(addsectionContainerEl){
   const userId = addsectionContainerEl.dataset.userId;
   const apiUrl = addsectionContainerEl.dataset.apiUrl;
@@ -36,13 +58,13 @@ if (adduserContainerEl) {
   const apiUrl = adduserContainerEl.dataset.apiUrl;
   const userType = adduserContainerEl.dataset.userType;
 
-    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType}/>,adduserContainerEl);
+  ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType}/>,adduserContainerEl);
 }
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
 
 if (assignmentContainerEl) {
-    ReactDOM.render(<AssignmentContainer />, assignmentContainerEl);
+  ReactDOM.render(<AssignmentContainer />, assignmentContainerEl);
 }
 
 const courseContainerEl = document.getElementById('create-course-container'); //get id from .html file
@@ -75,7 +97,7 @@ if(templateContainerEl){
   const sectionId= templateContainerEl.dataset.sectionId;
   const courseId = templateContainerEl.dataset.courseId;
 
-  ReactDOM.render(<TemplateContainer SectionID={sectionId} CourseID={courseId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} />, templateContainerEl);
+  ReactDOM.render(<TemplateContainer SectionID={sectionId} CourseID={courseId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} __={translationFunction}/>, templateContainerEl);
 }
 
 const assignmentEditorContainerEl = document.getElementById('assignment-editor-container');
@@ -84,7 +106,6 @@ if(assignmentEditorContainerEl){
   const userId = assignmentEditorContainerEl.dataset.userId;
   const courseId = assignmentEditorContainerEl.dataset.courseId;
   const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
-
   ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl}/>,assignmentEditorContainerEl);
 }
 const assignToSectionContainerEl = document.getElementById('assign-to-section-container');

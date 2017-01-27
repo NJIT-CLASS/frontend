@@ -103,7 +103,7 @@ class AddSectionContainer extends React.Component {
             </div>
             <label>Semester</label>
             <div>
-            <Select options={semestersList} value={this.state.semesterId} onChange={this.onSemesterChange.bind(this)} searchable={false}/>
+            <Select options={semestersList} value={this.state.semesterId} onChange={this.onSemesterChange.bind(this)} resetValue={''} clearable={true} searchable={false}/>
             </div>
           </div>
         );
@@ -150,7 +150,7 @@ class AddSectionContainer extends React.Component {
             <form className="section-content">
             <label>Course</label>
             <div>
-              <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} searchable={false}/>
+              <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} resetValue={''} clearable={true} searchable={false}/>
               { createSection }
               { createSemester }
               <button type="button" onClick={this.onSubmit.bind(this)}>Submit</button>

@@ -38,9 +38,10 @@ exports.get = (req, res) => {
                 sectionList[i].members=results[currentSectionId];
             }
 
-            
+
 
             res.render('course_page', {
+                showHeader:false,
                 sectionList: sectionList,
                 courseID: req.params.Id,
                 assignmentsList: assignmentsArray,

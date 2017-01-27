@@ -40,9 +40,10 @@
 @import 'pages/task';
 @import 'pages/solveproblem';
 @import 'pages/task_template';
+@import 'pages/assignment_editor';
 
 // external components
-
+@import 'external/rdt';
 
 // vendor
 @import 'vendor/react-select/default';

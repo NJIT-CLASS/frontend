@@ -1,0 +1,24 @@
+.editor-container {
+  //margin: 0 auto;
+  width: 75vw;
+}
+
+.small-info-message {
+    color: white;
+    display: block;
+    margin: 20px 10px;
+    font-size: 16px;
+    text-align: center;
+
+    .success-message{
+      padding: 10px;
+      background-color: #00AB8D;
+      box-shadow: 0 1px 10px rgb(0, 171, 141);
+    }
+    .error-message{
+      padding: 10px;
+      background-color: #ED5565;
+      box-shadow: 0 1px 10px #ED5565;
+
+    }
+}

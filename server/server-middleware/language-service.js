@@ -20,8 +20,7 @@ module.exports = function(redisClient: any): {} {
             client.exists(key);
         };
 
-        const addTranslation = function
-        (language,
+        const addTranslation = function(language,
             str,
             translatedStr
         ) {
@@ -51,8 +50,7 @@ module.exports = function(redisClient: any): {} {
             });
         };
 
-        const getTranslation = function
-        (
+        const getTranslation = function(
             language,
             str,
             cb
@@ -76,12 +74,12 @@ module.exports = function(redisClient: any): {} {
             });
         };
 
-        const getAllStringsInLanguage = function(language,
-            cb
-        ) {
+        const getAllStringsInLanguage = function(language, cb) {
             const key = `${languageKeyPrefix}*`;
             client.keys(key, (err, keys) => {
-                var keyTranslationFuncs: { [key: string]: string } = {};
+                var keyTranslationFuncs: {
+                    [key: string]: string
+                } = {};
 
                 for (var key of keys) {
                     const keyPieces = key.split('lang::');

@@ -76,9 +76,8 @@ button {
   }
 
   .outside-button{
-    margin-right: 10vw;
     display: block;
-    
+
       @media screen and (max-width: $mobile-brk){
       display: block;
       width: 96%;

@@ -28,8 +28,8 @@ const redisClient = redis.createClient({
 app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser());
+//app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(session(redisClient));
 
@@ -39,6 +39,51 @@ app.use((req, res, next) => {
     req.App.api = apiMethods;
 
     next();
+});
+
+app.get('/api/getTranslatedString', (req, res) => {
+  let locale = 'en';
+
+  if ('lang' in req.query) {
+      locale = req.query.lang;
+  }
+
+  if ('lang' in req.session) {
+      locale = req.session.lang;
+  }
+
+  translation(redisClient).setupTranslations(locale, (translateFunc) => {
+      let translated = translateFunc(req.query.string);
+      res.json({
+          lang: translated
+      });
+      res.end();
+  });
+});
+
+app.post('/api/getTranslatedString', (req, res) => {
+  let locale = 'en';
+
+  if ('lang' in req.query) {
+      locale = req.query.lang;
+  }
+
+  if ('lang' in req.session) {
+      locale = req.session.lang;
+  }
+
+  translation(redisClient).setupTranslations(locale, (translateFunc) => {
+
+      let language = req.body.string;
+      Object.keys(language).map((key) => {
+        language[key] = translateFunc(language[key]);
+      });
+
+
+      res.json(language);
+      res.end();
+  });
+
 });
 
 app.get('/api/translations', (req, res) => {
@@ -72,7 +117,9 @@ app.post('/api/change-admin-status', (req, res) => {
         return res.status(500).end();
     }
 
-    req.App.api.put('/makeUserAdmin/', {UserID: userId}, (err, statusCode, body) => {
+    req.App.api.put('/makeUserAdmin/', {
+        UserID: userId
+    }, (err, statusCode, body) => {
         res.status(statusCode).end();
     });
 });
@@ -92,19 +139,23 @@ app.use((req, res, next) => {
     }
 
     // language options
-    const languages = [
-        {language: 'English', locale: 'en'},
-        {language: 'Español', locale: 'es'},
-        {language: 'Français', locale: 'fr'}
-    ];
+    const languages = [{
+        language: 'English',
+        locale: 'en'
+    }, {
+        language: 'Español',
+        locale: 'es'
+    }, {
+        language: 'Français',
+        locale: 'fr'
+    }];
 
     req.App.langOptions = [];
 
     for (const lang of languages) {
         if (lang.locale === res.locale) {
             req.App.lang = lang.language;
-        }
-        else {
+        } else {
             req.App.langOptions.push(lang);
         }
     }
@@ -165,7 +216,7 @@ app.use((req, res, next) => {
     res.render = function(template, options, cb) {
         options = options ? options : {};
 
-		        options.template = template;
+        options.template = template;
 
         if (!('showHeader' in options)) {
             options.showHeader = true;
@@ -175,17 +226,18 @@ app.use((req, res, next) => {
         options.languageOptions = req.App.langOptions;
         options.apiUrl = consts.API_URL;
 
+
         if (options.loggedOut) {
             options.layout = 'logged_out';
 
             return render.call(this, template, options, cb);
         }
-        if (req.App.user && !options[req.App.user.type]){
-          if ( (req.App.user.admin && options.admin) ) {
+        if (req.App.user && !options[req.App.user.type]) {
+            if ((req.App.user.admin && options.admin)) {
 
-          }else{
-            return res.sendStatus(404);
-          }
+            } else {
+                return res.sendStatus(404);
+            }
 
         }
 
@@ -201,8 +253,7 @@ app.use((req, res, next) => {
 
             if (currentRoute.route === options.route) {
                 currentRoute.selected = true;
-            }
-            else {
+            } else {
                 currentRoute.selected = false;
             }
 
@@ -211,17 +262,16 @@ app.use((req, res, next) => {
             if (req.App.user.type === 'student') {
                 if (currentRoute.access.students) {
                     sidebarNavItems.push(currentRoute);
-                }
-                else {
+                } else {
                     continue;
                 }
-            }else if (req.App.user.type == 'teacher' && req.App.user.admin == 0){
-              if (currentRoute.access.instructors) {
-                  sidebarNavItems.push(currentRoute);
-              }else {
-                  continue;
-              }
-            }else {
+            } else if (req.App.user.type == 'teacher' && req.App.user.admin == 0) {
+                if (currentRoute.access.instructors) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            } else {
                 sidebarNavItems.push(currentRoute);
             }
         }
@@ -246,37 +296,40 @@ app.use(function(req, res, next) {
         for (const method in route.routeHandler) {
             // if the method is allowed then bind the route to it
             if (allowedRouteMethods.indexOf(method) !== -1) {
-                app[method](route.route, function() { return (req, res, next) => {
-                    const previousRender = res.render;
-                    res.render = function() {
-                        return function(template, options, cb) {
-                            options = options ? options : {};
-                            options.loggedOut = route.access.loggedOut;
-                            options.route = route.route;
-                            options.student = route.access.students;
-                            options.teacher = route.access.instructors;
-                            options.admin = route.access.admins;
-                            // if the render doesn't set the title then set it by the route
-                            if (!('title' in options)) {
-                                options.title = `${route.title} | CLASS Learning System`;
-                            }
+                app[method](route.route, function() {
+                    return (req, res, next) => {
+                        const previousRender = res.render;
+                        res.render = function() {
+                            return function(template, options, cb) {
+                                options = options ? options : {};
+                                options.loggedOut = route.access.loggedOut;
+                                options.route = route.route;
+                                options.student = route.access.students;
+                                options.teacher = route.access.instructors;
+                                options.admin = route.access.admins;
+                                // if the render doesn't set the title then set it by the route
+                                if (!('title' in options)) {
+                                    options.title = `${route.title} | CLASS Learning System`;
+                                }
 
-                            // set the page header to be the route title if the pageHeader is not set
-                            if (!('pageHeader' in options)) {
-                                options.pageHeader = route.title;
-                            }
+                                // set the page header to be the route title if the pageHeader is not set
+                                if (!('pageHeader' in options)) {
+                                    options.pageHeader = route.title;
+                                }
 
-                            // pass masquerading info to template
-                            if (req.session.masqueraderId) {
-                                options.masquerading = true;
-                                options.userEmail = req.App.user.email;
-                            }
+                                // pass masquerading info to template
+                                if (req.session.masqueraderId) {
+                                    options.masquerading = true;
+                                    options.userEmail = req.App.user.email;
+                                }
 
-                            previousRender.call(this, template, options, cb);
-                        };
-                    }();
-                    next();
-                }; }(), route.routeHandler[method]);
+                                previousRender.call(this, template, options, cb);
+                            };
+                            console.log(options);
+                        }();
+                        next();
+                    };
+                }(), route.routeHandler[method]);
             }
         }
     }
