@@ -295,7 +295,7 @@ class TaskDetailsComponent extends React.Component{
           </RadioGroup>
         <br />
         <NumberField
-            value={2}
+            value={this.props.getTriggerConsolidationThreshold(this.props.index, this.props.workflowIndex, false)}
             min={0}
             max={100}
             onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)}
@@ -400,7 +400,7 @@ class TaskDetailsComponent extends React.Component{
             </RadioGroup>
           <br />
           <NumberField
-              value={2}
+              value={this.props.getTriggerConsolidationThreshold(this.props.index, this.props.workflowIndex, true)}
               min={0}
               max={100}
               onChange={this.props.changeNumericData.bind(this, 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)}

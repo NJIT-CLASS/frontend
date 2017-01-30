@@ -90,7 +90,7 @@ class AssignmentEditorContainer extends React.Component {
         //need to add TA_name, TA_documentation, TA_trigger_consolidation_threshold
 
         // this function cusotmizes the generic task tempate above to the type of task it needs;
-        var createTaskObject = function(TA_type, TA_name, TA_display_name, TA_at_duration_end, TA_what_if_late, TA_assignee_constraints, TA_is_final_grade) {
+        var createTaskObject = function(type, name, display_name, at_duration_end, what_if_late, assignee_constraints, is_final_grade, number_participant, trigger_threshold) {
             let newTask = {
                 TA_display_name: '',
                 TA_type: '',
@@ -137,69 +137,71 @@ class AssignmentEditorContainer extends React.Component {
                 TA_visual_id: ''
             };
 
-            newTask.TA_name = TA_name;
-            newTask.TA_type = TA_type;
-            newTask.TA_display_name = TA_display_name;
-            newTask.TA_at_duration_end = TA_at_duration_end;
-            newTask.TA_what_if_late = TA_what_if_late;
-            newTask.TA_assignee_constraints = TA_assignee_constraints;
-            newTask.TA_is_final_grade = TA_is_final_grade;
-            newTask.TA_fields = generateTaskFields(TA_type);
+            newTask.TA_name = name;
+            newTask.TA_type = type;
+            newTask.TA_display_name = display_name;
+            newTask.TA_at_duration_end = at_duration_end;
+            newTask.TA_what_if_late = what_if_late;
+            newTask.TA_assignee_constraints = assignee_constraints;
+            newTask.TA_is_final_grade = is_final_grade;
+            newTask.TA_trigger_consolidation_threshold = trigger_threshold;
+            newTask.TA_number_participant = number_participant;
+            newTask.TA_fields = generateTaskFields(type);
             return newTask;
         }
 
         //////////// Defining all Task Types Here /////////
         this.createProblemTask = createTaskObject(TASK_TYPES.CREATE_PROBLEM, TASK_TYPE_TEXT.create_problem, 'Create Problem', 'late', 'keep_same_participant', [
             'student', 'individual', {}
-        ], false);
+        ], false, 1, []);
 
         this.editProblemTask = createTaskObject(TASK_TYPES.EDIT, TASK_TYPE_TEXT.edit, 'Edit Problem', 'late', 'keep_same_participant', [
             'instructor',
             'group', {}
-        ], false);
+        ], false, 1, []);
 
         this.commmentProblemTask = createTaskObject(TASK_TYPES.COMMENT, TASK_TYPE_TEXT.comment, 'Comment on Problem', 'late', 'keep_same_participant', [
             'instructor',
             'group', {}
-        ], false);
+        ], false, 1, []);
 
         this.solveProblemTask = createTaskObject(TASK_TYPES.SOLVE_PROBLEM, TASK_TYPE_TEXT.solve_problem, 'Solve the Problem', 'late', 'keep_same_participant', [
             'student',
             'individual', {}
-        ], false);
+        ], false, 1, []);
 
         this.gradeSolutionTask = createTaskObject(TASK_TYPES.GRADE_PROBLEM, TASK_TYPE_TEXT.grade_problem, 'Grade the Solution', 'late', 'keep_same_participant', [
             'student',
             'individual', {}
-        ], true);
+        ], true, 2, []);
 
         this.critiqueSolutionTask = createTaskObject(TASK_TYPES.CRITIQUE, TASK_TYPE_TEXT.critique, 'Critique the Solution', 'late', 'keep_same_participant', [
             'student',
             'individual', {}
-        ], true);
+        ], true, 2, []);
 
         this.needsConsolidationTask = createTaskObject(TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPE_TEXT.needs_consolidation, 'Needs Consolidation', null, null, [
             'student', 'individual', {}
-        ], true);
+        ], true, 1, []);
 
         this.consolidationTask = createTaskObject(TASK_TYPES.CONSOLIDATION, TASK_TYPE_TEXT.consolidation, 'Consolidate', 'late', 'keep_same_participant', [
             'student',
             'individual', {}
-        ], true);
+        ], true, 1, []);
 
         this.disputeTask = createTaskObject(TASK_TYPES.DISPUTE, TASK_TYPE_TEXT.dispute, 'Dispute the Grades', 'resolved', null, [
             'student',
             'individual', {}
-        ], false);
+        ], false, 1, []);
 
         this.resolveDisputeTask = createTaskObject(TASK_TYPES.RESOLVE_DISPUTE, TASK_TYPE_TEXT.resolve_dispute, 'Resolve the Dispute', 'late', 'keep_same_participant', [
             'student',
             'individual', {}
-        ], true);
+        ], true, 1, []);
 
         this.completeTask = createTaskObject(TASK_TYPES.COMPLETED, TASK_TYPE_TEXT.completed, 'Complete', null, null, [
             'student', 'individual', {'same_as': [2]}
-        ], false);
+        ], false, 1, []);
         ///----------------------
 
         let standardWorkflow = [cloneDeep(this.createProblemTask)];
@@ -220,6 +222,7 @@ class AssignmentEditorContainer extends React.Component {
         this.state = {
             CurrentWorkflowIndex: 0,
             LastTaskChanged: 0,
+            SelectedTask:0,
             SubmitSuccess: false,
             SubmitButtonShow: true,
             SaveSuccess: false,
@@ -1222,11 +1225,13 @@ class AssignmentEditorContainer extends React.Component {
                 newData[workflowIndex].Workflow[taskIndex][stateField][1] = value * 1440;
                 break;
             case 'TA_trigger_consolidation_threshold_reflect':
-                let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
+                //let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
+                let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
                 newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][0] = value;
                 break;
             case 'TA_trigger_consolidation_threshold_assess':
-                let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
+                //let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
+                let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
                 newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][0] = value;
                 break;
             default:
@@ -1236,6 +1241,14 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
+    getTriggerConsolidationThreshold(taskIndex, workflowIndex, isReflect){
+        let targetIndex = this.getConsolidationIndex(isReflect, taskIndex, workflowIndex);
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]["TA_trigger_consolidation_threshold"][0];
+    }
+
+    canDisputeTask(taskIndex,workflowIndex,isReflect){
+
+    }
     changeNumericFieldData(stateField, taskIndex, field, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = value;
@@ -1556,6 +1569,10 @@ class AssignmentEditorContainer extends React.Component {
 
     ///---------------------------------------------------------------------------
 
+    // changeSelectedTask(val){ //if ever want to implement single task-based view
+    //     this.setState({SelectedTask: val});
+    //   }
+
     render() {
         let infoMessage = null;
         let submitButtonView = (
@@ -1608,15 +1625,13 @@ class AssignmentEditorContainer extends React.Component {
             this.state.WorkflowDetails.forEach(function(workflow, index) {
 
                 let tV = new Array();
-                workflow.WorkflowStructure.walk({
-                    strategy: 'pre'
-                }, function(node) {
+                workflow.WorkflowStructure.walk({strategy: 'pre'}, function(node) {
                     if (node.model.id != -1) {
-                        let task = workflow.Workflow[node.model.id];
+                         let task = workflow.Workflow[node.model.id];
                         if (task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || task.TA_type == TASK_TYPES.COMPLETED) {
-                            return null;
-                        }
-                        if (Object.keys(task).length !== 0) {
+                           return null;
+                         }
+                         if (Object.keys(task).length !== 0) {
                             tV.push(<TaskDetailsComponent key={index + "-" + node.model.id} index={node.model.id}
                             workflowIndex={index}
                             LastTaskChanged={this.state.LastTaskChanged}
@@ -1647,10 +1662,12 @@ class AssignmentEditorContainer extends React.Component {
                             getAssigneeInChild={this.getAssigneeInChild.bind(this)}
                             getTaskFields={this.getTaskFields.bind(this)}
                             setDefaultField={this.setDefaultField.bind(this)}
-                            getConsolidateValue={this.getConsolidateValue.bind(this)}/>);
+                            getConsolidateValue={this.getConsolidateValue.bind(this)}
+                            getTriggerConsolidationThreshold={this.getTriggerConsolidationThreshold.bind(this)}
+                            />);
                         }
-                    }
-                }, this)
+                     }
+                 }, this)
                 tabListAr.push(
                     <Tab key={"tab stub " + index}>{workflow.WA_name}</Tab>
                 );
@@ -1664,7 +1681,8 @@ class AssignmentEditorContainer extends React.Component {
                               changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
                               changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}/>
                             <br/>
-                            <br/> {tV}
+                            <br/>
+                            {tV}
                     </TabPanel>
                 );
             }, this);
