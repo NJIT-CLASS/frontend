@@ -38,30 +38,29 @@ class AssignmentEditorContainer extends React.Component {
         this.tree = new TreeModel(); //this is the tree making object. It is not a tree structure but has the tree methods
         this.root = this.tree.parse({id: 0, isSubWorkflow: 0}); // this is the root of the tree structure. A copy is made for each workflow
         this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
-
+        this.defaultFields = {
+           title: 'Field',
+           show_title: false,
+           assessment_type: null,
+           numeric_min: 0,
+           numeric_max: 40,
+           rating_max: 5,
+           list_of_labels: 'Easy, Medium, Difficult',
+           field_type: "text",
+           requires_justification: false,
+           instructions: '',
+           rubric: '',
+           justification_instructions: '',
+           default_refers_to: [
+               null, null
+           ],
+           default_content: ['', '']
+       };
 
         let generateTaskFields = (TA_type) => {
            //default Task.Data structure (used to be Task.TA_fields)
-           const defaultFields = {
-              title: 'Field',
-              show_title: false,
-              assessment_type: null,
-              numeric_min: 0,
-              numeric_max: 40,
-              rating_max: 5,
-              list_of_labels: 'Easy, Medium, Difficult',
-              field_type: "text",
-              requires_justification: false,
-              instructions: '',
-              rubric: '',
-              justification_instructions: '',
-              default_refers_to: [
-                  null, null
-              ],
-              default_content: ['', '']
-          };
 
-          let newFields = cloneDeep(defaultFields);
+          let newFields = cloneDeep(this.defaultFields);
 
           switch(TA_type){
             case TASK_TYPES.CREATE_PROBLEM:
@@ -87,13 +86,14 @@ class AssignmentEditorContainer extends React.Component {
           };
         }
 
-        //need to add TA_name, TA_documentation, TA_trigger_consolidation_threshold
+
 
         // this function cusotmizes the generic task tempate above to the type of task it needs;
         var createTaskObject = function(type, name, display_name, at_duration_end, what_if_late, assignee_constraints, is_final_grade, number_participant, trigger_threshold) {
             let newTask = {
                 TA_display_name: '',
                 TA_type: '',
+                TA_documentation:'',
                 TA_name: '',
                 TA_overall_instructions: '',
                 TA_overall_rubric: '',
@@ -1586,7 +1586,7 @@ class AssignmentEditorContainer extends React.Component {
                 <span onClick={() => {
                     this.setState({SubmitSuccess: false})
                 }} className="small-info-message">
-                <span className="success">
+                <span className="success-message">
                   Successfully created assignment!
                 </span>
                 </span>
