@@ -7,6 +7,7 @@ import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 import {RadioGroup, Radio} from 'react-radio-group';
+import ReactTooltip from 'react-tooltip';
 
 
 class TaskDetailsComponent extends React.Component{
@@ -73,6 +74,10 @@ class TaskDetailsComponent extends React.Component{
 
 
     render(){
+
+      /* String Variables (only used for display, not stored)
+      */
+      let removeButtonTipText="Remove";
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
 
       if(!this.state.ShowContent){
@@ -629,6 +634,8 @@ class TaskDetailsComponent extends React.Component{
           let showDefaultFromOthers = taskCreatedList.length > 0 ? true : false;
           let defaultContentButton = null;
 
+
+
           if (this.props.TaskActivityData.TA_fields[index].requires_justification) {
               justificationView = (
                   <div className="inner block" key={index + 200}>
@@ -757,9 +764,14 @@ class TaskDetailsComponent extends React.Component{
 
 
 
-          return (
-              <div className="section-divider" key={"Task " + this.props.index +" of Workflow ", this.props.workflowIndex, " Field " + index}>
-                  <h3 className="subheading">Input Fields</h3>
+          return (<div className="section-divider" key={"Task " + this.props.index +" of Workflow ", this.props.workflowIndex, " Field " + index}>
+                  <h3 className="subheading">Input Fields
+                  <div className="remove-button" onClick={this.props.removeFieldButton.bind(this, this.props.index, this.props.workflowIndex, index)}>
+                    <i className="fa fa-remove" aria-hidden="true" data-for="remove-icon" data-tip={removeButtonTipText}></i>
+                    <ReactTooltip id='remove-icon' effect='solid' />
+                  </div>
+                  </h3>
+
 
                   <div className="inner">
                       <label>Field Name</label>

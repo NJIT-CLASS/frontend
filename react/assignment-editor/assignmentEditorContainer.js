@@ -2,7 +2,6 @@
 // will be submitted from this component. This component has no views, it only contains data and components.
 //
 // TODO
-// add belogns_to_subworkflow
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
 // Assignee constraint second level of checkboxes needs isClicked
 import React from 'react';
@@ -151,19 +150,211 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         //////////// Defining all Task Types Here /////////
-        this.createProblemTask = createTaskObject(TASK_TYPES.CREATE_PROBLEM, TASK_TYPE_TEXT.create_problem, 'Create Problem', 'late', 'keep_same_participant', [
-            'student', 'individual', {}
-        ], false, 1, []);
+        this.createProblemTask = {
+            TA_display_name: 'Create Problem',
+            TA_type: TASK_TYPES.CREATE_PROBLEM,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.create_problem,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, "mandatory"
+                ],
+                [0, 'optional']
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'late',
+            TA_what_if_late: 'keep_same_participant',
 
-        this.editProblemTask = createTaskObject(TASK_TYPES.EDIT, TASK_TYPE_TEXT.edit, 'Edit Problem', 'late', 'keep_same_participant', [
-            'instructor',
-            'group', {}
-        ], false, 1, []);
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'student', 'individual', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: false,
 
-        this.commmentProblemTask = createTaskObject(TASK_TYPES.COMMENT, TASK_TYPE_TEXT.comment, 'Comment on Problem', 'late', 'keep_same_participant', [
-            'instructor',
-            'group', {}
-        ], false, 1, []);
+            TA_allow_reflection: [
+                'none', "don't wait"
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 1,
+                field_titles: ['Problem 1'],
+                0: {
+                   title: 'Problem 1',
+                   show_title: false,
+                   assessment_type: null,
+                   numeric_min: 0,
+                   numeric_max: 40,
+                   rating_max: 5,
+                   list_of_labels: 'Easy, Medium, Difficult',
+                   field_type: "text",
+                   requires_justification: false,
+                   instructions: "Create a new problem for another student to solve.",
+                   rubric: '',
+                   justification_instructions: '',
+                   default_refers_to: [
+                       null, null
+                   ],
+                   default_content: ['', '']
+                }
+            }
+        };
+
+        this.editProblemTask = {
+            TA_display_name: 'Edit Problem',
+            TA_type: TASK_TYPES.EDIT,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.edit,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, "mandatory"
+                ],
+                [0, 'optional']
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'late',
+            TA_what_if_late: 'keep_same_participant',
+
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'instructor',
+                'group', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: false,
+
+            TA_allow_reflection: [
+                'none', "don't wait"
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 1,
+                field_titles: ['Field'],
+                0: {
+                   title: 'Field',
+                   show_title: false,
+                   assessment_type: null,
+                   numeric_min: 0,
+                   numeric_max: 40,
+                   rating_max: 5,
+                   list_of_labels: 'Easy, Medium, Difficult',
+                   field_type: "text",
+                   requires_justification: false,
+                   instructions: "Edit the problem to ensure that it makes sense.",
+                   rubric: '',
+                   justification_instructions: '',
+                   default_refers_to: [
+                       null, null
+                   ],
+                   default_content: ['', '']
+                }
+            }
+        };
+
+        this.commmentProblemTask = {
+            TA_display_name: 'Comment on Problem',
+            TA_type: TASK_TYPES.COMMENT,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.comment,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, "mandatory"
+                ],
+                [0, 'optional']
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'late',
+            TA_what_if_late: 'keep_same_participant',
+
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'instructor',
+                'group', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: false,
+
+            TA_allow_reflection: [
+                'none', "don't wait"
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 1,
+                field_titles: ['Field'],
+                0: {
+                   title: 'Field',
+                   show_title: false,
+                   assessment_type: null,
+                   numeric_min: 0,
+                   numeric_max: 40,
+                   rating_max: 5,
+                   list_of_labels: 'Easy, Medium, Difficult',
+                   field_type: "text",
+                   requires_justification: false,
+                   instructions: "Edit the problem to ensure that it makes sense.",
+                   rubric: '',
+                   justification_instructions: '',
+                   default_refers_to: [
+                       null, null
+                   ],
+                   default_content: ['', '']
+                }
+            }
+        };
 
         this.solveProblemTask = createTaskObject(TASK_TYPES.SOLVE_PROBLEM, TASK_TYPE_TEXT.solve_problem, 'Solve the Problem', 'late', 'keep_same_participant', [
             'student',
@@ -919,6 +1110,15 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
+    removeFieldButton(taskIndex, workflowIndex, fieldIndex){
+      let newData = this.state.WorkflowDetails;
+      delete newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex];
+      newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
+      newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
+      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+    }
+
     changeDataCheck(stateField, taskIndex, workflowIndex, firstIndex) {
         let newData = this.state.WorkflowDetails;
 
@@ -1649,6 +1849,7 @@ class AssignmentEditorContainer extends React.Component {
                             changeFileUpload={this.changeFileUpload.bind(this)}
                             changeDataCheck={this.changeDataCheck.bind(this)}
                             addFieldButton={this.addFieldButton.bind(this)}
+                            removeFieldButton={this.removeFieldButton.bind(this)}
                             changeRadioData={this.changeRadioData.bind(this)}
                             changeSimpleGradeCheck={this.changeSimpleGradeCheck.bind(this)}
                             getReflectNumberofParticipants={this.getReflectNumberofParticipants.bind(this)}
