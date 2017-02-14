@@ -4,6 +4,7 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
+    -ms-overflow-style: none;
 
     h2 {
         font-size: 25px;
@@ -100,4 +101,8 @@
             content: "\f104";
         }
     }
+}
+
+.sidebar::-webkit-scrollbar {
+ display: none;
 }

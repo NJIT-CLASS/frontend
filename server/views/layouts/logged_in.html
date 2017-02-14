@@ -11,35 +11,39 @@
     </head>
     <body class="logged-in">
         <div class="main-container" id="app-container" data-api-url="{{ apiUrl }}">
+
+
             <div class="sidebar collapsed">
                 <h2 onclick="(function(e){
                   location.href = '/'
                 })(event)"><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
-                <ul>
-                    {{#each sidebarNavItems}}
-                        <li
-                            {{#if selected }}
-                            class="selected"
-                            {{/if}}
-                            >
-                            <a href="{{ route }}">
-                                <i class="fa fa-{{ icon }} fa-fw"></i>
-                                <span>{{ title }}</span>
-                            </a>
-                        </li>
-                    {{/each}}
-                    <!--<li
-						{{#sidebarHighlighter template "admin" }}
-						class="selected"
-						{{/sidebarHighlighter}}
-						>
-                        <a href="/admin">
-                            <i class="fa fa-bar-chart-o fa-fw"></i>
-                            <span>{{ __ "Admin Tools" }}</span>
-                            <span class="fa arrow fa-fw"></span>
-                        </a>
-                    </li>-->
-                </ul>
+
+                  <ul>
+                      {{#each sidebarNavItems}}
+                          <li
+                              {{#if selected }}
+                              class="selected"
+                              {{/if}}
+                              >
+                              <a href="{{ route }}">
+                                  <i class="fa fa-{{ icon }} fa-fw"></i>
+                                  <span>{{ title }}</span>
+                              </a>
+                          </li>
+                      {{/each}}
+                      <!--<li
+    						{{#sidebarHighlighter template "admin" }}
+    						class="selected"
+    						{{/sidebarHighlighter}}
+    						>
+                          <a href="/admin">
+                              <i class="fa fa-bar-chart-o fa-fw"></i>
+                              <span>{{ __ "Admin Tools" }}</span>
+                              <span class="fa arrow fa-fw"></span>
+                          </a>
+                      </li>-->
+                  </ul>
+
                 <div id="language-picker" class="hidden" onclick="document.getElementById('language-picker').classList.toggle('hidden')">
                     {{#each languageOptions}}
                         <a href="?lang={{ locale }}">
@@ -52,6 +56,7 @@
                         {{ language }}
                     </a>
                 </div>
+
             </div>
             <div class="content">
                 {{#if masquerading}}
@@ -88,17 +93,24 @@
                     <div class="container">
                 {{/showHTMLBasedOnBoolean}}
 
+
+
                     {{{body}}}
 
                 {{#showHTMLBasedOnBoolean showHeader}}
                     </div>
                 {{/showHTMLBasedOnBoolean}}
+
+                {{#showHTMLBasedOnBoolean showMasqueradingOption}}
+
                 <div class="masquerade-activate">
                     <a href="/masquerade">
                         <i class="fa-key fa"></i>
                         <span>Masquerade</span>
                     </a>
                 </div>
+
+                {{/showHTMLBasedOnBoolean}}
             </div>
         </div>
 

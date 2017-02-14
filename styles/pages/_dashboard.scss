@@ -5,8 +5,8 @@ table {
 
 th, td {
   width: 25%;
-  text-align: left; 
-  vertical-align: top; 
+  text-align: left;
+  vertical-align: top;
   border: 1px solid #000;
   border-collapse: collapse;
   padding: 0.3em;
@@ -17,7 +17,23 @@ caption {
   padding: 0.3em;
 }
 
-b { 
+b {
     font-weight: bold;
 }
 
+#left-half{
+  width:30%
+}
+#right-half{
+  width:70%;
+}
+
+@media screen and (max-width: $mobile-brk) {
+  #left-half{
+    text-align: center;
+    width:100%
+  }
+  #right-half{
+    width:100%;
+  }
+}

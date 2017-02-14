@@ -624,8 +624,6 @@ class TaskDetailsComponent extends React.Component{
         );
       }
 
-
-
       let inputFieldsView = this.props.TaskActivityData.TA_fields.field_titles.map(function(field, index) {
           let justificationView = null; //justification textbox for the field
           let fieldTypeOptions = null; //options that change on Field Type dropbox selection
@@ -762,14 +760,17 @@ class TaskDetailsComponent extends React.Component{
             );
           }
 
-
+          let removeButtonView = null;
+          if(index != 0){
+            removeButtonView = <div className="remove-button" onClick={this.props.removeFieldButton.bind(this, this.props.index, this.props.workflowIndex, index)}>
+              <i className="fa fa-remove" aria-hidden="true" data-for="remove-icon" data-tip={removeButtonTipText}></i>
+              <ReactTooltip id='remove-icon' effect='solid' />
+            </div>;
+          }
 
           return (<div className="section-divider" key={"Task " + this.props.index +" of Workflow ", this.props.workflowIndex, " Field " + index}>
                   <h3 className="subheading">Input Fields
-                  <div className="remove-button" onClick={this.props.removeFieldButton.bind(this, this.props.index, this.props.workflowIndex, index)}>
-                    <i className="fa fa-remove" aria-hidden="true" data-for="remove-icon" data-tip={removeButtonTipText}></i>
-                    <ReactTooltip id='remove-icon' effect='solid' />
-                  </div>
+                  {removeButtonView}
                   </h3>
 
 
@@ -897,11 +898,8 @@ class TaskDetailsComponent extends React.Component{
                       }} />
                   </div>
                 </div>
-
                 {advancedOptionsView}
-
                   <br />
-
               </div>
         </div>
       );

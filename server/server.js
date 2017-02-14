@@ -226,7 +226,6 @@ app.use((req, res, next) => {
         options.languageOptions = req.App.langOptions;
         options.apiUrl = consts.API_URL;
 
-
         if (options.loggedOut) {
             options.layout = 'logged_out';
 
@@ -240,6 +239,8 @@ app.use((req, res, next) => {
             }
 
         }
+        options.showMasqueradingOption = req.App.user.admin ? req.App.user.admin : false; //new value, not working yet
+
 
 
 
@@ -325,7 +326,6 @@ app.use(function(req, res, next) {
 
                                 previousRender.call(this, template, options, cb);
                             };
-                            console.log(options);
                         }();
                         next();
                     };

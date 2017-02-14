@@ -1,18 +1,18 @@
-/* @flow */
+
 
 const languageService = require('./language-service');
 
 type Language = 'en' | 'fr' | 'es';
 
-module.exports = function (redisClient: any): {} {
+module.exports = function (redisClient) {
     return function(redisClient) {
         const service = languageService(redisClient);
-        
+
         return {
-            setupTranslations: (language: Language, cb: (translateFunc: (str: string) => string) => any) => {
-                service.getAllStringsInLanguage(language, (err: ?string, strs: { [key: string]: string }) => {
+            setupTranslations: (language, cb) => {
+                service.getAllStringsInLanguage(language, (err, strs) => {
                     cb(function(language) {
-                        return function (str: string) {
+                        return function (str) {
                             if (!(str in strs)) {
                                 service.getTranslation(language, str, () => {});
                                 return str;

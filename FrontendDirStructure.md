@@ -27,9 +27,12 @@ This file handles fetching and storing session cookies in the Redis server.
 This file defines helper functions for the Handlebar pages. These functions include sidebar highlighting, date formatting, string translation, and hiding HTML sections based on a Boolean. (Note that in the Handlebar pages, these functions are called as {{<function_name> <arg>}} )
 - `translation.js`
 This file calls a helper function for translation. It relies on language-service.js and checks whether a string has a translation. If not, the English equivalent is returned.
+
 #### `/utils`
+
 - `constants.js`
 This file contains constants that are used throughout the system. If they need to be modified, this is the file to change.
+
 #### `/views`
 This directory contains the HTML files for all webpages in the system. If a page uses the Handlebars template engine, the full code is found in these files. If a page uses React, a simple HTML file containing a single <div> is found to give the React script an element to render in. This directory is expected to be changed frequently.
 #### `server.js`

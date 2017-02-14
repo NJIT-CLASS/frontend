@@ -1,47 +1,60 @@
 <!-- flex-container, flex-section, and flex-child are used to nicely align the
 dashboard section view, Current Courses, Pending and Completed Tasks -->
+<div id="left-half">
+  <form name="currentCourseList" role="form" class="section" method="POST" action="#">
+      <h2 class="title">{{__ "Current Courses"}}</h2>
+      <div class="section-content">
+      <div class="col-xs-6">
+              <ul>
+            {{#each courseList}}
+            {{#if Abbreviations}}
+              <li class="list-group-item">
+              <a href="/course_page/{{CourseID}}">{{Abbreviations}} - {{Name}}</a>
+              {{else}}
+              <li class="list-group-item">
+              <a href="/course_page/{{CourseID}}">{{Name}}</a>
+            {{/if}}
+              </li>
+              {{else}} <!-- this p tag will be visible if courseList is empty-->
+                <p>{{__ "You currently have no registered courses"}}</p>
+              {{/each}}
+                  </ul>
+          </div>
+      </div>
+  </form>
+</div>
+<div id="right-half">
+  <form name="pendingTaskList" role="form" class="section sectionTable" method="POST" action="#">
+      <h2 class="title">{{__ "Pending Tasks"}}</h2>
+      <div class="section-content">
+      <div class="col-xs-6">
+      <table width="100%" class="sticky-enabled tableheader-processed sticky-table">
+       <thead><tr><th>{{__ "Assignment"}}</th><th>{{__ "Type"}}</th><th>{{__ "Course"}}</th><th>{{__ "Due Date"}}</th> </tr></thead>
+      <tbody>
+        {{#each pendingTasksList}}
+        <tr>
+          <td data-label={{__ 'Assignment'}}>
+            <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
+          </td>
+          <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
+          <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
+          <td data-label={{__ 'Due Date'}}>{{dateFormat EndDate}}</td>
+        <tr>
+          {{/each}}
+      </tbody>
+      </table>
+          </div>
+      </div>
+  </form>
 
-    <form name="currentCourseList" role="form" class="section" method="POST" action="#">
-        <h2 class="title">{{__ "Current Courses"}}</h2>
-        <div class="section-content">
-
-    		<div class="col-xs-6">
-
-            		<ul>
-
-    				  {{#each courseList}}
-              {{#if Abbreviations}}
-      					<li class="list-group-item">
-      					<a href="/course_page/{{CourseID}}">{{Abbreviations}} - {{Name}}</a>
-                {{else}}
-                <li class="list-group-item">
-      					<a href="/course_page/{{CourseID}}">{{Name}}</a>
-              {{/if}}
-    				    </li>
-                {{else}} <!-- this p tag will be visible if courseList is empty-->
-                  <p>{{__ "You currently have no registered courses"}}</p>
-
-                {{/each}}
-
-                    </ul>
-            </div>
-        </div>
-    </form>
-
-{{#if pendingTasksList}} <!-- this div tag will hidden if pendingTasksList is empty-->
-
-    <form name="pendingTaskList" role="form" class="section sectionTable" method="POST" action="#">
-        <h2 class="title">{{__ "Pending Tasks"}}</h2>
-        <div class="section-content">
-
-
-
-    		<div class="col-xs-6">
-
-    		<table width="100%" class="sticky-enabled tableheader-processed sticky-table">
-    		 <thead><tr><th>{{__ "Assignment"}}</th><th>{{__ "Type"}}</th><th>{{__ "Course"}}</th><th>{{__ "Due Date"}}</th> </tr></thead>
-    		<tbody>
-          {{#each pendingTasksList}}
+  <form name="completedTaskList" role="form" class="section sectionTable" method="POST" action="#">
+      <h2 class="title">{{__ "Completed Tasks"}}</h2>
+      <div class="section-content">
+      <div class="col-xs-6">
+        <table width="100%" class="sticky-enabled tableheader-processed sticky-table">
+         <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
+        <tbody>
+          {{#each completedTasksList}}
           <tr>
             <td data-label={{__ 'Assignment'}}>
               <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
@@ -51,51 +64,9 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
             <td data-label={{__ 'Due Date'}}>{{dateFormat EndDate}}</td>
           <tr>
             {{/each}}
-    		</tbody>
-    		</table>
-
-
-
-            </div>
-
-
-
-        </div>
-    </form>
-
-{{/if}}
-{{#if completedTasksList}}  <!-- this div tag will hidden if completedTasksList is empty-->
-    <form name="completedTaskList" role="form" class="section full-width" method="POST" action="#">
-        <h2 class="title">{{__ "Completed Tasks"}}</h2>
-        <div class="section-content">
-
-
-
-    		<div class="col-xs-6">
-          <table width="100%" class="sticky-enabled tableheader-processed sticky-table">
-      		 <thead><tr><th>Assignment</th><th>Type</th><th>Course</th><th>Due Date</th> </tr></thead>
-      		<tbody>
-            {{#each completedTasksList}}
-            <tr>
-              <td data-label={{__ 'Assignment'}}>
-                <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
-              </td>
-              <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
-              <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
-              <td data-label={{__ 'Due Date'}}>{{dateFormat EndDate}}</td>
-            <tr>
-              {{/each}}
-
-    		</tbody>
-    		</table>
-
-
-
-            </div>
-
-
-
-        </div>
-    </form>
-
-{{/if}}
+      </tbody>
+      </table>
+          </div>
+      </div>
+  </form>
+</div>
