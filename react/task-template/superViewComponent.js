@@ -112,7 +112,7 @@ class SuperViewComponent extends React.Component {
       if(this.state.ShowRubric){
           TA_rubric_content = (
             <div>
-              <div className="boldfaces">Task Rubric:</div><div className="regular-text rubric" key={"rubric"}> {this.props.Rubric}</div>
+              <div className="boldfaces">Task Rubric:</div><div className="regular-text rubric" key={"rubric"} dangerouslySetInnerHTML={{ __html: this.props.Rubric}}></div>
             </div>
             );
 
@@ -130,7 +130,7 @@ class SuperViewComponent extends React.Component {
     if(this.props.Instructions != null && this.props.Instructions != '' ){
       TA_instructions = (
         <div >
-            <div className="boldfaces">Task Instructions:</div><div className="regular-text instructions">{this.props.Instructions}
+            <div className="boldfaces">Task Instructions:</div><div className="regular-text instructions" dangerouslySetInnerHTML={{ __html: this.props.Instructions}}>
               </div>
 
       </div>);
@@ -159,7 +159,7 @@ class SuperViewComponent extends React.Component {
         let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? field : '';
         let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
         if(this.state.FieldRubrics[idx]){
-          rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>{fieldTitle} Rubric: </b> {this.state.TaskActivityFields[idx].rubric}</div>);
+          rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>{fieldTitle} Rubric: </b><div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].rubric}}></div></div>);
         }
 
         rubricView = ( <div key={1200}>
@@ -178,7 +178,7 @@ class SuperViewComponent extends React.Component {
         instructions = (
           <div key ={1100}>
             <br />
-            <div className="regular-text"><b>{fieldTitle} Instructions:</b> {this.state.TaskActivityFields[idx].instructions}</div>
+            <div className="regular-text"><b>{fieldTitle} Instructions:</b> <div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].instructions}}></div></div>
             <br />
           </div>
         );
@@ -189,19 +189,19 @@ class SuperViewComponent extends React.Component {
           justification = (<div key={idx + 655}></div>);
         }
         else{
-          justification = (<div key={idx + 655} className="faded-big">{this.state.TaskData[idx][1]}</div>)
+          justification = (<div key={idx + 655} className="faded-big" dangerouslySetInnerHTML={{ __html: this.state.TaskData[idx][1]}}></div>)
         }
       }
 
       if(this.state.TaskActivityFields[idx].field_type == "text"){
         contentView = (
           <div className="field-content" key={idx + 1000}>
-            <div key={idx} className="faded-big"> {this.state.TaskData[idx][0]}
+            <div key={idx} className="faded-big" dangerouslySetInnerHTML={{ __html: this.state.TaskData[idx][0]}}>
             </div>
           </div>
         );
       }
-      else if(this.state.TaskActivityFields[idx].field_type== "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
+      else if(this.state.TaskActivityFields[idx].field_type == "assessment" || this.state.TaskActivityFields[idx].field_type == "self assessment"){
 
         if(this.state.TaskActivityFields[idx].assessment_type == "grade"){
           contentView = (

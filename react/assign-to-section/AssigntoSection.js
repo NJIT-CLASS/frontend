@@ -93,7 +93,7 @@ class AssignToSectionContainer extends React.Component
               Name: task.name,
               StartNow:true,
               StartLater:false,
-              Time:0,
+              Time:4320,
               TimeArray:[]
             };
           }, this);

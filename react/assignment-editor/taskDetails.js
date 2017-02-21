@@ -80,13 +80,10 @@ class TaskDetailsComponent extends React.Component{
       let removeButtonTipText="Remove";
       let title = this.state.NewTask ? (this.props.TaskActivityData.TA_display_name) : (this.props.TaskActivityData.TA_display_name);
 
-      if(!this.state.ShowContent){
+      if(!this.props.isOpen){
         return (
           <div className="section card-1" key={"Mini View of Task " + this.props.index}>
-              <h2 className="title" onClick={() => {
-                  this.setState({ShowContent: this.state.ShowContent ? false : true,
-                                 NewTask: false});
-                               }}
+              <h2 className="title" onClick={this.props.changeSelectedTask.bind(this, this.props.index)}
                 >{title}</h2>
             </div>);
       }
@@ -832,8 +829,7 @@ class TaskDetailsComponent extends React.Component{
 
       return (
         <div  key={"Main View of Task " + this.props.index + " in " + this.props.workflowIndex} className="section card-1">
-            <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true,
-                                                                 NewTask: false});}} >{title}</h2>
+            <h2 className="title" onClick={this.props.changeSelectedTask.bind(this, this.props.index)} >{title}</h2>
               <div className="section-content">{/* this decides whether to hide the content or not. task-hiding displays nothing*/}
                 <div className="section-divider">
                   <div className="inner">

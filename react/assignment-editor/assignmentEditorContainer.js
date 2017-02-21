@@ -9,6 +9,7 @@ import React from 'react';
 import request from 'request';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
+
 var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
 let FlatToNested = require('flat-to-nested');
 let flatToNested = new FlatToNested();
@@ -780,8 +781,6 @@ class AssignmentEditorContainer extends React.Component {
           }
         };
 
-
-
         this.completeTask = {
           TA_display_name: 'Complete',
           TA_type: TASK_TYPES.COMPLETED,
@@ -1127,7 +1126,7 @@ class AssignmentEditorContainer extends React.Component {
             json: true
         };
 
-        /*request(options, (err, res, body) => {
+        request(options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
                 this.setState({SubmitSuccess: true, SubmitButtonShow: false});
@@ -1135,7 +1134,9 @@ class AssignmentEditorContainer extends React.Component {
                 console.log('Submit failed');
                 this.setState({SubmitError: true});
             }
-        });*/
+
+        });
+        window.scrollTo(0, 0);
     }
     ///////////////////////////////////////////////////////////////////////////
     ////////////// Tree Methods //////////////////////////////////////////////
@@ -1595,7 +1596,6 @@ class AssignmentEditorContainer extends React.Component {
 
          return workflowData;
     }
-
 
     addFieldButton(taskIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
@@ -2268,9 +2268,9 @@ class AssignmentEditorContainer extends React.Component {
 
     ///---------------------------------------------------------------------------
 
-    // changeSelectedTask(val){ //if ever want to implement single task-based view
-    //     this.setState({SelectedTask: val});
-    //   }
+    changeSelectedTask(val){ //if ever want to implement single task-based view
+        this.setState({SelectedTask: val});
+      }
 
     render() {
         let infoMessage = null;
@@ -2334,7 +2334,7 @@ class AssignmentEditorContainer extends React.Component {
                             tV.push(<TaskDetailsComponent key={index + "-" + node.model.id} index={node.model.id}
                             workflowIndex={index}
                             LastTaskChanged={this.state.LastTaskChanged}
-                            TaskActivityData={task} isOpen={false}
+                            TaskActivityData={task} isOpen={this.state.SelectedTask == node.model.id}
                             changeNumericData={this.changeNumericData.bind(this)}
                             changeInputData={this.changeInputData.bind(this)}
                             changeDropdownData={this.changeDropdownData.bind(this)}
@@ -2364,6 +2364,7 @@ class AssignmentEditorContainer extends React.Component {
                             setDefaultField={this.setDefaultField.bind(this)}
                             getConsolidateValue={this.getConsolidateValue.bind(this)}
                             getTriggerConsolidationThreshold={this.getTriggerConsolidationThreshold.bind(this)}
+                            changeSelectedTask={this.changeSelectedTask.bind(this)}
                             />);
                         }
                      }

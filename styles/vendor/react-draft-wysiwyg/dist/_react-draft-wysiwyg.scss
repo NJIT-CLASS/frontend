@@ -939,12 +939,14 @@
 }
 .rdw-editor-main {
   height: 100%;
-  width: 100%;
+  padding: 6px 1%;
+  width: 98%;
   overflow: auto;
   box-sizing: content-box;
+  background-color: white;
 }
 .rdw-editor-toolbar {
-  padding: 6px 5px 0;
+  padding: 6px 6px;
   border-radius: 2px;
   border: 1px solid #F1F1F1;
   display: -webkit-box;
@@ -953,12 +955,11 @@
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-  width: 100%;
+  width: 99%;
   background: white;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   font-size: 15px;
-  margin-bottom: 5px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
