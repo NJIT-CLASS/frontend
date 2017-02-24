@@ -25,16 +25,17 @@ class AssignmentDetailsComponent extends React.Component{
     }
 
     render(){
+      let strings = this.props.Strings;
       let coursesView = null;
       let semesterView = null;
 
       let semesterList = this.props.Semesters;
       let courseList = this.props.Courses;
-      let problemTypeList = [{value: 'essay',label:'Essay'},{value:'homework',label:'Homework'},{value:'quiz',label:'Quiz'},{value:'lab',label:'Lab'},{value:'other',label:'Other'}];
+      let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
 
       semesterView = (
         <div className="inner">
-          <label>Restrict to a Semester</label>
+          <label>strings.RestrictToSemester</label>
           <Select options={semesterList}
              value={this.props.AssignmentActivityData.AA_semester}
             onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
@@ -46,10 +47,10 @@ class AssignmentDetailsComponent extends React.Component{
 
       if(this.props.Courses){
       coursesView = (<div>
-          <label>Course</label>
+          <label>{strings.Course}</label>
           <Select options={courseList}
                   value={this.props.AssignmentActivityData.AA_course}
-                  placeholder={"Select a Course"}
+                  placeholder={strings.SelectACourse}
                   onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
                   clearable={false}
                   searchable={false}
@@ -60,15 +61,15 @@ class AssignmentDetailsComponent extends React.Component{
 
       return (
         <div className="section card-1" >
-          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} Parameters</h2>
+          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} {strings.Parameters}</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className="section-divider">
               <div className="inner">
-                <label >Assignment Name</label>
-                <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Here is the name for this assignment' data-for='test'></i>
+                <label>{strings.AssignmentName}</label>
+                <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.HereIsNameForAssignment} data-for='test'></i>
                   <ReactTooltip id='test' effect='solid' />
                 <br />
-                <input placeholder="Name" type="text" value={this.props.AssignmentActivityData.AA_name}
+                <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
                   ></input>
               </div>
@@ -78,7 +79,7 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               <div className="inner">
-                <label>Assignment Type</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip='Specify a type' data-for='AA_type'></i>
+                <label>{strings.AssignmentType}</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.SpecifyType} data-for='AA_type'></i>
                   <ReactTooltip id='AA_type' effect='solid'/>
                 <Select options={problemTypeList}
                   value={this.props.AssignmentActivityData.AA_type}
@@ -90,7 +91,7 @@ class AssignmentDetailsComponent extends React.Component{
 
                {/*set numericinput max to real world limit of numebr of max problems*/}
               <div className='inner'>
-                <label> How Many Different Types of Problems</label>
+                <label>{strings.HowManyDifferentTypesOfProblems}</label>
                 <br />
                 <NumberField min={1}
                             max={100}
@@ -100,9 +101,9 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               <div className="inner block">
-                <label>Instructions</label>
+                <label>{strings.Instructions}</label>
                 <br />
-                <textarea placeholder="Instructions" className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
+                <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
               </div>
 

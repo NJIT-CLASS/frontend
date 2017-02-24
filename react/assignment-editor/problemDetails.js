@@ -24,7 +24,8 @@ class ProblemDetailsComponent extends React.Component{
     }
 
     render(){
-      let problemTypeValues=[{value: 'essay', label: 'Essay'}, {value: 'multiple_choice', label: 'Multiple Choice'}, {value: 'short_answer' ,label: 'Short Answer'},{value: 'program', label: 'Computer Program'}];
+      let strings = this.props.Strings;
+      let problemTypeValues=[{value: 'essay', label: strings.Essay}, {value: 'multiple_choice', label: strings.MultipleChoice}, {value: 'short_answer' ,label: strings.ShortAnswer },{value: 'program', label: strings.ComputerProgram}];
       let gradingTasks = this.mapTasksToOptions();
 
       let gradeDistView = null;
@@ -48,13 +49,13 @@ class ProblemDetailsComponent extends React.Component{
       if(this.props.NumberofWorkflows > 1){
         multipleWorkflowsView = (<div>
           <div className='inner'>
-            <label>Problem Name</label>
+            <label>{strings.ProblemName}</label>
             <br />
-            <input type="text" placeholder="Name" value={this.props.WorkflowDetails.WA_name} onChange={this.props.changeWorkflowInputData.bind(this, 'WA_name', this.props.workflowIndex)}/>
+            <input type="text" placeholder={strings.Name} value={this.props.WorkflowDetails.WA_name} onChange={this.props.changeWorkflowInputData.bind(this, 'WA_name', this.props.workflowIndex)}/>
           </div>
 
           <div className='inner'>
-            <label>Problem Type</label>
+            <label>{strings.ProblemType}</label>
             <Select options={problemTypeValues}
                       value={this.props.WorkflowDetails.WA_type}
                       onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
@@ -64,9 +65,9 @@ class ProblemDetailsComponent extends React.Component{
           </div>
           <br />
           <div className='inner block'>
-            <label>Description</label>
+            <label>{strings.Description}</label>
             <br />
-            <textarea className="big-text-field" placeholder="Description"
+            <textarea className="big-text-field" placeholder={strings.Description}
                       value={this.props.WorkflowDetails.WA_documentation}
                       onChange={this.props.changeWorkflowInputData.bind(this,"WA_documentation",this.props.workflowIndex)} ></textarea>
           </div>
@@ -78,14 +79,14 @@ class ProblemDetailsComponent extends React.Component{
 
       return (
         <div className="section card-1">
-          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} Parameters</h2>
+        <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} {strings.Parameters}</h2>
           <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
             <div className='section-divider'>
 
               {multipleWorkflowsView}
 
               <div className='inner'>
-                <label>How many people per group</label>
+                <label>{strings.HowManyPeoplePerGroup}</label>
                 <br />
                 <NumberField min={1}
                               max={25}
@@ -94,7 +95,7 @@ class ProblemDetailsComponent extends React.Component{
               </div>
 
               <div className='inner'>
-                <label>How many problems of this type</label>
+                <label>{strings.HowManyProblems}</label>
                 <br />
                   <NumberField min={1}
                                 max={20}

@@ -97,7 +97,7 @@ if(templateContainerEl){
   const sectionId= templateContainerEl.dataset.sectionId;
   const courseId = templateContainerEl.dataset.courseId;
 
-  ReactDOM.render(<TemplateContainer SectionID={sectionId} CourseID={courseId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} __={translationFunction}/>, templateContainerEl);
+  ReactDOM.render(<TemplateContainer SectionID={sectionId} CourseID={courseId} UserID={userId} apiUrl={apiUrl} TaskID={taskId} __={translationFunction} />, templateContainerEl);
 }
 
 const assignmentEditorContainerEl = document.getElementById('assignment-editor-container');
@@ -106,7 +106,7 @@ if(assignmentEditorContainerEl){
   const userId = assignmentEditorContainerEl.dataset.userId;
   const courseId = assignmentEditorContainerEl.dataset.courseId;
   const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
-  ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl}/>,assignmentEditorContainerEl);
+  ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction} />,assignmentEditorContainerEl);
 }
 const assignToSectionContainerEl = document.getElementById('assign-to-section-container');
 
