@@ -44,6 +44,7 @@
     "react-star-rating-component": "^1.2.4",
     "react-tabs": "^0.8.2",
     "react-tooltip": "^3.2.6",
+    "reactable": "^0.14.1",
     "redis": "^2.6.5",
     "request": "^2.79.0",
     "tree-model": "^1.0.6"

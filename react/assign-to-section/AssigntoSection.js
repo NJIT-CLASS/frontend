@@ -31,14 +31,14 @@ class AssignToSectionContainer extends React.Component
         StartLater:false,
         Section:[],
         Semester: null,
-        Time:0,
+        Time:moment().format('YYYY-MM-DD HH:mm:ss'),
         AssigmentName:""
       },
       WorkFlow:[{
         id: null,
-        StartNow:false,
+        StartNow:true,
         StartLater:false,
-        Time:0,
+        Time:moment().format('YYYY-MM-DD HH:mm:ss'),
         Tasks:[{ID: 1,
           Name: "Krispy Kreme",
           StartNow:false,

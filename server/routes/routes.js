@@ -36,8 +36,9 @@ const pages = [
     'assignment-editor',
     'assign-to-section',
     'course-assignments',
-    'testing-ground'
-    //'all-users'
+    'testing-ground',
+    //'all-users',
+    'task-status-table'
 ];
 
 var pageConfigs = [];
