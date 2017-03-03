@@ -61,6 +61,16 @@ class TaskDetailsComponent extends React.Component {
 
     }
 
+    doesTaskHaveAssessmentFields(){
+      let hasAssessment = false;
+      this.props.TaskActivityData.TA_fields.field_titles.forEach((field, index) => {
+          if(this.props.TaskActivityData.TA_fields[index].field_type == 'assessment' ||  this.props.TaskActivityData.TA_fields[index].assessment_type == 'self assessment'){
+
+            hasAssessment =  true;
+          }
+      });
+      return hasAssessment;
+    }
     showAssigneeSection(key) {
         if (this.props.TaskActivityData.TA_assignee_constraints[2][key] === undefined) {
             return false;
@@ -551,17 +561,18 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
+
             //TA_allow_reflection
             let allowReflectionOptions = null;
             if (this.props.TaskActivityData.TA_allow_reflection[0] != 'none') {
-                let showDispute = (
+                let showDispute = this.doesTaskHaveAssessmentFields() ? (
                     <div>
                         <label>
                             {strings.CanStudentsDisputeReflection}
                         </label>
                         <Checkbox isClicked={this.props.canDispute(this.props.index, this.props.workflowIndex, true)} click={this.props.changeDataCheck.bind(this, "Reflect_Dispute", this.props.index, this.props.workflowIndex)}/>
                     </div>
-                );
+                ) : null;
                 let consolidateOptions = this.props.canConsolidate(this.props.index, this.props.workflowIndex, true)
                     ? (
                         <div>

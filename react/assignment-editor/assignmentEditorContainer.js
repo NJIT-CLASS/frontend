@@ -958,7 +958,9 @@ class AssignmentEditorContainer extends React.Component {
     makeSubWorkflows(root, workflowArray, workflowIndex){
       let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
       let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
-      let consolDispClass = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
+      let consolClass = [TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPES.CONSOLIDATION];
+      let disputeClass = [TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
+      let consolDispClass = [...consolClass, ...disputeClass];
 
       root.walk(function(node){
         if(node.model.id == -1){

@@ -40,7 +40,6 @@ module.exports = function(redisClient: any): {} {
                 client.hexists(key, 'en', (err, result) => {
                     if (result === 0) {
                         return client.hset(key, 'en', str, (err, result) => {
-                            console.log('here2');
                             client.hset(key, language, translatedStr);
                         });
                     }
