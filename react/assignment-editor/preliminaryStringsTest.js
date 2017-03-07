@@ -28,7 +28,7 @@ let strings = {
     ShowAdvancedOptions : "Show Advanced Options",
     ShouldTaskEndAtCertainTime: "Should this task end at a certain time",
     ExpireAfter: "Expire After",
-    EndAtThisTime: "End at this time",
+    EndAtThisTime: "End at a specific time",
     DelayBeforeStartingTask: "Delay before starting task",
     StartWhenPriorTaskIsComplete : "Start when prior task is complete",
     StartAfterPriorTaskEndsBy : "Start after prior task ends by",

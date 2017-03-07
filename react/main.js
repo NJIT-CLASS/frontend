@@ -19,7 +19,7 @@ import TemplateContainer from './task-template/TemplateContainer';
 import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';
 import TaskStatusTable from './assignment-records/TaskStatus';
-
+import CourseSectionManagement from './course-section-management/container';
 
 
 let translationFunction = (objOfStrings, cb) => {
@@ -135,4 +135,11 @@ if(assignmentRecordContainer){
   const apiUrl = assignmentRecordContainer.dataset.apiUrl;
   ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} />, assignmentRecordContainer);
 
+}
+
+const courseSectionMgmntContainer = document.getElementById('course-section-management');
+if(courseSectionMgmntContainer){
+  const userId = courseSectionMgmntContainer.dataset.userId;
+  const apiUrl = courseSectionMgmntContainer.dataset.apiUrl;
+  ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl}/>, courseSectionMgmntContainer);
 }

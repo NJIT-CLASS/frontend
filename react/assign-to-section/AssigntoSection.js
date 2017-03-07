@@ -34,31 +34,6 @@ class AssignToSectionContainer extends React.Component
         Time:moment().format('YYYY-MM-DD HH:mm:ss'),
         AssigmentName:""
       },
-      WorkFlow:[{
-        id: null,
-        StartNow:true,
-        StartLater:false,
-        Time:moment().format('YYYY-MM-DD HH:mm:ss'),
-        Tasks:[{ID: 1,
-          Name: "Krispy Kreme",
-          StartNow:false,
-          StartLater:false,
-          Time:0,
-          TimeArray:[null]
-      }]
-    },{
-      id: null,
-      StartNow:false,
-      StartLater:false,
-      Time:0,
-      Tasks:[{ID: 1,
-        Name: "Krispy Kreme",
-        StartNow:false,
-        StartLater:false,
-        Time:0,
-        TimeArray:[null]
-    }],
-  }],
     Sections: null,
     SubmitSuccess:false,
     SubmitError: false,
@@ -85,6 +60,7 @@ class AssignToSectionContainer extends React.Component
       };
 
       request(options, (err, res, body) => {
+        request(semOptions, (err2, res2, bod2) => {
         let workflows = Object.keys(body.taskActivityCollection).map(function(key){
           let tasks = body.taskActivityCollection[key].map(function(task){
             return {
@@ -94,7 +70,7 @@ class AssignToSectionContainer extends React.Component
               StartNow:true,
               StartLater:false,
               Time:4320,
-              TimeArray:[]
+              TimeArray:["duration", 4320]
             };
           }, this);
 
@@ -102,13 +78,13 @@ class AssignToSectionContainer extends React.Component
             id: key,
             StartNow:true,
             StartLater:false,
-            Time:0,
+            Time:moment().format('YYYY-MM-DD HH:mm:ss'),
             Tasks: tasks
           };
 
         }, this);
 
-        request(semOptions, (err2, res2, bod2) => {
+
           semestersArray = bod2.Semesters.map(function(sem){
             return ( {value: sem.SemesterID, label: sem.Name} );
           });
@@ -123,6 +99,7 @@ class AssignToSectionContainer extends React.Component
             DataLoaded: true
           });
         });
+
        });
   }
 

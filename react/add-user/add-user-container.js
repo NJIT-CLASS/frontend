@@ -34,7 +34,7 @@ class AddUserContainer extends React.Component {
           this.setState({email: email.target.value});
 
   }
-  onChangePass(){ // this function will provide a randomize password
+  onPassGenerator(){ // this function will provide a randomize password
           var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP1234567890!@#$%&";
           var pass = "";
           for (var x = 0; x < 10; x++) {
@@ -44,7 +44,9 @@ class AddUserContainer extends React.Component {
           return this.setState({pass: pass});
   }
 
-
+  onChangePass(event){
+      this.setState({pass: event.target.value});
+  }
 
   adduserSubmit(content){
     content.preventDefault();
@@ -69,12 +71,11 @@ class AddUserContainer extends React.Component {
       });
     }
 
-    console.log('add user', firstname, lastname, email);
+
     const options = {
       method: 'POST',
-      uri: 'http://localhost:4000/api/adduser',
+      uri: this.props.apiUrl + '/api/adduser',
       body: {
-        userid: 1,
         firstname: firstname,
         lastname: lastname,
         email: email,
@@ -85,7 +86,7 @@ class AddUserContainer extends React.Component {
     };
 
     request(options, (err, res, body) => {
-      alert(body.Message);
+      console.log(body.Message);
     });
   }
 
@@ -180,6 +181,7 @@ class AddUserContainer extends React.Component {
                       <input type="text"
                               name="pass"
                               value={this.state.pass}
+                              onChange={this.onChangePass.bind(this)}
                               />
 
 
@@ -187,19 +189,19 @@ class AddUserContainer extends React.Component {
                   </td>
                   <td>
                     <div className="grouped">
-                        <button className="row generate-pass" type="button" name="generate" onClick={this.onChangePass.bind(this)}>Generate Password</button>
+                        <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>Generate Password</button>
                   </div>
                   </td>
 
                   </tr>
                   <tr><td>
                   <div>
-                    <label>Course Section:</label>
+                    {/*}<label>Course Section:</label>
                     <Select
                       name="section"
                       searchable={false}
                       clearable={false}
-                    />
+                    />*/}
                             </div>
                           </td></tr>
                   </table>
