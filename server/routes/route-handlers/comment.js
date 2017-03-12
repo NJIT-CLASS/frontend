@@ -1,5 +1,5 @@
 exports.get = (req, res) => {
-     res.render('comment', {
+    res.render('comment', {
         title: 'Comment',
         pageHeader: 'Comment'  
 	 });		

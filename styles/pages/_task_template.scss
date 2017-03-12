@@ -9,3 +9,20 @@
       color:#ffffff;
     }
 }
+
+.multi-view-container{
+  overflow-x: auto;
+  box-sizing: border-box;
+  margin: 10px;
+  width:100%;
+  display:flex;
+  flex-flow: row;
+  align-content: space-around;
+  @media screen and (max-width: $mobile-brk) {
+    margin: 3px;
+    width: calc(97vw);
+  }
+  .child{
+    flex: 1 1 20%;
+  }
+}

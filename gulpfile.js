@@ -21,7 +21,7 @@ const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
 
     function rebundle() {
-      bundler.bundle()
+        bundler.bundle()
       .on('error', function(err) {
           gutil.log(err);
           gutil.beep();
@@ -30,14 +30,14 @@ const compileReact = (rootFile, outputName, watch) => {
       .pipe(source(`${outputName}.js`))
       .pipe(buffer())
       .pipe(gulp.dest('./.build/static'));
-  }
+    }
 
     if (watch) {
-      bundler.on('update', function() {
-        console.log(`-> bundling ${outputName}...`);
-        rebundle();
-    });
-  }
+        bundler.on('update', function() {
+            console.log(`-> bundling ${outputName}...`);
+            rebundle();
+        });
+    }
 
     rebundle();
 };
@@ -48,104 +48,104 @@ const watchReact = function() {
 
 gulp.task('create-route', () => {
     const askOnlyIfNotAccessibleLoggedOut = (answers) => {
-      if (answers['logged-out-access']) {
-        return false;
-    }
+        if (answers['logged-out-access']) {
+            return false;
+        }
 
-      return true;
-  };
+        return true;
+    };
 
     const questions = [
-      {
-          type: 'input',
-          name: 'route-endpoint',
-          message: 'route endpoint:',
-          validate: (response) => {
-          if (response.length <= 0) {
-            return 'endpoint needs to be set';
-        }
+        {
+            type: 'input',
+            name: 'route-endpoint',
+            message: 'route endpoint:',
+            validate: (response) => {
+                if (response.length <= 0) {
+                    return 'endpoint needs to be set';
+                }
 
-          if (response[0] !== '/') {
-            return 'endpoint needs to start with a /';
-        }
+                if (response[0] !== '/') {
+                    return 'endpoint needs to start with a /';
+                }
 
-          return true;
-      }
-      },
-      {
-          type: 'input',
-          name: 'page-title',
-          message: 'page title:',
-          validate: (response) => {
-          if (response.length <= 0) {
-            return 'page title needs to be set';
-        }
+                return true;
+            }
+        },
+        {
+            type: 'input',
+            name: 'page-title',
+            message: 'page title:',
+            validate: (response) => {
+                if (response.length <= 0) {
+                    return 'page title needs to be set';
+                }
 
-          return true;
-      }
-      },
-      {
-          type: 'confirm',
-          name: 'logged-out-access',
-          message: 'Should this page be accessible when a user is logged out?:',
-          default: false
-      },
-      {
-          type: 'confirm',
-          name: 'admin-access',
-          message: 'Should admins be allowed access to this page?:',
-          default: true,
-          when: askOnlyIfNotAccessibleLoggedOut
-      },
-      {
-          type: 'confirm',
-          name: 'instructor-access',
-          message: 'Should instructors be allowed access to this page?:',
-          default: true,
-          when: askOnlyIfNotAccessibleLoggedOut
-      },
-      {
-          type: 'confirm',
-          name: 'student-access',
-          message: 'Should students be allowed access to this page?:',
-          default: true,
-          when: askOnlyIfNotAccessibleLoggedOut
-      },
-      {
-          type: 'input',
-          name: 'icon',
-          message: 'Font Awesome icon name (e.g. cog):',
-          default: ''
-      },
-      {
-          type: 'confirm',
-          name: 'show-in-sidebar',
-          message: 'Should this page be shown in the sidebar?',
-          default: false
-      }
-  ];
+                return true;
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'logged-out-access',
+            message: 'Should this page be accessible when a user is logged out?:',
+            default: false
+        },
+        {
+            type: 'confirm',
+            name: 'admin-access',
+            message: 'Should admins be allowed access to this page?:',
+            default: true,
+            when: askOnlyIfNotAccessibleLoggedOut
+        },
+        {
+            type: 'confirm',
+            name: 'instructor-access',
+            message: 'Should instructors be allowed access to this page?:',
+            default: true,
+            when: askOnlyIfNotAccessibleLoggedOut
+        },
+        {
+            type: 'confirm',
+            name: 'student-access',
+            message: 'Should students be allowed access to this page?:',
+            default: true,
+            when: askOnlyIfNotAccessibleLoggedOut
+        },
+        {
+            type: 'input',
+            name: 'icon',
+            message: 'Font Awesome icon name (e.g. cog):',
+            default: ''
+        },
+        {
+            type: 'confirm',
+            name: 'show-in-sidebar',
+            message: 'Should this page be shown in the sidebar?',
+            default: false
+        }
+    ];
 
     return inquirer.prompt(questions).then((answers) => {
 
     // if logged-out-access is true then student, instructor, and admin access should default to true
-      if (answers['student-access'] == null) {
-        answers['student-access'] = true;
-    }
+        if (answers['student-access'] == null) {
+            answers['student-access'] = true;
+        }
 
-      if (answers['instructor-access'] == null) {
-        answers['instructor-access'] = true;
-    }
+        if (answers['instructor-access'] == null) {
+            answers['instructor-access'] = true;
+        }
 
-      if (answers['admin-access'] == null) {
-        answers['admin-access'] = true;
-    }
+        if (answers['admin-access'] == null) {
+            answers['admin-access'] = true;
+        }
 
-      var routeFileName = answers['page-title'].toLowerCase().split(' ').join('-');
+        var routeFileName = answers['page-title'].toLowerCase().split(' ').join('-');
 
-      const routeConfigFilePath = `${__dirname}/server/routes/route-configs/${routeFileName}.js`;
-      const routeHandlerFilePath = `${__dirname}/server/routes/route-handlers/${routeFileName}.js`;
+        const routeConfigFilePath = `${__dirname}/server/routes/route-configs/${routeFileName}.js`;
+        const routeHandlerFilePath = `${__dirname}/server/routes/route-handlers/${routeFileName}.js`;
 
-      const configContents =
+        const configContents =
 `const handler = require('../route-handlers/${routeFileName}');
 
 module.exports = {
@@ -163,33 +163,37 @@ module.exports = {
 };
 `;
 
-      const routeContents =
-`exports.get = (req, res) => {
+        const routeContents =
+`
+exports.get = (req, res) => {
+    if(req.App.user === undefined){
+      res.redirect('/');
+    }
     res.status(405).end();
 };
 `;
 
-      fs.writeFileSync(routeConfigFilePath, configContents);
-      fs.writeFileSync(routeHandlerFilePath, routeContents);
+        fs.writeFileSync(routeConfigFilePath, configContents);
+        fs.writeFileSync(routeHandlerFilePath, routeContents);
 
-      const routesFileName = `${__dirname}/server/routes/routes.js`;
+        const routesFileName = `${__dirname}/server/routes/routes.js`;
 
-      const currentRoutesContents = fs.readFileSync(routesFileName);
-      var initialPieces = currentRoutesContents.toString().split('const pages = [');
-      var secondPiecesPieces = initialPieces[1].split('\n]');
+        const currentRoutesContents = fs.readFileSync(routesFileName);
+        var initialPieces = currentRoutesContents.toString().split('const pages = [');
+        var secondPiecesPieces = initialPieces[1].split('\n]');
 
-      const newPagesArrayContents =
+        const newPagesArrayContents =
 `${secondPiecesPieces[0]},
     '${routeFileName}'`;
 
-      secondPiecesPieces[0] = newPagesArrayContents;
-      initialPieces[1] = secondPiecesPieces.join('\n]');
-      const routesWithNewRoute = initialPieces.join('const pages = [');
+        secondPiecesPieces[0] = newPagesArrayContents;
+        initialPieces[1] = secondPiecesPieces.join('\n]');
+        const routesWithNewRoute = initialPieces.join('const pages = [');
 
-      fs.writeFileSync(routesFileName, routesWithNewRoute);
+        fs.writeFileSync(routesFileName, routesWithNewRoute);
 
-      gutil.log(`Endpoint created. Handler at ${routeHandlerFilePath}`);
-  });
+        gutil.log(`Endpoint created. Handler at ${routeHandlerFilePath}`);
+    });
 });
 
 gulp.task('node-babel', () => {
@@ -250,10 +254,10 @@ gulp.task('react:watch', () => {
 
 gulp.task('start', ['node-babel'], function () {
     nodemon({
-      script: '.build/server.js',
-      ext: 'js html',
-      ignore: ['react/*', 'styles/*']
-  });
+        script: '.build/server.js',
+        ext: 'js html',
+        ignore: ['react/*', 'styles/*']
+    });
 });
 
 gulp.task('build-server', ['node-babel', 'build-views', 'setup-static']);
@@ -261,57 +265,57 @@ gulp.task('build-server', ['node-babel', 'build-views', 'setup-static']);
 gulp.task('build-assets', ['sass', 'react:compile']);
 
 gulp.task('clean:build', () => {
-  return del([argv.location + '/**/*'], {force: true});
+    return del([argv.location + '/**/*'], {force: true});
 });
 
 gulp.task('move:server-build', () => {
-  const dest = gulp.dest(argv.location + '/server');
-  return gulp.src(['.build/**/*'])
+    const dest = gulp.dest(argv.location + '/server');
+    return gulp.src(['.build/**/*'])
   .pipe(dest);
 });
 
 gulp.task('move:config-build', () => {
-  return gulp.src(['package.json'])
+    return gulp.src(['package.json'])
   .pipe(gulp.dest(argv.location))
   .pipe(install({production: true}));
 });
 
 gulp.task('generate:build-fallback-settings', () => {
-  const questions = [
-    {
-        type: 'input',
-        name: 'redis-secret',
-        message: 'redis secret (the secret string for cookies stored in Redis):'
-    },
-    {
-        type: 'input',
-        name: 'redis-host',
-        message: 'redis host (hostname or location of Redis):'
-    },
-    {
-        type: 'input',
-        name: 'redis-port',
-        message: 'redis port:'
-    },
-    {
-        type: 'input',
-        name: 'redis-auth',
-        message: 'redis auth (password for Redis server):'
-    },
-    {
-        type: 'input',
-        name: 'server-port',
-        message: 'server port (local port that frontend server will run on):'
-    },
-    {
-        type: 'input',
-        name: 'api-url',
-        message: 'API url (full http://<host>:<port> url of backend server):'
-    },
-  ];
+    const questions = [
+        {
+            type: 'input',
+            name: 'redis-secret',
+            message: 'redis secret (the secret string for cookies stored in Redis):'
+        },
+        {
+            type: 'input',
+            name: 'redis-host',
+            message: 'redis host (hostname or location of Redis):'
+        },
+        {
+            type: 'input',
+            name: 'redis-port',
+            message: 'redis port:'
+        },
+        {
+            type: 'input',
+            name: 'redis-auth',
+            message: 'redis auth (password for Redis server):'
+        },
+        {
+            type: 'input',
+            name: 'server-port',
+            message: 'server port (local port that frontend server will run on):'
+        },
+        {
+            type: 'input',
+            name: 'api-url',
+            message: 'API url (full http://<host>:<port> url of backend server):'
+        },
+    ];
 
-  return inquirer.prompt(questions).then((answers) => {
-    const content =
+    return inquirer.prompt(questions).then((answers) => {
+        const content =
 `
 exports.REDIS_SECRET = '${answers['redis-secret']}';
 exports.REDIS_HOST = '${answers['redis-host']}';
@@ -320,47 +324,47 @@ exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
 exports.API_URL = '${answers['api-url']}';
 `;
-    return file('fallback_settings.js', content)
+        return file('fallback_settings.js', content)
     .pipe(gulp.dest(argv.location));
-  });
+    });
 });
 
 gulp.task('generate:fallback-settings', () => {
-  const questions = [
-    {
-        type: 'input',
-        name: 'redis-secret',
-        message: 'redis secret (the secret string for cookies stored in Redis):'
-    },
-    {
-        type: 'input',
-        name: 'redis-host',
-        message: 'redis host (hostname or location of Redis):'
-    },
-    {
-        type: 'input',
-        name: 'redis-port',
-        message: 'redis port:'
-    },
-    {
-        type: 'input',
-        name: 'redis-auth',
-        message: 'redis auth (password for Redis server):'
-    },
-    {
-        type: 'input',
-        name: 'server-port',
-        message: 'server port (local port that frontend server will run on):'
-    },
-    {
-        type: 'input',
-        name: 'api-url',
-        message: 'API url (full http://<host>:<port> url of backend server):'
-    },
-  ];
+    const questions = [
+        {
+            type: 'input',
+            name: 'redis-secret',
+            message: 'redis secret (the secret string for cookies stored in Redis):'
+        },
+        {
+            type: 'input',
+            name: 'redis-host',
+            message: 'redis host (hostname or location of Redis):'
+        },
+        {
+            type: 'input',
+            name: 'redis-port',
+            message: 'redis port:'
+        },
+        {
+            type: 'input',
+            name: 'redis-auth',
+            message: 'redis auth (password for Redis server):'
+        },
+        {
+            type: 'input',
+            name: 'server-port',
+            message: 'server port (local port that frontend server will run on):'
+        },
+        {
+            type: 'input',
+            name: 'api-url',
+            message: 'API url (full http://<host>:<port> url of backend server):'
+        },
+    ];
 
-  return inquirer.prompt(questions).then((answers) => {
-    const content =
+    return inquirer.prompt(questions).then((answers) => {
+        const content =
 `
 exports.REDIS_SECRET = '${answers['redis-secret']}';
 exports.REDIS_HOST = '${answers['redis-host']}';
@@ -369,13 +373,13 @@ exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
 exports.API_URL = '${answers['api-url']}';
 `;
-    return file('fallback_settings.js', content)
+        return file('fallback_settings.js', content)
     .pipe(gulp.dest(__dirname));
-  });
+    });
 });
 
 gulp.task('build-production', () => {
-  return runSequence(['build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
+    return runSequence(['build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
 });
 
 gulp.task('default', [

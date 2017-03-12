@@ -17,7 +17,6 @@ class MutliViewComponent extends React.Component {
 
     this.state = {
       TaskStatus:"",
-      HideDisputeButton: this.props.HideDisputeButton ? true: false,
       Error:false
     };
   }
@@ -40,50 +39,47 @@ class MutliViewComponent extends React.Component {
     let tableStyle = {
       backfaceVisibility: 'hidden'
     }
-    let disputeButton = (<button type="button" className="dispute animate fadeInUp" onClick={()=>{location.href = '/task/'+ TASK_TYPES.DISPUTE+'/'+this.props.TaskID}}> Dispute Grade </button>);
-    if(this.state.HideDisputeButton || this.state.TaskStatus == "Complete"){
-      disputeButton=null;
-    }
-
-    console.log("In multiViewComponent:", this.props.UsersTaskData)
-
 
     if( !this.state.Error){
       gradesView = this.props.UsersTaskData.map(function(task, index){
         let compString = null;
 
         switch (task.TaskActivity.Type) {
-            case TASK_TYPES.CREATE_PROBLEM:
-                compString = "Create the Problem";
-                break;
-            case TASK_TYPES.EDIT:
-                compString = "Edit the Problem";
-                break;
-            case TASK_TYPES.SOLVE_PROBLEM:
-                compString = "Solve the Problem";
-                break;
-            case TASK_TYPES.GRADE_PROBLEM:
-                compString = "Grade the Solution";
-                break;
-            case TASK_TYPES.CONSOLIDATION:
-                compString = "Consolidate the Grades";
-                break;
-            case TASK_TYPES.DISPUTE:
-                compString = "Dispute Your Grade";
-                break;
-            case TASK_TYPES.RESOLVE_DISPUTE:
-                compString = "Resolve the Dispute";
-                break;
-            default:
-                compString = "";
-                break;
+          case TASK_TYPES.CREATE_PROBLEM:
+              compString = this.props.Strings.CreateProblemTitle;
+              break;
+          case TASK_TYPES.EDIT:
+              compString = this.props.Strings.EditProblemTitle;
+              break;
+          case TASK_TYPES.COMMENT:
+              compString = this.props.Strings.CommentTitle
+          case TASK_TYPES.SOLVE_PROBLEM:
+              compString = this.props.Strings.SolveProblemTitle;
+              break;
+          case TASK_TYPES.GRADE_PROBLEM:
+              compString = this.props.Strings.GradeProblemTitle;
+              break;
+          case TASK_TYPES.CRITIQUE:
+              compString = this.props.Strings.CritiqueTitle;
+          case TASK_TYPES.CONSOLIDATION:
+              compString = this.props.Strings.ConsolidateProblemTitle;
+              break;
+          case TASK_TYPES.DISPUTE:
+              compString = this.props.Strings.DisputeGradeTitle;
+              break;
+          case TASK_TYPES.RESOLVE_DISPUTE:
+              compString = this.props.Strings.ResolveDisputeTitle;
+              break;
+          default:
+              compString = "";
+              break;
         }
 
 
           return(
             <div className="child" key={index +500}>
               <SuperViewComponent key={index + 2000} index={index}
-                ComponentTitle={compString} 
+                ComponentTitle={compString}
                 TaskData={task.Data}
                 Instructions={task.TaskActivity.Instructions}
                 Rubric={task.TaskActivity.Rubric}
@@ -100,11 +96,7 @@ class MutliViewComponent extends React.Component {
   return(<div>
           <div className="multi-view-container animate fadeInUp">
             {gradesView}
-
-            <br />
-
           </div>
-          {disputeButton}
         </div>
       );
 

@@ -1,3 +1,10 @@
+function addQuery(str) {
+    console.log(str, 'Clicked in translation');
+    window.location.search += '&' + str;
+}
+
+
+
 document.onload = function() {
     js = {};
 
@@ -16,11 +23,11 @@ document.onload = function() {
 
             if (this.dataset.onclick) {
                 function toggleClick(value, userId) {
-                    fetch('http://localhost:4000/api/change-admin-status', {  
-                        method: 'post',  
-                        headers: {  
-                          "Content-type": "application/json"  
-                        },  
+                    fetch('http://localhost:4000/api/change-admin-status', {
+                        method: 'post',
+                        headers: {
+                            'Content-type': 'application/json'
+                        },
                         body: JSON.stringify({
                             'userId': userId,
                             'makeAdmin': true

@@ -25,7 +25,6 @@
         table th, table td {
             padding: 10px;
             text-align: center;
-            max-width: 250px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -37,11 +36,19 @@
             letter-spacing: 1px;
         }
 
+        @media screen and (min-width: $mobile-brk){
+          table th, table td{
+            max-width: 200px;
+          }
+        }
+
         @media screen and (max-width: $mobile-brk) {
             table {
-              width: calc(100% - 45px);
               border:  0;
-              padding: 0px 20px;
+              padding: 0px 2px;
+            }
+            table tbody{
+              width: 100%;
             }
 
             table thead {
@@ -69,7 +76,8 @@
                 display: block;
                 float: left;
                 clear: left;
-                width: 100%;
+                min-width: calc(100% - 20px);
+                max-width: calc(100% - 20px);
                 text-align: right;
                 font-size: 13px;
                 border: 0;

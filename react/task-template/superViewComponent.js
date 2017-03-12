@@ -101,7 +101,7 @@ class SuperViewComponent extends React.Component {
     let content = null;
     let TA_rubric = null;
     let TA_instructions = null;
-    let TA_rubricButtonText = this.state.ShowRubric ? "Hide Task Rubric" : "Show Task Rubric";
+    let TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
 
     if(this.state.Error){ // if there was an error loading the data, show an Error component
         return(<ErrorComponent />);
@@ -112,7 +112,7 @@ class SuperViewComponent extends React.Component {
       if(this.state.ShowRubric){
           TA_rubric_content = (
             <div>
-              <div className="boldfaces">Task Rubric:</div><div className="regular-text rubric" key={"rubric"} dangerouslySetInnerHTML={{ __html: this.props.Rubric}}></div>
+              <div className="boldfaces">{this.props.Strings.TaskRubric}</div><div className="regular-text rubric" key={"rubric"} dangerouslySetInnerHTML={{ __html: this.props.Rubric}}></div>
             </div>
             );
 
@@ -130,7 +130,7 @@ class SuperViewComponent extends React.Component {
     if(this.props.Instructions != null && this.props.Instructions != '' ){
       TA_instructions = (
         <div >
-            <div className="boldfaces">Task Instructions:</div><div className="regular-text instructions" dangerouslySetInnerHTML={{ __html: this.props.Instructions}}>
+            <div className="boldfaces">{this.props.Strings.TaskInstructions}</div><div className="regular-text instructions" dangerouslySetInnerHTML={{ __html: this.props.Instructions}}>
               </div>
 
       </div>);
@@ -147,7 +147,7 @@ class SuperViewComponent extends React.Component {
 
       if(this.state.TaskActivityFields[idx].show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
         if(this.state.TaskActivityFields[idx].assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
-          fieldTitle = title +" Grade";
+          fieldTitle = title + " " + this.props.Strings.Grade;
         }
         else{
           fieldTitle = title;
@@ -157,9 +157,9 @@ class SuperViewComponent extends React.Component {
       if(this.state.TaskActivityFields[idx].rubric != ''){ //if Rubric is empty, don't show anything
         let rubric_content = null;
         let buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? field : '';
-        let rubricButtonText = this.state.FieldRubrics[idx] ? ("Hide " + buttonTextHelper + " Rubric") : ("Show " + buttonTextHelper + " Rubric");
+        let rubricButtonText = this.state.FieldRubrics[idx] ?  this.props.Strings.HideRubric : this.props.Strings.ShowRubric;
         if(this.state.FieldRubrics[idx]){
-          rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>{fieldTitle} Rubric: </b><div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].rubric}}></div></div>);
+          rubric_content = (<div className="regular-text" key={this.state.TaskActivityFields[idx].title}><b>{fieldTitle} {this.props.Strings.Rubric}: </b><div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].rubric}}></div></div>);
         }
 
         rubricView = ( <div key={1200}>
@@ -178,7 +178,7 @@ class SuperViewComponent extends React.Component {
         instructions = (
           <div key ={1100}>
             <br />
-            <div className="regular-text"><b>{fieldTitle} Instructions:</b> <div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].instructions}}></div></div>
+            <div className="regular-text"><b>{fieldTitle} {this.props.Strings.Instructions}</b> <div dangerouslySetInnerHTML={{ __html: this.state.TaskActivityFields[idx].instructions}}></div></div>
             <br />
           </div>
         );

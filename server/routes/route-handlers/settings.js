@@ -1,4 +1,7 @@
 exports.get = (req, res) => {
+    if(req.App.user === undefined){
+        res.redirect('/');
+    }
     res.render('settings', {
         userId: req.App.user.userId,
         userEmail: req.App.user.email,
@@ -25,11 +28,11 @@ exports.post = (req, res) => {
         req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
             // if(body.Message=='Success') {       // success
                 // TODO: check contents of reply to see if name change actually succeeded
-                options.statuscode = statusCode;
-                options.namechangesucceeded = true;
-                options.userFirstName = body.FirstName;
-                options.userLastName = body.LastName;
-                res.render('settings', options);
+            options.statuscode = statusCode;
+            options.namechangesucceeded = true;
+            options.userFirstName = body.FirstName;
+            options.userLastName = body.LastName;
+            res.render('settings', options);
             // }
             // else {                  // error
             //     options.statuscode = statusCode;
@@ -43,10 +46,10 @@ exports.post = (req, res) => {
         req.App.api.put('/update/email', {userid: req.App.user.userId, email:req.body.field_newEmail, password:req.body.field_password}, (err, statusCode, body) => {
             // console.log(err, statusCode)
             // if(body.Message=='Success') {       // success
-                options.emailchangesucceeded = true;
-                options.userEmail = req.body.field_newEmail;
-                options.statuscode = statusCode;
-                res.render('settings', options);
+            options.emailchangesucceeded = true;
+            options.userEmail = req.body.field_newEmail;
+            options.statuscode = statusCode;
+            res.render('settings', options);
             // }
             // else {                      // error
             //     options.emailchangefailed = true;
@@ -75,10 +78,10 @@ exports.post = (req, res) => {
 
         // If the "confirm password" doesn't match the new password entered, then alert the user and abort the operation
         if (req.body.field_newPassword != req.body.field_confirmNewPassword) {
-          options.passwordchangesucceeded = true;
-          res.render('settings', options);
+            options.passwordchangesucceeded = true;
+            res.render('settings', options);
             return;
-         }
+        }
 
         req.App.api.put('/update/password', {userId: req.App.user.userId, newPasswd:req.body.field_newPassword, oldPasswd :req.body.field_currentPassword}, (err, statusCode, body) => {
             if(statusCode==200) {       // success
@@ -97,8 +100,8 @@ exports.post = (req, res) => {
     else if (req.body.what_was_changed=='upload-img') {
 
 
-      options.onlyPNG  = true;
-      res.render('settings', options);
+        options.onlyPNG  = true;
+        res.render('settings', options);
     }
 
     else {

@@ -23,7 +23,7 @@ import HeaderComponent from './headerComponent';
 import MultiViewComponent from './multiViewComponent';
 import ErrorComponent from './errorComponent';
 import CommentComponent from './commentComponent';
-
+import strings from './strings';
 //These will determine what elements are on the page, giving the current state of the Task and
 // deciding what to dsiplay.
 const createProblemContainer = document.getElementById('create-task-container');
@@ -65,10 +65,7 @@ class TemplateContainer extends React.Component {
             Data: null,
             Error: false,
             TabSelected: 0,
-            Strings:{
-              load: "Loading",
-              create_prob: "Create the Problem"
-            }
+            Strings: strings
         }
     }
 
@@ -101,6 +98,8 @@ class TemplateContainer extends React.Component {
                 return;
             }
 
+            this.props.__(strings, (newStrings) =>{
+
             request(options2, (err, res, bod) => {
 
                 if (res.statusCode != 200) {
@@ -120,9 +119,9 @@ class TemplateContainer extends React.Component {
                     if (skipIndeces.indexOf(index) != -1 || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION) {
                         return;
                     }
-                    if (task.NumberParticipants > 1) {
+                    if (task.TaskActivity.NumberParticipants > 1) {
                         let newArray = bod.superTask.filter(function(t, idx) {
-                            if (t.TaskActivity.TaskActivityID == task.TaskActivity.TaskActivityID) {
+                            if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
                                 skipIndeces.push(idx);
                                 return true;
                             } else {
@@ -138,8 +137,8 @@ class TemplateContainer extends React.Component {
                 }, this);
 
                 taskList.push(currentTask);
+                console.log(taskList);
 
-                this.props.__(this.state.Strings, (newStrings) =>{
                   this.setState({
                       Loaded: true,
                       CourseName: body.courseName,
@@ -179,8 +178,8 @@ class TemplateContainer extends React.Component {
                     <div className="placeholder"></div>
                     <i style={{
                         marginLeft: '45%'
-                    }} className="fa fa-cog fa-spin fa-3x fa-fw"></i>
-                  <span className="sr-only">{this.state.Strings.load}...</span>
+                    }} className="fa fa-cog fa-spin fa-4x fa-fw"></i>
+                  <span className="sr-only"></span>
                 </div>
             );
         }
@@ -193,48 +192,53 @@ class TemplateContainer extends React.Component {
 
             let compString = null;
 
-            switch (task.TaskActivity.Type) {
-                case TASK_TYPES.CREATE_PROBLEM:
-                    compString = this.state.Strings.create_prob;
-                    break;
-                case TASK_TYPES.EDIT:
-                    compString = "Edit the Problem";
-                    break;
-                case TASK_TYPES.SOLVE_PROBLEM:
-                    compString = "Solve the Problem";
-                    break;
-                case TASK_TYPES.GRADE_PROBLEM:
-                    compString = "Grade the Solution";
-                    break;
-                case TASK_TYPES.CONSOLIDATION:
-                    compString = "Consolidate the Grades";
-                    break;
-                case TASK_TYPES.DISPUTE:
-                    compString = "Dispute Your Grade";
-                    break;
-                case TASK_TYPES.RESOLVE_DISPUTE:
-                    compString = "Resolve the Dispute";
-                    break;
-                default:
-                    compString = "";
-                    break;
-            }
+
 
             if (Array.isArray(task)) {
-              console.log("Found an arrayed task!");
-              renderComponents = (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID}/>);
+              return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings}/>);
 
             }
             else {
+              switch (task.TaskActivity.Type) {
+                  case TASK_TYPES.CREATE_PROBLEM:
+                      compString = this.state.Strings.CreateProblemTitle;
+                      break;
+                  case TASK_TYPES.EDIT:
+                      compString = this.state.Strings.EditProblemTitle;
+                      break;
+                  case TASK_TYPES.COMMENT:
+                      compString = this.state.Strings.CommentTitle
+                  case TASK_TYPES.SOLVE_PROBLEM:
+                      compString = this.state.Strings.SolveProblemTitle;
+                      break;
+                  case TASK_TYPES.GRADE_PROBLEM:
+                      compString = this.state.Strings.GradeProblemTitle;
+                      break;
+                  case TASK_TYPES.CRITIQUE:
+                      compString = this.state.Strings.CritiqueTitle;
+                  case TASK_TYPES.CONSOLIDATION:
+                      compString = this.state.Strings.ConsolidateProblemTitle;
+                      break;
+                  case TASK_TYPES.DISPUTE:
+                      compString = this.state.Strings.DisputeGradeTitle;
+                      break;
+                  case TASK_TYPES.RESOLVE_DISPUTE:
+                      compString = this.state.Strings.ResolveDisputeTitle;
+                      break;
+                  default:
+                      compString = "";
+                      break;
+              }
+
                 if (idx == this.state.Data.length - 1) {
                     if (task.Status == 'Complete' || task.Status == 'complete') {
-                        return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields}/>);
+                        return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                     } else {
-                        return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} apiUrl={this.props.apiUrl}/>);
+                        return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
                     }
 
                 } else {
-                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields}/>)
+                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>)
                 }
             }
           }, this);
@@ -245,8 +249,8 @@ class TemplateContainer extends React.Component {
                       this.setState({TabSelected: tab});
                   }} selectedIndex={this.state.TabSelected}>
                       <TabList className="big-text">
-                          <Tab>Task</Tab>
-                          <Tab>Comments</Tab>
+                          <Tab>{this.state.Strings.Task}</Tab>
+                          <Tab>{this.state.Strings.Comments}</Tab>
                       </TabList>
                       <TabPanel>
                           <HeaderComponent TaskID={this.props.TaskID}
@@ -257,6 +261,7 @@ class TemplateContainer extends React.Component {
                             AssignmentDescription={this.state.AssignmentDescription}
                             TaskActivityType={this.state.TaskActivityType}
                             SemesterName={this.state.SemesterName}
+                            Strings={this.state.Strings}
                             />
                           {renderComponents}
                       </TabPanel>

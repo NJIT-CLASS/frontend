@@ -42,47 +42,47 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/getTranslatedString', (req, res) => {
-  let locale = 'en';
+    let locale = 'en';
 
-  if ('lang' in req.query) {
-      locale = req.query.lang;
-  }
+    if ('lang' in req.query) {
+        locale = req.query.lang;
+    }
 
-  if ('lang' in req.session) {
-      locale = req.session.lang;
-  }
+    if ('lang' in req.session) {
+        locale = req.session.lang;
+    }
 
-  translation(redisClient).setupTranslations(locale, (translateFunc) => {
-      let translated = translateFunc(req.query.string);
-      res.json({
-          lang: translated
-      });
-      res.end();
-  });
+    translation(redisClient).setupTranslations(locale, (translateFunc) => {
+        let translated = translateFunc(req.query.string);
+        res.json({
+            lang: translated
+        });
+        res.end();
+    });
 });
 
 app.post('/api/getTranslatedString', (req, res) => {
-  let locale = 'en';
+    let locale = 'en';
 
-  if ('lang' in req.query) {
-      locale = req.query.lang;
-  }
+    if ('lang' in req.query) {
+        locale = req.query.lang;
+    }
 
-  if ('lang' in req.session) {
-      locale = req.session.lang;
-  }
+    if ('lang' in req.session) {
+        locale = req.session.lang;
+    }
 
-  translation(redisClient).setupTranslations(locale, (translateFunc) => {
+    translation(redisClient).setupTranslations(locale, (translateFunc) => {
 
-      let language = req.body.string;
-      Object.keys(language).map((key) => {
-        language[key] = translateFunc(language[key]);
-      });
+        let language = req.body.string;
+        Object.keys(language).map((key) => {
+            language[key] = translateFunc(language[key]);
+        });
 
 
-      res.json(language);
-      res.end();
-  });
+        res.json(language);
+        res.end();
+    });
 
 });
 
@@ -210,6 +210,7 @@ app.use((req, res, next) => {
     next();
 });
 
+
 app.use((req, res, next) => {
     const render = res.render;
 
@@ -335,6 +336,8 @@ app.use(function(req, res, next) {
     }
     next();
 });
+
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

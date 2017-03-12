@@ -10,9 +10,8 @@ exports.post = (req, res) => {
     req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
         if(body && body.UserID && body.Message == 'Success'){
             req.session.userId = body.UserID;
-            console.log(body.Status);
             if(body.Status != null && body.Status == 1){ // THIS WILL REDIRECT TO SETTINGS IF THE USER IS NEWLY ADDED.
-              return res.redirect('/settings');
+                return res.redirect('/settings');
             }else return res.redirect('/dashboard');
         }
 

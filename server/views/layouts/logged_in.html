@@ -46,7 +46,7 @@
 
                 <div id="language-picker" class="hidden" onclick="document.getElementById('language-picker').classList.toggle('hidden')">
                     {{#each languageOptions}}
-                        <a href="?lang={{ locale }}">
+                        <a onclick="addQuery('lang={{locale}}');">
                             <i class="fa fa-globe"></i>
                             {{ language }}
                         </a>
