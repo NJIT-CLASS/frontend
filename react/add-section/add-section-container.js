@@ -197,7 +197,7 @@ class AddSectionContainer extends React.Component {
               <form className="section-content">
               <label>Course</label>
               <div>
-                <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} resetValue={''} clearable={true} searchable={false}/>
+                <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} resetValue={''} clearable={true} searchable={true}/>
                 { createSection }
                 { createSemester }
                 <button type="button" onClick={this.onSubmit.bind(this)}>Submit</button>
