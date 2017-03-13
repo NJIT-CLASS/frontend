@@ -7,7 +7,6 @@ const redis = require('redis');
 const _ = require('lodash');
 
 
-
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
@@ -28,7 +27,11 @@ const redisClient = redis.createClient({
 app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 //app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(session(redisClient));
