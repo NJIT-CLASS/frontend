@@ -19,7 +19,7 @@ function uploadFiles(e, url){
     let formData = new FormData();
     formData.append('uploadTarget', e.target.name);
     [].forEach.call(document.getElementById('upload-input').files, function (file) {
-        formData.append('files[]', file);
+        formData.append('files', file);
     });
 
     let inputParent = document.getElementById('upload-input').parentNode;
@@ -39,7 +39,7 @@ function uploadFiles(e, url){
             }
         }
         else{
-            console.log("Uploading...");
+            console.log('Uploading...');
         }
 
     };

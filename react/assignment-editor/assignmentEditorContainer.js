@@ -87,8 +87,6 @@ class AssignmentEditorContainer extends React.Component {
             };
         };
 
-
-
         // this function cusotmizes the generic task tempate above to the type of task it needs;
         var createTaskObject = function(type, name, display_name, at_duration_end, what_if_late, assignee_constraints, is_final_grade, number_participant, trigger_threshold) {
             let newTask = {
