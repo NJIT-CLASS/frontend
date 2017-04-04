@@ -382,11 +382,9 @@ class TaskDetailsComponent extends React.Component {
                         float: 'right'
                     }}>{strings.ShowAdvancedOptions}?</label>
                     <br/>
-                    <ToggleSwitch click={() => {
+                    <ToggleSwitch isClicked={this.state.ShowAdvanced} click={() => {
                         this.setState({
-                            ShowAdvanced: this.state.ShowAdvanced
-                                ? false
-                                : true
+                            ShowAdvanced: !this.state.ShowAdvanced
                         });
                     }}/>
                 </div>
@@ -409,7 +407,7 @@ class TaskDetailsComponent extends React.Component {
 
                     </RadioGroup>
                     <br/>
-                    <NumberField value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.changeNumericData.bind(this, 'TA_due_type', this.props.index, this.props.workflowIndex)}/>
+                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.changeNumericData.bind(this, 'TA_due_type', this.props.index, this.props.workflowIndex)}/>
                 </div>
             );
 
@@ -423,12 +421,12 @@ class TaskDetailsComponent extends React.Component {
                         <label>
                             <Radio value={true}></Radio>{strings.StartAfterPriorTaskEndsBy}</label>
                     </RadioGroup>
-                    <NumberField value={this.props.TaskActivityData.TA_start_delay} min={0} max={60} onChange={this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index, this.props.workflowIndex)}/>
+                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_start_delay} min={0} max={60} onChange={this.props.changeNumericData.bind(this, 'TA_start_delay', this.props.index, this.props.workflowIndex)}/>
                 </div>
 
             );
 
-            let oneOrSeparate = (
+            let oneOrSeparate = this.props.index == 0 ? (
                 <div className="inner">
                     <label>{strings.DoesEveryoneGetSameProblem}</label>
                     <br/>
@@ -439,7 +437,7 @@ class TaskDetailsComponent extends React.Component {
                             {strings.Yes}</label>
                     </RadioGroup>
                 </div>
-            );
+            ) : null;
 
             let atDurationEnd = (
                 <div className="inner">
@@ -652,134 +650,145 @@ class TaskDetailsComponent extends React.Component {
 
             //TA_assignee_constraints
             let assigneeConstraints = null;
-            if (this.props.index != 0) { //if it's the first task, don't show assignee contraint relation part
+            let assigneeRelations = null;
+            let firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
+            if (this.props.index != 0 ) { //if it's the first task or an instructor task, don't show assignee contraint relation part
+                if(firstAssigneeConstr != 'instructor'){
+                    let sameAsOptions = this.showAssigneeSection('same_as')
+                        ? (
+                            <div className="checkbox-group inner" style={{
+                                marginLeft: '8px'
+                            }}>
+                                {taskCreatedList.map(function(task) {
+                                    return (
+                                        <div>
+                                            <label>{task.label}</label>
+                                            <Checkbox isClicked={this.isAssigneeConstraintChecked('same_as', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'same_as', task.value, this.props.workflowIndex)}/>
+                                        </div>
+                                    )
 
-                let sameAsOptions = this.showAssigneeSection('same_as')
-                    ? (
-                        <div className="checkbox-group inner" style={{
-                            marginLeft: '8px'
-                        }}>
-                            {taskCreatedList.map(function(task) {
-                                return (
-                                    <div>
-                                        <label>{task.label}</label>
-                                        <Checkbox isClicked={this.isAssigneeConstraintChecked('same_as', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'same_as', task.value, this.props.workflowIndex)}/>
-                                    </div>
-                                )
-
-                              }, this)
-                            }
+                                  }, this)
+                                }
+                            </div>
+                        )
+                        : null;
+                    let inSameGroupAsOptions = this.showAssigneeSection('group_with_member')
+                        ? (
+                            <div className="checkbox-group inner" style={{
+                                marginLeft: '8px'
+                            }}>
+                                {taskCreatedList.map(function(task) {
+                                    return (
+                                        <div>
+                                            <label>{task.label}</label>
+                                            <Checkbox isClicked={this.isAssigneeConstraintChecked('group_with_member', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'group_with_member', task.value, this.props.workflowIndex)}/>
+                                        </div>
+                                    )
+                                  }, this)
+                                }
+                            </div>
+                        )
+                        : null;
+                    let notInOptions = this.showAssigneeSection('not')
+                        ? (
+                            <div className="checkbox-group inner" style={{
+                                marginLeft: '8px',
+                                alignContent: 'right'
+                            }}>
+                                {taskCreatedList.map(function(task) {
+                                    return (
+                                        <div className="assignee-contraint-section">
+                                            <label>{task.label}</label>
+                                            <Checkbox isClicked={this.isAssigneeConstraintChecked('not', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'not', task.value, this.props.workflowIndex)}/>
+                                        </div>
+                                    )
+                                  }, this)
+                                }
+                            </div>
+                        )
+                        : null;
+                    let chooseFromOptions = this.showAssigneeSection('choose_from')
+                        ? (
+                            <div className="checkbox-group inner" style={{
+                                marginLeft: '8px'
+                            }}>
+                                {taskCreatedList.map(function(task) {
+                                    return (
+                                        <div>
+                                            <label>{task.label}</label>
+                                            <Checkbox isClicked={this.isAssigneeConstraintChecked('choose_from', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value, this.props.workflowIndex)}/>
+                                        </div>
+                                    )
+                                  }, this)
+                                }
+                            </div>
+                        )
+                        : null;
+                    assigneeRelations = (
+                        <div className="inner">
+                            <label>{strings.ShouldAssigneeHaveRelationship}</label>
+                            <br/>
+                            <label>{strings.None}</label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex)} isClicked={Object.keys(this.props.TaskActivityData.TA_assignee_constraints[2]).length === 0
+                                ? true
+                                : false} style={{
+                                marginRight: '8px'
+                            }}/>
+                          <label>{strings.NewToProblem}</label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not_in_workflow_instance']
+                                ? true
+                                : false}/>
+                              <label>{strings.SameAs}</label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'same_as', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['same_as']
+                                ? true
+                                : false} style={{
+                                marginRight: '8px'
+                            }}/>
+                          <label>{strings.InSameGroupAs}</label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'group_with_member', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['group_with_member']
+                                ? true
+                                : false} style={{
+                                marginRight: '8px'
+                            }}/>
+                          <label>{strings.NotIn}</label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not']
+                                ? true
+                                : false} style={{
+                                marginRight: '8px'
+                            }}/>
+                          <label>{strings.ChooseFrom}
+                            </label>
+                            <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'choose_from', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['choose_from']
+                                ? true
+                                : false}/>
+                            <br/> {sameAsOptions}
+                            {inSameGroupAsOptions}
+                            {notInOptions}
+                            {chooseFromOptions}
                         </div>
-                    )
-                    : null;
-                let inSameGroupAsOptions = this.showAssigneeSection('group_with_member')
-                    ? (
-                        <div className="checkbox-group inner" style={{
-                            marginLeft: '8px'
-                        }}>
-                            {taskCreatedList.map(function(task) {
-                                return (
-                                    <div>
-                                        <label>{task.label}</label>
-                                        <Checkbox isClicked={this.isAssigneeConstraintChecked('group_with_member', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'group_with_member', task.value, this.props.workflowIndex)}/>
-                                    </div>
-                                )
-                              }, this)
-                            }
-                        </div>
-                    )
-                    : null;
-                let notInOptions = this.showAssigneeSection('not')
-                    ? (
-                        <div className="checkbox-group inner" style={{
-                            marginLeft: '8px',
-                            alignContent: 'right'
-                        }}>
-                            {taskCreatedList.map(function(task) {
-                                return (
-                                    <div className="assignee-contraint-section">
-                                        <label>{task.label}</label>
-                                        <Checkbox isClicked={this.isAssigneeConstraintChecked('not', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'not', task.value, this.props.workflowIndex)}/>
-                                    </div>
-                                )
-                              }, this)
-                            }
-                        </div>
-                    )
-                    : null;
-                let chooseFromOptions = this.showAssigneeSection('choose_from')
-                    ? (
-                        <div className="checkbox-group inner" style={{
-                            marginLeft: '8px'
-                        }}>
-                            {taskCreatedList.map(function(task) {
-                                return (
-                                    <div>
-                                        <label>{task.label}</label>
-                                        <Checkbox isClicked={this.isAssigneeConstraintChecked('choose_from', task.value)} click={this.props.checkAssigneeConstraintTasks.bind(this, this.props.index, 'choose_from', task.value, this.props.workflowIndex)}/>
-                                    </div>
-                                )
-                              }, this)
-                            }
-                        </div>
-                    )
-                    : null;
-                let assigneeRelations = (
-                    <div className="inner">
-                        <label>{strings.ShouldAssigneeHaveRelationship}</label>
-                        <br/>
-                        <label>{strings.None}</label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'none', this.props.workflowIndex)} isClicked={Object.keys(this.props.TaskActivityData.TA_assignee_constraints[2]).length === 0
-                            ? true
-                            : false} style={{
-                            marginRight: '8px'
-                        }}/>
-                      <label>{strings.NewToProblem}</label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not_in_workflow_instance']
-                            ? true
-                            : false}/>
-                          <label>{strings.SameAs}</label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'same_as', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['same_as']
-                            ? true
-                            : false} style={{
-                            marginRight: '8px'
-                        }}/>
-                      <label>{strings.InSameGroupAs}</label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'group_with_member', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['group_with_member']
-                            ? true
-                            : false} style={{
-                            marginRight: '8px'
-                        }}/>
-                      <label>{strings.NotIn}</label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'not', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['not']
-                            ? true
-                            : false} style={{
-                            marginRight: '8px'
-                        }}/>
-                      <label>{strings.ChooseFrom}
-                        </label>
-                        <Checkbox click={this.props.checkAssigneeConstraints.bind(this, this.props.index, 'choose_from', this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[2]['choose_from']
-                            ? true
-                            : false}/>
-                        <br/> {sameAsOptions}
-                        {inSameGroupAsOptions}
-                        {notInOptions}
-                        {chooseFromOptions}
-                    </div>
-                );
-                assigneeConstraints = (
-                    <div className="inner">
-                        <label>{strings.AssigneeConstraints}</label>
-                        <br/>
-                        <label>{strings.WhoCanDoTask}</label>
-                        <br/>
-                        <Select options={assigneeWhoValues} value={this.props.TaskActivityData.TA_assignee_constraints[0]} onChange={this.props.changeDropdownData.bind(this, 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false}/>
-
-                        <label>{strings.WillThisBeGroupTask}</label>
-                        <Checkbox click={this.props.changeDataCheck.bind(this, 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked= {this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'}/> {assigneeRelations}
-                    </div>
-                );
+                    );
+                }
             }
+            let showNumberofStudents = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ?
+            (       <div>
+                        <label>How many participants should there be for this task</label>
+                        <NumberField value={this.props.TaskActivityData.TA_number_participant} min={1} max={20} onChange={this.props.changeNumericData.bind(this, 'TA_number_participant', this.props.index, this.props.workflowIndex)}/>
+                    </div>
+            ) : null;
+            assigneeConstraints = (
+                <div className="inner">
+                    <label>{strings.AssigneeConstraints}</label>
+                    <br/>
+                    <label>{strings.WhoCanDoTask}</label>
+                    <br/>
+                    <Select options={assigneeWhoValues} value={this.props.TaskActivityData.TA_assignee_constraints[0]} onChange={this.props.changeDropdownData.bind(this, 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false}/>
+                    {showNumberofStudents}
+                    <label>{strings.WillThisBeGroupTask}</label>
+                    <Checkbox click={this.props.changeDataCheck.bind(this, 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked= {this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'}/>
+                    {assigneeRelations}
+                </div>
+            );
+
 
             //TA_leads_to_new_problem
             let leadsToNewProblem = (

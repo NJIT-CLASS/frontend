@@ -133,7 +133,7 @@
 	</form> <!-- End of 'change password' panel -->
 
 
-	<form name="uploadImage" role="form" class="section" method="POST" enctype="multipart/form-data" action="{{apiUrl}}/api/upload/profile-picture">
+	<form name="uploadImage" role="form" class="section" method="POST" enctype="multipart/form-data" action="/settings" onsubmit="uploadFiles(event, '{{apiUrl}}');">
 	  <input type="hidden" name="what_was_changed" value="upload-img" />
 	  <h2 class="title">{{__ "Upload Profile Picture"}}</h2>
 	  <div class="section-content">
@@ -147,9 +147,9 @@
 	  {{/if}}
 
 	    <div class="form-group">
-	    <input class="form-control" name="profilePicture" type="file" multiple></input>
-	    </div>
-	      <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+	    	<input class="form-control" id="upload-input" name="profilePicture" type="file" multiple></input>
+		</div>
+			<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
 	  </div>
 	</form>
 </div>

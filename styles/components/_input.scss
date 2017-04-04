@@ -58,44 +58,14 @@ textarea {
 .input-group{
   display: block;
   align-items: center;
-
-  .input-group-btn{
-    display:inline-block;
-    margin: 10px 0px;
-
-    vertical-align: top;
-    button{
-      background-color: #E6E6E6;
-      margin:0px;
-      height:35px;
-      width:30px !important;
-      text-align: center;
-      border-radius: 0;
-      border: 1px solid #999999;
-
-        i{
-          color: #404040;
-          height:10px;
-          margin-left: auto;
-          margin-right: auto;
-          margin-bottom: 10px;
-        }
-    }
-    button:hover{
-      background-color: #cccccc;
-    }
+  @media screen and (max-width: $mobile-brk) {
+    width: calc(100vw - 120px);
   }
+  width: 50%;
 
   input {
-    @media screen and (max-width: $mobile-brk) {
-      width: calc(100vw - 120px);
-    }
-    display: inline-block;
-    vertical-align: top;
-    text-align: center;
-    height:35px;
-    width:120px;
-    padding: 10px 0px !important;
+
+    height: 35px;
   }
 
   input[type=number]::-webkit-inner-spin-button,
@@ -103,7 +73,6 @@ textarea {
     -webkit-appearance: none;
     margin: 0;
   }
-
 }
 
 .thin-number-field{

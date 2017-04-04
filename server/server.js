@@ -25,6 +25,7 @@ const redisClient = redis.createClient({
 });
 
 app.use('/static', express.static(`${__dirname}/static`));
+app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`));
 
 app.use(cookieParser());
 app.use(bodyParser.json());

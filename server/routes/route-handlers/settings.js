@@ -23,13 +23,6 @@ exports.post = (req, res) => {
         userLastName: req.App.user.lastName
     };
 
-    req.App.api.post('/upload/profilePicture', {file: req.files.profilePicture}, (err,res1,body) => {
-        console.log('Uploaded file sent');
-        options.onlyPNG  = true;
-        res.render('settings', options);
-    });
-
-
     // I would have liked to just have one res.render() call at the very end rather than having to repeat it for each case
     // But the variable passing doesn't seem to play nice with that, so...
 
@@ -107,6 +100,8 @@ exports.post = (req, res) => {
     }
 
     else if (req.body.what_was_changed=='upload-img') {
+        options.onlyPNG  = true;
+        res.render('settings', options);
 
     }
 

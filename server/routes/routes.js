@@ -39,8 +39,7 @@ const pages = [
     'course-assignments',
     'testing-ground',
     //'all-users',
-    'task-status-table',
-    'placeholder'
+    'task-status-table'
 ];
 
 var pageConfigs = [];

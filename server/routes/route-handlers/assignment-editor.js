@@ -8,6 +8,8 @@ exports.get = (req, res) => {
         scripts: ['/static/react_apps.js'],
         userId: req.App.user.userId,
         courseId: req.params.courseId,
+        partialAssignmentId: req.query.partialAssignmentId,
+        assignmentId: req.query.assignmentId,
         apiUrl: consts.API_URL
     });
 };

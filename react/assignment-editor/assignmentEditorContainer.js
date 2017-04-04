@@ -4,7 +4,6 @@
 // TODO
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
 // Assignee constraint second level of checkboxes needs isClicked
-// Add TA_trigger_consolidation_threshold by default
 import React from 'react';
 import request from 'request';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
@@ -12,11 +11,11 @@ import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
 
 var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
 let FlatToNested = require('flat-to-nested');
-let flatToNested = new FlatToNested();
 
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
+import confirmModal from './confirmModal';
 import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants';
 import Strings from './preliminaryStringsTest';
 
@@ -41,52 +40,52 @@ class AssignmentEditorContainer extends React.Component {
         this.root = this.tree.parse({id: 0, isSubWorkflow: 0}); // this is the root of the tree structure. A copy is made for each workflow
         this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
         this.defaultFields = {
-           title: 'Field',
-           show_title: false,
-           assessment_type: null,
-           numeric_min: 0,
-           numeric_max: 40,
-           rating_max: 5,
-           list_of_labels: 'Easy, Medium, Difficult',
-           field_type: "text",
-           requires_justification: false,
-           instructions: '',
-           rubric: '',
-           justification_instructions: '',
-           default_refers_to: [
-               null, null
-           ],
-           default_content: ['', '']
-       };
+            title: 'Field',
+            show_title: false,
+            assessment_type: null,
+            numeric_min: 0,
+            numeric_max: 40,
+            rating_max: 5,
+            list_of_labels: 'Easy, Medium, Difficult',
+            field_type: 'text',
+            requires_justification: false,
+            instructions: '',
+            rubric: '',
+            justification_instructions: '',
+            default_refers_to: [
+                null, null
+            ],
+            default_content: ['', '']
+        };
 
-        let generateTaskFields = (TA_type) => {
+        const generateTaskFields = (TA_type) => {
            //default Task.Data structure (used to be Task.TA_fields)
 
-          let newFields = cloneDeep(this.defaultFields);
+            let newFields = cloneDeep(this.defaultFields);
 
-          switch(TA_type){
+            switch(TA_type){
             case TASK_TYPES.CREATE_PROBLEM:
-              newFields.field_type = 'text';
-              newFields.instructions = "Create a new problem for another student to solve.";
-              break;
+                newFields.field_type = 'text';
+                newFields.instructions = 'Create a new problem for another student to solve.';
+                break;
             case TASK_TYPES.EDIT:
             case TASK_TYPES.COMMENT:
-              newFields.instructions = "Edit the problem to ensure that it makes sense.";
-              break;
+                newFields.instructions = 'Edit the problem to ensure that it makes sense.';
+                break;
             case TASK_TYPES.SOLVE_PROBLEM:
-              break;
+                break;
             case TASK_TYPES.GRADE_PROBLEM:
-              break;
+                break;
             default:
-              break;
-          }
+                break;
+            }
 
-          return {
-              number_of_fields: 1,
-              field_titles: [newFields.title],
-              0: newFields
-          };
-        }
+            return {
+                number_of_fields: 1,
+                field_titles: [newFields.title],
+                0: newFields
+            };
+        };
 
 
 
@@ -107,7 +106,7 @@ class AssignmentEditorContainer extends React.Component {
                 StartDelay: false,
                 TA_file_upload: [
                     [
-                        0, "mandatory"
+                        0, 'mandatory'
                     ],
                     [0, 'optional']
                 ],
@@ -126,7 +125,7 @@ class AssignmentEditorContainer extends React.Component {
                 TA_is_final_grade: false,
 
                 TA_allow_reflection: [
-                    'none', "don't wait"
+                    'none', 'don\'t wait'
                 ],
                 TA_allow_assessment: 'none',
                 TA_allow_revisions: false,
@@ -150,7 +149,7 @@ class AssignmentEditorContainer extends React.Component {
             newTask.TA_number_participant = number_participant;
             newTask.TA_fields = generateTaskFields(type);
             return newTask;
-        }
+        };
 
         //////////// Defining all Task Types Here /////////
         this.createProblemTask = {
@@ -167,7 +166,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -186,7 +185,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_is_final_grade: false,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -201,22 +200,22 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: ['Problem 1'],
                 0: {
-                   title: 'Problem 1',
-                   show_title: false,
-                   assessment_type: null,
-                   numeric_min: 0,
-                   numeric_max: 40,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "text",
-                   requires_justification: false,
-                   instructions: "Create a new problem for another student to solve.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Problem 1',
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: 'Create a new problem for another student to solve.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
@@ -235,7 +234,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -249,13 +248,15 @@ class AssignmentEditorContainer extends React.Component {
             TA_one_or_separate: false,
             TA_assignee_constraints: [
                 'instructor',
-                'group', {}
+                'individual', {
+                    'not_in_workflow_instance': []
+                }
             ],
             TA_simple_grade: 'none',
             TA_is_final_grade: false,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -270,22 +271,22 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: ['Field'],
                 0: {
-                   title: 'Field',
-                   show_title: false,
-                   assessment_type: null,
-                   numeric_min: 0,
-                   numeric_max: 40,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "text",
-                   requires_justification: false,
-                   instructions: "Edit the problem to ensure that it makes sense.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Field',
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: 'Edit the problem to ensure that it makes sense.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
@@ -304,7 +305,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -317,14 +318,16 @@ class AssignmentEditorContainer extends React.Component {
 
             TA_one_or_separate: false,
             TA_assignee_constraints: [
-                'instructor',
-                'group', {}
+                'student',
+                'group', {
+                    'not_in_workflow_instance': []
+                }
             ],
             TA_simple_grade: 'none',
             TA_is_final_grade: false,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -339,22 +342,22 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: ['Field'],
                 0: {
-                   title: 'Field',
-                   show_title: false,
-                   assessment_type: null,
-                   numeric_min: 0,
-                   numeric_max: 40,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "text",
-                   requires_justification: false,
-                   instructions: "Edit the problem to ensure that it makes sense.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Field',
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: 'Edit the problem to ensure that it makes sense.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
@@ -373,7 +376,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -386,13 +389,13 @@ class AssignmentEditorContainer extends React.Component {
 
             TA_one_or_separate: false,
             TA_assignee_constraints: ['student',
-             'individual', {}
+                'individual', {}
             ],
             TA_simple_grade: 'none',
             TA_is_final_grade: false,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -407,22 +410,22 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: ['Solution'],
                 0: {
-                   title: 'Solution',
-                   show_title: false,
-                   assessment_type: null,
-                   numeric_min: 0,
-                   numeric_max: 40,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "text",
-                   requires_justification: false,
-                   instructions: "Solve the problem.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Solution',
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: 'Solve the problem.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
@@ -441,7 +444,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -461,7 +464,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_is_final_grade: true,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -476,40 +479,40 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 2,
                 field_titles: ['Correctness','Completeness'],
                 0: {
-                   title: 'Correctness',
-                   show_title: true,
-                   assessment_type: "grade",
-                   numeric_min: 0,
-                   numeric_max: 50,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "assessment",
-                   requires_justification: true,
-                   instructions: "Grade the solution on how correct it is.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Correctness',
+                    show_title: true,
+                    assessment_type: 'grade',
+                    numeric_min: 0,
+                    numeric_max: 50,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'assessment',
+                    requires_justification: true,
+                    instructions: 'Grade the solution on how correct it is.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 },
                 1: {
-                   title: 'Completeness',
-                   show_title: true,
-                   assessment_type: "grade",
-                   numeric_min: 0,
-                   numeric_max: 50,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "assessment",
-                   requires_justification: true,
-                   instructions: "Grade the solution on whether you feel it completely answered the problem.",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Completeness',
+                    show_title: true,
+                    assessment_type: 'grade',
+                    numeric_min: 0,
+                    numeric_max: 50,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'assessment',
+                    requires_justification: true,
+                    instructions: 'Grade the solution on whether you feel it completely answered the problem.',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
@@ -528,7 +531,7 @@ class AssignmentEditorContainer extends React.Component {
             StartDelay: false,
             TA_file_upload: [
                 [
-                    0, "mandatory"
+                    0, 'mandatory'
                 ],
                 [0, 'optional']
             ],
@@ -548,7 +551,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_is_final_grade: true,
 
             TA_allow_reflection: [
-                'none', "don't wait"
+                'none', 'don\'t wait'
             ],
             TA_allow_assessment: 'none',
             TA_allow_revisions: false,
@@ -563,271 +566,271 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: ['Critique'],
                 0: {
-                   title: 'Critique',
-                   show_title: false,
-                   assessment_type: null,
-                   numeric_min: 0,
-                   numeric_max: 40,
-                   rating_max: 5,
-                   list_of_labels: 'Easy, Medium, Difficult',
-                   field_type: "text",
-                   requires_justification: false,
-                   instructions: "",
-                   rubric: '',
-                   justification_instructions: '',
-                   default_refers_to: [
-                       null, null
-                   ],
-                   default_content: ['', '']
+                    title: 'Critique',
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: 'Easy, Medium, Difficult',
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: '',
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
                 }
             }
         };
 
         this.needsConsolidationTask = {
-          TA_display_name: 'Needs Consolidation',
-          TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
-          TA_documentation:'',
-          TA_name: TASK_TYPE_TEXT.needs_consolidation,
-          TA_overall_instructions: '',
-          TA_overall_rubric: '',
-          SimpleGradePointReduction: 0,
-          AllowConsolidations: [
-              false, false
-          ],
-          StartDelay: false,
-          TA_file_upload: [
-              [
-                  0, "mandatory"
-              ],
+            TA_display_name: 'Needs Consolidation',
+            TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.needs_consolidation,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, 'mandatory'
+                ],
               [0, 'optional']
-          ],
-          TA_due_type: [
-              'duration', 4320
-          ],
-          TA_start_delay: 0,
-          TA_at_duration_end: null,
-          TA_what_if_late: null,
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: null,
+            TA_what_if_late: null,
 
-          TA_one_or_separate: false,
-          TA_assignee_constraints: [
-              '', '', {}
-          ],
-          TA_simple_grade: 'none',
-          TA_is_final_grade: true,
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                '', '', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: true,
 
-          TA_allow_reflection: [
-              'none', "don't wait"
-          ],
-          TA_allow_assessment: 'none',
-          TA_allow_revisions: false,
-          TA_number_participant: 1,
-          TA_function_type: 'max',
-          TA_allow_dispute: false,
-          TA_trigger_consolidation_threshold: [15,"percent"],
-          TA_leads_to_new_problem: false,
-          TA_leads_to_new_solution: false,
-          TA_visual_id: '',
-          TA_fields: null
-      };
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [15,'percent'],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: null
+        };
 
         this.consolidationTask = {
-          TA_display_name: 'Consolidate',
-          TA_type: TASK_TYPES.CONSOLIDATION,
-          TA_documentation:'',
-          TA_name: TASK_TYPE_TEXT.consolidation,
-          TA_overall_instructions: '',
-          TA_overall_rubric: '',
-          SimpleGradePointReduction: 0,
-          AllowConsolidations: [
-              false, false
-          ],
-          StartDelay: false,
-          TA_file_upload: [
-              [
-                  0, "mandatory"
-              ],
+            TA_display_name: 'Consolidate',
+            TA_type: TASK_TYPES.CONSOLIDATION,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.consolidation,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, 'mandatory'
+                ],
               [0, 'optional']
-          ],
-          TA_due_type: [
-              'duration', 4320
-          ],
-          TA_start_delay: 0,
-          TA_at_duration_end: 'late',
-          TA_what_if_late: 'keep_same_participant',
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'late',
+            TA_what_if_late: 'keep_same_participant',
 
-          TA_one_or_separate: false,
-          TA_assignee_constraints: [
-              'student',
-              'individual', {}
-          ],
-          TA_simple_grade: 'none',
-          TA_is_final_grade: true,
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'student',
+                'individual', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: true,
 
-          TA_allow_reflection: [
-              'none', "don't wait"
-          ],
-          TA_allow_assessment: 'none',
-          TA_allow_revisions: false,
-          TA_number_participant: 1,
-          TA_function_type: 'max',
-          TA_allow_dispute: false,
-          TA_trigger_consolidation_threshold: [],
-          TA_leads_to_new_problem: false,
-          TA_leads_to_new_solution: false,
-          TA_visual_id: '',
-          TA_fields: {
-              number_of_fields: 0,
-              field_titles: []
-          }
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 0,
+                field_titles: []
+            }
         };
 
         this.disputeTask = {
-          TA_display_name: 'Dispute the Grades',
-          TA_type: TASK_TYPES.DISPUTE,
-          TA_documentation:'',
-          TA_name: TASK_TYPE_TEXT.dispute,
-          TA_overall_instructions: '',
-          TA_overall_rubric: '',
-          SimpleGradePointReduction: 0,
-          AllowConsolidations: [
-              false, false
-          ],
-          StartDelay: false,
-          TA_file_upload: [
-              [
-                  0, "mandatory"
-              ],
+            TA_display_name: 'Dispute the Grades',
+            TA_type: TASK_TYPES.DISPUTE,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.dispute,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, 'mandatory'
+                ],
               [0, 'optional']
-          ],
-          TA_due_type: [
-              'duration', 4320
-          ],
-          TA_start_delay: 0,
-          TA_at_duration_end: 'resolved',
-          TA_what_if_late: null,
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'resolved',
+            TA_what_if_late: null,
 
-          TA_one_or_separate: false,
-          TA_assignee_constraints: [
-              'student',
-              'individual', {}
-          ],
-          TA_simple_grade: 'none',
-          TA_is_final_grade: false,
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'student',
+                'individual', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: false,
 
-          TA_allow_reflection: [
-              'none', "don't wait"
-          ],
-          TA_allow_assessment: 'none',
-          TA_allow_revisions: false,
-          TA_number_participant: 1,
-          TA_function_type: 'max',
-          TA_allow_dispute: false,
-          TA_trigger_consolidation_threshold: [],
-          TA_leads_to_new_problem: false,
-          TA_leads_to_new_solution: false,
-          TA_visual_id: '',
-          TA_fields: {
-              number_of_fields: 0,
-              field_titles: []
-          }
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 0,
+                field_titles: []
+            }
         };
 
         this.resolveDisputeTask = {
-          TA_display_name: 'Resolve the Dispute',
-          TA_type: TASK_TYPES.RESOLVE_DISPUTE,
-          TA_documentation:'',
-          TA_name: TASK_TYPE_TEXT.resolve_dispute,
-          TA_overall_instructions: '',
-          TA_overall_rubric: '',
-          SimpleGradePointReduction: 0,
-          AllowConsolidations: [
-              false, false
-          ],
-          StartDelay: false,
-          TA_file_upload: [
-              [
-                  0, "mandatory"
-              ],
+            TA_display_name: 'Resolve the Dispute',
+            TA_type: TASK_TYPES.RESOLVE_DISPUTE,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.resolve_dispute,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, 'mandatory'
+                ],
               [0, 'optional']
-          ],
-          TA_due_type: [
-              'duration', 4320
-          ],
-          TA_start_delay: 0,
-          TA_at_duration_end: 'late',
-          TA_what_if_late: 'keep_same_participant',
-          TA_one_or_separate: false,
-          TA_assignee_constraints: [
-              'student',
-              'individual', {}
-          ],
-          TA_simple_grade: 'none',
-          TA_is_final_grade: true,
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: 'late',
+            TA_what_if_late: 'keep_same_participant',
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'instructor',
+                'individual', {}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: true,
 
-          TA_allow_reflection: [
-              'none', "don't wait"
-          ],
-          TA_allow_assessment: 'none',
-          TA_allow_revisions: false,
-          TA_number_participant: 1,
-          TA_function_type: 'max',
-          TA_allow_dispute: false,
-          TA_trigger_consolidation_threshold: [],
-          TA_leads_to_new_problem: false,
-          TA_leads_to_new_solution: false,
-          TA_visual_id: '',
-          TA_fields: {
-              number_of_fields: 0,
-              field_titles: []
-          }
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: {
+                number_of_fields: 0,
+                field_titles: []
+            }
         };
 
         this.completeTask = {
-          TA_display_name: 'Complete',
-          TA_type: TASK_TYPES.COMPLETED,
-          TA_documentation:'',
-          TA_name: TASK_TYPE_TEXT.completed,
-          TA_overall_instructions: '',
-          TA_overall_rubric: '',
-          SimpleGradePointReduction: 0,
-          AllowConsolidations: [
-              false, false
-          ],
-          StartDelay: false,
-          TA_file_upload: [
-              [
-                  0, "mandatory"
-              ],
+            TA_display_name: 'Complete',
+            TA_type: TASK_TYPES.COMPLETED,
+            TA_documentation:'',
+            TA_name: TASK_TYPE_TEXT.completed,
+            TA_overall_instructions: '',
+            TA_overall_rubric: '',
+            SimpleGradePointReduction: 0,
+            AllowConsolidations: [
+                false, false
+            ],
+            StartDelay: false,
+            TA_file_upload: [
+                [
+                    0, 'mandatory'
+                ],
               [0, 'optional']
-          ],
-          TA_due_type: [
-              'duration', 4320
-          ],
-          TA_start_delay: 0,
-          TA_at_duration_end: null,
-          TA_what_if_late: null,
+            ],
+            TA_due_type: [
+                'duration', 4320
+            ],
+            TA_start_delay: 0,
+            TA_at_duration_end: null,
+            TA_what_if_late: null,
 
-          TA_one_or_separate: false,
-          TA_assignee_constraints: [
-              'student', 'individual', {'same_as': [2]}
-          ],
-          TA_simple_grade: 'none',
-          TA_is_final_grade: false,
+            TA_one_or_separate: false,
+            TA_assignee_constraints: [
+                'student', 'individual', {'same_as': [2]}
+            ],
+            TA_simple_grade: 'none',
+            TA_is_final_grade: false,
 
-          TA_allow_reflection: [
-              'none', "don't wait"
-          ],
-          TA_allow_assessment: 'none',
-          TA_allow_revisions: false,
-          TA_number_participant: 1,
-          TA_function_type: 'max',
-          TA_allow_dispute: false,
-          TA_trigger_consolidation_threshold: [],
-          TA_leads_to_new_problem: false,
-          TA_leads_to_new_solution: false,
-          TA_visual_id: '',
-          TA_fields: null
-      };
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_allow_assessment: 'none',
+            TA_allow_revisions: false,
+            TA_number_participant: 1,
+            TA_function_type: 'max',
+            TA_allow_dispute: false,
+            TA_trigger_consolidation_threshold: [],
+            TA_leads_to_new_problem: false,
+            TA_leads_to_new_solution: false,
+            TA_visual_id: '',
+            TA_fields: null
+        };
         ///----------------------
 
         let standardWorkflow = [cloneDeep(this.createProblemTask)];
@@ -850,12 +853,14 @@ class AssignmentEditorContainer extends React.Component {
             LastTaskChanged: 0,
             SelectedTask:0,
             SubmitSuccess: false,
+            ResumingFromSaved: false,
             SubmitButtonShow: true,
             SaveSuccess: false,
             SubmitError: false,
             Loaded: false,
             Courses: null,
             Semesters: null,
+            PartialAssignmentID: this.props.PartialAssignmentID != '' ? this.props.PartialAssignmentID : null,
             AssignmentActivityData: {
                 AA_userID: parseInt(this.props.UserID),
                 AA_name: 'Assignment',
@@ -876,48 +881,72 @@ class AssignmentEditorContainer extends React.Component {
 
     componentWillMount() {
         //get components and semesters
-        //get call to get semesters
+
         let coursesArray = null;
         let semestersArray = null;
-        const options = {
+
+        //Get the translated Strings
+        this.props.__(this.state.Strings, (newStrings) => {
+            this.setState({Strings: newStrings});
+        });
+
+        //Get the semesters
+        const semesterOptions = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/semester',
             json: true
         };
-
-        this.props.__(this.state.Strings, (newStrings) => {
-          request(options, (err, res, body) => {
-              semestersArray = body.Semesters.map(function(sem) {
-                  return ({value: sem.SemesterID, label: sem.Name});
-              });
-              semestersArray.push({value: null, label: 'All'});
-              if (this.props.CourseID === '*' || this.props.CourseID === '') {
-                  const options2 = {
-                      method: 'GET',
-                      uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.UserID,
-                      json: true
-                  };
-                  request(options2, (err, res, bod) => {
-                      coursesArray = bod.Courses.map(function(course) {
-                          return ({value: course.CourseID, label: course.Name});
-                      });
-
-                      this.setState({
-                        Semesters: semestersArray,
-                        Courses: coursesArray,
-                        Strings: newStrings
-                      });
-                  });
-              }
-
-              this.setState({
-                Semesters: semestersArray,
-                Courses: null,
-                Strings: newStrings
-              });
-          });
-
+        request(semesterOptions, (err, res, body) => {
+            semestersArray = body.Semesters.map(function(sem) {
+                return ({value: sem.SemesterID, label: sem.Name});
+            });
+            semestersArray.push({value: null, label: 'All'});
+            this.setState({
+                Semesters: semestersArray
+            });
         });
+
+        //Get courses if one was not already chosen
+        if (this.props.CourseID === '*' || this.props.CourseID === '') {
+            const coursesOptions = {
+                method: 'GET',
+                uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.UserID,
+                json: true
+            };
+            request(coursesOptions, (err, res, bod) => {
+                coursesArray = bod.Courses.map(function(course) {
+                    return ({value: course.CourseID, label: course.Name});
+                });
+                this.setState({
+                    Courses: coursesArray
+                });
+            });
+        }
+
+        //Load partially made assignment from the database
+        if(this.props.PartialAssignmentID !== ''){
+            const assignmentOptions = {
+                method: 'GET',
+                uri: this.props.apiUrl + '/api/partialAssignments/ById/' + this.props.PartialAssignmentID,
+                qs: {
+                    userId: this.props.UserID,
+                    courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
+                },
+                json: true
+            };
+
+            console.log(assignmentOptions);
+
+            request(assignmentOptions, (err3, res3, assignBody) => {
+                console.log(assignBody, res3);
+
+                if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
+                    return;
+                }
+                this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
+            });
+        }
+
 
     }
 
@@ -930,87 +959,180 @@ class AssignmentEditorContainer extends React.Component {
 
     makeDefaultWorkflowStructure(workflowIndex){
       //this sets the default problem structure
-      this.changeDataCheck("TA_allow_reflection", 0, workflowIndex);
-      this.changeDataCheck('TA_leads_to_new_solution', 0, workflowIndex);
-      this.changeDataCheck("TA_allow_assessment", 2, workflowIndex);
-      this.changeDataCheck("Assess_Consolidate", 2, workflowIndex);
-      this.changeDataCheck("Assess_Dispute", 2, workflowIndex);
+        this.changeDataCheck('TA_allow_reflection', 0, workflowIndex);
+        this.changeDataCheck('TA_leads_to_new_solution', 0, workflowIndex);
+        this.changeDataCheck('TA_allow_assessment', 2, workflowIndex);
+        this.changeDataCheck('Assess_Consolidate', 2, workflowIndex);
+        this.changeDataCheck('Assess_Dispute', 2, workflowIndex);
       //
-      this.checkAssigneeConstraintTasks(1, 'not', 0, workflowIndex);
-      this.checkAssigneeConstraintTasks(2, 'not', 0, workflowIndex);
-      this.checkAssigneeConstraintTasks(2, 'not', 1, workflowIndex);
-      this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
-      this.checkAssigneeConstraintTasks(3, 'same_as', 0, workflowIndex);
-      this.checkAssigneeConstraintTasks(4, 'same_as', 2, workflowIndex);
-      this.checkAssigneeConstraintTasks(5, 'not', 2, workflowIndex);
-      this.checkAssigneeConstraintTasks(5, 'not', 0, workflowIndex);
-      this.checkAssigneeConstraintTasks(5, 'not', 3, workflowIndex);
-      this.checkAssigneeConstraintTasks(6, 'same_as', 2, workflowIndex);
-      this.checkAssigneeConstraintTasks(7, 'not', 2, workflowIndex);
+        this.checkAssigneeConstraintTasks(1, 'not', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(2, 'not', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(2, 'not', 1, workflowIndex);
+        this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(3, 'same_as', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(4, 'same_as', 2, workflowIndex);
+        this.checkAssigneeConstraintTasks(5, 'not', 2, workflowIndex);
+        this.checkAssigneeConstraintTasks(5, 'not', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(5, 'not', 3, workflowIndex);
+        this.checkAssigneeConstraintTasks(6, 'same_as', 2, workflowIndex);
+        this.checkAssigneeConstraintTasks(7, 'not', 2, workflowIndex);
     }
 
     componentDidMount() {
         this.makeDefaultWorkflowStructure(0);
         this.setState({ Loaded: true});
+
         return;
     }
 
     makeSubWorkflows(root, workflowArray, workflowIndex){
-      let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
-      let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
-      let consolClass = [TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPES.CONSOLIDATION];
-      let disputeClass = [TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
-      let consolDispClass = [...consolClass, ...disputeClass];
+        let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
+        let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
+        let consolClass = [TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPES.CONSOLIDATION];
+        let disputeClass = [TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+        let consolDispClass = [...consolClass, ...disputeClass];
 
-      root.walk(function(node){
-        if(node.model.id == -1){
-          return;
-        }
+        root.walk(function(node){
+            if(node.model.id == -1){
+                return;
+            }
 
-        let defaults = null; // if task is of these types, same 'subworkflow level'
-        switch(workflowArray[node.model.id].TA_type){
+            let defaults = null; // if task is of these types, same 'subworkflow level'
+            switch(workflowArray[node.model.id].TA_type){
 
-          case TASK_TYPES.EDIT:
-          case TASK_TYPES.COMMENT:
-            defaults = consolDispClass;
-            break;
-          case TASK_TYPES.GRADE_PROBLEM:
-          case TASK_TYPES.CRITIQUE:
-            defaults = consolDispClass;
-            break;
-          case TASK_TYPES.NEEDS_CONSOLIDATION:
-          case TASK_TYPES.CONSOLIDATION:
-          case TASK_TYPES.DISPUTE:
-          case TASK_TYPES.RESOLVE_DISPUTE:
-            defaults = consolDispClass;
-            break;
+            case TASK_TYPES.EDIT:
+            case TASK_TYPES.COMMENT:
+                defaults = consolDispClass;
+                break;
+            case TASK_TYPES.GRADE_PROBLEM:
+            case TASK_TYPES.CRITIQUE:
+                defaults = consolDispClass;
+                break;
+            case TASK_TYPES.NEEDS_CONSOLIDATION:
+            case TASK_TYPES.CONSOLIDATION:
+            case TASK_TYPES.DISPUTE:
+            case TASK_TYPES.RESOLVE_DISPUTE:
+                defaults = consolDispClass;
+                break;
 
-          case TASK_TYPES.CREATE_PROBLEM:
-            defaults = [...reflectClass, TASK_TYPES.SOLVE_PROBLEM];
-            break;
-          case TASK_TYPES.SOLVE_PROBLEM:
-            defaults = assessClass;
-            break;
-        }
+            case TASK_TYPES.CREATE_PROBLEM:
+                defaults = [...reflectClass, TASK_TYPES.SOLVE_PROBLEM];
+                break;
+            case TASK_TYPES.SOLVE_PROBLEM:
+                defaults = assessClass;
+                break;
+            }
 
-        node.children.forEach(function(child){
-          if(child.model.id == -1){
-            return;
-          }
-          let childType = workflowArray[child.model.id].TA_type;
-          if(!defaults.includes(childType)){ //means its not one of the defaults, aka new subworkflow
-            child.model['isSubWorkflow'] = node.model.isSubWorkflow + 1;
-          }
-          else{
-            child.model['isSubWorkflow'] = node.model.isSubWorkflow;
-          }
+            node.children.forEach(function(child){
+                if(child.model.id == -1){
+                    return;
+                }
+                let childType = workflowArray[child.model.id].TA_type;
+                if(!defaults.includes(childType)){ //means its not one of the defaults, aka new subworkflow
+                    child.model['isSubWorkflow'] = node.model.isSubWorkflow + 1;
+                }
+                else{
+                    child.model['isSubWorkflow'] = node.model.isSubWorkflow;
+                }
+            });
+
         });
 
-      });
-
-      return root;
+        return root;
     }
 
+    flattenTreeStructure(root){
+        let flatty = [];
+        root.walk({strategy: 'pre'}, function(task) {
+            let ob = new Object();
+            if(task.parent !== undefined){
+                ob['parent'] = task.parent.model.id;
+            }
+            ob['id'] = task.model.id;
+            ob['isSubWorkflow'] = task.model.isSubWorkflow;
+
+          //ob = { ...task.model};
+
+            flatty.push(ob);
+        }, this);
+
+        return flatty;
+    }
+
+    unflattenTreeStructure(flatTreeArray){
+        let flatToNested = new FlatToNested();
+        let nestedTreeObj = flatToNested.convert(flatTreeArray);
+        let treeRoot = this.tree.parse(nestedTreeObj);
+        return treeRoot;
+    }
+
+    onLoad(assignmentData){
+        let workflowData = clone(assignmentData.WorkflowActivity);
+        delete assignmentData['WorkflowActivity'];
+        let AA_Data = assignmentData;
+        workflowData.forEach((workflow, index) => {
+            workflow.WorkflowStructure = this.unflattenTreeStructure(workflow.WorkflowStructure);
+        });
+
+        this.setState({
+            AssignmentActivityData: assignmentData,
+            WorkflowDetails: workflowData
+        });
+    }
+
+    onSave(){
+        //Save Partiallly cocmpleted assignment data to database
+        //Done in stages:
+            //1. Flatten all Workflow trees
+            //2. Send to database.
+            //3. Show some kind of acknowledgement messageDiv
+        if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
+            console.log('CourseID null');
+            this.setState({SubmitError: true});
+            return;
+        }
+        let sendData = cloneDeep(this.state.AssignmentActivityData);
+        sendData.WorkflowActivity = cloneDeep(this.state.WorkflowDetails);
+        sendData.WorkflowActivity.forEach((workflow, index) => {
+            workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
+
+        });
+
+        console.log(sendData);
+
+        const options = {
+            method: 'POST',
+            uri: this.props.apiUrl + '/api/assignment/save',
+            body: {
+                assignment: sendData,
+                userId: this.props.UserID,
+                partialAssignmentId: this.state.PartialAssignmentID,
+                courseId: this.state.CourseID
+            },
+            json: true
+        };
+        console.log({
+            assignment: sendData,
+            userId: this.props.UserID,
+            partialAssignmentId: this.state.PartialAssignmentID
+        });
+        request(options, (err, res, body) => {
+            if (err == null && res.statusCode == 200) {
+                document.body.scrollTop = document.documentElement.scrollTop = 0;
+                console.log(body);
+                this.setState({
+                    PartialAssignmentID: body.PartialAssignmentID,
+                    SubmitSuccess: true,
+                    SubmitButtonShow: false
+                });
+            } else {
+                console.log('Submit failed');
+                this.setState({SubmitError: true});
+            }
+
+        });
+
+    }
     onSubmit() {
       /*
         When submitting the data to the backend, the workflow structure
@@ -1028,7 +1150,7 @@ class AssignmentEditorContainer extends React.Component {
           C. Send to DB.
       */
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
-            console.log("CourseID null");
+            console.log('CourseID null');
             this.setState({SubmitError: true});
             return;
         }
@@ -1045,94 +1167,110 @@ class AssignmentEditorContainer extends React.Component {
 
 
           // B.1 Clean Workflow array
-          let counter = 0;
-          let mapping = {}; //new IDs of tasks after B.1
-          let newWorkflow = new Array();
+            let counter = 0;
+            let mapping = {}; //new IDs of tasks after B.1
+            let newWorkflow = new Array();
 
-          workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
-            if(task.model.id == -1)
-              return;
+            workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
+                if(task.model.id == -1)
+                    return;
 
-            mapping[task.model.id] = counter;
-            newWorkflow.push(workflow.Workflow[task.model.id]);
-            task.model.id = counter;
-            counter += 1;
-          });
+                mapping[task.model.id] = counter;
+                newWorkflow.push(workflow.Workflow[task.model.id]);
+                task.model.id = counter;
+                counter += 1;
+            });
 
-          workflow.WorkflowStructure.walk((node) => {
-            if(node.model.id == -1) return;
-          })
+            workflow.WorkflowStructure.walk((node) => {
+                if(node.model.id == -1) return;
+            });
 
-          newWorkflow.push(this.createNewCompleteTask(index));
-          workflow.Workflow = newWorkflow;
+            newWorkflow.push(this.createNewCompleteTask(index));
+            workflow.Workflow = newWorkflow;
 
-          workflow.WorkflowStructure.walk((node) => {
-            if(node.model.id == -1) return;
-          })
+            workflow.WorkflowStructure.walk((node) => {
+                if(node.model.id == -1) return;
+            });
 
 
           // B.2 Add Subworkflow labels
+            workflow.WorkflowStructure = this.makeSubWorkflows(workflow.WorkflowStructure,workflow.Workflow, index);
 
-          workflow.WorkflowStructure = this.makeSubWorkflows(workflow.WorkflowStructure,workflow.Workflow, index);
-
-          workflow.WorkflowStructure.walk((node) => {
-            if(node.model.id == -1) return;
-            console.log("After B.3", node.model.id, node.model.isSubWorkflow, workflow.Workflow[node.model.id].TA_type);
-          })
+            workflow.WorkflowStructure.walk((node) => {
+                if(node.model.id == -1) return;
+            });
 
           // B.3 Clean IDs in AssigneeConstraints and Fields
 
-          workflow.Workflow.forEach(function(task) {
-              Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr) {
-                  task.TA_assignee_constraints[2][constr] = task.TA_assignee_constraints[2][constr].map(function(id) {
-                      return (mapping[id]);
-                  });
-              });
-          });
+            workflow.Workflow.forEach(function(task) {
+                Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr) {
+                    task.TA_assignee_constraints[2][constr] = task.TA_assignee_constraints[2][constr].map(function(id) {
+                        return (mapping[id]);
+                    });
+                });
+
+                if(task.TA_fields){
+                    for(let k = 0; k < task.TA_fields.number_of_fields; k++){ //clean default refers to in TA_fields
+                        if(!task.TA_fields[k].default_refers_to[0]){
+                            task.TA_fields[k].default_refers_to[0] = mapping[task.TA_fields[k].default_refers_to[0]];
+                        }
+                    }
+                }
+
+              //Make Number of Students accurately reflect number of participants
+                if(task.TA_assignee_constraints[0] == 'instructor'){
+                    task.TA_number_participant = 1;
+                }
+                else if(task.TA_assignee_constraints[0] == 'both'){
+                    task.TA_number_participant += 1;
+                }
+            });
 
           // B.4 Clean GradeDistribution
-          let newGradeDist = new Object();
-          Object.keys(workflow.WA_grade_distribution).forEach(function(taskKey) {
-              newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
-          });
+            let newGradeDist = new Object();
+            Object.keys(workflow.WA_grade_distribution).forEach(function(taskKey) {
+                newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
+            });
 
-          workflow.WA_grade_distribution = newGradeDist;
+            workflow.WA_grade_distribution = newGradeDist;
 
           // B5 Link Fields in Tasks
-           let taskTypesToLink = [TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE]
-           let taskstoLink = workflow.Workflow.map((task,index) => {
-             if(taskTypesToLink.includes(task.TA_type)){
-               return index;
-             }
-             else{
-               return -1;
-             }
-           }).filter(function(taskIndex){
-             return taskIndex != -1;
-           });
+            let taskTypesToLink = [TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+            let taskstoLink = workflow.Workflow.map((task,index) => {
+                if(taskTypesToLink.includes(task.TA_type)){
+                    return index;
+                }
+                else{
+                    return -1;
+                }
+            }).filter(function(taskIndex){
+                return taskIndex != -1;
+            });
 
-           taskstoLink.forEach((taskIndex) => {
-             workflow.Workflow = this.addLinkedTaskFields(workflow.WorkflowStructure, workflow.Workflow, taskIndex);
-           });
+            taskstoLink.forEach((taskIndex) => {
+                workflow.Workflow = this.addLinkedTaskFields(workflow.WorkflowStructure, workflow.Workflow, taskIndex);
+            });
 
 
           // B.6 Flatten workflow
-          let flatty = [];
 
-          workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
-
-            let ob = new Object();
-            if(task.parent !== undefined){
-            ob['parent'] = task.parent.model.id;
-            }
-
-            ob['id'] = task.model.id;
-            ob['isSubWorkflow'] = task.model.isSubWorkflow;
-
-            flatty.push(ob);
-          }, this);
-
-          workflow.WorkflowStructure = flatty;
+            workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
+        //   let flatty = [];
+          //
+        //   workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
+          //
+        //     let ob = new Object();
+        //     if(task.parent !== undefined){
+        //     ob['parent'] = task.parent.model.id;
+        //     }
+          //
+        //     ob['id'] = task.model.id;
+        //     ob['isSubWorkflow'] = task.model.isSubWorkflow;
+          //
+        //     flatty.push(ob);
+        //   }, this);
+          //
+        //   workflow.WorkflowStructure = flatty;
 
           //-----------------------------------------
         }, this);
@@ -1145,7 +1283,9 @@ class AssignmentEditorContainer extends React.Component {
             method: 'POST',
             uri: this.props.apiUrl + '/api/assignment/create',
             body: {
-                assignment: sendData
+                assignment: sendData,
+                userId: this.props.UserID,
+                partialAssignmentId: this.state.PartialAssignmentID
             },
             json: true
         };
@@ -1186,18 +1326,18 @@ class AssignmentEditorContainer extends React.Component {
         let newTask = null;
 
         switch (type) {
-            case this.ASSESS_IDX:
-                newTask = this.createNewTask(this.gradeSolutionTask, index, workflowIndex, 'Grade');
-                break;
-            case this.REFLECT_IDX:
-                newTask = this.createNewTask(this.editProblemTask, index, workflowIndex, 'Edit');
-                break;
-            case this.CREATE_IDX:
-                newTask = this.createNewTask(this.createProblemTask, index, workflowIndex, 'Create');
-                break;
-            case this.SOLVE_IDX:
-                newTask = this.createNewTask(this.solveProblemTask, index, workflowIndex, 'Solve');
-                break;
+        case this.ASSESS_IDX:
+            newTask = this.createNewTask(this.gradeSolutionTask, index, workflowIndex, 'Grade');
+            break;
+        case this.REFLECT_IDX:
+            newTask = this.createNewTask(this.editProblemTask, index, workflowIndex, 'Edit');
+            break;
+        case this.CREATE_IDX:
+            newTask = this.createNewTask(this.createProblemTask, index, workflowIndex, 'Create');
+            break;
+        case this.SOLVE_IDX:
+            newTask = this.createNewTask(this.solveProblemTask, index, workflowIndex, 'Solve');
+            break;
         }
 
         stateData[workflowIndex].Workflow.push(newTask);
@@ -1220,6 +1360,19 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         return stateData;
+    }
+
+    taskChildren(taskIndex, workflowIndex){
+        let childrenNames = [];
+        let selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first((node) => {
+            return node.model.id == taskIndex;
+        });
+        selectedNode.walk((node) => {
+            if(node.model.id != -1){
+                childrenNames.push(this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_display_name);
+            }
+        });
+        return childrenNames;
     }
 
     addConsolidation(parentIndex, workflowIndex) {
@@ -1260,45 +1413,42 @@ class AssignmentEditorContainer extends React.Component {
 
     canConsolidate(taskIndex,workflowIndex, isReflect){
 
-      var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
-          return node.model.id == (isReflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex,workflowIndex));
-      },this);
+        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == (isReflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex,workflowIndex));
+        },this);
 
+        if(selectedNode.children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX] == undefined || selectedNode.children[this.CONSOL_DISP_IDX].model.id == -1){
+            return false;
+        }
 
-
-      if(selectedNode.children.length == 0|| selectedNode.children[this.CONSOL_DISP_IDX].model.id == -1){
-        return false;
-      }
-
-      if(this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
-        return true;
-      } else {
-          return false;
-      }
+        if(this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     canDispute(taskIndex,workflowIndex, isReflect){
 
-      var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
-          return node.model.id == (isReflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex,workflowIndex));
-      }, this);
+        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == (isReflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex,workflowIndex));
+        }, this);
 
-      if(selectedNode.children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX].model.id == -1){
-        return false;
-      }
-      else if(this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE ){
-        return true;
-      } else {
-        if(selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id == -1){
-          return false;
+        if(selectedNode.children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX] == undefined || selectedNode.children[this.CONSOL_DISP_IDX].model.id == -1){
+            return false;
         }
-        else if( this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE){
-          return true;
-        }else{
-          return false;
+        else if(this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE ){
+            return true;
+        } else {
+            if(selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id == -1){
+                return false;
+            }
+            else if( this.state.WorkflowDetails[workflowIndex].Workflow[selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id].TA_type == TASK_TYPES.DISPUTE){
+                return true;
+            }else{
+                return false;
+            }
         }
-      }
-      return false;
     }
 
     addDispute(parentIndex, workflowIndex) {
@@ -1342,7 +1492,7 @@ class AssignmentEditorContainer extends React.Component {
     changeAssessment(parentIndex, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
 
-        let changeIndex = this.getAssessIndex(parentIndex, workflowIndex)
+        let changeIndex = this.getAssessIndex(parentIndex, workflowIndex);
         let newTask = {};
 
         if (value == 'grade') {
@@ -1381,48 +1531,48 @@ class AssignmentEditorContainer extends React.Component {
     createNewTask(taskType, index, workflowIndex, string) {
         let prevTaskName = this.state.WorkflowDetails[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
-        let newText = string + " " + prevTaskName;
+        let newText = string + ' ' + prevTaskName;
         if (newText.length > 254) { //need to do this because of database limit
             switch (taskType.TA_type) {
-                case TASK_TYPES.EDIT:
-                    newText = string + ' Problem';
-                    break;
-                case TASK_TYPES.COMMENT:
-                    newText = string + ' Problem';
-                    break;
-                case TASK_TYPES.GRADE_PROBLEM:
-                    newText = string + ' Problem';
-                    break;
-                case TASK_TYPES.CRITIQUE:
-                    newText = string + ' Problem';
-                    break;
-                case TASK_TYPES.NEEDS_CONSOLIDATION:
-                    newText = 'Needs Consolidation';
-                    break;
-                case TASK_TYPES.CONSOLIDATION:
-                    newText = string + ' Grades';
-                    break;
-                case TASK_TYPES.DISPUTE:
-                    newText = string + ' Grades';
-                    break;
-                case TASK_TYPES.RESOLVE_DISPUTE:
-                    newText = string + ' Grades';
-                    break;
-                default:
-                    newText = string;
-                    break;
+            case TASK_TYPES.EDIT:
+                newText = string + ' Problem';
+                break;
+            case TASK_TYPES.COMMENT:
+                newText = string + ' Problem';
+                break;
+            case TASK_TYPES.GRADE_PROBLEM:
+                newText = string + ' Problem';
+                break;
+            case TASK_TYPES.CRITIQUE:
+                newText = string + ' Problem';
+                break;
+            case TASK_TYPES.NEEDS_CONSOLIDATION:
+                newText = 'Needs Consolidation';
+                break;
+            case TASK_TYPES.CONSOLIDATION:
+                newText = string + ' Grades';
+                break;
+            case TASK_TYPES.DISPUTE:
+                newText = string + ' Grades';
+                break;
+            case TASK_TYPES.RESOLVE_DISPUTE:
+                newText = string + ' Grades';
+                break;
+            default:
+                newText = string;
+                break;
             }
 
         }
-        newTask.TA_name = string + " " + prevTaskName;
+        newTask.TA_name = string + ' ' + prevTaskName;
         newTask.TA_display_name = newText;
         return newTask;
     }
 
     createNewCompleteTask(workflowIndex) {
         let newTask = cloneDeep(this.completeTask);
-        newTask.TA_name = "Workflow " + (workflowIndex + 1) + " Complete"
-        newTask.TA_display_name = "Workflow " + (workflowIndex + 1) + " Complete"
+        newTask.TA_name = 'Workflow ' + (workflowIndex + 1) + ' Complete';
+        newTask.TA_display_name = 'Workflow ' + (workflowIndex + 1) + ' Complete';
         return newTask;
     }
 
@@ -1430,7 +1580,9 @@ class AssignmentEditorContainer extends React.Component {
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
         });
-
+        if(selectedNode.children.length == 0 || selectedNode.children[this.ASSESS_IDX] == undefined || selectedNode.children[this.ASSESS_IDX].model.id == -1){
+            return -1;
+        }
         return selectedNode.children[this.ASSESS_IDX].model.id;
 
     }
@@ -1457,7 +1609,7 @@ class AssignmentEditorContainer extends React.Component {
     getAssessNumberofParticipants(index, workflowIndex) {
         let x = this;
         if(this.getAssessIndex(index, workflowIndex) == -1){
-          return -1;
+            return -1;
         }
         //root.first changes this context, so need to save it here
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
@@ -1473,14 +1625,41 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
+        if(selectedNode.children.length == 0 || selectedNode.children[this.REFLECT_IDX] == undefined || selectedNode.children[this.REFLECT_IDX].model.id == -1){
+            return -1;
+        }
         return selectedNode.children[this.REFLECT_IDX].model.id;
+    }
+
+    getCreateIndex(parentIndex, workflowIndex){
+        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == parentIndex;
+        });
+
+        if(selectedNode.children.length == 0 || selectedNode.children[this.CREATE_IDX] == undefined || selectedNode.children[this.CREATE_IDX].model.id == -1){
+            return -1;
+        }else{
+            return selectedNode.children[this.CREATE_IDX].model.id;
+        }
+    }
+
+    getSolveIndex(parentIndex, workflowIndex){
+        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == parentIndex;
+        });
+
+        if(selectedNode.children.length == 0 || selectedNode.children[this.SOLVE_IDX] == undefined || selectedNode.children[this.SOLVE_IDX].model.id == -1){
+            return -1;
+        }else{
+            return selectedNode.children[this.SOLVE_IDX].model.id;
+        }
     }
 
     getReflectNumberofParticipants(index, workflowIndex) {
         let x = this; //root.first changes this context, so need to save it here
 
         if(this.getReflectIndex(index, workflowIndex) == -1){
-          return -1;
+            return -1;
         }
 
         var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
@@ -1527,7 +1706,7 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id == parentIndex;
         });
 
-        if (selectedNode.children.length == 0) {
+        if (selectedNode.children.length == 0 || selectedNode.children[this.CONSOL_DISP_IDX] == undefined) {
             return;
         }
         let x = this; //context variable
@@ -1543,7 +1722,7 @@ class AssignmentEditorContainer extends React.Component {
                 if (node.model.id != -1) {
                     newData[workflowIndex].Workflow[node.model.id] = {};
                 }
-            })
+            });
 
             selectedNode.addChildAtIndex(dispNode, this.CONSOL_DISP_IDX);
 
@@ -1597,6 +1776,7 @@ class AssignmentEditorContainer extends React.Component {
             return node.model.id === x.getAssessIndex(index, workflowIndex);
         });
 
+
         newData[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant = value;
 
         if (value <= 1 && newData[workflowIndex].Workflow[index].AllowConsolidations[1] == true) {
@@ -1629,27 +1809,27 @@ class AssignmentEditorContainer extends React.Component {
     ///////////////////////////////////////////////////////////////////////////
 
     getParentID(root, workflowData, taskIndex){
-      let excludedTasks = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+        let excludedTasks = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
       /* This function returns the parent task of of Consolidate, Dispute, or Resolve Task.
          Parent means the task (Edit,Comment,Grade,or Critique) that it belongs to*/
-      let possibleParents = root.first(function(node){
-           return node.model.id == taskIndex;
-         }).getPath();
-      possibleParents = possibleParents.reverse();
-      possibleParents.shift();
-      let parentID = null;
+        let possibleParents = root.first(function(node){
+            return node.model.id == taskIndex;
+        }).getPath();
+        possibleParents = possibleParents.reverse();
+        possibleParents.shift();
+        let parentID = null;
 
-      for(let i = 0; i < possibleParents.length;i++){
-        let currNode = possibleParents[i];
-        let nodeIsExcluded = excludedTasks.includes(workflowData[currNode.model.id].TA_type);
-        if(!nodeIsExcluded){
-          parentID = currNode.model.id;
-          break;
+        for(let i = 0; i < possibleParents.length;i++){
+            let currNode = possibleParents[i];
+            let nodeIsExcluded = excludedTasks.includes(workflowData[currNode.model.id].TA_type);
+            if(!nodeIsExcluded){
+                parentID = currNode.model.id;
+                break;
+            }
         }
-      }
-      excludedTasks = null;
-      possibleParents = null;
-      return parentID;
+        excludedTasks = null;
+        possibleParents = null;
+        return parentID;
     }
 
     addLinkedTaskFields(root, workflowData,taskIndex){
@@ -1657,25 +1837,25 @@ class AssignmentEditorContainer extends React.Component {
          Usually, the current task will have no fields, but it is done by adding in
          case future support for adding more fields on top of linked fields is desired*/
 
-         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
-         let linkedFields = workflowData[linkedIndex].TA_fields;
-         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
-         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
-         for(let i = 0; i < linkedFields.number_of_fields; i++){
-           workflowData[taskIndex].TA_fields[i + oldNumberOfFields] = linkedFields[i];
-         }
+        let linkedIndex = this.getParentID(root, workflowData, taskIndex);
+        let linkedFields = workflowData[linkedIndex].TA_fields;
+        let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
+        let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
+        for(let i = 0; i < linkedFields.number_of_fields; i++){
+            workflowData[taskIndex].TA_fields[i + oldNumberOfFields] = linkedFields[i];
+        }
 
-         workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedFields.number_of_fields;
-         workflowData[taskIndex].TA_fields.field_titles = [...oldFieldTitles, ...linkedFields.field_titles];
+        workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedFields.number_of_fields;
+        workflowData[taskIndex].TA_fields.field_titles = [...oldFieldTitles, ...linkedFields.field_titles];
 
-         return workflowData;
+        return workflowData;
     }
 
     addFieldButton(taskIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
         let field = newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields];
         newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields] = cloneDeep(this.defaultFields);
-        let titleString = newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title + (" " + (newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields + 1))
+        let titleString = newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title + (' ' + (newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields + 1));
         newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title = titleString;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields += 1;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.push(titleString);
@@ -1684,136 +1864,266 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     removeFieldButton(taskIndex, workflowIndex, fieldIndex){
-      let newData = this.state.WorkflowDetails;
-      delete newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex];
-      newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
-      newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
-      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+        let newData = this.state.WorkflowDetails;
+        delete newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex];
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
+    }
+
+    dropTask(taskClass, taskIndex, workflowIndex){
+        let newData = this.state.WorkflowDetails;
+        switch (taskClass) {
+        case 'reflect':
+            newData = this.removeTask(newData, this.REFLECT_IDX, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[taskIndex].TA_allow_reflection[0] = 'none';
+            newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
+            break;
+        case 'assess':
+            newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[taskIndex].TA_allow_assessment = 'none';
+            newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
+            break;
+        case 'dispute':
+            break;
+        case 'consolidate':
+            break;
+        case 'create':
+            newData = this.removeTask(newData, this.CREATE_IDX, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[taskIndex].TA_leads_to_new_problem = false;
+            break;
+        case 'solve':
+            newData = this.removeTask(newData, this.SOLVE_IDX, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[taskIndex].TA_leads_to_new_solution = false;
+            break;
+        default:
+
+        }
+
+        newData = this.removeGradeDist(newData, workflowIndex);
+
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, firstIndex) {
         let newData = this.state.WorkflowDetails;
 
         switch (stateField) {
-            case "TA_allow_reflection":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex][stateField][0] != 'none') {
-                        newData = this.removeTask(newData, this.REFLECT_IDX, taskIndex, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField][0] = 'none';
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
+        case 'TA_allow_reflection':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex][stateField][0] != 'none') {
 
-                    } else {
-                        newData[workflowIndex].Workflow[taskIndex][stateField][0] = 'edit';
-                        newData = this.addTask(newData, this.REFLECT_IDX, taskIndex, workflowIndex);
-                    }
-                }
-                break;
+                    let taskChildrenNodes = this.taskChildren(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
 
-            case "TA_allow_assessment":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex][stateField] != 'none') {
-                        newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
-                        newData = this.removeGradeDist(newData, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = 'none';
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
+                    if(taskChildrenNodes.length ==0){
+                        this.dropTask('reflect', taskIndex, workflowIndex);
                     } else {
-                        newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
-                        newData = this.addGradeDist(newData, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
-                    }
-                }
-                break;
-            case "TA_leads_to_new_problem":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
-                        newData = this.removeTask(newData, this.CREATE_IDX, taskIndex, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = false;
-                    } else {
-                        newData = this.addTask(newData, this.CREATE_IDX, taskIndex, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = true;
-                    }
-                }
-                break;
-            case "TA_leads_to_new_solution":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
-                        newData = this.removeTask(newData, this.SOLVE_IDX, taskIndex, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = false;
-                    } else {
-                        newData = this.addTask(newData, this.SOLVE_IDX, taskIndex, workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex][stateField] = true;
-                    }
-                }
-                break;
-
-            case "Reflect_Consolidate":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0]) {
-                        this.removeConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
-                    } else {
-                        this.addConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = true;
-                    }
-                }
-                break;
-
-            case "Reflect_Dispute":
-                {
-                    let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex);
-                    if (newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute) {
-                        newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = false;
-                        this.removeDispute(reflectIndex, workflowIndex);
-                    } else {
-                        newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = true;
-                        this.addDispute(reflectIndex, workflowIndex);
+                        let messageDiv = `The following tasks will be dropped:
+                                <br />
+                                <ul>
+                                ${taskChildrenNodes.map((task)=>{
+                                    return (`<li>${task}</li>`);
+                                }).reduce((val, acc) => {
+                                    return acc + val;
+                                }, '')}
+                            </ul>
+                            <br />
+                            Are you sure you want to continue?`;
+                        confirmModal({
+                            confirmation: messageDiv,
+                            list: taskChildrenNodes,
+                            okLabel: 'OK',
+                            cancelLabel: 'Cancel',
+                            title: 'Dropping Multiple Tasks'
+                        }).then(()=>{
+                            this.dropTask('reflect', taskIndex, workflowIndex);
+                        }, () => {
+                        });
                     }
 
+                } else {
+                    newData[workflowIndex].Workflow[taskIndex][stateField][0] = 'edit';
+                    newData = this.addTask(newData, this.REFLECT_IDX, taskIndex, workflowIndex);
                 }
-                break;
+            }
+            break;
 
-            case "Assess_Consolidate":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1]) {
-                        this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
+        case 'TA_allow_assessment':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex][stateField] != 'none') {
+                    let taskChildrenNodes = this.taskChildren(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                    if(taskChildrenNodes.length == 0){
+                        this.dropTask('assess', taskIndex, workflowIndex);
                     } else {
-                        this.addConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
-                        newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = true;
+                        let messageDiv = `The following tasks will be dropped:
+                                <br />
+                                <ul>
+                                ${taskChildrenNodes.map((task)=>{
+                                    return (`<li>${task}</li>`);
+                                }).reduce((val, acc) => {
+                                    return acc + val;
+                                }, '')}
+                                </ul>
+                                <br />
+                                Are you sure you want to continue?`;
+                        confirmModal({
+                            confirmation: messageDiv,
+                            list: taskChildrenNodes,
+                            okLabel: 'OK',
+                            cancelLabel: 'Cancel',
+                            title: 'Dropping Multiple Tasks'
+                        }).then(()=>{
+                            this.dropTask('assess', taskIndex, workflowIndex);
+                        }, () => {
+                        });
                     }
+                } else {
+                    newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
+                    newData = this.addGradeDist(newData, workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
                 }
-                break;
+            }
+            break;
+        case 'TA_leads_to_new_problem':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
+                    let taskChildrenNodes = this.taskChildren(this.getCreateIndex(taskIndex, workflowIndex), workflowIndex);
 
-            case 'Assess_Dispute':
-                {
-                    let assessIndex = this.getAssessIndex(taskIndex, workflowIndex);
-                    if (newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute) {
-                        newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = false;
-                        this.removeDispute(assessIndex, workflowIndex);
-
+                    if(taskChildrenNodes.length ==0){
+                        this.dropTask('create', taskIndex, workflowIndex);
                     } else {
-                        newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = true;
-                        this.addDispute(assessIndex, workflowIndex);
+                        let messageDiv = `The following tasks will be dropped:
+                                <br />
+                                <ul>
+                                ${taskChildrenNodes.map((task)=>{
+                                    return (`<li>${task}</li>`);
+                                }).reduce((val, acc) => {
+                                    return acc + val;
+                                }, '')}
+                            </ul>
+                            <br />
+                            Are you sure you want to continue?`;
+                        confirmModal({
+                            confirmation: messageDiv,
+                            list: taskChildrenNodes,
+                            okLabel: 'OK',
+                            cancelLabel: 'Cancel',
+                            title: 'Dropping Multiple Tasks'
+                        }).then(()=>{
+                            this.dropTask('create', taskIndex, workflowIndex);
+                        }, () => {
+                        });
                     }
+                } else {
+                    newData = this.addTask(newData, this.CREATE_IDX, taskIndex, workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = true;
                 }
-                break;
-
-            case "TA_assignee_constraints":
-                {
-                    if (newData[workflowIndex].Workflow[taskIndex][stateField][1] != 'group') {
-                        newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'group';
+            }
+            break;
+        case 'TA_leads_to_new_solution':
+            {'';
+                if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
+                    let taskChildrenNodes = this.taskChildren(this.getSolveIndex(taskIndex, workflowIndex), workflowIndex);
+                    if(taskChildrenNodes.length == 0){
+                        this.dropTask('solve', taskIndex, workflowIndex);
                     } else {
-                        newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'individual';
+                        let messageDiv = `The following tasks will be dropped:
+                                <br />
+                                <ul>
+                                ${taskChildrenNodes.map((task)=>{
+                                    return (`<li>${task}</li>`);
+                                }).reduce((val, acc) => {
+                                    return acc + val;
+                                }, '')}
+                                </ul>
+                                <br />
+                                Are you sure you want to continue?`;
+                        confirmModal({
+                            confirmation: messageDiv,
+                            list: taskChildrenNodes,
+                            okLabel: 'OK',
+                            cancelLabel: 'Cancel',
+                            title: 'Dropping Multiple Tasks'
+                        }).then(()=>{
+                            this.dropTask('solve', taskIndex, workflowIndex);
+                        }, () => {
+                        });
                     }
+                } else {
+                    newData = this.addTask(newData, this.SOLVE_IDX, taskIndex, workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = true;
                 }
-                break;
+            }
+            break;
 
-            default:
-                newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
+        case 'Reflect_Consolidate':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0]) {
+                    this.removeConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
+                } else {
+                    this.addConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = true;
+                }
+            }
+            break;
+
+        case 'Reflect_Dispute':
+            {
+                let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex);
+                if (newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute) {
+                    newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = false;
+                    this.removeDispute(reflectIndex, workflowIndex);
+                } else {
+                    newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = true;
+                    this.addDispute(reflectIndex, workflowIndex);
+                }
+
+            }
+            break;
+
+        case 'Assess_Consolidate':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1]) {
+                    this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
+                } else {
+                    this.addConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = true;
+                }
+            }
+            break;
+
+        case 'Assess_Dispute':
+            {
+                let assessIndex = this.getAssessIndex(taskIndex, workflowIndex);
+                if (newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute) {
+                    newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = false;
+                    this.removeDispute(assessIndex, workflowIndex);
+
+                } else {
+                    newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = true;
+                    this.addDispute(assessIndex, workflowIndex);
+                }
+            }
+            break;
+
+        case 'TA_assignee_constraints':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex][stateField][1] != 'group') {
+                    newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'group';
+                } else {
+                    newData[workflowIndex].Workflow[taskIndex][stateField][1] = 'individual';
+                }
+            }
+            break;
+
+        default:
+            newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
                     ? false
                     : true;
-                break;
+            break;
         }
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
@@ -1822,36 +2132,36 @@ class AssignmentEditorContainer extends React.Component {
     changeDropdownData(stateField, taskIndex, workflowIndex, e) {
         let newData = this.state.WorkflowDetails;
         switch (stateField) {
-            case "TA_allow_reflection":
-                {
-                    newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
-                    this.changeReflection(taskIndex, workflowIndex, e.value);
-                }
-                break;
-            case 'TA_allow_assessment':
-                {
-                    newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
-                    this.changeAssessment(taskIndex, workflowIndex, e.value);
-                }
-                break;
-            case 'TA_assignee_constraints':
+        case 'TA_allow_reflection':
+            {
                 newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
-                break;
-            case 'TA_function_type_Assess':
-                {
-                    let targetIndex = this.getConsolidationIndex(false, taskIndex, workflowIndex);
-                    newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
-                }
-                break;
-            case 'TA_function_type_Reflect':
-                {
-                    let targetIndex = this.getConsolidationIndex(true, taskIndex, workflowIndex);
-                    newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
-                }
-                break;
-            default:
+                this.changeReflection(taskIndex, workflowIndex, e.value);
+            }
+            break;
+        case 'TA_allow_assessment':
+            {
                 newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
-                break;
+                this.changeAssessment(taskIndex, workflowIndex, e.value);
+            }
+            break;
+        case 'TA_assignee_constraints':
+            newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
+            break;
+        case 'TA_function_type_Assess':
+            {
+                let targetIndex = this.getConsolidationIndex(false, taskIndex, workflowIndex);
+                newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
+            }
+            break;
+        case 'TA_function_type_Reflect':
+            {
+                let targetIndex = this.getConsolidationIndex(true, taskIndex, workflowIndex);
+                newData[workflowIndex].Workflow[targetIndex]['TA_function_type'] = e.value;
+            }
+            break;
+        default:
+            newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+            break;
         }
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
@@ -1994,31 +2304,29 @@ class AssignmentEditorContainer extends React.Component {
         let newData = this.state.WorkflowDetails;
 
         switch (stateField) {
-            case 'TA_due_type':
-                newData[workflowIndex].Workflow[taskIndex][stateField][1] = value * 1440;
-                break;
-            case 'TA_trigger_consolidation_threshold_reflect':
+        case 'TA_due_type':
+            newData[workflowIndex].Workflow[taskIndex][stateField][1] = value * 1440;
+            break;
+        case 'TA_trigger_consolidation_threshold_reflect':
                 //let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
-                let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
-                newData[workflowIndex].Workflow[targetIndex1]["TA_trigger_consolidation_threshold"][0] = value;
-                break;
-            case 'TA_trigger_consolidation_threshold_assess':
+            let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex1]['TA_trigger_consolidation_threshold'][0] = value;
+            break;
+        case 'TA_trigger_consolidation_threshold_assess':
                 //let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
-                let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
-                newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][0] = value;
-                break;
-            default:
-                newData[workflowIndex].Workflow[taskIndex][stateField] = value;
-                break;
+            let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex2]['TA_trigger_consolidation_threshold'][0] = value;
+            break;
+        default:
+            newData[workflowIndex].Workflow[taskIndex][stateField] = value;
+            break;
         }
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
     getTriggerConsolidationThreshold(taskIndex, workflowIndex, isReflect){
-        console.log(taskIndex,workflowIndex,isReflect);
         let targetIndex = this.getConsolidationIndex(isReflect, taskIndex, workflowIndex);
-        console.log(targetIndex);
-        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]["TA_trigger_consolidation_threshold"][0];
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_trigger_consolidation_threshold'][0];
     }
 
 
@@ -2031,27 +2339,27 @@ class AssignmentEditorContainer extends React.Component {
     changeRadioData(stateField, taskIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
         switch (stateField) {
-            case 'TA_due_type':
-                newData[workflowIndex].Workflow[taskIndex][stateField][0] = val;
-                break;
-            case 'TA_trigger_consolidation_threshold_reflect':
-                let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
-                newData[workflowIndex].Workflow[targetIndex1].TA_trigger_consolidation_threshold[1] = val;
-                break;
-            case 'TA_trigger_consolidation_threshold_assess':
-                let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
-                newData[workflowIndex].Workflow[targetIndex2]["TA_trigger_consolidation_threshold"][1] = val;
-                break;
-            case 'StartDelay':
-                {
-                    newData[workflowIndex].Workflow[taskIndex][stateField] = val;
-                    newData[workflowIndex].Workflow[taskIndex]['TA_start_delay'] = (val
+        case 'TA_due_type':
+            newData[workflowIndex].Workflow[taskIndex][stateField][0] = val;
+            break;
+        case 'TA_trigger_consolidation_threshold_reflect':
+            let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex1].TA_trigger_consolidation_threshold[1] = val;
+            break;
+        case 'TA_trigger_consolidation_threshold_assess':
+            let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex2]['TA_trigger_consolidation_threshold'][1] = val;
+            break;
+        case 'StartDelay':
+            {
+                newData[workflowIndex].Workflow[taskIndex][stateField] = val;
+                newData[workflowIndex].Workflow[taskIndex]['TA_start_delay'] = (val
                         ? 1
                         : 0);
-                }
-            default:
-                newData[workflowIndex].Workflow[taskIndex][stateField] = val;
-                break;
+            }
+        default:
+            newData[workflowIndex].Workflow[taskIndex][stateField] = val;
+            break;
 
         }
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
@@ -2061,7 +2369,7 @@ class AssignmentEditorContainer extends React.Component {
         let newData = this.state.WorkflowDetails;
         let temp = null;
         if (this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_simple_grade == 'none') {
-            temp = "exists";
+            temp = 'exists';
         } else {
             temp = 'none';
         }
@@ -2206,7 +2514,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
                 newData[fieldName] = value;
                 this.setState({AssignmentActivityData: newData});
-                this.makeDefaultWorkflowStructure(newWorkflowData.length-1)
+                this.makeDefaultWorkflowStructure(newWorkflowData.length-1);
             }
         }
     }
@@ -2239,7 +2547,6 @@ class AssignmentEditorContainer extends React.Component {
         if(count == 0){
             return stateData;
         }
-
         if (count != stateData[workflowIndex].NumberOfGradingTask) {
             gradedTasks.forEach(function(task) {
                 newGradeDist[task] = Math.floor(100 / count);
@@ -2281,23 +2588,23 @@ class AssignmentEditorContainer extends React.Component {
         let numOfFields = distKeys.length;
         let start = distKeys.indexOf(taskChangedIndex);
         if(sum < 100){
-          let underflow = 100-sum;
-          stateData[workflowIndex].WA_grade_distribution[distKeys[(start +1) % numOfFields]] += underflow;
+            let underflow = 100-sum;
+            stateData[workflowIndex].WA_grade_distribution[distKeys[(start +1) % numOfFields]] += underflow;
         }
         else if(sum > 100){
-          sum -= 100;
-          let i = (start + 1) % numOfFields;
-          while(sum > 0){
-            if(sum <= stateData[workflowIndex].WA_grade_distribution[distKeys[i]]){
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] -= sum;
-              sum = 0;
+            sum -= 100;
+            let i = (start + 1) % numOfFields;
+            while(sum > 0){
+                if(sum <= stateData[workflowIndex].WA_grade_distribution[distKeys[i]]){
+                    stateData[workflowIndex].WA_grade_distribution[distKeys[i]] -= sum;
+                    sum = 0;
+                }
+                else{
+                    sum -= stateData[workflowIndex].WA_grade_distribution[distKeys[i]];
+                    stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 0;
+                }
+                i = (i+1)%numOfFields;
             }
-            else{
-              sum -= stateData[workflowIndex].WA_grade_distribution[distKeys[i]];
-              stateData[workflowIndex].WA_grade_distribution[distKeys[i]] = 0;
-            }
-            i = (i+1)%numOfFields;
-          }
         }
         return stateData;
     }
@@ -2343,7 +2650,7 @@ class AssignmentEditorContainer extends React.Component {
 
     changeSelectedTask(val){ //if ever want to implement single task-based view
         this.setState({SelectedTask: val});
-      }
+    }
 
     render() {
         let infoMessage = null;
@@ -2356,7 +2663,7 @@ class AssignmentEditorContainer extends React.Component {
         if (this.state.SubmitSuccess) {
             infoMessage = (
                 <span onClick={() => {
-                    this.setState({SubmitSuccess: false})
+                    this.setState({SubmitSuccess: false});
                 }} className="small-info-message">
                 <span className="success-message">
                   Successfully created assignment!
@@ -2368,7 +2675,7 @@ class AssignmentEditorContainer extends React.Component {
         if (this.state.SubmitError && !this.state.SubmitSuccess) {
             infoMessage = (
                 <span onClick={() => {
-                    this.setState({SubmitError: false})
+                    this.setState({SubmitError: false});
                 }} className="small-info-message">
                 <div className="error-message">Submit Error! Please check your work and try again</div>
                 </span>
@@ -2399,12 +2706,13 @@ class AssignmentEditorContainer extends React.Component {
                 let tV = new Array();
                 workflow.WorkflowStructure.walk({strategy: 'pre'}, function(node) {
                     if (node.model.id != -1) {
-                         let task = workflow.Workflow[node.model.id];
+                        let task = workflow.Workflow[node.model.id];
                         if (task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || task.TA_type == TASK_TYPES.COMPLETED) {
-                           return null;
-                         }
-                         if (Object.keys(task).length !== 0) {
-                            tV.push(<TaskDetailsComponent key={index + "-" + node.model.id} index={node.model.id}
+                            return null;
+                        }
+                        if (Object.keys(task).length !== 0) {
+                            tV.push(<TaskDetailsComponent key={index + '-' + node.model.id}
+                            index={node.model.id}
                             workflowIndex={index}
                             LastTaskChanged={this.state.LastTaskChanged}
                             TaskActivityData={task}
@@ -2441,17 +2749,16 @@ class AssignmentEditorContainer extends React.Component {
                             getTriggerConsolidationThreshold={this.getTriggerConsolidationThreshold.bind(this)}
                             changeSelectedTask={this.changeSelectedTask.bind(this)}
                             canConsolidate={this.canConsolidate.bind(this)}
-                            canDispute={this.canDispute.bind(this)}
-                            />);
+                            canDispute={this.canDispute.bind(this)}/> );
                         }
-                     }
-                 }, this)
+                    }
+                }, this);
                 tabListAr.push(
-                    <Tab key={"tab stub " + index}>{workflow.WA_name}</Tab>
+                    <Tab key={'tab stub ' + index}>{workflow.WA_name}</Tab>
                 );
                 tabPanelAr.push(
-                    <TabPanel key={"tab " + index}>
-                            <ProblemDetailsComponent key={"Workflows" + index} workflowIndex={index}
+                    <TabPanel key={'tab ' + index}>
+                            <ProblemDetailsComponent key={'Workflows' + index} workflowIndex={index}
                               WorkflowDetails={workflow}
                               NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
                               changeWorkflowData={this.changeWorkflowData.bind(this)}
@@ -2489,6 +2796,7 @@ class AssignmentEditorContainer extends React.Component {
                         />
                       <br/> {workflowsView}
                       <br/> {submitButtonView}
+                      <button onClick={this.onSave.bind(this)}>Save</button>
                     </div>
                 </div>
             );

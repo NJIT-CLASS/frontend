@@ -1,0 +1,16 @@
+{
+  "name"              : "CLASS Learning System",
+  "short_name"        : "PLA",
+  "description"       : "A flexible and collaborative online learning system.",
+  "start_url"         : "/",
+  "display"           : "minimal-ui",
+  "orientation"       : "any",
+  "background_color"  : "#F3F3F4",
+  "theme_color"       : "#2E4051",
+  "icons": [
+      {
+      "src": "icon/favicon.ico",
+      "sizes": "64x64"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ let strings = {
     Max: "Max",
     AssessmentType: "Assessment Type",
     DefaultContentFromOtherTasks: "Default content from other task",
-    DefaultContentForField: "Default content for the field",
+    DefaultContentForField: "Default content for the field (optional)",
     GetDataFromAnotherTaskInstead: "Get the data from another task instead",
     InputFields: "Input Fields",
     FieldName: "Field Name",
@@ -23,7 +23,7 @@ let strings = {
     RequiresJustification: "Requires Justification",
     FieldInstructions: "Field Instructions",
     Optional: "optional",
-    FieldRubric: "Field Rubric",
+    FieldRubric: "Field Rubric (optional)",
     AddAnotherField : "Add another field",
     ShowAdvancedOptions : "Show Advanced Options",
     ShouldTaskEndAtCertainTime: "Should this task end at a certain time",
@@ -35,7 +35,7 @@ let strings = {
     DoesEveryoneGetSameProblem : "Does everyone get the same problem",
     No: "No",
     Yes: "Yes",
-    WhatHappensWhenTaskEnds: "What happens when the task ends",
+    WhatHappensWhenTaskEnds: "What happens at end of default time",
     WhatIfLate: "What happens if late",
     ReduceByWhatPercent: "Reduce this by what % per day late",
     NoPointsIfLate: "No Points If Late",
@@ -75,11 +75,11 @@ let strings = {
     NumericGrade: "Numeric Grade",
     Rating: "Rating",
     PassFail: "Pass or Fail",
-    EvaluationByLabels: "Evalutation by labels",
-    Late: "Late",
-    Resolved: "Resolved",
-    Abandon: "Abandon",
-    Complete: "Complete",
+    EvaluationByLabels: "Evaluation by labels",
+    Late: "Task continues, considered late",
+    Resolved: "Task ends and we use any current content; next task starts",
+    Abandon: "Tasks and all follow-on taks abandoned",
+    Complete: "Task considered complete; next task starts",
     KeepSameParticipant: "Keep Same Participant",
     AllocateNewParticipant: "Allocate New Participant",
     AllocateToInstructor: "Allocate to Instructor",
@@ -90,7 +90,7 @@ let strings = {
     Critique: "Critique",
     Student: "Student",
     Instructor: "Instructor",
-    BothInstructorStudents: "Both Instructor and Students",
+    BothInstructorStudents: "Both Instructor and Students independently",
     Average: "Average",
     Other: "Other",
     Essay: "Essay", //AssignmentDetails Strings
@@ -115,7 +115,9 @@ let strings = {
     ProblemType: "Problem Type",
     Description: "Description",
     HowManyPeoplePerGroup: "How many people per group",
-    HowManyProblems: "How many problems of this type"
+    HowManyProblems: "How many problems of this type",
+    Days: "Days",
+    AssignmentInstructions: "Assignment Instructions (optional)"
 };
 
 export default strings;

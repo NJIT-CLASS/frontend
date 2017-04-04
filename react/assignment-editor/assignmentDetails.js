@@ -101,7 +101,7 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               <div className="inner block">
-                <label>{strings.Instructions}</label>
+                <label>{strings.AssignmentInstructions}</label>
                 <br />
                 <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>

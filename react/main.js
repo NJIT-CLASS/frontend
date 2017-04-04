@@ -37,14 +37,6 @@ let translationFunction = (objOfStrings, cb) => {
   });
 }
 
-// let objct = {
-//               my_account: "My Account",
-//               curr_course: "Current Courses"
-//             };
-// translationFunction(objct, (res) => {
-//   console.log("Testing translate", res );
-// });
-
 const addsectionContainerEl = document.getElementById('add-section-container');
 if(addsectionContainerEl){
   const userId = addsectionContainerEl.dataset.userId;
@@ -107,8 +99,10 @@ const assignmentEditorContainerEl = document.getElementById('assignment-editor-c
 if(assignmentEditorContainerEl){
   const userId = assignmentEditorContainerEl.dataset.userId;
   const courseId = assignmentEditorContainerEl.dataset.courseId;
+  const assignmentId = assignmentEditorContainerEl.dataset.assignmentId;
+  const partialAssignmentId =  assignmentEditorContainerEl.dataset.partialAssignmentId;
   const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
-  ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction} />,assignmentEditorContainerEl);
+  ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} apiUrl={apiUrl} __={translationFunction} />,assignmentEditorContainerEl);
 }
 const assignToSectionContainerEl = document.getElementById('assign-to-section-container');
 
