@@ -2,7 +2,7 @@ const handler = require('../route-handlers/placeholder');
 
 module.exports = {
     route: '/create-course-section',
-    title: 'Placeholder',
+    title: 'Course Management',
     routeHandler: handler,
     access: {
         admins: true,
@@ -10,6 +10,6 @@ module.exports = {
         students: false,
         loggedOut: false
     },
-    icon: '',
+    icon: 'pencil-square',
     sidebar: true
 };
