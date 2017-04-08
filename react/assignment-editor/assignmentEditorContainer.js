@@ -17,7 +17,7 @@ import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
 import confirmModal from './confirmModal';
 import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants';
-import Strings from './preliminaryStringsTest';
+import Strings from './assignmentEditorStrings';
 
 class AssignmentEditorContainer extends React.Component {
     constructor(props) {
@@ -2247,7 +2247,7 @@ class AssignmentEditorContainer extends React.Component {
         let infoMessage = null;
         let submitButtonView = (
             <button type="button" className="outside-button" onClick={this.onSubmit.bind(this)}>
-                <i className="fa fa-check">Submit</i>
+                <i className="fa fa-check">{this.state.Strings.Submit}</i>
             </button>
         );
 
@@ -2257,7 +2257,7 @@ class AssignmentEditorContainer extends React.Component {
                     this.setState({SubmitSuccess: false});
                 }} className="small-info-message">
                 <span className="success-message">
-                  Successfully created assignment!
+                  {this.state.Strings.SubmitSuccessMessage}
                 </span>
                 </span>
             );
@@ -2268,7 +2268,7 @@ class AssignmentEditorContainer extends React.Component {
                 <span onClick={() => {
                     this.setState({SubmitError: false});
                 }} className="small-info-message">
-                <div className="error-message">Submit Error! Please check your work and try again</div>
+                <div className="error-message">{this.state.Strings.ErrorMessage}</div>
                 </span>
             );
         }

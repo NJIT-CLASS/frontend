@@ -10,18 +10,24 @@ function addQuery(str) {
     window.location.search += '&' + str;
 }
 
-function uploadFiles(e, url){
+function uploadFiles(e, url, vars){
     e.preventDefault();
 
     if(!document.getElementById('upload-input')){
         return;
     }
+
     let formData = new FormData();
     formData.append('uploadTarget', e.target.name);
     [].forEach.call(document.getElementById('upload-input').files, function (file) {
         formData.append('files', file);
     });
 
+    if(vars !== undefined){
+        Object.keys(vars).forEach(function(key){
+            formData.append(`${key}`, vars[key]);
+        });
+    }
     let inputParent = document.getElementById('upload-input').parentNode;
 
     var xhr = new XMLHttpRequest();
