@@ -1,0 +1,53 @@
+.card {
+	flex: 0 0 content;
+	background-color: #FFFFFF;
+	box-sizing: border-box;
+	margin: 10px;
+	padding: 24px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);//add shadows to cards
+
+	@media screen and (max-width: $mobile-brk) {
+		margin: 4px;
+		width: calc(100vw - 12px);
+	}
+	form {
+		padding: 0 !important;
+		margin-top: 24px;
+	}
+	button {
+		margin: 0;
+	}
+	button + button {
+		margin-right: 12px;
+	}
+	.title {
+		word-wrap: break-word;
+		font-size: 22px;
+		font-weight: 500px;
+		color: #4b4d4e;
+		display: inline-block;
+	}
+	.card-content {
+		margin-top: 2em;
+	}
+	p {
+		margin-top: 0.5em;
+	}
+	label {
+		display: block;
+		margin-bottom: 8px;
+		margin-top: 20px;
+	}
+	.Select-control, form > input {
+		width: 500px !important;
+	}
+	.Select, input {
+		margin: 0;
+	}
+	.Select-menu-outer {
+		width: 500px;
+	}
+	.Select-value {
+		line-height: 1.7;
+	}
+}
