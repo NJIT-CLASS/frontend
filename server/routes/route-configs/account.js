@@ -1,13 +1,13 @@
-const handler = require('../route-handlers/placeholder');
+const handler = require('../route-handlers/account');
 
 module.exports = {
-    route: '/create-course-section',
-    title: 'Course Management',
+    route: '/account',
+    title: 'Account',
     routeHandler: handler,
     access: {
         admins: true,
         instructors: true,
-        students: false,
+        students: true,
         loggedOut: false
     },
     icon: 'pencil-square',
