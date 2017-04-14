@@ -1,6 +1,6 @@
-#CLASS Frontend
+# CLASS Frontend
 
-##Getting Setup
+## Getting Setup
 
 If you've never used github before [set your ssh key](#github-setup)
 
@@ -18,7 +18,7 @@ If you've never used github before [set your ssh key](#github-setup)
 13. Run `npm start` in the frontend directory to start the server and start developing.
 14. Run `npm start` in the backend directory.
 
-##Technologies and Tools
+## Technologies and Tools
 
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [Node.js](https://nodejs.org/docs/v5.6.0/api/)
@@ -28,12 +28,12 @@ If you've never used github before [set your ssh key](#github-setup)
 - [SCSS](http://sass-lang.com/guide): CSS preprocessor
 - [Redis](http://redis.io/): Redis
 
-##Github Setup
+## Github Setup
 
 1. Create an SSH key. Run `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
 2. [Add the new SSH key to Github](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-mac)
 
-##Git Quickstart
+## Git Quickstart
 
 Here are the git commands that you can use to get by for now (if you don't know how to use it)
 

@@ -20,7 +20,7 @@ import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';
 import TaskStatusTable from './assignment-records/TaskStatus';
 import CourseSectionManagement from './course-section-management/container';
-
+import AccountManagement from './account/container';
 
 let translationFunction = (objOfStrings, cb) => {
   const options = {
@@ -135,5 +135,12 @@ const courseSectionMgmntContainer = document.getElementById('course-section-mana
 if(courseSectionMgmntContainer){
   const userId = courseSectionMgmntContainer.dataset.userId;
   const apiUrl = courseSectionMgmntContainer.dataset.apiUrl;
-  ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl}/>, courseSectionMgmntContainer);
+  ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl} __={translationFunction}/>, courseSectionMgmntContainer);
+}
+
+const accountContainer = document.getElementById('account');
+if(accountContainer){
+  const userId = accountContainer.dataset.userId;
+  const apiUrl = accountContainer.dataset.apiUrl;
+  ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction}/>, accountContainer);
 }

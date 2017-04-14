@@ -40,7 +40,8 @@ const pages = [
     'testing-ground',
     //'all-users',
     'task-status-table',
-    'placeholder'
+    'course-section-management',
+    'account'
 ];
 
 var pageConfigs = [];
