@@ -69,7 +69,7 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    getHeaderData() {
+    getTaskData() {
         //this function makes an API call and saves the data into appropriate state variables
 
         const options = {
@@ -106,6 +106,7 @@ class TemplateContainer extends React.Component {
                     this.setState({Error: true});
                     return;
                 }
+                console.log(bod);
 
                 let taskList = new Array();
                 let skipIndeces = new Array();
@@ -162,7 +163,7 @@ class TemplateContainer extends React.Component {
     }
 
     componentWillMount() { // this function is called before the component renders, so that the page renders with the appropriate state data
-      this.getHeaderData();
+      this.getTaskData();
 
     }
 
@@ -195,7 +196,7 @@ class TemplateContainer extends React.Component {
 
 
             if (Array.isArray(task)) {
-              return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings}/>);
+              return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings} />);
 
             }
             else {

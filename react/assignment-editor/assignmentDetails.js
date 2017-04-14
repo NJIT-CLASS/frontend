@@ -9,7 +9,7 @@ import ReactTooltip from 'react-tooltip';
 
 class AssignmentDetailsComponent extends React.Component{
     constructor(props){
-      super(props);
+        super(props);
 
       /*
       Props:
@@ -17,23 +17,23 @@ class AssignmentDetailsComponent extends React.Component{
             -Courses
             - Assignment functions
       */
-      this.state = {
-        ShowContent: true,
-        ShowAdvanced: false,
-        NumberofWorkflows: 1
-      };
+        this.state = {
+            ShowContent: true,
+            ShowAdvanced: false,
+            NumberofWorkflows: 1
+        };
     }
 
     render(){
-      let strings = this.props.Strings;
-      let coursesView = null;
-      let semesterView = null;
+        let strings = this.props.Strings;
+        let coursesView = null;
+        let semesterView = null;
 
-      let semesterList = this.props.Semesters;
-      let courseList = this.props.Courses;
-      let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
+        let semesterList = this.props.Semesters;
+        let courseList = this.props.Courses;
+        let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
 
-      semesterView = (
+        semesterView = (
         <div className="inner">
           <label>strings.RestrictToSemester</label>
           <Select options={semesterList}
@@ -45,8 +45,8 @@ class AssignmentDetailsComponent extends React.Component{
         </div>
       );
 
-      if(this.props.Courses){
-      coursesView = (<div>
+        if(this.props.Courses){
+            coursesView = (<div>
           <label>{strings.Course}</label>
           <Select options={courseList}
                   value={this.props.AssignmentActivityData.AA_course}
@@ -57,12 +57,12 @@ class AssignmentDetailsComponent extends React.Component{
             />
 
         </div>);
-      }
+        }
 
-      return (
-        <div className="section card-1" >
+        return (
+        <div className="section card-2" >
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} {strings.Parameters}</h2>
-          <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
+          <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
             <div className="section-divider">
               <div className="inner">
                 <label>{strings.AssignmentName}</label>
@@ -127,7 +127,7 @@ class AssignmentDetailsComponent extends React.Component{
                 }} />
               <br />
               */}
-              <div className={this.state.ShowAdvanced ? "section-divider" : "task-hiding"}>
+              <div className={this.state.ShowAdvanced ? 'section-divider' : 'task-hiding'}>
                 {semesterView}
                 <br />
                 <br />
@@ -139,7 +139,7 @@ class AssignmentDetailsComponent extends React.Component{
 
           </div>
         </div>
-      );
+        );
     }
 }
 

@@ -1,7 +1,7 @@
 <!-- flex-container, flex-section, and flex-child are used to nicely align the
 dashboard section view, Current Courses, Pending and Completed Tasks -->
 <div id="left-half">
-  <form name="currentCourseList" role="form" class="section" method="POST" action="#">
+  <form name="currentCourseList" role="form" class="section card-2" method="POST" action="#">
       <h2 class="title">{{__ "Current Courses"}}</h2>
       <div class="section-content">
       <div class="col-xs-6">
@@ -24,7 +24,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
   </form>
 </div>
 <div id="right-half">
-  <form name="pendingTaskList" role="form" class="section sectionTable" method="POST" action="#">
+  <form name="pendingTaskList" role="form" class="section card-2 sectionTable" method="POST" action="#">
       <h2 class="title">{{__ "Pending Tasks"}}</h2>
       <div class="section-content">
       <div class="col-xs-6">
@@ -34,7 +34,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
         {{#each pendingTasksList}}
         <tr>
           <td data-label={{__ 'Assignment'}}>
-            <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
+            <a href="/task/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
           </td>
           <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
           <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
@@ -47,7 +47,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
       </div>
   </form>
 
-  <form name="completedTaskList" role="form" class="section sectionTable" method="POST" action="#">
+  <form name="completedTaskList" role="form" class="section card-2 sectionTable" method="POST" action="#">
       <h2 class="title">{{__ "Completed Tasks"}}</h2>
       <div class="section-content">
       <div class="col-xs-6">
@@ -57,7 +57,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
           {{#each completedTasksList}}
           <tr>
             <td data-label={{__ 'Assignment'}}>
-              <a href="/task/{{TaskActivity.Type}}/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
+              <a href="/task/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
             </td>
             <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
             <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>

@@ -16,7 +16,24 @@
   overflow:auto;
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
+.rich-text-markdown{
+  strong{
+    font-weight: bold;
+  }
+  em{
+    font-style: italic;
+  }
+  ins{
+    text-decoration: underline;
+  }
+  del{
+    text-decoration: line-through;
+  }
+  code{
+    font-family: monospace;
+    
+  }
+}
 
 .faded-small {
   background-color: #f2f2f3;

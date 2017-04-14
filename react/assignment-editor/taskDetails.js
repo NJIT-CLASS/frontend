@@ -866,7 +866,7 @@ class TaskDetailsComponent extends React.Component {
         }
 
         return (
-          <div key={`Main View of Task ${this.props.index} in ${this.props.workflowIndex}`} className="section card-1">
+          <div key={`Main View of Task ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
             <h2 className="title" onClick={this.props.changeSelectedTask.bind(this, this.props.index)}>{title}</h2>
             <div className="section-content">
               <div className="section-divider">

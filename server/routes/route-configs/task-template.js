@@ -1,7 +1,7 @@
 const handler = require('../route-handlers/task-template');
 
 module.exports = {
-    route: '/TaskTemplate/:taskId',
+    route: '/task/:taskId',
     title: 'Task Template',
     routeHandler: handler,
     access: {

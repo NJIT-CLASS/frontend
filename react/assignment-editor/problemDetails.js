@@ -8,46 +8,46 @@ import Checkbox from '../shared/checkbox';
 
 class ProblemDetailsComponent extends React.Component{
     constructor(props){
-      super(props);
+        super(props);
       //this.props.:
       //numWorkflows
       // this.props.workflowIndex
-      this.state = {
-        ShowContent: true
-      };
+        this.state = {
+            ShowContent: true
+        };
     }
 
     mapTasksToOptions(){
-      return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
+        return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
             return {id: task, name: this.props.WorkflowDetails.Workflow[task].TA_display_name, weight: this.props.WorkflowDetails.WA_grade_distribution[task] };
-      },this);
+        },this);
     }
 
     render(){
-      let strings = this.props.Strings;
-      let problemTypeValues=[{value: 'essay', label: strings.Essay}, {value: 'multiple_choice', label: strings.MultipleChoice}, {value: 'short_answer' ,label: strings.ShortAnswer },{value: 'program', label: strings.ComputerProgram}];
-      let gradingTasks = this.mapTasksToOptions();
+        let strings = this.props.Strings;
+        let problemTypeValues=[{value: 'essay', label: strings.Essay}, {value: 'multiple_choice', label: strings.MultipleChoice}, {value: 'short_answer' ,label: strings.ShortAnswer },{value: 'program', label: strings.ComputerProgram}];
+        let gradingTasks = this.mapTasksToOptions();
 
-      let gradeDistView = null;
-      let multipleWorkflowsView = null;
+        let gradeDistView = null;
+        let multipleWorkflowsView = null;
 
-      if(gradingTasks.length > 1){
-        gradeDistView = gradingTasks.map(function(task, index){
-            return(
-              <li className="thin-number-field" key={"probDet" + index}>
-                <label style={{marginRight: '8px'}} key={"probDet-" + index}> {task.name} </label>
-                <NumberField  key = {"probDet-NumF "+index} allowDecimals={false}
+        if(gradingTasks.length > 1){
+            gradeDistView = gradingTasks.map(function(task, index){
+                return(
+              <li className="thin-number-field" key={'probDet' + index}>
+                <label style={{marginRight: '8px'}} key={'probDet-' + index}> {task.name} </label>
+                <NumberField  key = {'probDet-NumF '+index} allowDecimals={false}
                               min={0} max={100}
                               onChange={this.props.changeWorkflowGradeDist.bind(this, this.props.workflowIndex, task.id, index)}
                               value={task.weight} />
               </li>
-            )
-        }, this);
-      }
+                );
+            }, this);
+        }
 
 
-      if(this.props.NumberofWorkflows > 1){
-        multipleWorkflowsView = (<div>
+        if(this.props.NumberofWorkflows > 1){
+            multipleWorkflowsView = (<div>
           <div className='inner'>
             <label>{strings.ProblemName}</label>
             <br />
@@ -69,18 +69,18 @@ class ProblemDetailsComponent extends React.Component{
             <br />
             <textarea className="big-text-field" placeholder={strings.Description}
                       value={this.props.WorkflowDetails.WA_documentation}
-                      onChange={this.props.changeWorkflowInputData.bind(this,"WA_documentation",this.props.workflowIndex)} ></textarea>
+                      onChange={this.props.changeWorkflowInputData.bind(this,'WA_documentation',this.props.workflowIndex)} ></textarea>
           </div>
 
         </div>
         );
-      }
+        }
 
 
-      return (
-        <div className="section card-1">
+        return (
+        <div className="section card-2">
         <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{this.props.WorkflowDetails.WA_name} {strings.Parameters}</h2>
-          <div className={this.state.ShowContent ? "section-content" : "task-hiding"}>
+          <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
             <div className='section-divider'>
 
               {multipleWorkflowsView}
@@ -108,7 +108,7 @@ class ProblemDetailsComponent extends React.Component{
             </div>
           </div>
         </div>
-      );
+        );
     }
 }
 

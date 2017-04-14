@@ -46,7 +46,7 @@ class AssignmentEditorContainer extends React.Component {
             numeric_min: 0,
             numeric_max: 40,
             rating_max: 5,
-            list_of_labels: 'Easy, Medium, Difficult',
+            list_of_labels: ['Easy', 'Medium', 'Difficult'],
             field_type: 'text',
             requires_justification: false,
             instructions: '',
@@ -77,12 +77,7 @@ class AssignmentEditorContainer extends React.Component {
                     false, false
                 ],
                 StartDelay: false,
-                TA_file_upload: [
-                    [
-                        0, 'mandatory'
-                    ],
-                    [0, 'optional']
-                ],
+                TA_file_upload: [[ 0, 'mandatory'],[0, 'optional']],//{'mandatory': 0, 'optional': 0}
                 TA_due_type: [
                     'duration', 4320
                 ],
@@ -141,7 +136,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: 'Create a new problem for another student to solve.',
@@ -176,7 +171,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: 'Edit the problem to ensure that it makes sense.',
@@ -214,7 +209,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: 'Comment on the problem.',
@@ -246,7 +241,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: 'Solve the problem.',
@@ -280,7 +275,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 50,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'assessment',
                     requires_justification: true,
                     instructions: 'Grade the solution on how correct it is.',
@@ -298,7 +293,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 50,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'assessment',
                     requires_justification: true,
                     instructions: 'Grade the solution on whether you feel it completely answered the problem.',
@@ -333,7 +328,7 @@ class AssignmentEditorContainer extends React.Component {
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: 'Easy, Medium, Difficult',
+                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'assessment',
                     requires_justification: false,
                     instructions: '',
@@ -353,6 +348,10 @@ class AssignmentEditorContainer extends React.Component {
             TA_documentation:'',
             TA_name: TASK_TYPE_TEXT.needs_consolidation,
             TA_number_participant: 1,
+            TA_assignee_constraints: [
+                'student',
+                'individual', {'same_as': [2]}
+            ],
             TA_trigger_consolidation_threshold: [15,'percent'],
             TA_fields: null
         });
@@ -363,7 +362,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_name: TASK_TYPE_TEXT.consolidation,
             TA_assignee_constraints: [
                 'student',
-                'individual', {}
+                'individual', {'same_as': [2]}
             ],
             TA_is_final_grade: true,
             TA_fields: {
@@ -668,6 +667,11 @@ class AssignmentEditorContainer extends React.Component {
             //1. Flatten all Workflow trees
             //2. Send to database.
             //3. Show some kind of acknowledgement messageDiv
+            //
+        if(this.state.SubmitSuccess === true){
+            return;
+        }
+
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
             console.log('CourseID null');
             this.setState({SubmitError: true});
@@ -704,12 +708,11 @@ class AssignmentEditorContainer extends React.Component {
                 console.log(body);
                 this.setState({
                     PartialAssignmentID: body.PartialAssignmentID,
-                    SubmitSuccess: true,
-                    SubmitButtonShow: false
+                    SaveSuccess: true
                 });
             } else {
-                console.log('Submit failed');
-                this.setState({SubmitError: true});
+                console.log('');
+                this.setState({SaveError: true});
             }
 
         });
@@ -731,6 +734,11 @@ class AssignmentEditorContainer extends React.Component {
                   in DB.
           C. Send to DB.
       */
+
+        if(this.state.SubmitSuccess === true){
+            return;
+        }
+
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
             console.log('CourseID null');
             this.setState({SubmitError: true});
@@ -959,8 +967,19 @@ class AssignmentEditorContainer extends React.Component {
 
     addConsolidation(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow.push(this.createNewTask(this.needsConsolidationTask, parentIndex, workflowIndex, 'Needs Consolidation of'));
-        newData[workflowIndex].Workflow.push(this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate'));
+
+        var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == parentIndex;
+        });
+        let needsConsolData = this.createNewTask(this.needsConsolidationTask, parentIndex, workflowIndex, 'Needs Consolidation of');
+        let consolData = this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate');
+
+
+        needsConsolData.TA_assignee_constraints = ["student", "individual", {"same_as": [parentIndex]}];
+        consolData.TA_assignee_constraints = ["student", "individual", {"same_as": [parentIndex]}];
+        
+        newData[workflowIndex].Workflow.push(needsConsolData);
+        newData[workflowIndex].Workflow.push(consolData);
 
         let needsConsolidateNode = this.tree.parse({
             id: newData[workflowIndex].Workflow.length - 2
@@ -972,9 +991,7 @@ class AssignmentEditorContainer extends React.Component {
         needsConsolidateNode = this.fillGaps(needsConsolidateNode, this.CONSOL_DISP_IDX);
         needsConsolidateNode.addChildAtIndex(consolidateNode, this.CONSOL_DISP_IDX);
 
-        var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
-            return node.model.id == parentIndex;
-        });
+        
 
         selectedNode = this.fillGaps(selectedNode, this.CONSOL_DISP_IDX);
         if (selectedNode.children[this.CONSOL_DISP_IDX] == undefined) {
@@ -2246,10 +2263,11 @@ class AssignmentEditorContainer extends React.Component {
     render() {
         let infoMessage = null;
         let submitButtonView = (
-            <button type="button" className="outside-button" onClick={this.onSubmit.bind(this)}>
-                <i className="fa fa-check">{this.state.Strings.Submit}</i>
-            </button>
+          <button style={{marginRight: '40px'}} type="button" onClick={this.onSubmit.bind(this)}>
+              <i className="fa fa-check"></i>{this.state.Strings.Submit}
+          </button>
         );
+        let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
 
         if (this.state.SubmitSuccess) {
             infoMessage = (
@@ -2290,6 +2308,7 @@ class AssignmentEditorContainer extends React.Component {
 
             if (!this.state.SubmitButtonShow || !this.props.UserID) {
                 submitButtonView = null;
+                saveButtonView = null;
             }
 
             this.state.WorkflowDetails.forEach(function(workflow, index) {
@@ -2386,8 +2405,10 @@ class AssignmentEditorContainer extends React.Component {
                         Strings={this.state.Strings}
                         />
                       <br/> {workflowsView}
-                      <br/> {submitButtonView}
-                      <button onClick={this.onSave.bind(this)}>Save</button>
+                      <br/>
+                      {submitButtonView}
+                      {saveButtonView}
+
                     </div>
                 </div>
             );
