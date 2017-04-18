@@ -1,0 +1,25 @@
+.upload-view-section{
+  height: 100px;
+}
+.upload-file-input{
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.fileUpload-view label{
+  font-size: 1.25em;
+  font-weight: 700;
+  width: 150px;
+  padding: 8px;
+  text-align: center;
+  margin: 5px 0;
+  font-weight: 600;
+  display: inline-block;
+  background-color: #555555;
+  color: white;
+
+}

@@ -66,7 +66,7 @@ class TemplateContainer extends React.Component {
             Error: false,
             TabSelected: 0,
             Strings: strings
-        }
+        };
     }
 
     getTaskData() {
@@ -100,61 +100,62 @@ class TemplateContainer extends React.Component {
 
             this.props.__(strings, (newStrings) =>{
 
-            request(options2, (err, res, bod) => {
+                request(options2, (err, res, bod) => {
 
-                if (res.statusCode != 200) {
-                    this.setState({Error: true});
-                    return;
-                }
-                console.log(bod);
-
-                let taskList = new Array();
-                let skipIndeces = new Array();
-                let currentTask = bod.superTask.pop();
-                console.log(currentTask)
-                let currentTaskStatus = currentTask.Status;
-
-
-
-                bod.superTask.reverse().forEach(function(task, index) {
-                    if (skipIndeces.indexOf(index) != -1 || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION) {
+                    if (res.statusCode != 200) {
+                        this.setState({Error: true});
                         return;
                     }
-                    if (task.TaskActivity.NumberParticipants > 1) {
-                        let newArray = bod.superTask.filter(function(t, idx) {
-                            if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
-                                skipIndeces.push(idx);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        });
-                        taskList.push(newArray);
-                    }
-                    else {
-                        taskList.push(task);
-                    }
+                    console.log(bod);
 
-                }, this);
+                    let taskList = new Array();
+                    let skipIndeces = new Array();
+                    let currentTask = bod.superTask.pop();
+                    console.log(currentTask);
+                    let currentTaskStatus = currentTask.Status;
 
-                taskList.push(currentTask);
-                console.log(taskList);
 
-                  this.setState({
-                      Loaded: true,
-                      CourseName: body.courseName,
-                      CourseNumber: body.courseNumber,
-                      AssignmentTitle: body.assignmentName,
-                      AssignmentID: body.assignmentID,
-                      AssignmentDescription: body.assignmentDescription,
-                      TaskActivityType: body.taskActivityType,
-                      SemesterID: body.semesterID,
-                      SemesterName: body.semesterName,
-                      TaskActivityVisualID: body.taskActivityVisualID,
-                      Data: taskList,
-                      TaskStatus: currentTaskStatus,
-                      Strings: newStrings
-                  });
+
+                    bod.superTask.reverse().forEach(function(task, index) {
+                        if (skipIndeces.indexOf(index) != -1 || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION) {
+                            return;
+                        }
+                        if (task.TaskActivity.NumberParticipants > 1) {
+                            let newArray = bod.superTask.filter(function(t, idx) {
+                                if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
+                                    skipIndeces.push(idx);
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            });
+                            taskList.push(newArray);
+                        }
+                        else {
+                            taskList.push(task);
+                        }
+
+                    }, this);
+
+                    taskList.push(currentTask);
+                    console.log(taskList);
+                    taskList[taskList.length -1].TaskActivity.FileUpload = JSON.parse(taskList[taskList.length -1].TaskActivity.FileUpload);
+
+                    this.setState({
+                        Loaded: true,
+                        CourseName: body.courseName,
+                        CourseNumber: body.courseNumber,
+                        AssignmentTitle: body.assignmentName,
+                        AssignmentID: body.assignmentID,
+                        AssignmentDescription: body.assignmentDescription,
+                        TaskActivityType: body.taskActivityType,
+                        SemesterID: body.semesterID,
+                        SemesterName: body.semesterName,
+                        TaskActivityVisualID: body.taskActivityVisualID,
+                        Data: taskList,
+                        TaskStatus: currentTaskStatus,
+                        Strings: newStrings
+                    });
                 });
 
             });
@@ -163,7 +164,7 @@ class TemplateContainer extends React.Component {
     }
 
     componentWillMount() { // this function is called before the component renders, so that the page renders with the appropriate state data
-      this.getTaskData();
+        this.getTaskData();
 
     }
 
@@ -171,7 +172,7 @@ class TemplateContainer extends React.Component {
         let renderComponents = null;
 
         if (this.state.Error) { // if there was an error in the data fetching calls, show the Error Component
-            return (<ErrorComponent/>)
+            return (<ErrorComponent/>);
         }
         if (!this.state.Loaded) { // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return (
@@ -196,55 +197,55 @@ class TemplateContainer extends React.Component {
 
 
             if (Array.isArray(task)) {
-              return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings} />);
+                return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings} />);
 
             }
             else {
-              switch (task.TaskActivity.Type) {
-                  case TASK_TYPES.CREATE_PROBLEM:
-                      compString = this.state.Strings.CreateProblemTitle;
-                      break;
-                  case TASK_TYPES.EDIT:
-                      compString = this.state.Strings.EditProblemTitle;
-                      break;
-                  case TASK_TYPES.COMMENT:
-                      compString = this.state.Strings.CommentTitle
-                  case TASK_TYPES.SOLVE_PROBLEM:
-                      compString = this.state.Strings.SolveProblemTitle;
-                      break;
-                  case TASK_TYPES.GRADE_PROBLEM:
-                      compString = this.state.Strings.GradeProblemTitle;
-                      break;
-                  case TASK_TYPES.CRITIQUE:
-                      compString = this.state.Strings.CritiqueTitle;
-                  case TASK_TYPES.CONSOLIDATION:
-                      compString = this.state.Strings.ConsolidateProblemTitle;
-                      break;
-                  case TASK_TYPES.DISPUTE:
-                      compString = this.state.Strings.DisputeGradeTitle;
-                      break;
-                  case TASK_TYPES.RESOLVE_DISPUTE:
-                      compString = this.state.Strings.ResolveDisputeTitle;
-                      break;
-                  default:
-                      compString = "";
-                      break;
-              }
+                switch (task.TaskActivity.Type) {
+                case TASK_TYPES.CREATE_PROBLEM:
+                    compString = this.state.Strings.CreateProblemTitle;
+                    break;
+                case TASK_TYPES.EDIT:
+                    compString = this.state.Strings.EditProblemTitle;
+                    break;
+                case TASK_TYPES.COMMENT:
+                    compString = this.state.Strings.CommentTitle;
+                case TASK_TYPES.SOLVE_PROBLEM:
+                    compString = this.state.Strings.SolveProblemTitle;
+                    break;
+                case TASK_TYPES.GRADE_PROBLEM:
+                    compString = this.state.Strings.GradeProblemTitle;
+                    break;
+                case TASK_TYPES.CRITIQUE:
+                    compString = this.state.Strings.CritiqueTitle;
+                case TASK_TYPES.CONSOLIDATION:
+                    compString = this.state.Strings.ConsolidateProblemTitle;
+                    break;
+                case TASK_TYPES.DISPUTE:
+                    compString = this.state.Strings.DisputeGradeTitle;
+                    break;
+                case TASK_TYPES.RESOLVE_DISPUTE:
+                    compString = this.state.Strings.ResolveDisputeTitle;
+                    break;
+                default:
+                    compString = '';
+                    break;
+                }
 
                 if (idx == this.state.Data.length - 1) {
                     if (task.Status == 'Complete' || task.Status == 'complete') {
                         return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                     } else {
-                        return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
+                        return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} FileUpload={task.TaskActivity.FileUpload} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
                     }
 
                 } else {
-                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>)
+                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 }
             }
-          }, this);
+        }, this);
 
-          return (
+        return (
               <div>
                   <Tabs onSelect={(tab) => {
                       this.setState({TabSelected: tab});
@@ -291,8 +292,8 @@ class TemplateContainer extends React.Component {
 
               </div>
 
-          );
-        }
+        );
+    }
 
 }
 

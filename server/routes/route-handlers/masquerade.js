@@ -14,7 +14,9 @@ exports.post = (req, res) => {
             res.redirect('/');
         }
         else {
-            res.statusCode(404).end();
+            res.render('masquerade', {
+                Error: true
+            });
         }
     });
 };

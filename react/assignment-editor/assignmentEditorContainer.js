@@ -77,7 +77,7 @@ class AssignmentEditorContainer extends React.Component {
                     false, false
                 ],
                 StartDelay: false,
-                TA_file_upload: [[ 0, 'mandatory'],[0, 'optional']],//{'mandatory': 0, 'optional': 0}
+                TA_file_upload: {'mandatory': 0, 'optional': 0},
                 TA_due_type: [
                     'duration', 4320
                 ],
@@ -975,9 +975,9 @@ class AssignmentEditorContainer extends React.Component {
         let consolData = this.createNewTask(this.consolidationTask, parentIndex, workflowIndex, 'Consolidate');
 
 
-        needsConsolData.TA_assignee_constraints = ["student", "individual", {"same_as": [parentIndex]}];
-        consolData.TA_assignee_constraints = ["student", "individual", {"same_as": [parentIndex]}];
-        
+        needsConsolData.TA_assignee_constraints = ['student', 'individual', {'same_as': [parentIndex]}];
+        consolData.TA_assignee_constraints = ['student', 'individual', {'same_as': [parentIndex]}];
+
         newData[workflowIndex].Workflow.push(needsConsolData);
         newData[workflowIndex].Workflow.push(consolData);
 
@@ -991,7 +991,7 @@ class AssignmentEditorContainer extends React.Component {
         needsConsolidateNode = this.fillGaps(needsConsolidateNode, this.CONSOL_DISP_IDX);
         needsConsolidateNode.addChildAtIndex(consolidateNode, this.CONSOL_DISP_IDX);
 
-        
+
 
         selectedNode = this.fillGaps(selectedNode, this.CONSOL_DISP_IDX);
         if (selectedNode.children[this.CONSOL_DISP_IDX] == undefined) {
@@ -1862,9 +1862,9 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
-    changeFileUpload(taskIndex, firstIndex, secondIndex, workflowIndex, val) {
+    changeFileUpload(type, taskIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[taskIndex].TA_file_upload[firstIndex][secondIndex] = val;
+        newData[workflowIndex].Workflow[taskIndex].TA_file_upload[type] = val;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 

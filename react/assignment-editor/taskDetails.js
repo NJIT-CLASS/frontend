@@ -129,13 +129,13 @@ class TaskDetailsComponent extends React.Component {
                   <label>
                     {strings.HowManyRequiredFiles}</label>
                   <br />
-                  <NumberField min={0} max={10} onChange={this.props.changeFileUpload.bind(this, this.props.index, 0, 0, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload[0][0]} />
+                  <NumberField min={0} max={10} onChange={this.props.changeFileUpload.bind(this, 'mandatory',this.props.index,this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload['mandatory']} />
                 </div>
                 <div className="inner">
                   <label>
                     {strings.MaximumNumberOfOptionalFiles}</label>
                   <br />
-                  <NumberField min={0} max={10} onChange={this.props.changeFileUpload.bind(this, this.props.index, 1, 0, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload[1][0]} />
+                  <NumberField min={0} max={10} onChange={this.props.changeFileUpload.bind(this, 'optional', this.props.index,this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload['optional']} />
 
                 </div>
               </div>

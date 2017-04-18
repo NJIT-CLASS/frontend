@@ -14,9 +14,9 @@ import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
 
 class AssignToSectionContainer extends React.Component
 {
-  constructor(props)
+    constructor(props)
   {
-    super(props);
+        super(props);
     /*
       Props:
             - apiUrl
@@ -24,297 +24,297 @@ class AssignToSectionContainer extends React.Component
             - AssignmentID
     */
 
-    this.state=
-    { //structure of the data being passes in from the database
-      Assignment:{
-        StartNow:true,
-        StartLater:false,
-        Section:[],
-        Semester: null,
-        Time:moment().format('YYYY-MM-DD HH:mm:ss'),
-        AssigmentName:""
-      },
-    Sections: null,
-    SubmitSuccess:false,
-    SubmitError: false,
-    DataLoaded: false
-  }
-}
+        this.state=
+        { //structure of the data being passes in from the database
+            Assignment:{
+                StartNow:true,
+                StartLater:false,
+                Section:[],
+                Semester: null,
+                Time:moment().format('YYYY-MM-DD HH:mm:ss'),
+                AssigmentName:''
+            },
+            Sections: null,
+            SubmitSuccess:false,
+            SubmitError: false,
+            DataLoaded: false
+        };
+    }
 
-  componentWillMount(){ //gets the appropraite assignment structure from the database before rendering the page
-    let semestersArray = null;
+    componentWillMount(){ //gets the appropraite assignment structure from the database before rendering the page
+        let semestersArray = null;
 
-     const options = {
-       method: 'GET',
-        uri: this.props.apiUrl +'/api/getAssignToSection/',
-        qs:{
-          courseid: this.props.CourseID,
-          assignmentid: this.props.AssignmentID
-        },
-        json: true
-      };
-      const semOptions = {
-          method: 'GET',
-          uri: this.props.apiUrl + '/api/semester',
-          json: true
-      };
+        const options = {
+            method: 'GET',
+            uri: this.props.apiUrl +'/api/getAssignToSection/',
+            qs:{
+                courseid: this.props.CourseID,
+                assignmentid: this.props.AssignmentID
+            },
+            json: true
+        };
+        const semOptions = {
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/semester',
+            json: true
+        };
 
-      request(options, (err, res, body) => {
-        request(semOptions, (err2, res2, bod2) => {
-        let workflows = Object.keys(body.taskActivityCollection).map(function(key){
-          let tasks = body.taskActivityCollection[key].map(function(task){
-            return {
-              ID: task.taskActivityID,
-              Type:task.type,
-              Name: task.name,
-              StartNow:true,
-              StartLater:false,
-              Time:4320,
-              TimeArray:["duration", 4320]
-            };
-          }, this);
+        request(options, (err, res, body) => {
+            request(semOptions, (err2, res2, bod2) => {
+                let workflows = Object.keys(body.taskActivityCollection).map(function(key){
+                    let tasks = body.taskActivityCollection[key].map(function(task){
+                        return {
+                            ID: task.taskActivityID,
+                            Type:task.type,
+                            Name: task.name,
+                            StartNow:true,
+                            StartLater:false,
+                            Time:4320,
+                            TimeArray:['duration', 4320]
+                        };
+                    }, this);
 
-          return {
-            id: key,
-            StartNow:true,
-            StartLater:false,
-            Time:moment().format('YYYY-MM-DD HH:mm:ss'),
-            Tasks: tasks
-          };
+                    return {
+                        id: key,
+                        StartNow:true,
+                        StartLater:false,
+                        Time:moment().format('YYYY-MM-DD HH:mm:ss'),
+                        Tasks: tasks
+                    };
 
-        }, this);
+                }, this);
 
 
-          semestersArray = bod2.Semesters.map(function(sem){
-            return ( {value: sem.SemesterID, label: sem.Name} );
-          });
+                semestersArray = bod2.Semesters.map(function(sem){
+                    return ( {value: sem.SemesterID, label: sem.Name} );
+                });
 
-          let newA= this.state.Assignment;
-          newA.AssigmentName = body.assignment.DisplayName;
-          this.setState({
-            Assignment: newA,
-            Semesters:semestersArray,
-            WorkFlow:workflows,
-             Sections: body.sectionIDs,
-            DataLoaded: true
-          });
+                let newA= this.state.Assignment;
+                newA.AssigmentName = body.assignment.DisplayName;
+                this.setState({
+                    Assignment: newA,
+                    Semesters:semestersArray,
+                    WorkFlow:workflows,
+                    Sections: body.sectionIDs,
+                    DataLoaded: true
+                });
+            });
+
         });
+    }
 
-       });
-  }
-
-  onSubmit(){
+    onSubmit(){
     //saves the state data to the database
 
 
-    let timingArray = this.state.WorkFlow.map(function(Workflow){
+        let timingArray = this.state.WorkFlow.map(function(Workflow){
 
-      let work_task = Workflow.Tasks.map(function(tk){
-        return {
-          id: tk.ID,
-          DueType: tk.TimeArray
+            let work_task = Workflow.Tasks.map(function(tk){
+                return {
+                    id: tk.ID,
+                    DueType: tk.TimeArray
+                };
+            });
+
+            return {
+                id: Workflow.id,
+                startDate: Workflow.Time,
+                tasks: work_task
+            };
+        });
+
+        let newData = {
+            assignmentid: this.props.AssignmentID,
+            sectionIDs: this.state.Assignment.Section,
+            startDate: this.state.Assignment.Time,
+            wf_timing: {
+                workflows: timingArray
+            }
         };
-      });
 
-      return {
-        id: Workflow.id,
-        startDate: Workflow.Time,
-        tasks: work_task
-      };
-    });
 
-    let newData = {
-      assignmentid: this.props.AssignmentID,
-      sectionIDs: this.state.Assignment.Section,
-      startDate: this.state.Assignment.Time,
-      wf_timing: {
-        workflows: timingArray
-      }
-    };
-
-    console.log(newData);
-    const options = {
-      method: 'POST',
-      uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
-      body: newData,
-      json: true
-    };
-    console.log(newData);
-      request(options, (err, res, body) => {
-        if(res.statusCode === 200){
-          console.log('Submit worked');
-          this.setState({
-            SubmitSuccess: true
-          });
-        }
-        else{
-          console.log('Something went wrong');
-        }
-      });
-    return
-  }
+        const options = {
+            method: 'POST',
+            uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
+            body: newData,
+            json: true
+        };
+    
+        request(options, (err, res, body) => {
+            if(res.statusCode === 200){
+                console.log('Submit worked');
+                this.setState({
+                    SubmitSuccess: true
+                });
+            }
+            else{
+                console.log('Something went wrong');
+            }
+        });
+        return;
+    }
 
 //////////////// Functions used in the Assignment Component ////////////////////
-  onChangeCalendarAssignment(dateString) //dateString is supplied by Datetime module
+    onChangeCalendarAssignment(dateString) //dateString is supplied by Datetime module
   {
 
-    let newA = this.state.Assignment;
-    newA.Time = dateString.format("YYYY-MM-DD HH:mm:ss");
-    this.setState({Assignment: newA});
-  }
-
-  onChangeStartLaterAssignment()
-  {
-    let newA = this.state.Assignment;
-    newA.StartNow = false;
-    newA.StartLater = true;
-    newA.Time = moment().add(3, 'days').format("MM/DD/YYYY")+(' 23:59');
-    this.setState({Assignment: newA});
-  }
-
-  onChangeStartNowAssignment()
-  {
-    let newA = this.state.Assignment;
-    newA.StartNow = true;
-    newA.StartLater = false;
-    newA.Time = moment().format('YYYY-MM-DD HH:mm:ss');
-    this.setState({Assignment: newA});
-  }
-
-  onChangeAssigmentName(e) //e is event that is automatically passed in
-  {
-    let newA = this.state.Assignment;
-    newA.AssigmentName = e.target.value;
-    this.setState({Assignment: newA});
-  }
-
-  onChangeSemesterAssignment(val){
-    let newA = this.state.Assignment;
-    newA.Semester = val;
-    this.setState({Assignment: newA});
-  }
-
-  onChangeSectionAssignment(sectionID) //Section is automatically passed in by CheckBoxList module
-  {
-    let newA = this.state.Assignment;
-    if(newA.Section.indexOf(sectionID) == -1){ //not already in the list of sectionID's
-      newA.Section.push(sectionID);
-    }
-    else{
-      newA.Section.splice(newA.Section.indexOf(sectionID), 1);
+        let newA = this.state.Assignment;
+        newA.Time = dateString.format('YYYY-MM-DD HH:mm:ss');
+        this.setState({Assignment: newA});
     }
 
-    this.setState({Assignment: newA});
-  }
+    onChangeStartLaterAssignment()
+  {
+        let newA = this.state.Assignment;
+        newA.StartNow = false;
+        newA.StartLater = true;
+        newA.Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        this.setState({Assignment: newA});
+    }
+
+    onChangeStartNowAssignment()
+  {
+        let newA = this.state.Assignment;
+        newA.StartNow = true;
+        newA.StartLater = false;
+        newA.Time = moment().format('YYYY-MM-DD HH:mm:ss');
+        this.setState({Assignment: newA});
+    }
+
+    onChangeAssigmentName(e) //e is event that is automatically passed in
+  {
+        let newA = this.state.Assignment;
+        newA.AssigmentName = e.target.value;
+        this.setState({Assignment: newA});
+    }
+
+    onChangeSemesterAssignment(val){
+        let newA = this.state.Assignment;
+        newA.Semester = val;
+        this.setState({Assignment: newA});
+    }
+
+    onChangeSectionAssignment(sectionID) //Section is automatically passed in by CheckBoxList module
+  {
+        let newA = this.state.Assignment;
+        if(newA.Section.indexOf(sectionID) == -1){ //not already in the list of sectionID's
+            newA.Section.push(sectionID);
+        }
+        else{
+            newA.Section.splice(newA.Section.indexOf(sectionID), 1);
+        }
+
+        this.setState({Assignment: newA});
+    }
 
 //----------------------------------------------------------------------------
 
 /////////////// Functions used in Tasks Component /////////////////////////////
-  onChangeCalendarTasks(index, workflowIndex, dateString) //index is task's index in the tasks array, workflowIndex is index in WorkFlow array
+    onChangeCalendarTasks(index, workflowIndex, dateString) //index is task's index in the tasks array, workflowIndex is index in WorkFlow array
     // dateString automatically passed in by Datetime module
   {
-    let newA = this.state.WorkFlow;
-    newA[workflowIndex].Tasks[index].Time = dateString.format("YYYY-MM-DD HH:mm:ss");
-    newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].Tasks[index].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
+        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
 
-    this.setState({Tasks: newA});
-  }
-
-  onChangeMultipleTasks(index, workflowIndex, value) // value automatically passed in by NumericInput
-  {
-    let newA = this.state.WorkFlow;
-    if (value > 100)
-    {
-      value = 100;
+        this.setState({Tasks: newA});
     }
 
-    newA[workflowIndex].Tasks[index].Time = value*1440;
-    newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
-    this.setState({Tasks: newA});
-  }
-
-  onChangeExpireNumberOfDaysTasks(index, workflowIndex)
+    onChangeMultipleTasks(index, workflowIndex, value) // value automatically passed in by NumericInput
   {
-    let newA = this.state.WorkFlow;
-    newA[workflowIndex].Tasks[index].StartNow= true;
-    newA[workflowIndex].Tasks[index].StartLater=false;
-    newA[workflowIndex].Tasks[index].Time = 3 * 1440;
-    newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
-    this.setState({Tasks: newA});
-  }
+        let newA = this.state.WorkFlow;
+        if (value > 100)
+    {
+            value = 100;
+        }
 
-  onChangeCertainTimeTasks(index, workflowIndex)
+        newA[workflowIndex].Tasks[index].Time = value*1440;
+        newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
+        this.setState({Tasks: newA});
+    }
+
+    onChangeExpireNumberOfDaysTasks(index, workflowIndex)
   {
-    let newA = this.state.WorkFlow;
-    newA[workflowIndex].Tasks[index].StartNow= false;
-    newA[workflowIndex].Tasks[index].StartLater=true;
-    newA[workflowIndex].Tasks[index].Time = moment().add(3, 'days').format("MM/DD/YYYY")+(' 23:59');
-    newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
-    this.setState({Tasks: newA});
-  }
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].Tasks[index].StartNow= true;
+        newA[workflowIndex].Tasks[index].StartLater=false;
+        newA[workflowIndex].Tasks[index].Time = 3 * 1440;
+        newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
+        this.setState({Tasks: newA});
+    }
+
+    onChangeCertainTimeTasks(index, workflowIndex)
+  {
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].Tasks[index].StartNow= false;
+        newA[workflowIndex].Tasks[index].StartLater=true;
+        newA[workflowIndex].Tasks[index].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
+        this.setState({Tasks: newA});
+    }
 
 //-----------------------------------------------------------------------------
 
 /////////// Functions used in WorkFlow Component ///////////////////////////////
-  onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
+    onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
   {
-    let newA = this.state.WorkFlow;
-    newA[workflowIndex].Time = dateString.format("YYYY-MM-DD HH:mm:ss");;
-    this.setState({WorkFlow: newA});
-  }
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');;
+        this.setState({WorkFlow: newA});
+    }
 
-  onChangeStartLaterWorkFlow(workflowIndex)
+    onChangeStartLaterWorkFlow(workflowIndex)
   {
-    let newA = this.state.WorkFlow;
-    newA[workflowIndex].StartNow = false;
-    newA[workflowIndex].StartLater = true;
-    newA[workflowIndex].Time = moment().add(3, 'days').format("MM/DD/YYYY")+(' 23:59');
-    this.setState({WorkFlow: newA});
-  }
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].StartNow = false;
+        newA[workflowIndex].StartLater = true;
+        newA[workflowIndex].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        this.setState({WorkFlow: newA});
+    }
 
-  onChangeStartNowWorkFlow(workflowIndex)
+    onChangeStartNowWorkFlow(workflowIndex)
   {
-    let newA = this.state.WorkFlow
-    newA[workflowIndex].StartNow = true;
-    newA[workflowIndex].StartLater = false;
-    newA[workflowIndex].Time = moment().format('YYYY-MM-DD HH:mm:ss');
-    this.setState({WorkFlow: newA});
-  }
+        let newA = this.state.WorkFlow;
+        newA[workflowIndex].StartNow = true;
+        newA[workflowIndex].StartLater = false;
+        newA[workflowIndex].Time = moment().format('YYYY-MM-DD HH:mm:ss');
+        this.setState({WorkFlow: newA});
+    }
 
   //--------------------------------------------------------------------------
 
-  render()
+    render()
   {
 
-    let infoMessage = null;
+        let infoMessage = null;
 
-    if(!this.state.DataLoaded){
-      return (<div></div>);
-    }
-    if(this.state.SubmitSuccess){
-      infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false})}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted! </span>);
-    }
-    if(this.state.SubmitError){
-      infoMessage = (<span onClick={() => {this.setState({SubmitError: false})}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
-    }
-    let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
-    {
-      let tasks = workflow.Tasks.map(function(task, index){
-        if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
-          return null;
+        if(!this.state.DataLoaded){
+            return (<div></div>);
         }
+        if(this.state.SubmitSuccess){
+            infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false});}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted! </span>);
+        }
+        if(this.state.SubmitError){
+            infoMessage = (<span onClick={() => {this.setState({SubmitError: false});}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+        }
+        let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
+    {
+            let tasks = workflow.Tasks.map(function(task, index){
+                if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
+                    return null;
+                }
 
-        return (
+                return (
             <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
             onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
             onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
             onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
             onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)} />
-        );
+                );
 
-      },this);
+            },this);
 
-      return (
+            return (
         <div>
             <WorkFlow WorkFlow = {workflow} workflowIndex ={workindex}
             onChangeCalendarWorkFlow = {this.onChangeCalendarWorkFlow.bind(this)}
@@ -323,9 +323,9 @@ class AssignToSectionContainer extends React.Component
 
           {tasks}
         </div>);
-    }, this);
+        }, this);
 
-    return (
+        return (
       <div>
         {infoMessage}
 
@@ -346,8 +346,8 @@ class AssignToSectionContainer extends React.Component
         <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>
       </div>
 
-    )
-  }
+        );
+    }
 }
 //Assign to Section by Krzysztof Andres.
 export default AssignToSectionContainer;

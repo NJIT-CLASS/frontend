@@ -340,6 +340,7 @@ class SuperComponent extends React.Component {
         let disputeButton = null;
         let TA_instructions = null;
         let formButtons =  null;
+        let fileUploadView = null;
         let indexer =  'content';
         let TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
           //if invalid data, shows error message
@@ -407,6 +408,14 @@ class SuperComponent extends React.Component {
                 </ReactCSSTransitionGroup>
 
                 </div>);
+        }
+
+        if(this.props.FileUpload !== null && this.props.FileUpload.mandatory !== 0){
+            fileUploadView = (
+            <div>
+              <FileUpload UserID={this.props.UserID} apiUrl={this.props.apiUrl}/>
+            </div>
+          );
         }
 
         if(this.props.Instructions != null && this.props.Instructions != '' ){
@@ -629,7 +638,7 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
               {TA_instructions}
               {TA_rubric}
-              <FileUpload UserID={this.props.UserID} />
+              {fileUploadView}
 
               {fields}
               {formButtons}
