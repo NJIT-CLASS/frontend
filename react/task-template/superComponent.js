@@ -316,10 +316,9 @@ class SuperComponent extends React.Component {
 
     willNotDispute(){
         const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/skipDispute',
-            body: {
-                taskinstanceid: this.props.TaskID,
+            method: 'GET',
+            uri: `${this.props.apiUrl}/api/skipDispute/${this.props.TaskID}`,
+            qs: {
                 userid: this.props.UserID
             },
             json: true
