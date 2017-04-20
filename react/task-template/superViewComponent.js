@@ -104,7 +104,7 @@ class SuperViewComponent extends React.Component {
         let TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
 
         if(this.state.Error){ // if there was an error loading the data, show an Error component
-            return(<ErrorComponent />);
+            return(<div></div>);
         }
 
         if(this.props.Rubric != '' && this.props.Rubric != null){ //if no Rubric
