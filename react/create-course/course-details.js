@@ -38,18 +38,18 @@ class CourseDetails extends React.Component {
     }
 
     onCourseAbbChange(abb){
-      this.setState({courseAbb: abb.target.value});
+        this.setState({courseAbb: abb.target.value});
     }
 
     onCourseDescriptionChange(desc){
-      this.setState({courseDescription: desc.target.value});
+        this.setState({courseDescription: desc.target.value});
     }
 
     onOrganizationChange(org) {
-          this.setState({organization_value: org.value});
+        this.setState({organization_value: org.value});
     }
     onCreateOrganizationChange(changeOrg) {
-          this.setState({change_organization_name: changeOrg.target.value});
+        this.setState({change_organization_name: changeOrg.target.value});
     }
 
 
@@ -73,53 +73,53 @@ class CourseDetails extends React.Component {
             });
         }
         //alert(this.props.userId + " " + this.state.change_organization_name);
-        if (this.state.organization_value ==  "create"){
-          const org_options = {
-            method: 'POST',
-            uri: this.props.apiUrl +'/api/createorganization', // hard coded
-            body: {
-              userid: this.props.userId,
-              organizationname: this.state.change_organization_name
-            },
-            json: true
-          };
-          request(org_options, (err, res, body) => {
+        if (this.state.organization_value ==  'create'){
+            const org_options = {
+                method: 'POST',
+                uri: this.props.apiUrl +'/api/createorganization', // hard coded
+                body: {
+                    userid: this.props.userId,
+                    organizationname: this.state.change_organization_name
+                },
+                json: true
+            };
+            request(org_options, (err, res, body) => {
 
-            const res_organization = body.neworganization;
-            if(body.org_feedback){
-              this.props.createCourse(courseName, courseNumber, courseAbb, courseDescription, res_organization.OrganizationID);
-            } else {
-              this.setState({organizationNameError: body.org_feedback});
-            }
-          });
+                const res_organization = body.neworganization;
+                if(body.org_feedback){
+                    this.props.createCourse(courseName, courseNumber, courseAbb, courseDescription, res_organization.OrganizationID);
+                } else {
+                    this.setState({organizationNameError: body.org_feedback});
+                }
+            });
         } else {
-          this.props.createCourse(courseName, courseNumber, courseAbb, courseDescription, this.state.organization_value);
+            this.props.createCourse(courseName, courseNumber, courseAbb, courseDescription, this.state.organization_value);
         }
     }
 
 
     //This will get all the organization
     componentWillMount(){
-      const orgFetchOptions = {
-          method: 'GET',
-          uri: this.props.apiUrl + '/api/organization', // hard coded
-          json: true
-      };
+        const orgFetchOptions = {
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/organization', // hard coded
+            json: true
+        };
 
-      request(orgFetchOptions, (err, res, body) => {
-          let orgList = [];
-          for (let org of body.Organization) {
-              orgList.push({ value: org.OrganizationID, label: org.Name});
-          }
-          this.setState({
-              organization: orgList
-          });
-      });
+        request(orgFetchOptions, (err, res, body) => {
+            let orgList = [];
+            for (let org of body.Organization) {
+                orgList.push({ value: org.OrganizationID, label: org.Name});
+            }
+            this.setState({
+                organization: orgList
+            });
+        });
     }
 
     render() {
         let orgnaizationList = clone(this.state.organization);      // using lodash here
-        orgnaizationList.push({ value: "create", label: 'Create new organization...' });  // create new organization
+        orgnaizationList.push({ value: 'create', label: 'Create new organization...' });  // create new organization
         let createCourseButtonEl = null;
         //alert(!this.props.courseId + " " + typeof(this.props.courseId));
         if (!this.props.courseId) {
@@ -143,7 +143,7 @@ class CourseDetails extends React.Component {
 
         let organizationEl = null;
         if (this.state.organization_value == 'create') { // if create, new field for organization name
-          organizationEl = (
+            organizationEl = (
               <div><p>Organization Name</p>
               <input
                     type="text"
@@ -167,27 +167,27 @@ class CourseDetails extends React.Component {
         return (
 
             <div className="section">
-                <h2 className="title">Course Details</h2>
-                <form className="section-content" onSubmit={this.createCourse.bind(this)}>
+              <h2 className="title">Course Details</h2>
+              <form className="section-content" onSubmit={this.createCourse.bind(this)}>
 
-                    <label>Title</label>
-                    <div>
-                        <input
-                            type="text"
-                            value={this.state.courseName}
-                            onChange={this.onCourseNameChange.bind(this)}
-                            className={ this.state.courseNameError ? 'error' : '' }
-                        />
-                    </div>
-                    <label>Abbreviation</label>
-                    <div>
-                      <input
-                        type="text"
-                        value={this.state.courseAbb}
-                        onChange={this.onCourseAbbChange.bind(this)}
-                      />
-                    </div>
-                    <label>Course Number</label>
+                <label>Title</label>
+                <div>
+                  <input
+                    type="text"
+                    value={this.state.courseName}
+                    onChange={this.onCourseNameChange.bind(this)}
+                    className={ this.state.courseNameError ? 'error' : '' }
+                  />
+                </div>
+                {/*<label>Abbreviation</label>
+                  <div>
+                  <input
+                    type="text"
+                    value={this.state.courseAbb}
+                    onChange={this.onCourseAbbChange.bind(this)}
+                  />
+                </div>*/}
+                <label>Course Number</label>
                     <div>
                         <input
                             type="text"

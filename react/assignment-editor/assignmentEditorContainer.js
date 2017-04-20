@@ -124,6 +124,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_assignee_constraints: [
                 'student', 'individual', {}
             ],
+            TA_overall_instructions: 'Create a new problem for another student to solve.',
             TA_number_participant: 1,
             TA_function_type: 'max',
             TA_fields: {
@@ -139,7 +140,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
-                    instructions: 'Create a new problem for another student to solve.',
+                    instructions: '',
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -154,6 +155,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Edit Problem',
             TA_type: TASK_TYPES.EDIT,
             TA_name: TASK_TYPE_TEXT.edit,
+            TA_overall_instructions: 'Edit the problem to ensure that it makes sense.',
             VersionEvaluation: 'whole',
             TA_assignee_constraints: [
                 'instructor',
@@ -174,7 +176,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
-                    instructions: 'Edit the problem to ensure that it makes sense.',
+                    instructions: '',
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -189,6 +191,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Comment on Problem',
             TA_type: TASK_TYPES.COMMENT,
             TA_name: TASK_TYPE_TEXT.comment,
+            TA_overall_instructions: 'Comment on the problem.',
             VersionEvaluation: 'whole',
             TA_assignee_constraints: [
                 'student',
@@ -212,7 +215,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
-                    instructions: 'Comment on the problem.',
+                    instructions: '',
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -227,6 +230,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Solve the Problem',
             TA_type: TASK_TYPES.SOLVE_PROBLEM,
             TA_name:  TASK_TYPE_TEXT.solve_problem,
+            TA_overall_instructions: 'Solve the problem.',
             VersionEvaluation: 'last',
             TA_assignee_constraints: ['student',
                 'individual', {}
@@ -244,7 +248,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: ['Easy', 'Medium', 'Difficult'],
                     field_type: 'text',
                     requires_justification: false,
-                    instructions: 'Solve the problem.',
+                    instructions: '',
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -359,6 +363,7 @@ class AssignmentEditorContainer extends React.Component {
         this.consolidationTask = createTaskObject({
             TA_display_name: 'Consolidate',
             TA_type: TASK_TYPES.CONSOLIDATION,
+            TA_overall_instructions: 'Consolidate the different grades into a single, fair grade.',
             TA_name: TASK_TYPE_TEXT.consolidation,
             TA_assignee_constraints: [
                 'student',
@@ -375,6 +380,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Dispute the Grades',
             TA_type: TASK_TYPES.DISPUTE,
             TA_name: TASK_TYPE_TEXT.dispute,
+            TA_overall_instructions: 'Decide whether to dispute your grade or not. If you do, you must justify your grades.',
             TA_at_duration_end: 'resolved',
             TA_what_if_late: null,
             TA_assignee_constraints: [
@@ -697,11 +703,7 @@ class AssignmentEditorContainer extends React.Component {
             },
             json: true
         };
-        console.log({
-            assignment: sendData,
-            userId: this.props.UserID,
-            partialAssignmentId: this.state.PartialAssignmentID
-        });
+
         request(options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
@@ -752,9 +754,40 @@ class AssignmentEditorContainer extends React.Component {
         let reflectClass = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT];
         let assessClass = [TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
         let consolDispClass = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+        const nodeEmpty = (node) =>{
+            if(node.children.length === 0){
+                return true;
+            }
+            node.children.forEach((child) => {
+                if(child.mode.id === -1){
+                    return false;
+                }
+            });
+            return true;
+        };
 
         sendData.WorkflowActivity.forEach((workflow, index) => {
+          //B 0.1 Add Complete to Workflow tree
+            let leafNodes = [];
 
+
+            workflow.WorkflowStructure.walk((node) =>{
+                if(node.model.id !== -1 && !node.hasChildren() && nodeEmpty(node)){
+                    leafNodes.push(node.model.id);
+                }
+            });
+
+            leafNodes.forEach((id) => {
+                let selectedNode = workflow.WorkflowStructure.first((node) => {
+                    return node.model.id === id;
+                });
+                let newCompleteNode = this.tree.parse({
+                    id: workflow.Workflow.length
+                });
+                let newCompleteData = this.createNewCompleteTask(index);
+                selectedNode.addChild(newCompleteNode);
+                workflow.Workflow.push(newCompleteData);
+            });
 
           // B.1 Clean Workflow array
             let counter = 0;
@@ -781,7 +814,7 @@ class AssignmentEditorContainer extends React.Component {
             workflow.WorkflowStructure.walk((node) => {
                 if(node.model.id == -1) return;
             });
-
+            console.log(workflow.Workflow, workflow.WorkflowStructure);
 
           // B.2 Add Subworkflow labels
             workflow.WorkflowStructure = this.makeSubWorkflows(workflow.WorkflowStructure,workflow.Workflow, index);
@@ -789,6 +822,7 @@ class AssignmentEditorContainer extends React.Component {
             workflow.WorkflowStructure.walk((node) => {
                 if(node.model.id == -1) return;
             });
+
 
           // B.3 Clean IDs in AssigneeConstraints and Fields
 

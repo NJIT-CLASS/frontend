@@ -114,16 +114,30 @@ class TemplateContainer extends React.Component {
                     console.log(currentTask);
                     let currentTaskStatus = currentTask.Status;
 
+                    let parseTaskList = bod.superTask.reverse().map(task => {
+                        let newTask = task;
+                        if(newTask.Data !== null && newTask.Data.constructor !== Object){
+                            newTask.Data = JSON.parse(task.Data);
+                        }
+                        if(newTask.TaskActivity.Fields !== null && newTask.TaskActivity.Fields.constructor !== Object){
+                            newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
+                        }
+                        if(newTask.TaskActivity.FileUpload !== null && newTask.TaskActivity.FileUpload.constructor !== Object){
+                            newTask.TaskActivity.FileUpload = JSON.parse(task.TaskActivity.FileUpload);
+                        }
+                        return newTask;
+                    });
 
-
-                    bod.superTask.reverse().forEach(function(task, index) {
-                        if (skipIndeces.indexOf(index) != -1 || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION) {
+                    let alreadyArrayedTasks = [];
+                    parseTaskList.forEach(function(task, index) {
+                        if (skipIndeces.includes(index) || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION) {
                             return;
                         }
                         if (task.TaskActivity.NumberParticipants > 1) {
                             let newArray = bod.superTask.filter(function(t, idx) {
                                 if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
                                     skipIndeces.push(idx);
+
                                     return true;
                                 } else {
                                     return false;
@@ -177,10 +191,10 @@ class TemplateContainer extends React.Component {
         if (!this.state.Loaded) { // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return (
                 <div>
-                    <div className="placeholder"></div>
-                    <i style={{
-                        marginLeft: '45%'
-                    }} className="fa fa-cog fa-spin fa-4x fa-fw"></i>
+                  <div className="placeholder"></div>
+                  <i style={{
+                      marginLeft: '45%'
+                  }} className="fa fa-cog fa-spin fa-4x fa-fw"></i>
                   <span className="sr-only"></span>
                 </div>
             );
@@ -247,48 +261,48 @@ class TemplateContainer extends React.Component {
 
         return (
               <div>
-                  <Tabs onSelect={(tab) => {
-                      this.setState({TabSelected: tab});
-                  }} selectedIndex={this.state.TabSelected}>
-                      <TabList className="big-text">
-                          <Tab>{this.state.Strings.Task}</Tab>
-                          <Tab>{this.state.Strings.Comments}</Tab>
-                      </TabList>
-                      <TabPanel>
-                          <HeaderComponent TaskID={this.props.TaskID}
-                            CourseName={this.state.CourseName}
-                            CourseName={this.state.CourseName}
-                            CourseNumber={this.state.CourseNumber}
-                            AssignmentTitle={this.state.AssignmentTitle}
-                            AssignmentDescription={this.state.AssignmentDescription}
-                            TaskActivityType={this.state.TaskActivityType}
-                            SemesterName={this.state.SemesterName}
-                            Strings={this.state.Strings}
-                            />
-                          {renderComponents}
-                      </TabPanel>
-                      <TabPanel>
-                          <div className="placeholder"></div>
-                          {/*  Future work to support comments*/}
+                <Tabs onSelect={(tab) => {
+                    this.setState({TabSelected: tab});
+                }} selectedIndex={this.state.TabSelected}>
+                  <TabList className="big-text">
+                    <Tab>{this.state.Strings.Task}</Tab>
+                    <Tab>{this.state.Strings.Comments}</Tab>
+                  </TabList>
+                  <TabPanel>
+                    <HeaderComponent TaskID={this.props.TaskID}
+                      CourseName={this.state.CourseName}
+                      CourseName={this.state.CourseName}
+                      CourseNumber={this.state.CourseNumber}
+                      AssignmentTitle={this.state.AssignmentTitle}
+                      AssignmentDescription={this.state.AssignmentDescription}
+                      TaskActivityType={this.state.TaskActivityType}
+                      SemesterName={this.state.SemesterName}
+                      Strings={this.state.Strings}
+                    />
+                    {renderComponents}
+                  </TabPanel>
+                  <TabPanel>
+                    <div className="placeholder"></div>
+                    {/*  Future work to support comments*/}
 
-                          <CommentComponent Comment={{
-                              Author: 'User1',
-                              Timestamp: 'May 6, 2013 9:43am',
-                              Content: 'I really liked your problem. It was very intriguing.'
-                          }}/>
-                          <CommentComponent Comment={{
-                              Author: 'User2',
-                              Timestamp: 'May 6, 2013 11:09am',
-                              Content: 'I agree. I would have never thought of this.'
-                          }}/>
-                          <CommentComponent Comment={{
-                              Author: 'Instructor',
-                              Timestamp: 'May 6, 2013 3:32pm',
-                              Content: 'Your approach of the problem is very unique. Well done.'
-                          }}/>
-                      </TabPanel>
+                    <CommentComponent Comment={{
+                        Author: 'User1',
+                        Timestamp: 'May 6, 2013 9:43am',
+                        Content: 'I really liked your problem. It was very intriguing.'
+                    }}/>
+                    <CommentComponent Comment={{
+                        Author: 'User2',
+                        Timestamp: 'May 6, 2013 11:09am',
+                        Content: 'I agree. I would have never thought of this.'
+                    }}/>
+                    <CommentComponent Comment={{
+                        Author: 'Instructor',
+                        Timestamp: 'May 6, 2013 3:32pm',
+                        Content: 'Your approach of the problem is very unique. Well done.'
+                    }}/>
+                  </TabPanel>
 
-                  </Tabs>
+                </Tabs>
 
               </div>
 

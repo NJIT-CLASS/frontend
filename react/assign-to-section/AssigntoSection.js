@@ -139,7 +139,7 @@ class AssignToSectionContainer extends React.Component
             body: newData,
             json: true
         };
-    
+        console.log(options);
         request(options, (err, res, body) => {
             if(res.statusCode === 200){
                 console.log('Submit worked');
@@ -287,7 +287,7 @@ class AssignToSectionContainer extends React.Component
   {
 
         let infoMessage = null;
-
+        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>); 
         if(!this.state.DataLoaded){
             return (<div></div>);
         }
@@ -329,7 +329,7 @@ class AssignToSectionContainer extends React.Component
       <div>
         {infoMessage}
 
-          <Assignment Assignment={this.state.Assignment}
+        <Assignment Assignment={this.state.Assignment}
           SectionsList={this.state.Sections}
           Semesters={this.state.Semesters}
           onChangeCalendarAssignment ={this.onChangeCalendarAssignment.bind(this)}
@@ -338,12 +338,12 @@ class AssignToSectionContainer extends React.Component
           onChangeAssigmentName = {this.onChangeAssigmentName.bind(this)}
           onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
           onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
-          />
+        />
 
 
-          {workflowView}
+        {workflowView}
 
-        <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>
+        {buttonView}
       </div>
 
         );

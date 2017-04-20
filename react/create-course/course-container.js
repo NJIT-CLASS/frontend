@@ -24,7 +24,7 @@ class CourseContainer extends React.Component {
 
     createCourse(courseName, courseNumber, courseAbb, courseDescription, organizationid) {
 
-      console.log('create course', courseName, courseNumber)
+        console.log('create course', courseName, courseNumber);
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/api/course/create',
@@ -39,18 +39,20 @@ class CourseContainer extends React.Component {
             json: true
         };
 
+        console.log(options);
+
         request(options, (err, res, body) => {
             const courseId = body.NewCourse;
-              this.setState({
-                  displayMessage: body.Message,
-                  courseId: courseId.CourseID,
-                  courseName: courseName,
-                  courseNumber: courseNumber,
-                  organization_id: organizationid,
-                  courseAbb: courseAbb,
-                  courseDescription: courseDescription
+            this.setState({
+                displayMessage: body.Message,
+                courseId: courseId.CourseID,
+                courseName: courseName,
+                courseNumber: courseNumber,
+                organization_id: organizationid,
+                courseAbb: courseAbb,
+                courseDescription: courseDescription
 
-              });
+            });
         });
         //alert(this.state.organization_id);
     }
@@ -62,7 +64,7 @@ class CourseContainer extends React.Component {
             uri: this.props.apiUrl + '/api/course/createsection',
             body: {
                 courseid: this.state.courseId,
-                semesterid: section.semesterId, 
+                semesterid: section.semesterId,
                 name: section.name,
                 description: section.description,
                 organizationid: this.state.organization_id
@@ -80,7 +82,7 @@ class CourseContainer extends React.Component {
                     courseid: this.state.courseId
                 },
                 json: true
-            }
+            };
 
             for (let i = 0; i < section.members.length; i++) {
                 let newMemberOptions = cloneDeep(memberOptions);
