@@ -1,7 +1,7 @@
 const consts = require('../../utils/constants');
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        res.redirect('/');
+        res.redirect(`/?url=${req.originalUrl}`);
     }
 
     res.render('./asa', {

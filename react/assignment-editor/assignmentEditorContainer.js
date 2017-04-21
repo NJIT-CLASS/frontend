@@ -768,26 +768,26 @@ class AssignmentEditorContainer extends React.Component {
 
         sendData.WorkflowActivity.forEach((workflow, index) => {
           //B 0.1 Add Complete to Workflow tree
-            let leafNodes = [];
-
-
-            workflow.WorkflowStructure.walk((node) =>{
-                if(node.model.id !== -1 && !node.hasChildren() && nodeEmpty(node)){
-                    leafNodes.push(node.model.id);
-                }
-            });
-
-            leafNodes.forEach((id) => {
-                let selectedNode = workflow.WorkflowStructure.first((node) => {
-                    return node.model.id === id;
-                });
-                let newCompleteNode = this.tree.parse({
-                    id: workflow.Workflow.length
-                });
-                let newCompleteData = this.createNewCompleteTask(index);
-                selectedNode.addChild(newCompleteNode);
-                workflow.Workflow.push(newCompleteData);
-            });
+            // let leafNodes = [];
+            //
+            //
+            // workflow.WorkflowStructure.walk((node) =>{
+            //     if(node.model.id !== -1 && !node.hasChildren() && nodeEmpty(node)){
+            //         leafNodes.push(node.model.id);
+            //     }
+            // });
+            //
+            // leafNodes.forEach((id) => {
+            //     let selectedNode = workflow.WorkflowStructure.first((node) => {
+            //         return node.model.id === id;
+            //     });
+            //     let newCompleteNode = this.tree.parse({
+            //         id: workflow.Workflow.length
+            //     });
+            //     let newCompleteData = this.createNewCompleteTask(index);
+            //     selectedNode.addChild(newCompleteNode);
+            //     workflow.Workflow.push(newCompleteData);
+            // });
 
           // B.1 Clean Workflow array
             let counter = 0;
@@ -808,7 +808,7 @@ class AssignmentEditorContainer extends React.Component {
                 if(node.model.id == -1) return;
             });
 
-            newWorkflow.push(this.createNewCompleteTask(index));
+            // newWorkflow.push(this.createNewCompleteTask(index));
             workflow.Workflow = newWorkflow;
 
             workflow.WorkflowStructure.walk((node) => {
@@ -879,22 +879,6 @@ class AssignmentEditorContainer extends React.Component {
           // B.6 Flatten workflow
 
             workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
-        //   let flatty = [];
-          //
-        //   workflow.WorkflowStructure.walk({strategy: 'pre'}, function(task) {
-          //
-        //     let ob = new Object();
-        //     if(task.parent !== undefined){
-        //     ob['parent'] = task.parent.model.id;
-        //     }
-          //
-        //     ob['id'] = task.model.id;
-        //     ob['isSubWorkflow'] = task.model.isSubWorkflow;
-          //
-        //     flatty.push(ob);
-        //   }, this);
-          //
-        //   workflow.WorkflowStructure = flatty;
 
           //-----------------------------------------
         }, this);

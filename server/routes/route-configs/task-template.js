@@ -2,7 +2,7 @@ const handler = require('../route-handlers/task-template');
 
 module.exports = {
     route: '/task/:taskId',
-    title: 'Task Template',
+    title: 'Task Page',
     routeHandler: handler,
     access: {
         admins: true,

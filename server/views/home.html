@@ -6,6 +6,7 @@
     <form role="form" class="section" method="POST" action="/">
         <h3 class="title">{{__ "Please Sign In"}}</h3>
         <div class="section-content">
+            <input type="hidden" name="url" value="{{returnUrl}}"/>
             {{#if error }}
                 <div class="error form-error">
                   <i class="fa fa-exclamation-circle"></i>

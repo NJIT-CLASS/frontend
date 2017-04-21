@@ -1,7 +1,8 @@
 const consts = require('../../utils/constants');
 exports.get = (req, res) => {
+    
     if(req.App.user === undefined){
-        res.redirect('/');
+        res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     res.render('task-template', {
         scripts: ['/static/react_apps.js'],
