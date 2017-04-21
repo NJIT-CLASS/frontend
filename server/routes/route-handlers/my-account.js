@@ -2,12 +2,14 @@ exports.get = (req, res) => {
     if(req.App.user === undefined){
         res.redirect('/');
     }
+    
     res.render('account_management', {
         userId: req.App.user.userId,
         userEmail: req.App.user.email,
         userFirstName: req.App.user.firstName,
         userLastName: req.App.user.lastName,
         userCountry: req.App.user.country,
+        profilePicture: req.App.user.profilePicture,
         userCity: req.App.user.city,
         userIsAdmin: true
     });

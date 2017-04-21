@@ -204,6 +204,7 @@ app.use((req, res, next) => {
             req.App.user.lastName = user.LastName;
             req.App.user.country = user.Country;
             req.App.user.city = user.City;
+            req.App.user.profilePicture = user.ProfilePicture ? JSON.parse(user.ProfilePicture)[0] : 1;
             req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
             req.App.user.admin = user.Admin;
 
