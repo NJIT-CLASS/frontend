@@ -7,13 +7,8 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
       <div class="col-xs-6">
               <ul>
             {{#each courseList}}
-            {{#if Abbreviations}}
               <li class="list-group-item">
-              <a href="/course_page/{{CourseID}}">{{Abbreviations}} - {{Name}}</a>
-              {{else}}
-              <li class="list-group-item">
-              <a href="/course_page/{{CourseID}}">{{Name}}</a>
-            {{/if}}
+                <a href="/course_page/{{CourseID}}">{{Name}}</a>
               </li>
               {{else}} <!-- this p tag will be visible if courseList is empty-->
                 <p>{{__ "You currently have no registered courses"}}</p>

@@ -5,142 +5,142 @@ import {clone, cloneDeep} from 'lodash';
 
 
 class AddSectionContainer extends React.Component {
-  constructor(props) {
-      super(props);
-      this.state = {
-        courses: null,
-        description:'',
-        selected_course: null,
-        semesters: [],
-        semesterId: '',
-        semester_name: '',
-        section_identifier:'',
-        start_date: '',
-        end_date: '',
-        submitted: null
-      }
-  }
-
-  componentWillMount(){
-    let courseArray = null
-    const options = {
-      method: 'GET',
-      uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.userId, // get all course created
-      json: true
-    };
-
-    request(options, (err, res, body) => {
-      courseArray = body.Courses.map(function(course){
-              return ({value: course.CourseID, label: course.Abbreviations + "-" + course.Number  + " (" + course.Name + ")" });
-            });
-
-      this.setState({
-        courses: courseArray
-      });
-    });
-
-    const semFetchOptions = { // get all semester
-        method: 'GET',
-        uri: this.props.apiUrl + '/api/semester',
-        json: true
-    };
-
-    request(semFetchOptions, (err, res, body) => {
-        let semList = [];
-        for (let sem of body.Semesters) {
-            semList.push({ value: sem.SemesterID, label: sem.Name});
-        }
-        this.setState({
-            semesters: semList
-        });
-    });
-
-
-  }
-
-  onSubmit(){
-    //need to make API to handle this
-    if(!this.state.semesterId || !this.state.selected_course){
-      this.setState({submitted: false});
-      return;
+    constructor(props) {
+        super(props);
+        this.state = {
+            courses: null,
+            description:'',
+            selected_course: null,
+            semesters: [],
+            semesterId: '',
+            semester_name: '',
+            section_identifier:'',
+            start_date: '',
+            end_date: '',
+            submitted: null
+        };
     }
 
-    const options = {
-        method: 'POST',
-        uri: this.props.apiUrl + '/api/course/createsection',
-        body: {
-            semesterid: this.state.semesterId,
-            courseid: this.state.selected_course,
-            name:this.state.section_identifier,
-            description: this.state.description,
-            organizationid: 1
-        },
-        json: true
-    };
+    componentWillMount(){
+        let courseArray = null;
+        const options = {
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.userId, // get all course created
+            json: true
+        };
 
-    request(options, (err, res, body) => {
-      if(err || res.statusCode == 401 ){
-        console.log("Error submitting!");
-        this.setState({submitted: false});
-        return;
-      }
-      this.setState({submitted: true});
-      console.log("Section created", body.response);
-    });
-  }
+        request(options, (err, res, body) => {
+            courseArray = body.Courses.map(function(course){
+                return ({value: course.CourseID, label:  course.Name  + ' (' + course.Number + ')' });
+            });
 
-  onChangeCourse(course){
-    this.setState({selected_course: course.value});
-  }
+            this.setState({
+                courses: courseArray
+            });
+        });
 
-  onSemesterChange(sem){
-    this.setState({semesterId: sem.value});
-  }
+        const semFetchOptions = { // get all semester
+            method: 'GET',
+            uri: this.props.apiUrl + '/api/semester',
+            json: true
+        };
 
-  onChangeSemesterName(name){
-    this.setState({semester_name: name.value});
-  }
+        request(semFetchOptions, (err, res, body) => {
+            let semList = [];
+            for (let sem of body.Semesters) {
+                semList.push({ value: sem.SemesterID, label: sem.Name});
+            }
+            this.setState({
+                semesters: semList
+            });
+        });
 
-  onChangeStartDate(start){
-    this.setState({start_date: start.value});
-  }
 
-  onChangeEndDate(end){
-    this.setState({end_date: end.value});
-  }
+    }
 
-  onSectionIdentifierChange(event){
-    this.setState({
-      section_identifier: event.target.value
-    });
-  }
+    onSubmit(){
+    //need to make API to handle this
+        if(!this.state.semesterId || !this.state.selected_course){
+            this.setState({submitted: false});
+            return;
+        }
 
-  render() {
-      let message = null;
-      if(this.state.submitted == true){
-        message = (<span onClick={() => {
-            this.setState({submitted: null})
-        }} className="small-info-message">
+        const options = {
+            method: 'POST',
+            uri: this.props.apiUrl + '/api/course/createsection',
+            body: {
+                semesterid: this.state.semesterId,
+                courseid: this.state.selected_course,
+                name:this.state.section_identifier,
+                description: this.state.description,
+                organizationid: 1
+            },
+            json: true
+        };
+
+        request(options, (err, res, body) => {
+            if(err || res.statusCode == 401 ){
+                console.log('Error submitting!');
+                this.setState({submitted: false});
+                return;
+            }
+            this.setState({submitted: true});
+            console.log('Section created', body.response);
+        });
+    }
+
+    onChangeCourse(course){
+        this.setState({selected_course: course.value});
+    }
+
+    onSemesterChange(sem){
+        this.setState({semesterId: sem.value});
+    }
+
+    onChangeSemesterName(name){
+        this.setState({semester_name: name.value});
+    }
+
+    onChangeStartDate(start){
+        this.setState({start_date: start.value});
+    }
+
+    onChangeEndDate(end){
+        this.setState({end_date: end.value});
+    }
+
+    onSectionIdentifierChange(event){
+        this.setState({
+            section_identifier: event.target.value
+        });
+    }
+
+    render() {
+        let message = null;
+        if(this.state.submitted == true){
+            message = (<span onClick={() => {
+                this.setState({submitted: null});
+            }} className="small-info-message">
         <span className="success-message">
           Successfully created section!
         </span>
       </span>);
-      }
-      else if(this.state.submitted == false) {
-        message = (<span onClick={() => {
-            this.setState({submitted: null})
-        }} className="small-info-message">
+        }
+        else if(this.state.submitted == false) {
+            message = (<span onClick={() => {
+                this.setState({submitted: null});
+            }} className="small-info-message">
         <div className="error-message">Submit Error!</div>
         </span>);
-      }
+        }
 
-      let semestersList = clone(this.state.semesters);      // using lodash here
+        let semestersList = clone(this.state.semesters);      // using lodash here
       //semestersList.push({ value: "create", label: 'Create new semester...' });
 
 
-      let createSection = null;
-      if (this.state.selected_course != null){
-        createSection = (
+        let createSection = null;
+        if (this.state.selected_course != null){
+            createSection = (
           <div>
             <label>Section Identifier</label>
             <div>
@@ -152,10 +152,10 @@ class AddSectionContainer extends React.Component {
             </div>
           </div>
         );
-      }
+        }
 
 
-      let createSemester = null;
+        let createSemester = null;
       // if (this.state.semesterId == 'create'){
       //   createSemester = (
       //     <div>
@@ -189,26 +189,29 @@ class AddSectionContainer extends React.Component {
 
 
       //alert(this.state.courses);
-      return(
+        return(
         <div>
           {message}
           <div className="section add-section-details">
-              <h2 className="title">Select Course</h2>
-              <form className="section-content">
+            <h2 className="title">Select Course</h2>
+            <form className="section-content">
               <label>Course</label>
               <div>
                 <Select options={this.state.courses} value={this.state.selected_course} onChange={this.onChangeCourse.bind(this)} resetValue={''} clearable={true} searchable={true}/>
                 { createSection }
                 { createSemester }
-                <button type="button" onClick={this.onSubmit.bind(this)}>Submit</button>
+                <div className="section-button-area">
+                  <button type="button" onClick={this.onSubmit.bind(this)}>Submit</button>
+
+                </div>
               </div>
               </form>
           </div>
         </div>
 
 
-      );
-  }
+        );
+    }
 
 }
 

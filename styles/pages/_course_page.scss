@@ -24,4 +24,15 @@
 .block-container{
   display: block;
   width:100%;
+  .section-button-area{
+    text-align: right;
+  }
+}
+
+.assignment-button{
+
+  margin-right: 10%;
+  @media screen and (max-width: $mobile-brk){
+    margin-right: 0;
+  }
 }

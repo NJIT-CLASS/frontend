@@ -110,11 +110,7 @@ class TemplateContainer extends React.Component {
 
                     let taskList = new Array();
                     let skipIndeces = new Array();
-                    let currentTask = bod.superTask.pop();
-                    console.log(currentTask);
-                    let currentTaskStatus = currentTask.Status;
-
-                    let parseTaskList = bod.superTask.reverse().map(task => {
+                    let parseTaskList = bod.superTask.map(task => {
                         let newTask = task;
                         if(newTask.Data !== null && newTask.Data.constructor !== Object){
                             newTask.Data = JSON.parse(task.Data);
@@ -127,6 +123,8 @@ class TemplateContainer extends React.Component {
                         }
                         return newTask;
                     });
+                    let currentTask = parseTaskList.pop();
+                    parseTaskList = parseTaskList.reverse();
 
                     let alreadyArrayedTasks = [];
                     parseTaskList.forEach(function(task, index) {
@@ -134,7 +132,7 @@ class TemplateContainer extends React.Component {
                             return;
                         }
                         if (task.TaskActivity.NumberParticipants > 1) {
-                            let newArray = bod.superTask.filter(function(t, idx) {
+                            let newArray = parsedTaskList.filter(function(t, idx) {
                                 if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
                                     skipIndeces.push(idx);
 
@@ -151,9 +149,10 @@ class TemplateContainer extends React.Component {
 
                     }, this);
 
+                    console.log(currentTask);
+                    let currentTaskStatus = currentTask.Status;
+
                     taskList.push(currentTask);
-                    console.log(taskList);
-                    taskList[taskList.length -1].TaskActivity.FileUpload = JSON.parse(taskList[taskList.length -1].TaskActivity.FileUpload);
 
                     this.setState({
                         Loaded: true,
@@ -208,13 +207,7 @@ class TemplateContainer extends React.Component {
 
             let compString = null;
 
-
-
-            if (Array.isArray(task)) {
-                return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings} />);
-
-            }
-            else {
+            if (idx == this.state.Data.length - 1) {
                 switch (task.TaskActivity.Type) {
                 case TASK_TYPES.CREATE_PROBLEM:
                     compString = this.state.Strings.CreateProblemTitle;
@@ -245,18 +238,55 @@ class TemplateContainer extends React.Component {
                     compString = '';
                     break;
                 }
-
-                if (idx == this.state.Data.length - 1) {
-                    if (task.Status == 'Complete' || task.Status == 'complete') {
-                        return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
-                    } else {
-                        return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} FileUpload={task.TaskActivity.FileUpload} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
-                    }
-
+                if (task.Status == 'Complete' || task.Status == 'complete') {
+                    return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 } else {
+                    return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} FileUpload={task.TaskActivity.FileUpload} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
+                }
+
+            } else {
+                if (Array.isArray(task)) {
+                    return (<MultiViewComponent UsersTaskData={task} TaskID={this.props.TaskID} UserID={this.props.UserID} Strings={this.state.Strings} />);
+
+                }
+                else {
+                    switch (task.TaskActivity.Type) {
+                    case TASK_TYPES.CREATE_PROBLEM:
+                        compString = this.state.Strings.CreateProblemTitle;
+                        break;
+                    case TASK_TYPES.EDIT:
+                        compString = this.state.Strings.EditProblemTitle;
+                        break;
+                    case TASK_TYPES.COMMENT:
+                        compString = this.state.Strings.CommentTitle;
+                    case TASK_TYPES.SOLVE_PROBLEM:
+                        compString = this.state.Strings.SolveProblemTitle;
+                        break;
+                    case TASK_TYPES.GRADE_PROBLEM:
+                        compString = this.state.Strings.GradeProblemTitle;
+                        break;
+                    case TASK_TYPES.CRITIQUE:
+                        compString = this.state.Strings.CritiqueTitle;
+                    case TASK_TYPES.CONSOLIDATION:
+                        compString = this.state.Strings.ConsolidateProblemTitle;
+                        break;
+                    case TASK_TYPES.DISPUTE:
+                        compString = this.state.Strings.DisputeGradeTitle;
+                        break;
+                    case TASK_TYPES.RESOLVE_DISPUTE:
+                        compString = this.state.Strings.ResolveDisputeTitle;
+                        break;
+                    default:
+                        compString = '';
+                        break;
+                    }
                     return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 }
+
             }
+
+
+
         }, this);
 
         return (

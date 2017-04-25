@@ -308,7 +308,7 @@ class TaskDetailsComponent extends React.Component {
             return (
               <div
                 className="section-divider" key={`Task ${this.props.index} of Workflow `,
-                this.props.workflowIndex,
+                  this.props.workflowIndex,
                 ` Field ${index}`}
               >
                 <h3 className="subheading">{strings.InputFields} {removeButtonView}
@@ -323,7 +323,7 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
                   <label>
                     {strings.ShowThisName}?
-                        </label><br />
+                  </label><br />
                   <Checkbox isClicked={this.props.TaskActivityData.TA_fields[index].show_title} click={this.props.changeFieldCheck.bind(this, 'show_title', this.props.index, index, this.props.workflowIndex)} />
                 </div>
 
@@ -367,17 +367,19 @@ class TaskDetailsComponent extends React.Component {
                 alignContent: 'right',
             }}
           >
-            <button
-              type="button" className="divider" onClick={() => {
-                  this.props.addFieldButton(this.props.index, this.props.workflowIndex);
-                  const newDefFields = this.state.DefaultFieldForeign;
-                  newDefFields.push(false);
-                  this.setState({ DefaultFieldForeign: newDefFields });
-              }}
-            >
-              <i className="fa fa-check" />
-              {strings.AddAnotherField}
-            </button>
+            <div className="section-button-area">
+              <button
+                type="button" className="divider" onClick={() => {
+                    this.props.addFieldButton(this.props.index, this.props.workflowIndex);
+                    const newDefFields = this.state.DefaultFieldForeign;
+                    newDefFields.push(false);
+                    this.setState({ DefaultFieldForeign: newDefFields });
+                }}
+              >
+                <i className="fa fa-check" />
+                {strings.AddAnotherField}
+              </button>
+            </div>
             <br />
             <div>
               <label

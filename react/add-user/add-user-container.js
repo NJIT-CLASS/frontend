@@ -124,46 +124,46 @@ class AddUserContainer extends React.Component {
 
         return (
           <div className="section add-user-details">
-              <h2 className="title">User Details</h2>
+            <h2 className="title">User Details</h2>
 
 
-              {errorView}
+            {errorView}
 
 
 
 
-              <form className="section-content" onSubmit={this.adduserSubmit.bind(this)}>
+            <form className="section-content" onSubmit={this.adduserSubmit.bind(this)}>
               <table>
                 <tr>
-                <td>
-                <div>
-                  <label>First Name:</label>
+                  <td>
+                    <div>
+                      <label>First Name:</label>
                       <input type="text"
-                              name="firstname"
-                              onChange={this.onChangeFirstname.bind(this)}
-                              className={ this.state.firstnameError ? 'error' : '' }/>
-                  </div>
+                        name="firstname"
+                        onChange={this.onChangeFirstname.bind(this)}
+                        className={ this.state.firstnameError ? 'error' : '' }/>
+                    </div>
                   </td>
                   <td>
                     <div>
-                  <label>Last Name:</label>
+                      <label>Last Name:</label>
                       <input type="text"
-                              name="lastname"
-                              onChange={this.onChangeLastname.bind(this)}
-                              className={ this.state.lastnameError ? 'error' : '' }
-                              />
-                                </div>
+                        name="lastname"
+                        onChange={this.onChangeLastname.bind(this)}
+                        className={ this.state.lastnameError ? 'error' : '' }
+                      />
+                    </div>
                   </td></tr>
-                  <tr>
+                <tr>
                   <td>  <div>
-                  <label>Email:</label>
-                      <input type="text"
-                              name="email"
-                              onChange={this.onChangeEmail.bind(this)}/>
-                                </div>
+                    <label>Email:</label>
+                    <input type="text"
+                      name="email"
+                      onChange={this.onChangeEmail.bind(this)}/>
+                  </div>
                   </td><td>
                     <div>
-                  <label>Role:</label>
+                      <label>Role:</label>
                       <Select
                         name="role"
                         value={this.state.role}
@@ -172,42 +172,45 @@ class AddUserContainer extends React.Component {
                         searchable={true}
                         onChange={this.onChangeRole.bind(this)}
                       />
-                      </div>
+                    </div>
                   </td></tr>
-                  <tr>
+                <tr>
                   <td>
                     <div>
                       <label>Password:</label>
                       <input type="text"
-                              name="pass"
-                              value={this.state.pass}
-                              onChange={this.onChangePass.bind(this)}
-                              />
+                        name="pass"
+                        value={this.state.pass}
+                        onChange={this.onChangePass.bind(this)}
+                      />
 
 
-                        </div>
+                    </div>
                   </td>
                   <td>
                     <div className="grouped">
-                        <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>Generate Password</button>
-                  </div>
+                      <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>Generate Password</button>
+                    </div>
                   </td>
 
-                  </tr>
-                  <tr><td>
+                </tr>
+                <tr><td>
                   <div>
                     {/*}<label>Course Section:</label>
-                    <Select
+                      <Select
                       name="section"
                       searchable={false}
                       clearable={false}
                     />*/}
-                            </div>
-                          </td></tr>
-                  </table>
+                  </div>
+                </td></tr>
+              </table>
 
-                  <div className="row">
-                      <button type="submit">Add User</button>
+              <div className="row">
+                <div className="section-button-area">
+                  <button type="submit">Add User</button>
+                </div>
+
                   </div>
               </form>
           </div>

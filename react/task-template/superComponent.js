@@ -6,6 +6,7 @@
 import React from 'react';
 import request from 'request';
 import ErrorComponent from './errorComponent';
+import VersionView from './individualFieldVersionsComponent';
 import Checkbox from '../shared/checkbox';
 import Select from 'react-select';
 import FileUpload from '../shared/fileUpload';
@@ -26,7 +27,6 @@ class SuperComponent extends React.Component {
             -Instructions
             -TaskStatus
             -Rubric
-
     */
 
         this.state = {
@@ -63,24 +63,13 @@ class SuperComponent extends React.Component {
         let tAdata = this.props.TaskActivityFields;
         //checks to see if either data prop is null
 
-        if(tdata === null || tdata === undefined || tdata == 'null' || tdata == '"{}"'){
-            tdata = new Object();
+        if(tdata === null || tdata === undefined || tdata == 'null' || tdata == '"[{}]"'){
+            tdata = [{}];
         }
         if(!tAdata){
             this.setState({Error: true});
             return;
         }
-
-
-        if(tdata.constructor !== Object){
-            tdata = JSON.parse(this.props.TaskData);
-        }
-
-
-        if(tAdata.constructor !== Object){
-            tAdata = JSON.parse(this.props.TaskActivityFields);
-        }
-
         //checks to see if     task activity data is empty. This would only be caused by an error
         if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
             this.setState({Error: true});
@@ -96,7 +85,6 @@ class SuperComponent extends React.Component {
             /*tAdata.field_titles.forEach(function(title){
               tdata[title] = tAdata[title].default_content;
             });*/
-
         }
         //if no TaskStatus is given, assume complete
         let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : 'Incomplete';
@@ -425,7 +413,7 @@ class SuperComponent extends React.Component {
 
             </div>);
         }
-
+        console.log(this.state.TaskActivityFields);
           //creating all input fields here
         let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
             let rubricView = null;
@@ -434,9 +422,7 @@ class SuperComponent extends React.Component {
             let fieldTitleText = '';
             let fieldTitle = null;
             let completeFieldView = null;
-            let contentView = null;
-
-
+            const latestVersion = this.state.TaskData[this.state.TaskData.length -1];
             if(this.state.TaskActivityFields[idx].show_title){ //shoudl the title be displayed or not
                 if(this.state.TaskActivityFields[idx].assessment_type != null){ //add "Grade" to assess fields to make pretty
                     fieldTitleText = title +' ' + this.props.Strings.Grade;
@@ -446,11 +432,10 @@ class SuperComponent extends React.Component {
                 }
 
                 fieldTitle = (<div>
-                <br />
-                <div key={idx + 600}>{fieldTitleText}</div>
-              </div>);
+                  <br />
+                  <div key={idx + 600}>{fieldTitleText}</div>
+                </div>);
             }
-
 
             if(this.state.TaskActivityFields[idx].rubric != ''){ //if Rubric is empty, don't show anything
                 let rubric_content = null;
@@ -461,144 +446,97 @@ class SuperComponent extends React.Component {
                     rubric_content = (
                   <div key={this.state.TaskActivityFields[idx].title}>
                     <div className="boldfaces"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                      <div className="regular-text rubric">
-                        {this.state.TaskActivityFields[idx].rubric}
-                      </div>
+                    <div className="regular-text rubric">
+                      {this.state.TaskActivityFields[idx].rubric}
+                    </div>
                   </div>);
                 }
 
                 rubricView = ( <div key={1200}>
-                  <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)}> {rubricButtonText}</button>
-                  <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
-                    {rubric_content}
-                  </ReactCSSTransitionGroup>
-                </div>
+                      <button type="button" className="in-line" onClick={this.toggleFieldRubric.bind(this,idx)}> {rubricButtonText}</button>
+                      <ReactCSSTransitionGroup  transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionAppearTimeout={500} transitionName="example" transitionAppear={false} transitionEnter={true} transitionLeave={true}>
+                        {rubric_content}
+                      </ReactCSSTransitionGroup>
+                    </div>
               );
             }
 
             if(this.state.TaskActivityFields[idx].instructions != ''){ //if instructions are empty, don't display anything
                 instructions = (
                   <div key ={1100}>
-                     <div className="boldfaces">{fieldTitleText} {this.props.Strings.Instructions}</div>
-                     <div className="regular-text instructions">
-                       {this.state.TaskActivityFields[idx].instructions}
-                     </div>
-                   </div>
+                    <div className="boldfaces">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                    <div className="regular-text instructions">
+                      {this.state.TaskActivityFields[idx].instructions}
+                    </div>
+                  </div>
               );
             }
 
             if(this.state.TaskActivityFields[idx].requires_justification){
-                if(this.state.TaskData[idx][1] == ''){
+                if(latestVersion[idx][1] == ''){
                     justification = ( <div>
-                                  <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
-                                  <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder}>
-                                   </textarea>
-                              </div>);
+                          <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                          <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder}>
+                          </textarea>
+                        </div>);
                 }
                 else {
                     justification = ( <div>
-                                    <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
-                                    <textarea key={idx +100} className="big-text-field" value={this.state.TaskData[idx][1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.JustificationPlaceholder}>
-                                     </textarea>
-                                </div>);
+                          <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                          <textarea key={idx +100} className="big-text-field" value={latestVersion[idx][1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.JustificationPlaceholder}>
+                          </textarea>
+                        </div>);
                 }
             }
 
-
-
-            //////// Depending on field type, render different things
-
-            if(this.state.TaskActivityFields[idx].field_type == 'numeric'){
-                let fieldInput = null;
-                if(this.state.TaskData[idx][0] == null){
-                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                  </input>);
-                }
-                else{
-                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                  </input>);
-                }
-                contentView = (
-                  <div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
-                );
-            }
-            else if(this.state.TaskActivityFields[idx].field_type == 'text'){
-                let fieldInput = null;
-                if(this.state.TaskData[idx][0] == null){
-                    fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
-                </textarea>);
-                }
-                else{
-                    fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
-                </textarea>);
-                }
-
-                contentView = (<div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>);
-
-            }
-
-            else if(this.state.TaskActivityFields[idx].field_type == 'assessment' || this.state.TaskActivityFields[idx].field_type == 'self assessment'){
-              // decides how to display information given the type of assessment it is
-                if(this.state.TaskActivityFields[idx].assessment_type == 'grade'){
-                    let fieldInput = null;
-
-                    if(this.state.TaskData[idx][0] == null){
+            let fieldInput = null;
+            switch(this.state.TaskActivityFields[idx].field_type){
+            case 'assessment':
+            case 'self-assessment':
+                switch(this.state.TaskActivityFields[idx].assessment_type){
+                case 'grade':
+                    if(latestVersion[idx][0] == null){
                         fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                  </input>);
+                            </input>);
                     }
 
                     else{
-                        fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={this.state.TaskData[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                  </input>);
+                        fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                            </input>);
                     }
+                    break;
+                case 'rating':
+                    let val = (latestVersion[idx][0] == null || latestVersion[idx][0] == '') ? 0 : latestVersion[idx][0];
+                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} />);
+                    break;
+                case 'pass':
+                    fieldInput = (<div className='true-checkbox'>
+                          <RadioGroup selectedValue={latestVersion[idx][0]} onChange={
+                            (val) => {
+                                let newData = latestVersion;
+                                newData[idx][0] = val;
+                                this.setState({TaskData: newData});
+                            }
+                          }>
+                            <label>{this.props.Pass} <Radio value={'pass'} /> </label>
+                            <label>{this.props.Fail} <Radio value={'fail'}/> </label>
 
-                    contentView = (<div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>);
-                }
-
-                else if(this.state.TaskActivityFields[idx].assessment_type == 'rating'){
-                    let val = (this.state.TaskData[idx][0] == null || this.state.TaskData[idx][0] == '') ? 0 : this.state.TaskData[idx][0];
-
-                    contentView = (
-                    <div className="field-content" key={idx + 600}><b>{fieldTitleText}   </b>
-                      <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} /><br />
-                    </div>
-                  );
-
-                }
-
-                else if(this.state.TaskActivityFields[idx].assessment_type == 'pass'){
-                    contentView = (
-                    <div className="field-content" key={idx+2000}>
-                    <div className='true-checkbox'>
-                      <RadioGroup selectedValue={this.state.TaskData[idx][0]} onChange={
-                      (val) => {
-                          let newData = this.state.TaskData;
-                          newData[idx][0] = val;
-                          this.setState({TaskData: newData});
-                      }
-                      }>
-                      <label>{this.props.Pass} <Radio value={'pass'} /> </label>
-                      <label>{this.props.Fail} <Radio value={'fail'}/> </label>
-
-                    </RadioGroup>
-                    </div>
-                  </div>
-                  );
-                }
-                else if(this.state.TaskActivityFields[idx].assessment_type == 'evaluation'){
+                          </RadioGroup>
+                        </div>);
+                    break;
+                case 'evaluation':
                     let labels = this.state.TaskActivityFields[idx].list_of_labels;
                     if(typeof labels == 'string' ){
                         labels = labels.split(',');
                     }
-
-                    contentView = ( <div className="field-content">
-                  <label>{this.props.Strings.LabelDirections}</label>
-                  <Select key={idx+1000}
+                    fieldInput = (<div>
+                          <label>{this.props.Strings.LabelDirections}</label>
+                          <Select key={idx+1000}
                             options={labels}
-                            selectedValue={this.state.TaskData[idx][0]}
-                            value={this.state.TaskData[idx][0]}
+                            selectedValue={latestVersion[idx][0]}
+                            value={latestVersion[idx][0]}
                             onChange={ (e) => {
-                                let newData = this.state.TaskData;
+                                let newData = latestVersion;
                                 newData[idx][0] = e.value;
                                 this.setState({
                                     TaskData: newData
@@ -606,22 +544,60 @@ class SuperComponent extends React.Component {
                             }}
                             clearable={false}
                             searchable={false}
-                    />
-                  </div>
-                );
-
+                          />
+                        </div>
+                    );
+                    break;
+                default:
+                    fieldInput = (<div></div>);
+                    break;
                 }
+                break;
+            case 'text':
+                if(latestVersion[idx][0] == null){
+                    fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
+                        </textarea>);
+                }
+                else{
+                    fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
+                        </textarea>);
+                }
+                break;
+            case 'numeric':
+                if(latestVersion[idx][0] == null){
+                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                        </input>);
+                }
+                else{
+                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                        </input>);
+                }
+
+                break;
+            default:
+                fieldInput = (<div></div>);
+                break;
+
             }
+            const fieldContentBlock = (
+              <div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
+            );
+            let latestVersionFieldView =  <div>
+              {fieldInput}
+                  <br key={idx+500}/>
+                  {justification}
+                </div>;
 
             completeFieldView =  (
               <div key={idx+200}>
+                <b>{fieldTitle}</b>
+                <br />
                 {instructions}
                 {rubricView}
                 <br/>
-                {contentView}
-                <br key={idx+500}/>
-                {justification}
+                <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length-1)} Field={this.state.TaskActivityFields[idx]} FieldIndex={idx} Strings={this.props.Strings}/>
                 <br />
+                {latestVersionFieldView}
               </div>
               );
 
@@ -638,7 +614,6 @@ class SuperComponent extends React.Component {
               {TA_instructions}
               {TA_rubric}
               {fileUploadView}
-
               {fields}
               {formButtons}
            </div>);

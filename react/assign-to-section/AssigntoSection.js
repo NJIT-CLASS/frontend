@@ -287,7 +287,7 @@ class AssignToSectionContainer extends React.Component
   {
 
         let infoMessage = null;
-        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>); 
+        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>);
         if(!this.state.DataLoaded){
             return (<div></div>);
         }
@@ -342,8 +342,9 @@ class AssignToSectionContainer extends React.Component
 
 
         {workflowView}
-
-        {buttonView}
+        <div className="align-right">
+          {buttonView}
+        </div>
       </div>
 
         );

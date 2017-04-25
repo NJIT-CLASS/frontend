@@ -1,21 +1,7 @@
 .quoted-section{
   background-color: #cbcccd;
 }
-.faded-big {
-  background-color: #f2f2f3;
-  width:65%;
-  word-wrap: break-word;
-  height: auto;
-  font-size: 18px;
-  box-sizing: border-box;
-  display: grid;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #e5e6e7;
-  line-height: 1.5;
-  overflow:auto;
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+
 .rich-text-markdown{
   strong{
     font-weight: bold;
@@ -31,7 +17,7 @@
   }
   code{
     font-family: monospace;
-    
+
   }
 }
 

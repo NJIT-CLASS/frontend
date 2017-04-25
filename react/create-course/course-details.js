@@ -179,14 +179,7 @@ class CourseDetails extends React.Component {
                     className={ this.state.courseNameError ? 'error' : '' }
                   />
                 </div>
-                {/*<label>Abbreviation</label>
-                  <div>
-                  <input
-                    type="text"
-                    value={this.state.courseAbb}
-                    onChange={this.onCourseAbbChange.bind(this)}
-                  />
-                </div>*/}
+                
                 <label>Course Number</label>
                     <div>
                         <input

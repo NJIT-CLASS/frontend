@@ -119,6 +119,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Create Problem',
             TA_type: TASK_TYPES.CREATE_PROBLEM,
             TA_name: TASK_TYPE_TEXT.create_problem,
+            VersionEvaluation: 'last',
             TA_what_if_late: 'keep_same_participant',
             TA_one_or_separate: false,
             TA_assignee_constraints: [
@@ -2281,7 +2282,7 @@ class AssignmentEditorContainer extends React.Component {
     render() {
         let infoMessage = null;
         let submitButtonView = (
-          <button style={{marginRight: '40px'}} type="button" onClick={this.onSubmit.bind(this)}>
+          <button  type="button" onClick={this.onSubmit.bind(this)}>
               <i className="fa fa-check"></i>{this.state.Strings.Submit}
           </button>
         );
@@ -2413,21 +2414,24 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-                    {infoMessage}
-                    <div>
-                      <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
-                        Courses={this.state.Courses} Semesters={this.state.Semesters}
-                        changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
-                        changeAssignmentInput={this.changeAssignmentInput.bind(this)}
-                        changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
-                        Strings={this.state.Strings}
-                        />
-                      <br/> {workflowsView}
-                      <br/>
+                  {infoMessage}
+                  <div>
+                    <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
+                      Courses={this.state.Courses} Semesters={this.state.Semesters}
+                      changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
+                      changeAssignmentInput={this.changeAssignmentInput.bind(this)}
+                      changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
+                      Strings={this.state.Strings}
+                    />
+                    <br/> {workflowsView}
+                    <br/>
+                    <div className="section-button-area">
                       {submitButtonView}
                       {saveButtonView}
-
                     </div>
+
+
+                  </div>
                 </div>
             );
         }
