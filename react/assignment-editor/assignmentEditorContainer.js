@@ -1858,7 +1858,33 @@ class AssignmentEditorContainer extends React.Component {
 
     changeDropdownFieldData(stateField, taskIndex, field, workflowIndex, e) {
         let newData = this.state.WorkflowDetails;
+        if(stateField == 'assessment_type') {
+            switch(e.value){
+            case 'grade':
+            case 'rating':
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = 0;
+                break;
+            case 'pass':
+            case 'evalutation':
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = '';
+                break;
+            default:
+                break;
+            }
+        } else if( stateField == 'fieldType'){
+            switch(e.value){
+            case 'text':
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = '';
+                break;
+            case 'numeric':
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = 0;
+                break;
+            default:
+                break;
+            }
+        }
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.value;
+
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }

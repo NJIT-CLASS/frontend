@@ -65,6 +65,7 @@ class SuperViewComponent extends React.Component {
         }
     }
 
+
     componentWillMount(){
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
@@ -95,6 +96,8 @@ class SuperViewComponent extends React.Component {
             });
         }
     }
+
+
 
     render(){
         let content = null;

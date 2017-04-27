@@ -33,7 +33,8 @@ class SuperComponent extends React.Component {
             TaskActivityFields: {
                 field_titles: []
             },
-            TaskData: {},
+            TaskData: [],
+            TaskResponse: {},
             ShowRubric: false,
             FieldRubrics: [],
             InputError: false,
@@ -42,6 +43,7 @@ class SuperComponent extends React.Component {
             Error: false,
             SaveSuccess: false,
             SubmitSuccess: false,
+            NumberFilesUploaded: 0,
             PassFailValue: null,
             DisputeStatus: null,
             UploadOptions: {
@@ -57,30 +59,47 @@ class SuperComponent extends React.Component {
             }
         };
     }
+    updateNumberFilesUploaded(newNum){
+        this.setState({
+            NumberFilesUploaded: newNum
+        });
+    }
 
     componentWillMount(){
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
         //checks to see if either data prop is null
-
-        if(tdata === null || tdata === undefined || tdata == 'null' || tdata == '"[{}]"'){
-            tdata = [{}];
+        console.log(tdata);
+        if(tdata === null || tdata === undefined || tdata == 'null' || tdata == '[{}]'){
+            tdata = [new Object()];
         }
         if(!tAdata){
             this.setState({Error: true});
             return;
         }
+
+        tdata = tdata.map((data) => {
+            if(data.constructor === Object){
+                return data;
+            }else{
+                return JSON.parse(data);
+            }
+        });
+        console.log('After map',tdata);
+
+        let latestVersion = tdata.pop();
+
         //checks to see if     task activity data is empty. This would only be caused by an error
         if(Object.keys(tAdata).length === 0 && tAdata.constructor === Object){
             this.setState({Error: true});
             return;
         }
         //if task data is empty, it fills it up with the TA's fields
-        if(Object.keys(tdata).length === 0 && tdata.constructor === Object || tdata == null){
-            tdata.number_of_fields = tAdata.number_of_fields;
+        if(Object.keys(latestVersion).length === 0 && latestVersion.constructor === Object || latestVersion == null){
+            latestVersion.number_of_fields = tAdata.number_of_fields;
             for(let i = 0; i < tAdata.number_of_fields; i++){
 
-                tdata[i] = tAdata[i].default_content;
+                latestVersion[i] = tAdata[i].default_content;
             }
             /*tAdata.field_titles.forEach(function(title){
               tdata[title] = tAdata[title].default_content;
@@ -92,6 +111,7 @@ class SuperComponent extends React.Component {
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
+            TaskResponse: latestVersion,
             TaskStatus: tstat,
             DisputeStatus: disputeStat
         });
@@ -104,16 +124,25 @@ class SuperComponent extends React.Component {
       //returns false if any field is null and true if all fields are filled
         for(let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++){
             if(this.state.TaskActivityFields[i].requires_justification){
-                if((this.state.TaskData[i][0] == null || this.state.TaskData[i][0] == '') || (this.state.TaskData[i][1] == null || this.state.TaskData[i][1] == '')){
+                if((this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')){
                     return false;
                 }
             }
             else{
-                if(this.state.TaskData[i][0] == null || this.state.TaskData[i][0] == ''){
+                if(this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == ''){
                     return false;
                 }
             }
 
+        }
+        console.log(this.props.FileUpload);
+        if(this.props.FileUpload.mandatory > 0){
+            if(this.state.NumberFilesUploaded >= this.props.FileUpload.mandatory){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
 
         return true;
@@ -134,7 +163,7 @@ class SuperComponent extends React.Component {
             body: {
                 taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
-                taskInstanceData: this.state.TaskData
+                taskInstanceData: this.state.TaskResponse
             },
             json: true
         };
@@ -179,7 +208,7 @@ class SuperComponent extends React.Component {
                 body: {
                     taskInstanceid: this.props.TaskID,
                     userid: this.props.UserID,
-                    taskInstanceData: this.state.TaskData
+                    taskInstanceData: this.state.TaskResponse
                 },
                 json: true
             };
@@ -246,10 +275,10 @@ class SuperComponent extends React.Component {
         if(typeof(event.target.value) === 'string' && event.target.value.length > 45000){ // checks to see if the input is a reasonable length
             return;
         }
-        let newTaskData = this.state.TaskData;
-        newTaskData[index][0] = event.target.value;
+        let newTaskResponse = this.state.TaskResponse;
+        newTaskResponse[index][0] = event.target.value;
         this.setState({
-            TaskData: newTaskData
+            TaskResponse: newTaskResponse
         });
     }
 
@@ -258,21 +287,21 @@ class SuperComponent extends React.Component {
             return;
         }
         //updates task data with new user input in justification fields
-        let newTaskData = this.state.TaskData;
-        newTaskData[index][1] = event.target.value;
+        let newTaskResponse = this.state.TaskResponse;
+        newTaskResponse[index][1] = event.target.value;
 
         this.setState({
-            TaskData: newTaskData
+            TaskResponse: newTaskResponse
         });
     }
 
     handleStarChange(index,value){
       //updates rating grade in taskdata
-        let newTaskData = this.state.TaskData;
-        newTaskData[index][0] = value;
+        let newResponse = this.state.TaskResponse;
+        newResponse[index][0] = value.rating;
 
         this.setState({
-            TaskData: newTaskData
+            TaskResponse: newResponse
         });
 
     }
@@ -400,7 +429,7 @@ class SuperComponent extends React.Component {
         if(this.props.FileUpload !== null && this.props.FileUpload.mandatory !== 0){
             fileUploadView = (
             <div>
-              <FileUpload UserID={this.props.UserID} apiUrl={this.props.apiUrl}/>
+              <FileUpload UserID={this.props.UserID} apiUrl={this.props.apiUrl} changeNumber={this.updateNumberFilesUploaded.bind(this)} MinUploads={this.props.FileUpload.mandatory} MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}/>
             </div>
           );
         }
@@ -413,7 +442,6 @@ class SuperComponent extends React.Component {
 
             </div>);
         }
-        console.log(this.state.TaskActivityFields);
           //creating all input fields here
         let fields = this.state.TaskActivityFields.field_titles.map(function(title, idx){
             let rubricView = null;
@@ -422,7 +450,11 @@ class SuperComponent extends React.Component {
             let fieldTitleText = '';
             let fieldTitle = null;
             let completeFieldView = null;
-            const latestVersion = this.state.TaskData[this.state.TaskData.length -1];
+            const latestVersion = this.state.TaskResponse;
+
+            if(latestVersion[idx] == null){
+                latestVersion[idx] = [this.state.TaskActivityFields[idx].default_content[0], this.state.TaskActivityFields[idx].default_content[1]];
+            }
             if(this.state.TaskActivityFields[idx].show_title){ //shoudl the title be displayed or not
                 if(this.state.TaskActivityFields[idx].assessment_type != null){ //add "Grade" to assess fields to make pretty
                     fieldTitleText = title +' ' + this.props.Strings.Grade;
@@ -432,7 +464,6 @@ class SuperComponent extends React.Component {
                 }
 
                 fieldTitle = (<div>
-                  <br />
                   <div key={idx + 600}>{fieldTitleText}</div>
                 </div>);
             }
@@ -473,20 +504,12 @@ class SuperComponent extends React.Component {
             }
 
             if(this.state.TaskActivityFields[idx].requires_justification){
-                if(latestVersion[idx][1] == ''){
-                    justification = ( <div>
-                          <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
-                          <textarea key={idx +100} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder}>
-                          </textarea>
-                        </div>);
-                }
-                else {
-                    justification = ( <div>
+                justification = ( <div>
                           <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
                           <textarea key={idx +100} className="big-text-field" value={latestVersion[idx][1]} onChange={this.handleJustificationChange.bind(this, idx)} placeholder={this.props.Strings.JustificationPlaceholder}>
                           </textarea>
                         </div>);
-                }
+
             }
 
             let fieldInput = null;
@@ -495,23 +518,17 @@ class SuperComponent extends React.Component {
             case 'self-assessment':
                 switch(this.state.TaskActivityFields[idx].assessment_type){
                 case 'grade':
-                    if(latestVersion[idx][0] == null){
-                        fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                            </input>);
-                    }
 
-                    else{
-                        fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+                    fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
                             </input>);
-                    }
+
                     break;
                 case 'rating':
-                    let val = (latestVersion[idx][0] == null || latestVersion[idx][0] == '') ? 0 : latestVersion[idx][0];
-                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={val} onRate={this.handleStarChange.bind(this,idx)} />);
+                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={latestVersion[idx][0]} onRate={this.handleStarChange.bind(this,idx)} />);
                     break;
                 case 'pass':
                     fieldInput = (<div className='true-checkbox'>
-                          <RadioGroup selectedValue={latestVersion[idx][0]} onChange={
+                      <RadioGroup selectedValue={latestVersion[idx][0]} onChange={
                             (val) => {
                                 let newData = latestVersion;
                                 newData[idx][0] = val;
@@ -530,18 +547,18 @@ class SuperComponent extends React.Component {
                         labels = labels.split(',');
                     }
                     fieldInput = (<div>
-                          <label>{this.props.Strings.LabelDirections}</label>
-                          <Select key={idx+1000}
-                            options={labels}
-                            selectedValue={latestVersion[idx][0]}
-                            value={latestVersion[idx][0]}
-                            onChange={ (e) => {
-                                let newData = latestVersion;
-                                newData[idx][0] = e.value;
-                                this.setState({
-                                    TaskData: newData
-                                });
-                            }}
+                      <label>{this.props.Strings.LabelDirections}</label>
+                      <Select key={idx+1000}
+                        options={labels}
+                        selectedValue={latestVersion[idx][0]}
+                        value={latestVersion[idx][0]}
+                        onChange={ (e) => {
+                            let newData = latestVersion;
+                            newData[idx][0] = e.value;
+                            this.setState({
+                                TaskData: newData
+                            });
+                        }}
                             clearable={false}
                             searchable={false}
                           />
@@ -554,24 +571,15 @@ class SuperComponent extends React.Component {
                 }
                 break;
             case 'text':
-                if(latestVersion[idx][0] == null){
-                    fieldInput = (<textarea key={idx} className="big-text-field" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
+                fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
                         </textarea>);
-                }
-                else{
-                    fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder={this.props.Strings.InputPlaceholder}>
-                        </textarea>);
-                }
+
                 break;
             case 'numeric':
-                if(latestVersion[idx][0] == null){
-                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx}  className="number-input" value={this.state.TaskActivityFields[idx].default_content[0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
+
+                fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
                         </input>);
-                }
-                else{
-                    fieldInput = (<input type="number"  min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this,idx)} placeholder="...">
-                        </input>);
-                }
+
 
                 break;
             default:
@@ -584,19 +592,16 @@ class SuperComponent extends React.Component {
             );
             let latestVersionFieldView =  <div>
               {fieldInput}
-                  <br key={idx+500}/>
                   {justification}
                 </div>;
 
             completeFieldView =  (
               <div key={idx+200}>
                 <b>{fieldTitle}</b>
-                <br />
                 {instructions}
                 {rubricView}
-                <br/>
                 <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length-1)} Field={this.state.TaskActivityFields[idx]} FieldIndex={idx} Strings={this.props.Strings}/>
-                <br />
+
                 {latestVersionFieldView}
               </div>
               );

@@ -115,6 +115,9 @@ class TemplateContainer extends React.Component {
                         if(newTask.Data !== null && newTask.Data.constructor !== Object){
                             newTask.Data = JSON.parse(task.Data);
                         }
+                        else{
+                            newTask.Data = [new Object()];
+                        }
                         if(newTask.TaskActivity.Fields !== null && newTask.TaskActivity.Fields.constructor !== Object){
                             newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
                         }

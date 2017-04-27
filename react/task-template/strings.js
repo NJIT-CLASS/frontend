@@ -31,7 +31,8 @@ let strings = {
     Pass: 'Pass',
     Fail: 'Fail',
     LabelDirections: 'Choose from one of the labels below',
-    Course: 'Course'
+    Course: 'Course',
+    Min: 'Min'
 
 };
 

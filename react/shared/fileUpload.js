@@ -3,11 +3,17 @@ import React from 'react';
 class FileUpload extends React.Component{
     constructor(props){
         super(props);
-
+        //PROPS:
+        // changeNumber(num)
+        // MinUploads
+        //  MaxUploads
+        //  UserID
+        //  apiUrl
         this.state = {
             UploadStatus: 'start', //start,error,pending,success
             Response: null,
             Files:[],
+            NumberUploaded: 0,
             HasFiles: false
         };
     }
@@ -19,14 +25,16 @@ class FileUpload extends React.Component{
         let formData = new FormData();
         formData.append('userId', this.props.UserID);
         let filesAr = [];
-        if(this.props.NumberOfFiles === null || this.props.NumberOfFiles === undefined){
+        let upperLimit = this.refs.uploadInput.files.length;
+        if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
             [].forEach.call(this.refs.uploadInput.files, function (file) {
                 filesAr.push(file);
                 formData.append('files', file);
             });
         }
         else{
-            for(let i = 0; i < this.props.NumberOfFiles; i++){
+            upperLimit = this.refs.uploadInput.files.length < (this.props.MaxUploads - this.state.NumberUploaded) ? this.refs.uploadInput.files.length : (this.props.MaxUploads - this.state.NumberUploaded);
+            for(let i = 0; i < upperLimit; i++){
                 formData.append('files', this.refs.uploadInput.files[i]);
             }
         }
@@ -37,13 +45,16 @@ class FileUpload extends React.Component{
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
+                    let newNum = x.state.NumberUploaded + upperLimit;
                     x.setState({
                         UploadStatus: 'success',
-                        Response: this.responseText
+                        Response: this.responseText,
+                        NumberUploaded: newNum
                     });
+                    console.log('NumberUploaded', newNum, x.state.NumberUploaded);
+                    x.props.changeNumber(x.state.NumberUploaded);
                 }
                 else{
-                    console.log('Sorry, there was an error', this.responseText);
                     x.setState({
                         UploadStatus: 'error',
                         Response: this.responseText
@@ -74,7 +85,7 @@ class FileUpload extends React.Component{
         if(this.refs.uploadInput !== undefined && this.refs.uploadInput.files.length > 0){
             label = `${this.refs.uploadInput.files.length} ${this.props.Strings.filesLabel}`;
         }
-
+        <div className="inline"> {this.props.Strings.Min}: {this.props.MinUploads}    {this.props.Strings.Max}: {this.props.MaxUploads}</div>;
         switch(this.state.UploadStatus){
         case 'start':
             uploadView = (
@@ -92,7 +103,19 @@ class FileUpload extends React.Component{
             );
             break;
         case 'success':
-            uploadView = (<div>Upload Complete</div>);
+            if(this.state.NumberUploaded < this.props.MinUploads){
+                uploadView = (
+                  <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                    <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
+                    <label  htmlFor="file-upload-input">{label}</label>
+
+                    <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}</button>
+                  </form>
+              );
+            }else{
+                uploadView = (<div>Upload Complete</div>);
+
+            }
             break;
         case 'error':
             uploadView = (<div>Upload Error</div>);
@@ -113,8 +136,12 @@ FileUpload.defaultProps = {
     Strings:{
         buttonLabel: 'Upload',
         filesLabel: 'Files',
-        selectLabel: 'Select Files'
-    }
+        selectLabel: 'Select Files',
+        uploadedLabel: 'Uploaded',
+        Min: 'Min',
+        Max: 'Max'
+    },
+    changeNumber: function(newNum){}
 
 };
 
