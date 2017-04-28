@@ -12,8 +12,6 @@ import Select from 'react-select';
 import FileUpload from '../shared/fileUpload';
 import Rater from 'react-rater';
 import {RadioGroup, Radio} from 'react-radio-group';
-import { Editor } from 'react-draft-wysiwyg';
-import {stateToHTML} from 'draft-js-export-html';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants'; //contains constants and their values
 

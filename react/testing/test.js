@@ -1,6 +1,4 @@
 import React from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import {stateToHTML} from 'draft-js-export-html';
 import ReactQuill from 'react-quill';
 class App extends React.Component {
     constructor(props) {
@@ -37,19 +35,29 @@ class App extends React.Component {
 
     render() {
         let toolbarOptions = null;
+        let gray = <div className="text"></div>;
+        return (<div>
+          <div className="section placeholder-card">
+            <h2 className="title">{gray}</h2>
+            <div className="section-content">
+              {gray}
+              <br/>
+              <div className="textarea"></div>
+            </div>
+          </div>
 
-        return (
-      <div>
-        <ReactQuill
-          theme={'snow'}
-          onChange={this.onChange}
-          value={this.state.EditorHTML}
-        />
-        <div className="ql-editor" dangerouslySetInnerHTML={{ __html: this.state.EditorHTML }}>
-        </div>
+          <div>
+            <ReactQuill
+              theme={'snow'}
+              onChange={this.onChange}
+              value={this.state.EditorHTML}
+            />
+            <div className="ql-editor" dangerouslySetInnerHTML={{ __html: this.state.EditorHTML }}>
+            </div>
 
+          </div>
 
-   </div>
+          </div>
         );
     }
 }
