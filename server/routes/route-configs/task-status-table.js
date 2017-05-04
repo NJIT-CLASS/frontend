@@ -11,5 +11,5 @@ module.exports = {
         loggedOut: false
     },
     icon: 'bar-chart',
-    sidebar: true
+    sidebar: false
 };

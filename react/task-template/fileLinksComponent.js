@@ -5,6 +5,11 @@ import React from 'react';
 //apiUrl
 const FileLinksComponent = ({Files, apiUrl}) => {
     const downloadLink = `${apiUrl}/api/download/file/`;
+
+    if(Files === null){
+        return <div></div>;
+    }
+    
     return <div>
           {
             Files.map((fileID) => {
