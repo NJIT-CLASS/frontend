@@ -1,5 +1,7 @@
 .ColLineColor{
   border-color: #bfbfbf;
+  min-width: 100px;
+  max-width: 200px;
 }
 
 .EmptyCell{
@@ -12,7 +14,7 @@
 }
 
 .TableWidth{
-  width: 50%;
+  width: 14.28%;
 }
 
 .TableFilterStyle{
@@ -29,4 +31,32 @@
 {
   display: inline-block;
   width: 20px;
+
 }
+
+
+
+  .complete{
+    background-color: #00ff00;
+  }
+
+  .incomplete{
+    background-color: #ffffff;
+  }
+
+  .late{
+    background-color: #ff0000;
+  }
+
+  .not-needed{
+    background-color: #ffff00;
+  }
+  .not-yet-started{
+    background-color: #b3b3b3;
+  }
+  .started{
+    background-color: #0099ff;
+  }
+  .automatic{
+    background-color: #ff9933;
+  }

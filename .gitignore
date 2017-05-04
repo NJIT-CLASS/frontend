@@ -41,6 +41,10 @@ fallback_settings.js
 
 .build
 
+.idea
+
+.configuration
+
 runFront.bat
 
 runBack.bat

@@ -7,9 +7,9 @@
 'use strict';
 
 const
-    version = '1.0.3',
+    version = '1.0.0.4',
     CACHE = version + '::PLA',
-    offlineURL = '/static/offline.html',
+    offlineURL = '/offline.html',
     installFilesEssential = [
         '/static/vendor/font-awesome.min.css',
         '/static/main.css',
@@ -80,16 +80,6 @@ self.addEventListener('activate', event => {
     );
 });
 
-function update(request) {
-    if(url.includes('/api/')) return;
-
-    return caches.open(CACHE).then(function(cache) {
-        return fetch(request).then(function(response) {
-            return cache.put(request, response);
-        });
-    });
-}
-
 
 // is image URL?
 let iExt = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'].map(f => '.' + f);
@@ -127,7 +117,6 @@ function offlineAsset(url) {
 
 function fromCache(request) {
     let url = request.url;
-    if(url.includes('/api/')) return;
 
     return caches.open(CACHE)
         .then(cache => {
@@ -143,9 +132,7 @@ function fromCache(request) {
                     // make network request
                     return fetch(request)
                         .then(newreq => {
-
                             if (newreq.ok) return newreq;
-
                         })
                         // app is offline
                         .catch(() => offlineAsset(url));
@@ -157,11 +144,13 @@ function fromCache(request) {
 
 
 // application fetch network data
-self.addEventListener('fetch', event => {
-    // abandon non-GET requests
-    if (event.request.method !== 'GET') return;
 
-    event.respondWith(fromCache(event.request));
-    //event.waitUntil(update(event.request));
+self.addEventListener('fetch', function(event) {
+    console.log(event);
+    event.respondWith(
+
+        fromCache(event.request)
+
+    );
 
 });

@@ -81,6 +81,7 @@ class MutliViewComponent extends React.Component {
               <SuperViewComponent key={index + 2000} index={index}
                 ComponentTitle={compString}
                 TaskData={task.Data}
+                Files={task.Files}
                 Instructions={task.TaskActivity.Instructions}
                 Rubric={task.TaskActivity.Rubric}
                 TaskActivityFields={task.TaskActivity.Fields}

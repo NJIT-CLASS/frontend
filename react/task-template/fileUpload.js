@@ -4,17 +4,21 @@ class FileUpload extends React.Component{
     constructor(props){
         super(props);
         //PROPS:
-        // changeNumber(num)
+        // onChange({conditionsMet, numberOfUploads})
         // MinUploads
         //  MaxUploads
-        //  UserID
-        //  apiUrl
+        //  apiObject: {   <Post_Var_Name>: <POST_Value>,
+        //                          ...
+        //                 <Post_Var_Name>: <POST_Value>,
+        //                 apiUrl: ''
+        //              }
+        //  InitialNumberUploaded
         this.state = {
             UploadStatus: 'start', //start,error,pending,success
             Response: null,
             Files:[],
-            NumberUploaded: 0,
-            HasFiles: false
+            HasFiles: false,
+            NumberUploaded: this.props.InitialNumberUploaded
         };
     }
 
@@ -22,8 +26,14 @@ class FileUpload extends React.Component{
         this.setState({
             UploadStatus: 'pending'
         });
+
         let formData = new FormData();
-        formData.append('userId', this.props.UserID);
+        for (let attr in this.props.apiObject) {
+            formData.append(attr, this.props.apiObject[attr]);
+        }
+
+        /*formData.append('userId', this.props.UserID);
+        formData.append('taskInstanceId', this.props.TaskInstanceID);*/
         let filesAr = [];
         let upperLimit = this.refs.uploadInput.files.length;
         if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
@@ -33,7 +43,8 @@ class FileUpload extends React.Component{
             });
         }
         else{
-            upperLimit = this.refs.uploadInput.files.length < (this.props.MaxUploads - this.state.NumberUploaded) ? this.refs.uploadInput.files.length : (this.props.MaxUploads - this.state.NumberUploaded);
+            let totalUploads = this.state.NumberUploaded;
+            upperLimit = this.refs.uploadInput.files.length < (this.props.MaxUploads - totalUploads) ? this.refs.uploadInput.files.length : (this.props.MaxUploads - totalUploads);
             for(let i = 0; i < upperLimit; i++){
                 formData.append('files', this.refs.uploadInput.files[i]);
             }
@@ -41,18 +52,22 @@ class FileUpload extends React.Component{
         this.setState({Files: filesAr});
         const x = this;
         var xhr = new XMLHttpRequest();
-        xhr.open( 'POST', `${this.props.apiUrl}/api/upload/files`, true);
+        xhr.open( 'POST', this.props.apiObject.apiUrl, true);
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
                     let newNum = x.state.NumberUploaded + upperLimit;
                     x.setState({
                         UploadStatus: 'success',
-                        Response: this.responseText,
-                        NumberUploaded: newNum
+                        NumberUploaded: newNum,
+                        Response: this.responseText
                     });
-                    console.log('NumberUploaded', newNum, x.state.NumberUploaded);
-                    x.props.changeNumber(x.state.NumberUploaded);
+
+                    let changedConditions = {
+                        conditionsMet: (x.state.NumberUploaded >= x.props.MinUploads) && (x.state.NumberUploaded <= x.props.MaxUploads),
+                        numberOfUploads: newNum
+                    };
+                    x.props.onChange(changedConditions);
                 }
                 else{
                     x.setState({
@@ -85,13 +100,13 @@ class FileUpload extends React.Component{
         if(this.refs.uploadInput !== undefined && this.refs.uploadInput.files.length > 0){
             label = `${this.refs.uploadInput.files.length} ${this.props.Strings.filesLabel}`;
         }
-        <div className="inline"> {this.props.Strings.Min}: {this.props.MinUploads}    {this.props.Strings.Max}: {this.props.MaxUploads}</div>;
         switch(this.state.UploadStatus){
         case 'start':
             uploadView = (
               <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                 <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
-                <label  htmlFor="file-upload-input">{label}</label><div>({this.props.Strings.Min} {this.props.MinUploads})</div>
+                <label  htmlFor="file-upload-input">{label}</label><div className="inline"> {this.props.Strings.Min}: {this.props.MinUploads} {this.props.Strings.Max}: {this.props.MaxUploads}</div>
+
 
                 <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
               </form>
@@ -108,6 +123,7 @@ class FileUpload extends React.Component{
                   <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                     <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
                     <label  htmlFor="file-upload-input">{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}/{this.props.MinUploads}</label>
+
                     <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
                   </form>
               );

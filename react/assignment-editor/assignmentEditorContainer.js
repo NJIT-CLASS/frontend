@@ -3,7 +3,7 @@
 //
 // TODO
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
-// Assignee constraint second level of checkboxes needs isClicked
+// Assignee constraint second level of checkboxes needs isClicked prop set
 import React from 'react';
 import request from 'request';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
@@ -768,27 +768,7 @@ class AssignmentEditorContainer extends React.Component {
         };
 
         sendData.WorkflowActivity.forEach((workflow, index) => {
-          //B 0.1 Add Complete to Workflow tree
-            // let leafNodes = [];
-            //
-            //
-            // workflow.WorkflowStructure.walk((node) =>{
-            //     if(node.model.id !== -1 && !node.hasChildren() && nodeEmpty(node)){
-            //         leafNodes.push(node.model.id);
-            //     }
-            // });
-            //
-            // leafNodes.forEach((id) => {
-            //     let selectedNode = workflow.WorkflowStructure.first((node) => {
-            //         return node.model.id === id;
-            //     });
-            //     let newCompleteNode = this.tree.parse({
-            //         id: workflow.Workflow.length
-            //     });
-            //     let newCompleteData = this.createNewCompleteTask(index);
-            //     selectedNode.addChild(newCompleteNode);
-            //     workflow.Workflow.push(newCompleteData);
-            // });
+
 
           // B.1 Clean Workflow array
             let counter = 0;
@@ -1184,13 +1164,6 @@ class AssignmentEditorContainer extends React.Component {
         }
         newTask.TA_name = string + ' ' + prevTaskName;
         newTask.TA_display_name = newText;
-        return newTask;
-    }
-
-    createNewCompleteTask(workflowIndex) {
-        let newTask = cloneDeep(this.completeTask);
-        newTask.TA_name = 'Workflow ' + (workflowIndex + 1) + ' Complete';
-        newTask.TA_display_name = 'Workflow ' + (workflowIndex + 1) + ' Complete';
         return newTask;
     }
 

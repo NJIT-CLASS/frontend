@@ -195,8 +195,13 @@ app.use((req, res, next) => {
             if (err || statusCode !== 200) {
                 delete req.session.userId;
                 res.redirect('/');
-
             }
+
+            if(body.User[0] == undefined){
+                delete req.session.userId;
+                res.send('Not Found').end();
+            }
+
 
             const user = body.User[0]; // JV - grabbed user's information
             req.App.user.email = user.UserLogin.Email;

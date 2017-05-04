@@ -81,10 +81,3 @@
     display: none;
 
 }
-
-.placeholder{
-  width: 90%;
-  @media screen and (max-width: $mobile-brk) {
-    width: 98vw;
-  }
-}

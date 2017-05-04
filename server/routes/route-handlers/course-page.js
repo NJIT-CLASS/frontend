@@ -38,17 +38,19 @@ exports.get = (req, res) => {
                     sectionList[i].members=results[currentSectionId];
                 }
 
+                req.App.api.get('/getActiveAssignments/' + req.params.Id, (err, statusCode, assignmentInstances) =>{
 
-
-                res.render('course_page', {
-                    showHeader:false,
-                    sectionList: sectionList,
-                    courseID: req.params.Id,
-                    assignmentsList: assignmentsArray,
-                    instructor: (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false,
-                    courseTitle: body.Course.Name,
-                    courseNumber: body.Course.Number,
-                    courseDescription: body.Course.Description
+                    res.render('course_page', {
+                        showHeader:false,
+                        sectionList: sectionList,
+                        activeAssignments: assignmentInstances.Assignments,
+                        courseID: req.params.Id,
+                        assignmentsList: assignmentsArray,
+                        instructor: (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false,
+                        courseTitle: body.Course.Name,
+                        courseNumber: body.Course.Number,
+                        courseDescription: body.Course.Description
+                    });
                 });
             });
         });

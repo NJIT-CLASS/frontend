@@ -23,19 +23,9 @@ import HeaderComponent from './headerComponent';
 import MultiViewComponent from './multiViewComponent';
 import ErrorComponent from './errorComponent';
 import CommentComponent from './commentComponent';
-import strings from './strings';
-//These will determine what elements are on the page, giving the current state of the Task and
-// deciding what to dsiplay.
-const createProblemContainer = document.getElementById('create-task-container');
-const editProblemContainer = document.getElementById('edit-task-container');
-const solveProblemContainer = document.getElementById('solve-task-container');
-const gradeContainer = document.getElementById('grade-task-container');
-const gradedContainer = document.getElementById('graded-container');
-const disputeContainer = document.getElementById('dispute-task-container');
-const resolveGradeContainer = document.getElementById('resolve-task-container');
-const completedContainer = document.getElementById('completed-task-container');
 
-/* Make all the methods that will call the api to get the appropriate data  here */
+//This constains all the hard-coded strings used on the page. They are translated on startup
+import strings from './strings';
 
 /*      PROPS:
             - TaskID
@@ -43,7 +33,6 @@ const completedContainer = document.getElementById('completed-task-container');
             - UserID
               (from main.js)
 */
-
 
 
 class TemplateContainer extends React.Component {
@@ -118,12 +107,15 @@ class TemplateContainer extends React.Component {
                         else{
                             newTask.Data = [new Object()];
                         }
+
+                        newTask.Files = JSON.parse(task.Files);
                         if(newTask.TaskActivity.Fields !== null && newTask.TaskActivity.Fields.constructor !== Object){
                             newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
                         }
                         if(newTask.TaskActivity.FileUpload !== null && newTask.TaskActivity.FileUpload.constructor !== Object){
                             newTask.TaskActivity.FileUpload = JSON.parse(task.TaskActivity.FileUpload);
                         }
+
                         return newTask;
                     });
                     let currentTask = parseTaskList.pop();
@@ -192,13 +184,7 @@ class TemplateContainer extends React.Component {
         }
         if (!this.state.Loaded) { // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return (
-                <div>
-                  <div className="placeholder"></div>
-                  <i style={{
-                      marginLeft: '45%'
-                  }} className="fa fa-cog fa-spin fa-4x fa-fw"></i>
-                  <span className="sr-only"></span>
-                </div>
+                <div></div>
             );
         }
 
@@ -242,9 +228,9 @@ class TemplateContainer extends React.Component {
                     break;
                 }
                 if (task.Status == 'Complete' || task.Status == 'complete') {
-                    return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
+                    return (<SuperViewComponent key={idx + 2000} index={idx} ComponentTitle={compString} TaskData={task.Data} Files={task.Files} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 } else {
-                    return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} ComponentTitle={compString} Type={task.TaskActivity.Type} FileUpload={task.TaskActivity.FileUpload} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
+                    return (<SuperComponent key={idx + 2000} TaskID={this.props.TaskID} UserID={this.props.UserID} Files={task.Files} ComponentTitle={compString} Type={task.TaskActivity.Type} FileUpload={task.TaskActivity.FileUpload} TaskData={task.Data} TaskStatus={task.Status} TaskActivityFields={task.TaskActivity.Fields} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} Strings={this.state.Strings} apiUrl={this.props.apiUrl} />);
                 }
 
             } else {
@@ -283,7 +269,7 @@ class TemplateContainer extends React.Component {
                         compString = '';
                         break;
                     }
-                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
+                    return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} Files={task.Files} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 }
 
             }

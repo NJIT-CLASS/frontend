@@ -5,14 +5,17 @@
 */
 import React from 'react';
 import request from 'request';
-import ErrorComponent from './errorComponent';
-import VersionView from './individualFieldVersionsComponent';
-import Checkbox from '../shared/checkbox';
 import Select from 'react-select';
-import FileUpload from '../shared/fileUpload';
 import Rater from 'react-rater';
 import {RadioGroup, Radio} from 'react-radio-group';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
+import FileUpload from './fileUpload';
+import ErrorComponent from './errorComponent';
+import VersionView from './individualFieldVersionsComponent';
+import Checkbox from '../shared/checkbox';
+import FileLinksComponent from './fileLinksComponent';
+
 import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants'; //contains constants and their values
 
 class SuperComponent extends React.Component {
@@ -24,6 +27,7 @@ class SuperComponent extends React.Component {
             -ComponentTitle
             -Instructions
             -TaskStatus
+            TaskID
             -Rubric
     */
 
@@ -41,33 +45,19 @@ class SuperComponent extends React.Component {
             Error: false,
             SaveSuccess: false,
             SubmitSuccess: false,
-            NumberFilesUploaded: 0,
+            NumberFilesStored: 0,
             PassFailValue: null,
             DisputeStatus: null,
-            UploadOptions: {
-                baseUrl: `${this.props.apiUrl}/api/upload/profile-picture`,
-                multiple: true,
-                numberLimit: 2,
-                accept: 'image/*',
-                fileFieldName(file) {
-                    return file.rawID;
-                },
-                chooseAndUpload: true,
-                wrapperDisplay: 'block'
-            }
+            FileUploadsSatisfied: false
         };
     }
-    updateNumberFilesUploaded(newNum){
-        this.setState({
-            NumberFilesUploaded: newNum
-        });
-    }
+
 
     componentWillMount(){
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
         //checks to see if either data prop is null
-        console.log(tdata);
+
         if(tdata === null || tdata === undefined || tdata == 'null' || tdata == '[{}]'){
             tdata = [new Object()];
         }
@@ -83,7 +73,7 @@ class SuperComponent extends React.Component {
                 return JSON.parse(data);
             }
         });
-        console.log('After map',tdata);
+
 
         let latestVersion = tdata.pop();
 
@@ -106,11 +96,16 @@ class SuperComponent extends React.Component {
         //if no TaskStatus is given, assume complete
         let tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : 'Incomplete';
         let disputeStat = (this.props.Type == TASK_TYPES.DISPUTE) ? false : null;
+
+        let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length :0;
+        let filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
             TaskResponse: latestVersion,
             TaskStatus: tstat,
+            FileUploadsSatisfied: filesSatisfied,
+            NumberFilesStored: filesUploadedCount,
             DisputeStatus: disputeStat
         });
     }
@@ -133,7 +128,7 @@ class SuperComponent extends React.Component {
             }
 
         }
-        console.log(this.props.FileUpload);
+
         if(this.props.FileUpload.mandatory > 0){
             if(this.state.NumberFilesUploaded >= this.props.FileUpload.mandatory){
                 return true;
@@ -182,11 +177,12 @@ class SuperComponent extends React.Component {
 
     }
 
-    onFileUpload(){
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/upload/profile-picture'
-        };
+    handleFileUploads({conditionsMet, numberOfUploads}){
+        console.log(conditionsMet, numberOfUploads);
+
+        this.setState({
+            FileUploadsSatisfied: conditionsMet
+        });
 
     }
 
@@ -381,7 +377,7 @@ class SuperComponent extends React.Component {
             formButtons = (<div>
               <br />
               <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check"></i>{this.props.Strings.Submit}</button>
-                <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>
+                {/*<button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
               </div>);
 
         }
@@ -427,7 +423,17 @@ class SuperComponent extends React.Component {
         if(this.props.FileUpload !== null && this.props.FileUpload.mandatory !== 0){
             fileUploadView = (
             <div>
-              <FileUpload UserID={this.props.UserID} apiUrl={this.props.apiUrl} changeNumber={this.updateNumberFilesUploaded.bind(this)} MinUploads={this.props.FileUpload.mandatory} MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}/>
+
+              <FileUpload InitialNumberUploaded={this.state.NumberFilesStored}
+                apiObject={{
+                    userId: this.props.UserID,
+                    taskInstanceId: this.props.TaskID,
+                    apiUrl: `${this.props.apiUrl}/api/upload/files`
+                }}
+              MinUploads={this.props.FileUpload.mandatory}
+             MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
+             onChange={this.handleFileUploads.bind(this)}
+           />
             </div>
           );
         }
@@ -616,6 +622,7 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
               {TA_instructions}
               {TA_rubric}
+              <FileLinksComponent Files={this.props.Files} apiUrl={this.props.apiUrl}/>
               {fileUploadView}
               {fields}
               {formButtons}
