@@ -10,7 +10,7 @@ If you've never used github before [set your ssh key](#github-setup)
 4. Download and install [redis](http://redis.io)
 5. Import latest language strings into server using [language-export.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-export.js) to export the strings from the Redis instance on AFS and [language-import.js](https://github.com/NJIT-CLASS/Configuration/blob/master/language-import.js) to import them to your local redis instance
 6. Set the environment variables `dbHost`, `dbUser`, `dbPass`, `database`, and `serverPort` to match your MySQL database hostname (probably localhost), database user, database user password, database name, and the port your want the backend server to serve on.
-7. Run `npm install gulp argon2` (Windows users may need to follow this guide: https://github.com/nodejs/node-gyp)
+7. Run `npm install gulp`
 8. Run `gulp generate:fallback-settings` to generate your fallback settings (just answer the questions)
 9. Set the environment variables `serverPort, dbHost, dbUser, dbPass, database (for the backend project)
 10. Run `npm install` which will install all the third-party packages the project depends on.
