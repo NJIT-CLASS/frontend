@@ -143,7 +143,7 @@ class Frames extends React.Component {
             count = 0;
 
             let cols = workflow.map(function(task){
-                var link = '/task/'+task.TaskInstanceID+'?'+'courseId='+this.state.Info.Assignment.CourseID+'&sectionID='+this.state.Info.SectionID.SectionID;
+                var link = '/task/'+task.TaskInstanceID+'?'+'courseId='+this.state.Info.Assignment.CourseID+'&sectionId='+this.state.Info.SectionID.SectionID;
                 if(this.state.SelectedTask.label == strings.all)
         {
                     this.state.SelectedTask = '';
