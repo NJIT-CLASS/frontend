@@ -8,8 +8,12 @@
 */
 
 
-function addQuery(str) {
-    window.location.search += '&' + str;
+function addLanguageQuery(str) {
+    if(window.location.search.includes('&lang')){
+        window.location.search = window.location.search.replace(/lang=../, str);
+    }else{
+        window.location.search += '&' + str;
+    }
 }
 
 function uploadFiles(e, url, vars){
