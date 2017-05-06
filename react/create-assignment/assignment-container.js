@@ -1,5 +1,5 @@
 import React from 'react';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 import PageHeader from './page-header';
 import DetailsContainer from './details-container';
 import WorkflowDetailContainer from './workflow-detail-container';

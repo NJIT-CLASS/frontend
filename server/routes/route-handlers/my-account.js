@@ -1,8 +1,8 @@
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        res.redirect(`/?url=${req.originalUrl}`);
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
-    
+
     res.render('account_management', {
         userId: req.App.user.userId,
         userEmail: req.App.user.email,

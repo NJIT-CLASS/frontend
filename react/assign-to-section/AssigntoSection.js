@@ -10,7 +10,7 @@ import Assignment from './components/Assignment.js';
 import WorkFlow from './components/WorkFlow.js';
 var moment = require('moment');
 //import ModalInfo from '../assignment-records/info-modal';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 
 class AssignToSectionContainer extends React.Component
 {

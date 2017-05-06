@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 
 import Modal from '../shared/modal';
 

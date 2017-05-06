@@ -7,7 +7,7 @@
 
 import React from 'react';
 import request from 'request';
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 import ErrorComponent from './errorComponent';
 import SuperViewComponent from './superViewComponent';
 

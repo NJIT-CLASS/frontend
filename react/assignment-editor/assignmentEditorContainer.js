@@ -16,7 +16,7 @@ import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
 import confirmModal from './confirmModal';
-import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants';
+import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/constants';
 import Strings from './assignmentEditorStrings';
 
 class AssignmentEditorContainer extends React.Component {
@@ -2278,6 +2278,20 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({SelectedTask: val});
     }
 
+    callTaskFunction(){
+        console.log(arguments);
+        const args = [].slice.call(arguments);
+        const functionName = args.shift();
+        this[functionName](...args);
+    }
+
+    aFunction(a, b ,d,ra,j,r){
+        console.log(a, b ,d, ra,j,r);
+        this.setState({
+            Garbage: a
+        });
+    }
+
     render() {
         let infoMessage = null;
         let submitButtonView = (
@@ -2377,7 +2391,9 @@ class AssignmentEditorContainer extends React.Component {
                             getTriggerConsolidationThreshold={this.getTriggerConsolidationThreshold.bind(this)}
                             changeSelectedTask={this.changeSelectedTask.bind(this)}
                             canConsolidate={this.canConsolidate.bind(this)}
-                            canDispute={this.canDispute.bind(this)}/> );
+                            canDispute={this.canDispute.bind(this)}
+                            callTaskFunction={this.callTaskFunction.bind(this)}
+                          /> );
                         }
                     }
                 }, this);

@@ -16,7 +16,7 @@ import VersionView from './individualFieldVersionsComponent';
 import Checkbox from '../shared/checkbox';
 import FileLinksComponent from './fileLinksComponent';
 
-import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants'; //contains constants and their values
+import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/constants'; //contains constants and their values
 
 class SuperComponent extends React.Component {
     constructor (props){
@@ -70,6 +70,7 @@ class SuperComponent extends React.Component {
             if(data.constructor === Object){
                 return data;
             }else{
+                console.log(typeof data);
                 return JSON.parse(data);
             }
         });

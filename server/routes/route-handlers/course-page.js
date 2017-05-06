@@ -1,7 +1,15 @@
 const async = require('async');
 
 exports.get = (req, res) => {
-    req.App.api.get('/course/' + req.params.Id, (err, statusCode, body) =>{
+    if(req.App.user === undefined){
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+    }
+    console.log(req.App);
+    let coursesUrl = '/course/';
+    if(req.App.user.role === 'student'){
+        coursesUrl = '/getActiveEnrolledCourses/';
+    }
+    req.App.api.get(coursesUrl + req.params.Id, (err, statusCode, body) =>{
         let assignmentsArray = [];
         req.App.api.get('/getAssignments/' + req.params.Id, (err, statusCode, assignmentsBody) => {
 

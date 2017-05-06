@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TASK_TYPES , TASK_TYPE_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 
 class SubTasksSidebarContainer extends React.Component {
     render() {
@@ -13,7 +13,7 @@ class SubTasksSidebarContainer extends React.Component {
 
             return (
                 <div className={classes.join(' ')} key={index}>
-                    {TASK_TYPE_TEXT[subtask.type]}
+                    {TASK_TYPES_TEXT[subtask.type]}
                 </div>
             );
         });
@@ -23,7 +23,7 @@ class SubTasksSidebarContainer extends React.Component {
                 <div className="previous-task">
                     <div onClick={this.props.returnToPreviousTask}>
                         <div className="super-title">Previous Task:</div>
-                        <div>{TASK_TYPE_TEXT[this.props.task.type]}</div>
+                        <div>{TASK_TYPES_TEXT[this.props.task.type]}</div>
                     </div>
                     <i className="fa fa-angle-right"></i>
                 </div>

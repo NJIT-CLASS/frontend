@@ -6,7 +6,7 @@ future stuff.
 */
 import React from 'react';
 import request from 'request';
-import {TASK_TYPES, TASK_TYPE_TEXT} from '../../server/utils/constants'; //contains constants and their values
+import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/constants'; //contains constants and their values
 var ReactTabs = require('react-tabs');
 var Tab = ReactTabs.Tab;
 var Tabs = ReactTabs.Tabs;
@@ -101,14 +101,26 @@ class TemplateContainer extends React.Component {
                     let skipIndeces = new Array();
                     let parseTaskList = bod.superTask.map(task => {
                         let newTask = task;
-                        if(newTask.Data !== null && newTask.Data.constructor !== Object){
-                            newTask.Data = JSON.parse(task.Data);
+                        console.log('Tasks Data', task.Data);
+                        if(newTask.Data !== null){
+                            if(Array.isArray(newTask.Data)){
+                                newTask.Data = task.Data;
+                            }
+                            else if(task.Data.constructor === Object){
+                                newTask.Data = [task.Data];
+                            }
+                            else{
+                                newTask.Data = [new Object()];
+                            }
                         }
                         else{
                             newTask.Data = [new Object()];
                         }
-
-                        newTask.Files = JSON.parse(task.Files);
+                        if(task.Files !== null && task.Files.constructor !== Object){
+                            newTask.Files = JSON.parse(task.Files);
+                        }else{
+                            newTask.Files = task.Files;
+                        }
                         if(newTask.TaskActivity.Fields !== null && newTask.TaskActivity.Fields.constructor !== Object){
                             newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
                         }
@@ -195,7 +207,7 @@ class TemplateContainer extends React.Component {
             // Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
             let compString = null;
-
+            console.log(task);
             if (idx == this.state.Data.length - 1) {
                 switch (task.TaskActivity.Type) {
                 case TASK_TYPES.CREATE_PROBLEM:
@@ -269,6 +281,7 @@ class TemplateContainer extends React.Component {
                         compString = '';
                         break;
                     }
+
                     return (<SuperViewComponent key={idx + 2000} index={idx} Instructions={task.TaskActivity.Instructions} Rubric={task.TaskActivity.Rubric} ComponentTitle={compString} TaskData={task.Data} Files={task.Files} TaskActivityFields={task.TaskActivity.Fields} Strings={this.state.Strings}/>);
                 }
 

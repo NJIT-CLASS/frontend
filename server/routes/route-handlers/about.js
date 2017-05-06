@@ -1,6 +1,6 @@
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        res.redirect('/');
+        return res.redirect('/');
     }
     res.render('about');
 };
