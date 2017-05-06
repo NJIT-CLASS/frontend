@@ -269,14 +269,14 @@ gulp.task('clean:build', () => {
 });
 
 gulp.task('move:server-build', () => {
-    const dest = gulp.dest(argv.location + '/server');
+    const dest = gulp.dest(argv.location || '../build' + '/server');
     return gulp.src(['.build/**/*'])
   .pipe(dest);
 });
 
 gulp.task('move:config-build', () => {
     return gulp.src(['package.json'])
-  .pipe(gulp.dest(argv.location))
+  .pipe(gulp.dest(argv.location || '../build'))
   .pipe(install({production: true}));
 });
 
@@ -325,7 +325,7 @@ exports.FRONTEND_PORT = ${answers['server-port']};
 exports.API_URL = '${answers['api-url']}';
 `;
         return file('fallback_settings.js', content)
-    .pipe(gulp.dest(argv.location));
+    .pipe(gulp.dest(argv.location || '../build'));
     });
 });
 
