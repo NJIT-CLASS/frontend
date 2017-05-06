@@ -25,7 +25,6 @@ const redisClient = redis.createClient({
 });
 
 app.use('/static', express.static(`${__dirname}/static`));
-app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`));
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -33,7 +32,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-//app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(session(redisClient));
 
@@ -143,16 +141,7 @@ app.use((req, res, next) => {
     }
 
     // language options
-    const languages = [{
-        language: 'English',
-        locale: 'en'
-    }, {
-        language: 'Español',
-        locale: 'es'
-    }, {
-        language: 'Français',
-        locale: 'fr'
-    }];
+    const languages = consts.LANGUAGES;
 
     req.App.langOptions = [];
 

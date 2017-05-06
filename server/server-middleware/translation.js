@@ -2,8 +2,6 @@
 
 const languageService = require('./language-service');
 
-type Language = 'en' | 'fr' | 'es';
-
 module.exports = function (redisClient) {
     return function(redisClient) {
         const service = languageService(redisClient);
@@ -19,10 +17,10 @@ module.exports = function (redisClient) {
                             }
 
                             return strs[str];
-                        }
+                        };
                     }(language));
                 });
             }
-        }
+        };
     }(redisClient);
-}
+};

@@ -121,7 +121,7 @@ createAssingment() {
             case TASK_TYPES.CREATE_PROBLEM:
                 content =(<div>
                     <div className="section">
-                        <h3 className="title">{TASK_TYPE_TEXT.create_problem}</h3>
+                        <h3 className="title">{TASK_TYPES_TEXT.CREATE_PROBLEM}</h3>
                         <div className="section-content">
                             <label>Name</label>
                             <div>
@@ -185,7 +185,7 @@ createAssingment() {
             case "grade_problem":
                 content =(<div>
                     <div className="section">
-                        <h3 className="title">{TASK_TYPE_TEXT.grade_problem}</h3>
+                        <h3 className="title">{TASK_TYPES_TEXT.GRADE_PROBLEM}</h3>
                         <div className="section-content">
                             <label>Name</label>
                             <div>
@@ -248,7 +248,7 @@ createAssingment() {
             case TASK_TYPES.SOLVE_PROBLEM:
                 content =(<div>
                     <div className="section">
-                        <h3 className="title">{TASK_TYPE_TEXT.solve_problem}</h3>
+                        <h3 className="title">{TASK_TYPES_TEXT.SOLVE_PROBLEM}</h3>
                         <div className="section-content">
                             <label>Name</label>
                             <div>
@@ -311,7 +311,7 @@ createAssingment() {
             case TASK_TYPES.EDIT:
                 content =(<div>
                     <div className="section">
-                        <h3 className="title">{TASK_TYPE_TEXT.edit}</h3>
+                        <h3 className="title">{TASK_TYPES_TEXT.EDIT}</h3>
                         <div className="section-content">
                             <label>Name</label>
                             <div>

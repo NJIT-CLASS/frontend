@@ -118,7 +118,7 @@ class AssignmentEditorContainer extends React.Component {
         this.createProblemTask = createTaskObject({
             TA_display_name: 'Create Problem',
             TA_type: TASK_TYPES.CREATE_PROBLEM,
-            TA_name: TASK_TYPE_TEXT.create_problem,
+            TA_name: TASK_TYPES_TEXT.CREATE_PROBLEM,
             VersionEvaluation: 'last',
             TA_what_if_late: 'keep_same_participant',
             TA_one_or_separate: false,
@@ -155,7 +155,7 @@ class AssignmentEditorContainer extends React.Component {
         this.editProblemTask = createTaskObject({
             TA_display_name: 'Edit Problem',
             TA_type: TASK_TYPES.EDIT,
-            TA_name: TASK_TYPE_TEXT.edit,
+            TA_name: TASK_TYPES_TEXT.EDIT,
             TA_overall_instructions: 'Edit the problem to ensure that it makes sense.',
             VersionEvaluation: 'whole',
             TA_assignee_constraints: [
@@ -191,7 +191,7 @@ class AssignmentEditorContainer extends React.Component {
         this.commmentProblemTask = createTaskObject({
             TA_display_name: 'Comment on Problem',
             TA_type: TASK_TYPES.COMMENT,
-            TA_name: TASK_TYPE_TEXT.comment,
+            TA_name: TASK_TYPES_TEXT.COMMENT,
             TA_overall_instructions: 'Comment on the problem.',
             VersionEvaluation: 'whole',
             TA_assignee_constraints: [
@@ -230,7 +230,7 @@ class AssignmentEditorContainer extends React.Component {
         this.solveProblemTask = createTaskObject({
             TA_display_name: 'Solve the Problem',
             TA_type: TASK_TYPES.SOLVE_PROBLEM,
-            TA_name:  TASK_TYPE_TEXT.solve_problem,
+            TA_name:  TASK_TYPES_TEXT.SOLVE_PROBLEM,
             TA_overall_instructions: 'Solve the problem.',
             VersionEvaluation: 'last',
             TA_assignee_constraints: ['student',
@@ -263,7 +263,7 @@ class AssignmentEditorContainer extends React.Component {
         this.gradeSolutionTask = createTaskObject({
             TA_display_name: 'Grade the Solution',
             TA_type: TASK_TYPES.GRADE_PROBLEM,
-            TA_name: TASK_TYPE_TEXT.grade_problem,
+            TA_name: TASK_TYPES_TEXT.GRADE_PROBLEM,
             TA_assignee_constraints: [
                 'student',
                 'individual', {}
@@ -316,7 +316,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Critique the Solution',
             TA_type: TASK_TYPES.CRITIQUE,
             TA_documentation:'',
-            TA_name: TASK_TYPE_TEXT.critique,
+            TA_name: TASK_TYPES_TEXT.CRITIQUE,
             TA_assignee_constraints: [
                 'student',
                 'individual', {}
@@ -351,7 +351,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Needs Consolidation',
             TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
             TA_documentation:'',
-            TA_name: TASK_TYPE_TEXT.needs_consolidation,
+            TA_name: TASK_TYPES_TEXT.NEEDS_CONSOLIDATION,
             TA_number_participant: 1,
             TA_assignee_constraints: [
                 'student',
@@ -365,7 +365,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Consolidate',
             TA_type: TASK_TYPES.CONSOLIDATION,
             TA_overall_instructions: 'Consolidate the different grades into a single, fair grade.',
-            TA_name: TASK_TYPE_TEXT.consolidation,
+            TA_name: TASK_TYPES_TEXT.CONSOLIDATION,
             TA_assignee_constraints: [
                 'student',
                 'individual', {'same_as': [2]}
@@ -380,7 +380,7 @@ class AssignmentEditorContainer extends React.Component {
         this.disputeTask = createTaskObject({
             TA_display_name: 'Dispute the Grades',
             TA_type: TASK_TYPES.DISPUTE,
-            TA_name: TASK_TYPE_TEXT.dispute,
+            TA_name: TASK_TYPES_TEXT.DISPUTE,
             TA_overall_instructions: 'Decide whether to dispute your grade or not. If you do, you must justify your grades.',
             TA_at_duration_end: 'resolved',
             TA_what_if_late: null,
@@ -397,7 +397,7 @@ class AssignmentEditorContainer extends React.Component {
         this.resolveDisputeTask = createTaskObject({
             TA_display_name: 'Resolve the Dispute',
             TA_type: TASK_TYPES.RESOLVE_DISPUTE,
-            TA_name: TASK_TYPE_TEXT.resolve_dispute,
+            TA_name: TASK_TYPES_TEXT.RESOLVE_DISPUTE,
             TA_assignee_constraints: [
                 'instructor',
                 'individual', {}
@@ -413,7 +413,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_display_name: 'Complete',
             TA_type: TASK_TYPES.COMPLETED,
             TA_documentation:'',
-            TA_name: TASK_TYPE_TEXT.completed,
+            TA_name: TASK_TYPES_TEXT.COMPLETED,
             TA_assignee_constraints: [
                 'student', 'individual', {}
             ],

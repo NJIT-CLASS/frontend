@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import {LANGUAGES} from '../../server/utils/constants';
 
 class PageHeader extends React.Component {
     changeLanguage(language) {
@@ -7,10 +8,9 @@ class PageHeader extends React.Component {
     }
 
     render() {
-        const languageList = [
-            {value: 'es', label: 'Español'},
-            {value: 'fr', label: 'Français'}
-        ];
+        const languageList = LANGUAGES.map((lang) => {
+            return {value:lang.locale, label: lang.language};
+        });
 
         const disableLanguageSwitcher = this.props.areUnsavedChanges ? true : false;
         const buttonUnsavedState = this.props.areUnsavedChanges ? true : false;

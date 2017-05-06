@@ -1,12 +1,11 @@
-/* @flow */
+
 
 const async = require('async');
 
 const consts = require('../utils/constants');
 
-type Language = 'en' | 'fr' | 'es';
 
-module.exports = function(redisClient: any): {} {
+module.exports = function(redisClient){
     return function(client) {
         const languageKeyPrefix = 'lang::';
 
@@ -20,10 +19,7 @@ module.exports = function(redisClient: any): {} {
             client.exists(key);
         };
 
-        const addTranslation = function(language,
-            str,
-            translatedStr
-        ) {
+        const addTranslation = function(language,str,translatedStr) {
             if (str == null) {
                 return;
             }
@@ -49,11 +45,7 @@ module.exports = function(redisClient: any): {} {
             });
         };
 
-        const getTranslation = function(
-            language,
-            str,
-            cb
-        ) {
+        const getTranslation = function(language,str,cb) {
             if (str == null) {
                 cb(null, '');
             }
@@ -65,7 +57,6 @@ module.exports = function(redisClient: any): {} {
                     addTranslation('en', str, str);
                     return cb(null, str);
                 }
-
                 client.hget(key, language, (err, result) => {
                     const resultStr = result !== null ? result : str;
                     cb(null, resultStr);
@@ -76,9 +67,7 @@ module.exports = function(redisClient: any): {} {
         const getAllStringsInLanguage = function(language, cb) {
             const key = `${languageKeyPrefix}*`;
             client.keys(key, (err, keys) => {
-                var keyTranslationFuncs: {
-                    [key: string]: string
-                } = {};
+                var keyTranslationFuncs = {};
 
                 for (var key of keys) {
                     const keyPieces = key.split('lang::');
@@ -98,4 +87,4 @@ module.exports = function(redisClient: any): {} {
             addTranslation: addTranslation
         };
     }(redisClient);
-}
+};

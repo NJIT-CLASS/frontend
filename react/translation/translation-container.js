@@ -84,10 +84,10 @@ class TranslationContainer extends React.Component {
 
     changeLanguage(language) {
         this.setState({
-            language: language,
+            language: language.value,
             strings: {}
         });
-        this.getStrings(language);
+        this.getStrings(language.value);
     }
 
     areUnsavedChanges() {
