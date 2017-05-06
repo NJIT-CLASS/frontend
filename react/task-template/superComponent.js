@@ -117,23 +117,19 @@ class SuperComponent extends React.Component {
       //returns false if any field is null and true if all fields are filled
         for(let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++){
             if(this.state.TaskActivityFields[i].requires_justification){
-                if((this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')){
+                if((this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')){
                     return false;
                 }
             }
-            else{
-                if(this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == ''){
-                    return false;
-                }
+
+            if(this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == ''){
+                return false;
             }
 
         }
 
         if(this.props.FileUpload.mandatory > 0){
-            if(this.state.NumberFilesUploaded >= this.props.FileUpload.mandatory){
-                return true;
-            }
-            else{
+            if(!this.state.FileUploadsSatisfied){
                 return false;
             }
         }
@@ -194,7 +190,6 @@ class SuperComponent extends React.Component {
         }
       //check if input is valid
         let validData = this.isValidData();
-
         if(validData){
             const options = {
                 method: 'POST',
@@ -207,7 +202,7 @@ class SuperComponent extends React.Component {
                 json: true
             };
             request(options, (err, res, body) => {
-
+                console.log(body);
                 if(res.statusCode != 200){
                     this.setState({InputError: true});
                     return;
