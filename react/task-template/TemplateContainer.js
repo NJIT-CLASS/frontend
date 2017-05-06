@@ -77,8 +77,8 @@ class TemplateContainer extends React.Component {
         const options2 = {
             method: 'GET',
             uri: this.props.apiUrl + '/api/superCall/' + this.props.TaskID,
-            qs{
-              userID: this.props.UserID
+            qs:{
+                userID: this.props.UserID
             },
             json: true
         };
