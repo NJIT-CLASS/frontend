@@ -69,9 +69,10 @@ class SuperViewComponent extends React.Component {
     componentWillMount(){
         let tdata = this.props.TaskData;
         let tAdata = this.props.TaskActivityFields;
+        console.log('Data in Component',tdata);
         if(!tdata || tdata.length === 0 || !tAdata || tAdata == '{}'){
-      // this checks to make sure all the necessary data isn't empty. If it is, it will cause errors, so set the Error state to true
-      // to prevent rendering
+        // this checks to make sure all the necessary data isn't empty. If it is, it will cause errors, so set the Error state to true
+        // to prevent rendering
             this.setState({Error: true});
             return ;
         }

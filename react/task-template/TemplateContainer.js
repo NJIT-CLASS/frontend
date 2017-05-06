@@ -101,16 +101,16 @@ class TemplateContainer extends React.Component {
                     let skipIndeces = new Array();
                     let parseTaskList = bod.superTask.map(task => {
                         let newTask = task;
-                        console.log('Tasks Data', task.Data);
-                        if(newTask.Data !== null){
-                            if(Array.isArray(newTask.Data)){
+                        console.log('Tasks Data', task.Data, typeof task.Data);
+                        if(task.Data !== null){
+                            if(Array.isArray(task.Data)){
                                 newTask.Data = task.Data;
                             }
                             else if(task.Data.constructor === Object){
                                 newTask.Data = [task.Data];
                             }
                             else{
-                                newTask.Data = [new Object()];
+                                newTask.Data = [JSON.parse(task.Data)];
                             }
                         }
                         else{
