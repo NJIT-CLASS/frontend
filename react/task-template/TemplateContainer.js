@@ -163,7 +163,7 @@ class TemplateContainer extends React.Component {
                     let currentTaskStatus = currentTask.Status;
 
                     taskList.push(currentTask);
-
+                    console.log('Task data after manipulation', taskList);
                     this.setState({
                         Loaded: true,
                         CourseName: body.courseName,

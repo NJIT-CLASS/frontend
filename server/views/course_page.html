@@ -12,7 +12,7 @@
       <h2 class="title">{{Name}}</h2>
       <div class="section-content">
 
-  				 <div name="course_page_description">
+  				 <div class="list-subheader" name="course_page_description">
   				 {{Description}}
   				 </div>
   				 <br>
@@ -22,9 +22,16 @@
   					<li class="list-group-item">{{FirstName}} {{LastName}}
   					</li>
   					{{/each}}
-
   					 </ul>
-
+             {{#if assignments}}
+                <br />
+                <div class="list-subheader">{{__ "Ongoing Assignments"}}</div>
+               <ul>
+                 {{#each assignments}}
+                      <li class="list-group-item"><a href="/assignment-record/{{AssignmentInstanceID}}">{{Assignment.DisplayName}}</a></li>
+                 {{/each}}
+               </ul>
+            {{/if}}
   		</div>
   </form>
 

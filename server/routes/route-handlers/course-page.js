@@ -10,15 +10,20 @@ exports.get = (req, res) => {
         coursesUrl = '/getActiveEnrolledCourses/';
     }
     req.App.api.get(coursesUrl + req.params.Id, (err, statusCode, body) =>{
-        let assignmentsArray = [];
+        const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
         req.App.api.get('/getAssignments/' + req.params.Id, (err, statusCode, assignmentsBody) => {
+            let assignmentsArray = [];
 
             assignmentsArray =  assignmentsBody.Assignments;
             var sectionList = [];
             var apiCalls = {};
-            for (var i=0; i<body.Sections.length; i++){
-                sectionList.push(body.Sections[i]);
+            let sectionAssignmentsCalls = {};
 
+            for (var i=0; i<body.Sections.length; i++){
+
+
+                sectionList.push(body.Sections[i]);
+                sectionAssignmentsCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this, '/getActiveAssignmentsForSection/' + body.Sections[i].SectionID);
                 apiCalls[body.Sections[i].SectionID] = ((Sections) => {
                     return (callback)=> {
                         req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, bod) =>{
@@ -29,29 +34,33 @@ exports.get = (req, res) => {
                             }
 
                             async.parallel(sectionMembersApiCalls, (err, memberResults) => {
+
+
                                 var members = [];
                                 for (var w=0; w<memberResults.length; w++){
                                     members.push (memberResults[w][1].User[0]);
                                 }
                                 callback(null, members);
                             });
+
+
                         });
                     };
                 })(body.Sections[i]);
             }
 
             async.parallel(apiCalls, (err, results)=>{
-                for(var i=0; i<sectionList.length; i++){
-                    var currentSectionId = sectionList[i].SectionID;
-                    sectionList[i].members=results[currentSectionId];
-                }
+                async.parallel(sectionAssignmentsCalls, (err2,assignmentResults) => {
+                    for(var i=0; i<sectionList.length; i++){
+                        var currentSectionId = sectionList[i].SectionID;
+                        sectionList[i].members=results[currentSectionId];
+                        sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
-                req.App.api.get('/getActiveAssignments/' + req.params.Id, (err, statusCode, assignmentInstances) =>{
+                    }
 
                     res.render('course_page', {
                         showHeader:false,
                         sectionList: sectionList,
-                        activeAssignments: assignmentInstances.Assignments,
                         courseID: req.params.Id,
                         assignmentsList: assignmentsArray,
                         instructor: (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false,
@@ -59,6 +68,7 @@ exports.get = (req, res) => {
                         courseNumber: body.Course.Number,
                         courseDescription: body.Course.Description
                     });
+
                 });
             });
         });

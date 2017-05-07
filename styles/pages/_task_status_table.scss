@@ -1,7 +1,7 @@
 .ColLineColor{
   border-color: #bfbfbf;
-  min-width: 100px;
-  max-width: 200px;
+  min-width: 9vw;
+  max-width: 9vw;
 }
 
 .EmptyCell{
@@ -24,17 +24,19 @@
 
 .WholeTableStyleLeft{
   display: inline-block;
-  width: 90px;
+  width: 10%;
 }
 
 .WholeTableStyleRight
 {
   display: inline-block;
-  width: 20px;
-
+  width:90%;
 }
 
 
+.task-status-table{
+  overflow-x: auto;
+}
 
   .complete{
     background-color: #00ff00;

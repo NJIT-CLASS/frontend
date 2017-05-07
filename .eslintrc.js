@@ -5,6 +5,7 @@ module.exports = {
         "commonjs": true,
         "es6": true
     },
+    //"extends": "airbnb",
     "parserOptions": {
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
