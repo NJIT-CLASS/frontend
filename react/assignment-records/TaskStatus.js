@@ -43,7 +43,7 @@ class Frames extends React.Component {
                     DataLoaded: true,
                     Info: body.Info,
                     WorkflowArray: body.Workflows,
-                }
+                },
           );
         });
     }
@@ -135,7 +135,7 @@ class Frames extends React.Component {
         let IndexforWorkflow = 0;
 
         const modalView = this.state.ShowModal ? (
-          <InfoModal {...this.state.ModalInfo} Show={this.state.ShowModal} modalToggle={() => {this.setState({ShowModal: !this.state.ShowModal});}}/>
+          <InfoModal {...this.state.ModalInfo} Show={this.state.ShowModal} modalToggle={() => { this.setState({ ShowModal: !this.state.ShowModal }); }} />
         ) : null;
 
         const table = this.state.Workflows.map(function (workflow, index) {
@@ -165,7 +165,7 @@ class Frames extends React.Component {
                       {task.User.UserName}
                       <br key={`break one for ${task.TaskInstanceID}`} />
                       <h6> User ID: {task.User.UserID}
-                      <br key={`break two for ${task.TaskInstanceID}`} />
+                        <br key={`break two for ${task.TaskInstanceID}`} />
                         Task ID: {task.TaskInstanceID}
                       </h6>
                     </a>
@@ -173,8 +173,8 @@ class Frames extends React.Component {
                   </td>
                 );
 
-                //modal style link view
-                /*const taskCellDiv = (
+                // modal style link view
+                /* const taskCellDiv = (
                   <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[task.Status]}`}>
                     <div key={`link for ${task.TaskInstanceID}`}
                           onClick={()=>{
@@ -194,7 +194,6 @@ class Frames extends React.Component {
                     {letters[task.Status]}
                   </td>
                 );*/
-
 
 
                 if (this.state.SelectedTask.label === strings.all) {
@@ -516,26 +515,26 @@ class Frames extends React.Component {
                 </table>
 
                 <div className="task-status-table">
-                    <div className="WholeTableStyleLeft">
-                      <table>
-                        <tbody>
-                          <tr>
-                            <td className="EmptyCell"> <h6> {strings.WorkflowID} </h6> </td>
-                          </tr>
-                          {WorkflowIDTable}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="WholeTableStyleRight">
-                      <table>
-                        <tbody>
-                          <tr>
-                            {TaskActivityTypeTable}
-                          </tr>
-                          {table}
-                        </tbody>
-                      </table>
-                    </div>
+                  <div className="WholeTableStyleLeft">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td className="EmptyCell"> <h6> {strings.WorkflowID} </h6> </td>
+                        </tr>
+                        {WorkflowIDTable}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="WholeTableStyleRight">
+                    <table>
+                      <tbody>
+                        <tr>
+                          {TaskActivityTypeTable}
+                        </tr>
+                        {table}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
