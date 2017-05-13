@@ -197,7 +197,6 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
-        console.log('called API call for ', req.App.user);
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
 
             // if(statusCode === 500){

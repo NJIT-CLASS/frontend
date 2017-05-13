@@ -6,25 +6,24 @@ future stuff.
 */
 import React from 'react';
 import request from 'request';
-import axios from 'axios';
-import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants'; //contains constants and their values
-var ReactTabs = require('react-tabs');
-var Tab = ReactTabs.Tab;
-var Tabs = ReactTabs.Tabs;
-var TabList = ReactTabs.TabList;
-var TabPanel = ReactTabs.TabPanel;
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants'; // contains constants and their values
 
-//Input Components: These can be interactive with the user;
+// Input Components: These can be interactive with the user;
 import SuperComponent from './superComponent';
-
-//Display Components: These only display data retrived from the database. Not interactive.
+// Display Components: These only display data retrived from the database. Not interactive.
 
 import HeaderComponent from './headerComponent';
 import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
 
-//This constains all the hard-coded strings used on the page. They are translated on startup
+// This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
+
+const ReactTabs = require('react-tabs');
+const Tab = ReactTabs.Tab;
+const Tabs = ReactTabs.Tabs;
+const TabList = ReactTabs.TabList;
+const TabPanel = ReactTabs.TabPanel;
 
 /*      PROPS:
             - TaskID
@@ -37,7 +36,7 @@ class TemplateContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            Loaded: false, //this variable is set to true when the page succesfully fetches data from the backend
+            Loaded: false, // this variable is set to true when the page succesfully fetches data from the backend
             CourseID: null,
             CourseName: '',
             CourseNumber: '',
@@ -53,36 +52,36 @@ class TemplateContainer extends React.Component {
             Error: false,
             TabSelected: 0,
             Strings: strings,
-            NotAllowed: false
+            NotAllowed: false,
         };
     }
 
     getTaskData() {
-		//this function makes an API call and saves the data into appropriate state variables
+		// this function makes an API call and saves the data into appropriate state variables
 
         const options = {
             method: 'GET',
-            uri: this.props.apiUrl +
-				'/api/taskInstanceTemplate/main/' +
-				this.props.TaskID,
+            uri: `${this.props.apiUrl
+				}/api/taskInstanceTemplate/main/${
+				this.props.TaskID}`,
             qs: {
-				//query strings
+				// query strings
                 courseID: this.props.CourseID,
                 userID: this.props.UserID,
-                sectionID: this.props.SectionID
+                sectionID: this.props.SectionID,
             },
-            json: true
+            json: true,
         };
 
 		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
 		// for rendering
         const options2 = {
             method: 'GET',
-            uri: this.props.apiUrl + '/api/superCall/' + this.props.TaskID,
+            uri: `${this.props.apiUrl}/api/superCall/${this.props.TaskID}`,
             qs: {
-                userID: this.props.UserID
+                userID: this.props.UserID,
             },
-            json: true
+            json: true,
         };
 
         request(options2, (err, res, bod) => {
@@ -91,8 +90,8 @@ class TemplateContainer extends React.Component {
                 return;
             }
             console.log(bod);
-            this.props.__(strings, newStrings => {
-                console.log('request',bod);
+            this.props.__(strings, (newStrings) => {
+                console.log('request', bod);
 
                 request(options, (err, res, body) => {
                     if (res.statusCode != 200) {
@@ -100,19 +99,19 @@ class TemplateContainer extends React.Component {
                         return;
                     }
 
-                    let taskList = new Array();
-                    let skipIndeces = new Array();
+                    const taskList = new Array();
+                    const skipIndeces = new Array();
                     let currentTaskStatus = '';
 
                     if (bod.error === true) {
                         console.log('Error message', bod.message);
                         this.setState({
                             NotAllowed: true,
-                            Loaded: true
+                            Loaded: true,
                         });
                     } else {
-                        let parseTaskList = bod.superTask.map(task => {
-                            let newTask = task;
+                        let parseTaskList = bod.superTask.map((task) => {
+                            const newTask = task;
                             if (task.Data !== null) {
                                 if (Array.isArray(task.Data)) {
                                     newTask.Data = task.Data;
@@ -138,7 +137,7 @@ class TemplateContainer extends React.Component {
     									Object
     							) {
                                 newTask.TaskActivity.Fields = JSON.parse(
-    									task.TaskActivity.Fields
+    									task.TaskActivity.Fields,
     								);
                             }
                             if (
@@ -147,17 +146,17 @@ class TemplateContainer extends React.Component {
     									Object
     							) {
                                 newTask.TaskActivity.FileUpload = JSON.parse(
-    									task.TaskActivity.FileUpload
+    									task.TaskActivity.FileUpload,
     								);
                             }
 
                             return newTask;
                         });
-                        let currentTask = parseTaskList.pop();
+                        const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
-                        let alreadyArrayedTasks = [];
-                        parseTaskList.forEach(function(task, index) {
+                        const alreadyArrayedTasks = [];
+                        parseTaskList.forEach((task, index) => {
                             if (
     								skipIndeces.includes(index) ||
     								task.TaskActivity.Type ==
@@ -166,7 +165,7 @@ class TemplateContainer extends React.Component {
                                 return;
                             }
                             if (task.TaskActivity.NumberParticipants > 1) {
-                                let newArray = parsedTaskList.filter(function(t,idx) {
+                                const newArray = parsedTaskList.filter((t, idx) => {
                                     if (
     										t.TaskActivity.TaskActivityID ===
     										task.TaskActivity.TaskActivityID
@@ -174,9 +173,8 @@ class TemplateContainer extends React.Component {
                                         skipIndeces.push(idx);
 
                                         return true;
-                                    } else {
-                                        return false;
                                     }
+                                    return false;
                                 });
                                 taskList.push(newArray);
                             } else {
@@ -204,10 +202,9 @@ class TemplateContainer extends React.Component {
                         TaskActivityVisualID: body.taskActivityVisualID,
                         Data: taskList,
                         TaskStatus: currentTaskStatus,
-                        Strings: newStrings
+                        Strings: newStrings,
                     });
                 });
-
             });
         });
     }
@@ -228,78 +225,78 @@ class TemplateContainer extends React.Component {
             return <div />;
         }
 
-        if(this.state.NotAllowed === true){
+        if (this.state.NotAllowed === true) {
             renderView = (<div>{this.state.Strings.NotAllowed}</div>);
-        } else{
+        } else {
             renderView = (<TasksList
-            TasksArray={this.state.Data}
-            TaskID={this.props.TaskID}
-            UserID={this.props.UserID}
-            Strings={this.state.Strings}
-          />);
+              TasksArray={this.state.Data}
+              TaskID={this.props.TaskID}
+              UserID={this.props.UserID}
+              Strings={this.state.Strings}
+            />);
         }
 
 
         return (
-			<div>
-				<Tabs
-					onSelect={tab => {
-    this.setState({ TabSelected: tab });
-}}
-					selectedIndex={this.state.TabSelected}
-				>
-					<TabList className="big-text">
-						<Tab>{this.state.Strings.Task}</Tab>
-						<Tab>{this.state.Strings.Comments}</Tab>
-					</TabList>
-					<TabPanel>
-						<HeaderComponent
-							TaskID={this.props.TaskID}
-							CourseName={this.state.CourseName}
-							CourseName={this.state.CourseName}
-							CourseNumber={this.state.CourseNumber}
-							AssignmentTitle={this.state.AssignmentTitle}
-							AssignmentDescription={
+          <div>
+            <Tabs
+              onSelect={(tab) => {
+                  this.setState({ TabSelected: tab });
+              }}
+              selectedIndex={this.state.TabSelected}
+            >
+              <TabList className="big-text">
+                <Tab>{this.state.Strings.Task}</Tab>
+                <Tab>{this.state.Strings.Comments}</Tab>
+              </TabList>
+              <TabPanel>
+                <HeaderComponent
+                  TaskID={this.props.TaskID}
+                  CourseName={this.state.CourseName}
+                  CourseName={this.state.CourseName}
+                  CourseNumber={this.state.CourseNumber}
+                  AssignmentTitle={this.state.AssignmentTitle}
+                  AssignmentDescription={
 								this.state.AssignmentDescription
 							}
-							TaskActivityType={this.state.TaskActivityType}
-							SemesterName={this.state.SemesterName}
-							Strings={this.state.Strings}
-						/>
+                  TaskActivityType={this.state.TaskActivityType}
+                  SemesterName={this.state.SemesterName}
+                  Strings={this.state.Strings}
+                />
 
-						{renderView}
+                {renderView}
 
-					</TabPanel>
-					<TabPanel>
-						<div className="placeholder" />
-						{/*  Future work to support comments*/}
+              </TabPanel>
+              <TabPanel>
+                <div className="placeholder" />
+                {/*  Future work to support comments*/}
 
-						<CommentComponent
-							Comment={{
-    Author: 'User1',
-    Timestamp: 'May 6, 2013 9:43am',
-    Content: 'I really liked your problem. It was very intriguing.'
-}}
-						/>
-						<CommentComponent
-							Comment={{
-    Author: 'User2',
-    Timestamp: 'May 6, 2013 11:09am',
-    Content: 'I agree. I would have never thought of this.'
-}}
-						/>
-						<CommentComponent
-							Comment={{
-    Author: 'Instructor',
-    Timestamp: 'May 6, 2013 3:32pm',
-    Content: 'Your approach of the problem is very unique. Well done.'
-}}
-						/>
-					</TabPanel>
+                <CommentComponent
+                  Comment={{
+                      Author: 'User1',
+                      Timestamp: 'May 6, 2013 9:43am',
+                      Content: 'I really liked your problem. It was very intriguing.',
+                  }}
+                />
+                <CommentComponent
+                  Comment={{
+                      Author: 'User2',
+                      Timestamp: 'May 6, 2013 11:09am',
+                      Content: 'I agree. I would have never thought of this.',
+                  }}
+                />
+                <CommentComponent
+                  Comment={{
+                      Author: 'Instructor',
+                      Timestamp: 'May 6, 2013 3:32pm',
+                      Content: 'Your approach of the problem is very unique. Well done.',
+                  }}
+                />
+              </TabPanel>
 
-				</Tabs>
+            </Tabs>
 
-			</div>
+          </div>
         );
     }
 }
