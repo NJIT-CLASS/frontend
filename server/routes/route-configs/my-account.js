@@ -11,5 +11,5 @@ module.exports = {
         loggedOut: false
     },
     icon: 'cog',
-    sidebar: true
+    sidebar: false
 };

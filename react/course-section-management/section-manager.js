@@ -7,9 +7,12 @@ class SectionManager extends React.Component {
 		super(props);
 		this.state = {}
 	}
+	// load all sections when both courseID and semesterID are selected in parent
 	componentWillMount() {
-		this.fetchAll(this.props.organizationID, this.props.courseID, this.props.semesterID);
+		this.fetchAll(this.props.courseID, this.props.semesterID);
 	}
+	// reset sectionID if courseID or semesterID change (clear dropdown selection)
+	// reload all sections based on course and semester
 	componentWillReceiveProps(props) {
 		if (this.props.organizationID != props.organizationID ||
 			this.props.courseID != props.courseID ||
@@ -18,9 +21,11 @@ class SectionManager extends React.Component {
 				id: null
 			});
 		}
-		this.fetchAll(props.organizationID, props.courseID, props.semesterID);
+		this.fetchAll(props.courseID, props.semesterID);
 	}
-	fetchAll(organizationID, courseID, semesterID) {
+	// get all sections in course and semester
+	// store in ID, Name tuples for select dropdown
+	fetchAll(courseID, semesterID) {
 		const fetchAllOptions = {
 			method: 'GET',
 			qs: {
@@ -40,6 +45,7 @@ class SectionManager extends React.Component {
 			});
 		});
 	}
+	// fetch single section information for editing
 	fetch() {
 		const fetchOptions = {
 			method: 'GET',
@@ -53,22 +59,69 @@ class SectionManager extends React.Component {
 			});
 		});
 	}
+	// enable create mode
 	create() {
 		this.setState({
 			creating: true
 		});
 	}
+	// retrieve data before editing
 	edit() {
 		this.fetch();
 	}
-	delete() {}
-	update() {}
+	// delete section
+	// casading deletes need to be thought through (which tables should be cascaded)
+	// add confirmation to prevent accidental deletion
+	delete() {
+		const deleteOptions = {
+			method: 'GET',
+			uri: this.props.apiUrl + '/api/section/delete/' + this.state.id,
+			json: true
+		};
+		request(deleteOptions, (err, res, body) => {
+			this.changeID({
+				value: null
+			});
+			this.fetchAll();
+		});
+	}
+	// update single section (identifier is the same as name, just different vocubulary for user interface)
+	// exit edit or create mode on successful save, reload section list with new section
+	update() {
+		const updateOptions = {
+			method: 'POST',
+			uri: this.props.apiUrl + '/api/course/updatesection',
+			body: {
+				name: this.state.identifier,
+				sectionid: this.state.id
+			},
+			json: true
+		};
+
+		request(updateOptions, (err, res, body) => {
+			if(err || res.statusCode == 401) {
+				console.log('Error submitting!');
+				return;
+			} else if (!body.Message) {
+				console.log('Error: Section already exists.');
+			}
+			else {
+				this.setState({
+					creating: false,
+					editing: false
+				});
+				this.fetchAll(this.props.courseID, this.props.semesterID);
+			}
+		});
+	}
+	// discard changes, exit create or edit mode
 	cancel() {
 		this.setState({
 			creating: false,
 			editing: false
 		});
 	}
+	// propagate sectionID change to parent for rendering of other components
 	changeID(option) {
 		if(this.state.id != option.value) {
 			this.setState({
@@ -79,17 +132,18 @@ class SectionManager extends React.Component {
 			this.props.changeID(option.value);
 		}
 	}
+	// change identifier (name) of section
 	changeIdentifier(event) {
 		this.setState({
 			identifier: event.target.value
 		});
 	}
+	// save new section, set new sectionID, reload section list with new section
 	save() {
 		const saveOptions = {
 			method: 'POST',
 			uri: this.props.apiUrl + '/api/course/createsection',
 			body: {
-				organizationid: this.props.organizationID,
 				semesterid: this.props.semesterID,
 				courseid: this.props.courseID,
 				name: this.state.identifier
@@ -105,15 +159,17 @@ class SectionManager extends React.Component {
 				this.changeID({
 					value: body.result.SectionID
 				});
-				this.fetchAll(this.props.organizationID, this.props.courseID, this.props.semesterID);
+				this.fetchAll(this.props.courseID, this.props.semesterID);
 			}
 		});
 	}
+	// prevent default form submission
 	onSubmit(event) {
 		event.preventDefault();
 	}
 	render() {
-
+		// display dropdown list of sections with new and edit buttons
+		// disable edit button until a section is selected
 		let select = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.section}</h2>

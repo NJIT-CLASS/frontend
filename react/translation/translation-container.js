@@ -1,6 +1,7 @@
 import React from 'react';
 import request from 'request';
 import {clone} from 'lodash';
+import PropTypes from 'prop-types';
 
 import StringsContainer from './strings-container';
 import PageHeader from './page-header';
@@ -121,8 +122,8 @@ class TranslationContainer extends React.Component {
 }
 
 TranslationContainer.contextTypes = {
-    backendApiUrl: React.PropTypes.string,
-    frontendApiUrl: React.PropTypes.string
+    backendApiUrl: PropTypes.string,
+    frontendApiUrl: PropTypes.string
 };
 
 export default TranslationContainer;

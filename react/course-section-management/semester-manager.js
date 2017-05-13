@@ -7,9 +7,11 @@ class SemesterManager extends React.Component {
 		super(props);
 		this.state = {}
 	}
+	// fetch all semesters when card is loaded
 	componentWillMount() {
 		this.fetchAll(this.props.organizationID);
 	}
+	// fetch all semesters when organizationID prop changes
 	componentWillReceiveProps(props) {
 		if(this.props.organizationID != props.organizationID) {
 			this.setState({
@@ -18,6 +20,8 @@ class SemesterManager extends React.Component {
 		}
 		this.fetchAll(props.organizationID);
 	}
+	// retrieve all semesters for given organization
+	// store in semesterID, Name tuples for select dropdown
 	fetchAll() {
 		const fetchAllOptions = {
 			method: 'GET',
@@ -34,6 +38,7 @@ class SemesterManager extends React.Component {
 			});
 		});
 	}
+	// fetch single semester organization for editing
 	fetch() {
 		const fetchOptions = {
 			method: 'GET',
@@ -49,22 +54,69 @@ class SemesterManager extends React.Component {
 			});
 		});
 	}
+	// enabled creation mode with state
 	create() {
 		this.setState({
 			creating: true
 		});
 	}
+	// retrieve semester data before editing
 	edit() {
 		this.fetch();
 	}
-	delete() {}
-	update() {}
+	// delete semester
+	// additional confirmation should be presented to user to prevent data loss
+	delete() {
+		const deleteOptions = {
+			method: 'GET',
+			uri: this.props.apiUrl + '/api/semester/delete/' + this.state.id,
+			json: true
+		};
+		request(deleteOptions, (err, res, body) => {
+			this.changeID({
+				value: null
+			});
+			this.fetchAll();
+		});
+	}
+	// update name, start date, and end date of semester
+	// exit edit or create mode, reload semester list with updated semester
+	update() {
+		const updateOptions = {
+			method: 'POST',
+			uri: this.props.apiUrl + '/api/semester/update/' + this.state.id,
+			body: {
+				Name: this.state.name,
+				Start: this.state.startDate,
+				End: this.state.endDate
+			},
+			json: true
+		};
+
+		request(updateOptions, (err, res, body) => {
+			if(err || res.statusCode == 401) {
+				console.log('Error submitting!');
+				return;
+			} else if (!body.Message) {
+				console.log('Error: Semester already exists.');
+			}
+			else {
+				this.setState({
+					creating: false,
+					editing: false
+				});
+				this.fetchAll();
+			}
+		});
+	}
+	// exit create or edit mode
 	cancel() {
 		this.setState({
 			creating: false,
 			editing: false
 		});
 	}
+	// propagate new semesterID to parent for rendering
 	changeID(option) {
 		if(this.state.id != option.value) {
 			this.setState({
@@ -75,6 +127,7 @@ class SemesterManager extends React.Component {
 			this.props.changeID(option.value);
 		}
 	}
+	// next three functions are simple state storage for form fields
 	changeName(event) {
 		this.setState({
 			name: event.target.value
@@ -90,6 +143,7 @@ class SemesterManager extends React.Component {
 			endDate: event.target.value
 		});
 	}
+	// save new semester, reload semester list on success
 	save() {
 		const saveOptions = {
 			method: 'POST',
@@ -118,10 +172,13 @@ class SemesterManager extends React.Component {
 			}
 		});
 	}
+	// prevent default form submission
 	onSubmit(event) {
 		event.preventDefault();
 	}
 	render() {
+		// render semester list dropdown
+		// disable edit button unless a semester is selected
 		let select = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.semester}</h2>
@@ -136,7 +193,8 @@ class SemesterManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// render semester creation form
+		// update the date fields for easier date entry (perhaps with a react module)
 		let create = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.newSemester}</h2>
@@ -152,7 +210,8 @@ class SemesterManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// render editing form
+		// again, update date fields with better date entry interface
 		let edit = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.editSemester}</h2>
@@ -169,7 +228,7 @@ class SemesterManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// conditional rendering based on state
 		if(this.state.creating) {
 			return create;
 		} else if (this.state.editing) {

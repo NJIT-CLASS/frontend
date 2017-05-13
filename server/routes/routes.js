@@ -7,9 +7,11 @@ const pages = [
     'create-course',
     'add-section',
     'create-assignment',
+    'course-section-management',
     'administrator',
     'add-user',
     'settings',
+    'account',
     'translation-manager',
     'about',
     'reset-password',
@@ -39,9 +41,7 @@ const pages = [
     'course-assignments',
     'testing-ground',
     //'all-users',
-    'task-status-table',
-    'course-section-management',
-    'account'
+    'task-status-table'
 ];
 
 var pageConfigs = [];

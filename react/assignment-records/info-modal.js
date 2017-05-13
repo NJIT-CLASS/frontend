@@ -74,6 +74,6 @@ ModalInfo.defaultProps = {TaType: "Resolve the Dispute",
                           TaskStatus: "Complete",
                           TaskID: 10,
                           TaskUserHistory:[],
-                          UserRole: "Student"}
+                          Role: "Student"}
 
 export default ModalInfo;

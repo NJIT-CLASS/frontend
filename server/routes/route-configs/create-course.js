@@ -11,5 +11,5 @@ module.exports = {
         loggedOut: false
     },
     icon: 'plus',
-    sidebar: true
+    sidebar: false
 };

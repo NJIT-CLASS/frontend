@@ -1,3 +1,7 @@
+// used on course section management and account pages
+// some rules should be moved into other components for more
+// global application.
+
 .card {
 	flex: 0 0 content;
 	background-color: #FFFFFF;
@@ -23,7 +27,7 @@
 	.title {
 		word-wrap: break-word;
 		font-size: 22px;
-		font-weight: 500px;
+		font-weight: 300 !important;
 		color: #4b4d4e;
 		display: inline-block;
 	}
@@ -33,21 +37,66 @@
 	p {
 		margin-top: 0.5em;
 	}
+	p:first-of-type {
+		margin-top: 0;
+	}
 	label {
 		display: block;
 		margin-bottom: 8px;
 		margin-top: 20px;
 	}
 	.Select-control, form > input {
-		width: 500px !important;
+		min-width: 600px !important;
+		width: 100% !important;
 	}
 	.Select, input {
 		margin: 0;
 	}
 	.Select-menu-outer {
-		width: 500px;
+		min-width: 600px !important;
+		width: 100% !important;
 	}
 	.Select-value {
 		line-height: 1.7;
+	}
+	th {
+		font-weight: 600;
+	}
+	th, td {
+		border-top: 1px solid #E0E0E0;
+		border-bottom: 1px solid #E0E0E0;
+		border-left: 1px solid transparent;
+		border-right: 1px solid transparent;
+		height: 32px;
+		line-height: 32px;
+		width: auto;
+	}
+	th:first-of-type, td:first-of-type {
+		padding-left: 0;
+	}
+	th:last-of-type, td:last-of-type {
+		padding-right: 0;
+	}
+	.form-error {
+		margin-top: 18px;
+	}
+	table {
+		margin-top: 36px !important;
+		min-width: 500px;
+	}
+	.fa-exclamation-circle {
+		margin-right: 8px;
+		float: left;
+	}
+	textarea {
+		margin-top: 24px;
+	}
+	td[colspan='512'] {
+		text-align: center;
+		font-style: italic;
+		color: #AAAAAA;
+	}
+	button[disabled] {
+		opacity: 0.5;
 	}
 }

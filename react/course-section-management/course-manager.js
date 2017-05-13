@@ -7,9 +7,11 @@ class CourseManager extends React.Component {
 		super(props);
 		this.state = {}
 	}
+	// load all courses when selected organization changes
 	componentWillMount() {
 		this.fetchAll(this.props.organizationID);
 	}
+	// reload courses when organizationID changes
 	componentWillReceiveProps(props) {
 		if(this.props.organizationID != props.organizationID) {
 			this.setState({
@@ -18,6 +20,10 @@ class CourseManager extends React.Component {
 		}
 		this.fetchAll(props.organizationID);
 	}
+	// fetch all courses belonging to an organization
+	// store courseIDs in array along with name and number
+	// list is used in select element
+	// courses displayed in "Number - Name" format
 	fetchAll(organizationID) {
 		let fetchAllOptions = {
 			method: 'GET',
@@ -34,6 +40,7 @@ class CourseManager extends React.Component {
 			});
 		});
 	}
+	// fetch course info for editing
 	fetch() {
 		const fetchOptions = {
 			method: 'GET',
@@ -48,22 +55,66 @@ class CourseManager extends React.Component {
 			});
 		});
 	}
+	// display new course page
 	create() {
 		this.setState({
 			creating: true
 		});
 	}
+	// load information before editing
 	edit() {
 		this.fetch();
 	}
-	delete() {}
-	update() {}
+	// delete course, cascade deletes
+	delete() {
+		const deleteOptions = {
+			method: 'GET',
+			uri: this.props.apiUrl + '/api/course/delete/' + this.state.id,
+			json: true
+		};
+		request(deleteOptions, (err, res, body) => {
+			this.changeID({
+				value: null
+			});
+			this.fetchAll();
+		});
+	}
+	// update number and name of course, reload course list, exit edit mode
+	update() {
+		const updateOptions = {
+			method: 'POST',
+			uri: this.props.apiUrl + '/api/course/update/' + this.state.id,
+			body: {
+				Number: this.state.number,
+				Name: this.state.name
+			},
+			json: true
+		};
+
+		request(updateOptions, (err, res, body) => {
+			if(err || res.statusCode == 401) {
+				console.log('Error submitting!');
+				return;
+			} else if (!body.Message) {
+				console.log('Error: Course already exists.');
+			}
+			else {
+				this.setState({
+					creating: false,
+					editing: false
+				});
+				this.fetchAll(this.props.organizationID);
+			}
+		});
+	}
+	// discard changes and return to list
 	cancel() {
 		this.setState({
 			creating: false,
 			editing: false
 		});
 	}
+	// on successful creation of course, new ID is passed to parent
 	changeID(option) {
 		if(this.state.id != option.value) {
 			this.setState({
@@ -74,16 +125,19 @@ class CourseManager extends React.Component {
 			this.props.changeID(option.value);
 		}
 	}
+	// store course name to state
 	changeName(event) {
 		this.setState({
 			name: event.target.value
 		});
 	}
+	// store course number to state
 	changeNumber(event) {
 		this.setState({
 			number: event.target.value
 		});
 	}
+	// save new course, update selected courseID, reload course list
 	save() {
 		const saveOptions = {
 			method: 'POST',
@@ -112,10 +166,13 @@ class CourseManager extends React.Component {
 			}
 		});
 	}
+	// prevent forms from being submitted normally
 	onSubmit(event) {
 		event.preventDefault();
 	}
 	render() {
+		// show dropdown list of courses
+		// enable edit button if a course is selected
 		let select = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.course}</h2>
@@ -130,7 +187,7 @@ class CourseManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// display form to create new course
 		let create = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.newCourse}</h2>
@@ -144,7 +201,7 @@ class CourseManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// display form to edit existing course, prepopulated with existing data
 		let edit = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.editCourse}</h2>
@@ -159,7 +216,7 @@ class CourseManager extends React.Component {
 				</form>
 			</div>
 		);
-
+		// conditionally render create or edit modes by state
 		if(this.state.creating) {
 			return create;
 		} else if (this.state.editing) {

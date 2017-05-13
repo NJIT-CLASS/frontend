@@ -3,7 +3,7 @@ const async = require('async');
 function getInstructorEmails(req, instructor, cb) {
     req.App.api.get(`/generalUser/${instructor.UserID}`, (err, statusCode, body) => {
         cb(null, {
-            email: body.User[0].UserLogin.Email,
+            email: body.User.UserLogin.Email,
             userId: instructor.UserID,
             admin: instructor.Admin
         });
