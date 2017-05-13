@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class ClassPageContainer extends React.Component {
     constructor() {
@@ -21,8 +22,8 @@ class ClassPageContainer extends React.Component {
 }
 
 ClassPageContainer.childContextTypes = {
-    backendApiUrl: React.PropTypes.string,
-    frontendApiUrl: React.PropTypes.string
+    backendApiUrl: PropTypes.string,
+    frontendApiUrl: PropTypes.string
 };
 
 export default ClassPageContainer;

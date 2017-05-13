@@ -216,20 +216,15 @@ app.use((req, res, next) => {
             if (body.User[0] == undefined) {
                 delete req.session.userId;
                 res.send('Not Found').end();
+                return;
             }
 
             const user = body.User[0]; // JV - grabbed user's information
             req.App.user.email = user.UserLogin.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
-            req.App.user.country = user.Country;
-            req.App.user.city = user.City;
-            req.App.user.profilePicture = user.ProfilePicture
-					? JSON.parse(user.ProfilePicture)[0]
-					: 1;
-            req.App.user.type = user.UserType === 'Student'
-					? 'student'
-					: 'teacher';
+            req.App.user.profilePicture = user.ProfilePicture ? JSON.parse(user.ProfilePicture)[0] : 1;
+            req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
 
             next();

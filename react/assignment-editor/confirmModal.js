@@ -1,6 +1,7 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import Modal from '../shared/modal';
 import { confirmable, createConfirmation } from 'react-confirm';
+import PropTypes from 'prop-types';
 
 const ConfirmModal = ({okLabel, cancelLabel, title, list, show, proceed, dismiss, cancel, confirmation, options}) => {
             // let listView = null;

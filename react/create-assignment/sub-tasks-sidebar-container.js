@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
 
@@ -36,7 +37,7 @@ class SubTasksSidebarContainer extends React.Component {
 }
 
 SubTasksSidebarContainer.propTypes = {
-    task: React.PropTypes.object
+    task: PropTypes.object
 };
 
 export default SubTasksSidebarContainer;

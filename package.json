@@ -20,6 +20,7 @@
     "crypto-js": "^3.1.8",
     "csv-parse": "^1.2.0",
     "deep-equal-ident": "^1.1.1",
+
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.2",
@@ -37,6 +38,7 @@
     "react-datepicker": "^0.46.0",
     "react-datetime": "^2.8.10",
     "react-dom": "^15.5.4",
+    "react-dropzone": "^3.13.1",
     "react-numeric-input": "^2.0.7",
     "react-quill": "^1.0.0-rc.2",
     "react-radio-group": "^3.0.1",

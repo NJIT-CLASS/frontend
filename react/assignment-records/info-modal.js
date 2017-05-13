@@ -62,6 +62,7 @@ class ModalInfo extends React.Component{
 
 }
 
+
 ModalInfo.defaultProps = {TA_Type: 'Resolve the Dispute',
     StudentName: 'Student',
     TaskStatus: 'Complete',

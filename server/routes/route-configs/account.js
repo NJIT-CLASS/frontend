@@ -10,6 +10,6 @@ module.exports = {
         students: true,
         loggedOut: false
     },
-    icon: 'pencil-square',
+    icon: 'user',
     sidebar: true
 };

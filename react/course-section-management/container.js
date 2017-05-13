@@ -2,14 +2,15 @@ import React from 'react';
 import request from 'request';
 import Select from 'react-select';
 
+// important component cards for each entity type
 import OrganizationManager from './organization-manager';
 import CourseManager from './course-manager';
 import SemesterManager from './semester-manager';
 import SectionManager from './section-manager';
-import StudentManager from './student-manager';
-import InstructorManager from './instructor-manager';
-import ObserverManager from './observer-manager';
+import UserManager from './user-manager';
 
+// this container tracks the selected ID of each component card and makes them
+// available to the others for condtional rendering and API calls
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -19,9 +20,8 @@ class Container extends React.Component {
             active: 'Active',
             add: 'Add',
             cancel: 'Cancel',
-            commaSeparatedInput: 'Comma Separated Input',
+            commaSeparatedValues: 'Comma Separated Values',
             course: 'Course',
-            csvHeaders: 'Email, Last Name, First Name, Active',
             delete: 'Delete',
             edit: 'Edit',
             editCourse: 'Edit Course',
@@ -36,6 +36,7 @@ class Container extends React.Component {
             instructor: 'Instructor',
             instructors: 'Instructors',
             lastName: 'Last Name',
+            logo: 'Logo',
             name: 'Name',
             new: 'New',
             newCourse: 'New Course',
@@ -55,15 +56,26 @@ class Container extends React.Component {
             student: 'Student',
             students: 'Students',
             addStudents: 'Add Students',
-            addStudent: 'Add Student'
+            addStudent: 'Add Student',
+            upload: 'Drag an image or click',
+            volunteer: 'Volunteer',
+            yes: 'Yes',
+            no: 'No',
+            csvHeaders1: 'Email, First Name, Last Name, Active, Volunteer',
+            csvHeaders2: 'Email, Last Name, First Name, Active, Volunteer',
+            csvHeaders3: 'First Name, Last Name, Email, Active, Volunteer',
+            csvHeaders4: 'Last Name, First Name, Email, Active, Volunteer',
+            csvHeaders5: 'First Name, Email, Last Name, Active, Volunteer',
+            csvHeaders6: 'Last Name, Email, First Name, Active, Volunteer'
         };
     }
+	// uncomment this translation function when it is functional again
     componentWillMount() {
-        this.props.__(this.strings, (newStrings) => {
-            this.strings = newStrings;
-        });
+		/*this.props.__(this.strings, (newStrings) => {
+			this.setState({Strings: newStrings});
+		})*/
     }
-
+	// store selected organization ID to state, reset downstream IDs
     changeOrganizationID(organizationID) {
         this.setState({
             organizationID: organizationID,
@@ -72,24 +84,31 @@ class Container extends React.Component {
             sectionID: null
         });
     }
+	// store selected course ID to state, reset downstream IDs
     changeCourseID(courseID) {
         this.setState({
             courseID: courseID,
             sectionID: null
         });
     }
+	// store selected semester ID to state, reset downstream IDs
     changeSemesterID(semesterID) {
         this.setState({
             semesterID: semesterID,
             sectionID: null
         });
     }
+	// store selected section ID to state
     changeSectionID(sectionID) {
         this.setState({
             sectionID: sectionID
         });
     }
 
+	// render container with component cards
+	// changeID function to send state back to parent
+	// pass strings as props (all strings are declared in this file)
+	// key is given because elements are being rendered as array (React requirement)
     render() {
         let output = [];
         output.push(
@@ -131,47 +150,47 @@ class Container extends React.Component {
 					changeID={this.changeSectionID.bind(this)}
 					strings={this.strings}
 					userID={this.props.UserID}
-					organizationID={this.state.organizationID}
 					courseID={this.state.courseID}
 					semesterID={this.state.semesterID}
 				/>
 			);
+
         }
+		// the next three components are all UserManagers
+		// the only difference between student, insrtuctor, and observer is
+		// the role prop (used in API calls) and the title prop (used in interface)
         if(this.state.sectionID) {
             output.push(
-				<StudentManager
+				<UserManager
 					key={5}
 					apiUrl={this.props.apiUrl}
 					strings={this.strings}
 					userID={this.props.UserID}
-					organizationID={this.state.organizationID}
-					courseID={this.state.courseID}
-					semesterID={this.state.semesterID}
 					sectionID={this.state.sectionID}
+					role="Student"
+					title={this.strings.students}
 				/>
 			);
             output.push(
-				<InstructorManager
+				<UserManager
 					key={6}
 					apiUrl={this.props.apiUrl}
 					strings={this.strings}
 					userID={this.props.UserID}
-					organizationID={this.state.organizationID}
-					courseID={this.state.courseID}
-					semesterID={this.state.semesterID}
 					sectionID={this.state.sectionID}
+					role="Instructor"
+					title={this.strings.instructors}
 				/>
 			);
             output.push(
-				<ObserverManager
+				<UserManager
 					key={7}
 					apiUrl={this.props.apiUrl}
 					strings={this.strings}
 					userID={this.props.UserID}
-					organizationID={this.state.organizationID}
-					courseID={this.state.courseID}
-					semesterID={this.state.semesterID}
 					sectionID={this.state.sectionID}
+					role="Observer"
+					title={this.strings.observers}
 				/>
 			);
         }
