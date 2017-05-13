@@ -59,9 +59,9 @@ class Container extends React.Component {
         };
     }
     componentWillMount() {
-		/*this.props.__(this.strings, (newStrings) => {
-			this.setState({Strings: newStrings});
-		})*/
+        this.props.__(this.strings, (newStrings) => {
+            this.strings = newStrings;
+        });
     }
 
     changeOrganizationID(organizationID) {

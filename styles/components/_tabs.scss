@@ -38,6 +38,7 @@ $break-large: 1200px;
 }
 .react-tabs [role=tab]{
   width:25%;
+	height: 30px;
   border-bottom: none;
 	-webkit-border-radius: 0px !important;
 	-moz-border-radius: 0px !important ;
@@ -45,12 +46,13 @@ $break-large: 1200px;
   background-color: rgba(201, 201, 207,0.4);
   padding-top: 5px;
   outline: none;
+	display: inline-block;
 	z-index: 0;
 }
 .react-tabs [role=tab][aria-selected=true] {
 
 
-	    border-color: #d7d7da;
+	    border:1px solid #d7d7da;
 			background-color:#f3f3f4;
 	    border-bottom: none;
 	    outline: none;

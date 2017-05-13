@@ -32,7 +32,13 @@ let strings = {
     Fail: 'Fail',
     LabelDirections: 'Choose from one of the labels below',
     Course: 'Course',
-    Min: 'Min'
+    Min: 'Min',
+    NotAllowed: 'Sorry, you are not allowed to see this task',
+    buttonLabel: 'Upload',
+    filesLabel: 'Files',
+    selectLabel: 'Select Files',
+    uploadedLabel: 'Uploaded',
+    Max: 'Max',
 
 };
 

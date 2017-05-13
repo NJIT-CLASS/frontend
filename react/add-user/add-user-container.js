@@ -3,6 +3,7 @@ import Select from 'react-select';
 import request from 'request';
 import Checkbox from '../shared/checkbox';
 import {clone, cloneDeep} from 'lodash';
+import Strings from './strings.js';
 
 class AddUserContainer extends React.Component {
     constructor(props) {
@@ -16,9 +17,19 @@ class AddUserContainer extends React.Component {
             lastnameError: false,
             displayError: false,
             displayFeedback: false,
-            pass: ''
+            pass: '',
+            Strings: Strings
         };
     }
+
+    componentWillMount(){
+        this.props.__(Strings, newStrings => {
+            this.setState({
+                Strings: newStrings
+            });
+        });
+    }
+
     onChangeRole(user_role) {
         this.setState({role: user_role.value});
 
@@ -109,6 +120,7 @@ class AddUserContainer extends React.Component {
     render() {
   //  checkThesuser();
         let errorView = null;
+        const Strings = this.state.Strings;
         var roles = [
           { value: 'Student', label: 'Student' },
           { value: 'Instructor', label: 'Instructor' },
@@ -118,13 +130,13 @@ class AddUserContainer extends React.Component {
         if(this.state.displayError){
             errorView = (<div className="error form-error" role="alert">
         <i className="fa fa-exclamation-circle"></i>
-          <span className="sr-only"> Error: Must Enter First and Last Name. </span>
+          <span className="sr-only">{Strings.error} </span>
         </div>);
         }
 
         return (
           <div className="section add-user-details">
-            <h2 className="title">User Details</h2>
+            <h2 className="title">{Strings.UserDetails}</h2>
 
 
             {errorView}
@@ -137,7 +149,7 @@ class AddUserContainer extends React.Component {
                 <tr>
                   <td>
                     <div>
-                      <label>First Name:</label>
+                      <label>{Strings.FirstName}:</label>
                       <input type="text"
                         name="firstname"
                         onChange={this.onChangeFirstname.bind(this)}
@@ -146,7 +158,7 @@ class AddUserContainer extends React.Component {
                   </td>
                   <td>
                     <div>
-                      <label>Last Name:</label>
+                      <label>{Strings.LastName}:</label>
                       <input type="text"
                         name="lastname"
                         onChange={this.onChangeLastname.bind(this)}
@@ -156,14 +168,14 @@ class AddUserContainer extends React.Component {
                   </td></tr>
                 <tr>
                   <td>  <div>
-                    <label>Email:</label>
+                    <label>{Strings.Email}:</label>
                     <input type="text"
                       name="email"
                       onChange={this.onChangeEmail.bind(this)}/>
                   </div>
                   </td><td>
                     <div>
-                      <label>Role:</label>
+                      <label>{Strings.Role}:</label>
                       <Select
                         name="role"
                         value={this.state.role}
@@ -177,7 +189,7 @@ class AddUserContainer extends React.Component {
                 <tr>
                   <td>
                     <div>
-                      <label>Password:</label>
+                      <label>{Strings.Password}:</label>
                       <input type="text"
                         name="pass"
                         value={this.state.pass}
@@ -189,7 +201,7 @@ class AddUserContainer extends React.Component {
                   </td>
                   <td>
                     <div className="grouped">
-                      <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>Generate Password</button>
+                      <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>{Strings.GeneratePassword}</button>
                     </div>
                   </td>
 
@@ -208,9 +220,8 @@ class AddUserContainer extends React.Component {
 
               <div className="row">
                 <div className="section-button-area">
-                  <button type="submit">Add User</button>
+                  <button type="submit">{Strings.AddUser}</button>
                 </div>
-
                   </div>
               </form>
           </div>

@@ -8,3 +8,53 @@
     text-align: right;
   }
 }
+.section-divider{
+  position: relative;
+  overflow:hidden;
+  border-bottom: 0.5px solid #e7eaec;
+  margin-bottom: 5px;
+
+  br{
+    display:block;
+  }
+
+
+  .subheading{
+    font-size:20px;
+    text-align: center;
+    font-weight: 400px;
+    padding: 20px 30px 20px 30px;
+    color: #000000;
+  }
+  .inner{
+    @media screen and (max-width: $mobile-brk) {
+      padding: 0px;
+      margin: 3px 0px;
+      width: 100%;
+    }
+
+     min-width: 150px;
+     display: inline-block;
+     padding: 10px;
+     margin: 3px 12px;
+     vertical-align: top;
+     align-content: center;
+     overflow-x: visible;
+
+     label{
+       display:inline-block;
+       margin-top: 8px;
+       margin-bottom: 4px;
+       clear:right;
+     }
+    }
+    .block{
+      display: block;
+    }
+    .advanced{
+        .inner{
+          width: calc((100% - 200px) / 3);
+        }
+    }
+
+}

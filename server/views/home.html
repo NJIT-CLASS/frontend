@@ -7,10 +7,17 @@
         <h3 class="title">{{__ "Please Sign In"}}</h3>
         <div class="section-content">
             <input type="hidden" name="url" value="{{returnUrl}}"/>
-            {{#if error }}
+            {{#if credentialsError }}
                 <div class="error form-error">
                   <i class="fa fa-exclamation-circle"></i>
-                  <span>Error: Wrong Email Address / Password</span>
+                  <span>{{__ "Error: Wrong Email Address / Password"}}</span>
+                </div>
+            {{/if}}
+
+            {{#if serverError }}
+                <div class="error form-error">
+                  <i class="fa fa-exclamation-circle"></i>
+                  <span>{{__ "The website is experiencing some internal errors. Please try again later."}}</span>
                 </div>
             {{/if}}
             <div class="form-group">

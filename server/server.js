@@ -6,7 +6,6 @@ const request = require('request');
 const redis = require('redis');
 const _ = require('lodash');
 
-
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
@@ -27,11 +26,12 @@ const redisClient = redis.createClient({
 app.use('/static', express.static(`${__dirname}/static`));
 
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+app.use(
+	bodyParser.urlencoded({
     extended: true
-}));
-
+})
+);
+app.use(bodyParser.json());
 
 app.use(session(redisClient));
 
@@ -54,7 +54,7 @@ app.get('/api/getTranslatedString', (req, res) => {
         locale = req.session.lang;
     }
 
-    translation(redisClient).setupTranslations(locale, (translateFunc) => {
+    translation(redisClient).setupTranslations(locale, translateFunc => {
         let translated = translateFunc(req.query.string);
         res.json({
             lang: translated
@@ -74,26 +74,26 @@ app.post('/api/getTranslatedString', (req, res) => {
         locale = req.session.lang;
     }
 
-    translation(redisClient).setupTranslations(locale, (translateFunc) => {
-
+    translation(redisClient).setupTranslations(locale, translateFunc => {
         let language = req.body.string;
-        Object.keys(language).map((key) => {
+        Object.keys(language).map(key => {
             language[key] = translateFunc(language[key]);
         });
-
 
         res.json(language);
         res.end();
     });
-
 });
 
 app.get('/api/translations', (req, res) => {
-    languageService(redisClient).getAllStringsInLanguage(req.query.lang ? req.query.lang : 'en', (err, results) => {
-        res.json(results);
+    languageService(redisClient).getAllStringsInLanguage(
+		req.query.lang ? req.query.lang : 'en',
+		(err, results) => {
+    res.json(results);
 
-        res.end();
-    });
+    res.end();
+}
+	);
 });
 
 app.post('/api/translations', (req, res) => {
@@ -104,7 +104,11 @@ app.post('/api/translations', (req, res) => {
     const language = req.body.language;
 
     for (let str in req.body.strs) {
-        languageService(redisClient).addTranslation(language, str, req.body.strs[str]);
+        languageService(redisClient).addTranslation(
+			language,
+			str,
+			req.body.strs[str]
+		);
     }
 
     res.status(200).end();
@@ -119,16 +123,20 @@ app.post('/api/change-admin-status', (req, res) => {
         return res.status(500).end();
     }
 
-    req.App.api.put('/makeUserAdmin/', {
-        UserID: userId
-    }, (err, statusCode, body) => {
-        res.status(statusCode).end();
-    });
+    req.App.api.put(
+		'/makeUserAdmin/',
+        {
+            UserID: userId
+        },
+		(err, statusCode, body) => {
+    res.status(statusCode).end();
+}
+	);
 });
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
-    // default language
+	// default language
     res.locale = 'en';
 
     if ('lang' in req.query) {
@@ -140,7 +148,7 @@ app.use((req, res, next) => {
         res.locale = req.session.lang;
     }
 
-    // language options
+	// language options
     const languages = consts.LANGUAGES;
 
     req.App.langOptions = [];
@@ -158,8 +166,9 @@ app.use((req, res, next) => {
 
 var __;
 
+
 app.use((req, res, next) => {
-    translation(redisClient).setupTranslations(res.locale, (translateFunc) => {
+    translation(redisClient).setupTranslations(res.locale, translateFunc => {
         __ = translateFunc;
 
         app.set('views', `${__dirname}/views/`);
@@ -179,18 +188,36 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+    if('token' in req.session){
+        req.App.user.token = req.session.token;
+    }
+
+    next();
+});
+
+app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
-        return req.App.api.get(`/generalUser/${req.App.user.userId}`, (err, statusCode, body) => {
+        console.log('called API call for ', req.App.user);
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
+
+            // if(statusCode === 500){
+            //     delete req.session.userId;
+            //     res.send('Sorry, the website is experiencing errors');
+            //     return;
+            // }
+
             if (err || statusCode !== 200) {
                 delete req.session.userId;
                 res.redirect('/');
+                return;
             }
 
-            if(body.User[0] == undefined){
+
+
+            if (body.User[0] == undefined) {
                 delete req.session.userId;
                 res.send('Not Found').end();
             }
-
 
             const user = body.User[0]; // JV - grabbed user's information
             req.App.user.email = user.UserLogin.Email;
@@ -198,17 +225,21 @@ app.use((req, res, next) => {
             req.App.user.lastName = user.LastName;
             req.App.user.country = user.Country;
             req.App.user.city = user.City;
-            req.App.user.profilePicture = user.ProfilePicture ? JSON.parse(user.ProfilePicture)[0] : 1;
-            req.App.user.type = user.UserType === 'Student' ? 'student' : 'teacher';
+            req.App.user.profilePicture = user.ProfilePicture
+					? JSON.parse(user.ProfilePicture)[0]
+					: 1;
+            req.App.user.type = user.UserType === 'Student'
+					? 'student'
+					: 'teacher';
             req.App.user.admin = user.Admin;
 
             next();
-        });
+        }
+		);
     }
 
     next();
 });
-
 
 app.use((req, res, next) => {
     const render = res.render;
@@ -232,17 +263,14 @@ app.use((req, res, next) => {
             return render.call(this, template, options, cb);
         }
         if (req.App.user && !options[req.App.user.type]) {
-            if ((req.App.user.admin && options.admin)) {
-
+            if (req.App.user.admin && options.admin) {
             } else {
                 return res.sendStatus(404);
             }
-
         }
-        options.showMasqueradingOption = req.App.user.admin ? req.App.user.admin : false; //new value, not working yet
-
-
-
+        options.showMasqueradingOption = req.App.user.admin
+			? req.App.user.admin
+			: false; //new value, not working yet
 
         var sidebarNavItems = [];
 
@@ -266,7 +294,10 @@ app.use((req, res, next) => {
                 } else {
                     continue;
                 }
-            } else if (req.App.user.type == 'teacher' && req.App.user.admin == 0) {
+            } else if (
+				req.App.user.type == 'teacher' &&
+				req.App.user.admin == 0
+			) {
                 if (currentRoute.access.instructors) {
                     sidebarNavItems.push(currentRoute);
                 } else {
@@ -279,7 +310,7 @@ app.use((req, res, next) => {
 
         options.sidebarNavItems = sidebarNavItems;
 
-        // only allow logged out users access to pages that are meant for logged out users
+		// only allow logged out users access to pages that are meant for logged out users
         if (!req.App.user || !req.App.user.userId) {
             return res.sendStatus(404);
         }
@@ -292,51 +323,85 @@ app.use((req, res, next) => {
 
 // routes
 app.use(function(req, res, next) {
-    const allowedRouteMethods = ['get', 'post', 'put', 'head', 'delete', 'options', 'trace', 'copy', 'lock', 'mkcol', 'move', 'purge', 'propfind', 'proppatch', 'unlock', 'report', 'mkactivity', 'checkout', 'merge', 'm-search', 'notify', 'subscribe', 'unsubscribe', 'patch', 'search', 'connect'];
+    const allowedRouteMethods = [
+        'get',
+        'post',
+        'put',
+        'head',
+        'delete',
+        'options',
+        'trace',
+        'copy',
+        'lock',
+        'mkcol',
+        'move',
+        'purge',
+        'propfind',
+        'proppatch',
+        'unlock',
+        'report',
+        'mkactivity',
+        'checkout',
+        'merge',
+        'm-search',
+        'notify',
+        'subscribe',
+        'unsubscribe',
+        'patch',
+        'search',
+        'connect'
+    ];
     for (const route of routes) {
         for (const method in route.routeHandler) {
-            // if the method is allowed then bind the route to it
+			// if the method is allowed then bind the route to it
             if (allowedRouteMethods.indexOf(method) !== -1) {
-                app[method](route.route, function() {
-                    return (req, res, next) => {
-                        const previousRender = res.render;
-                        res.render = function() {
-                            return function(template, options, cb) {
-                                options = options ? options : {};
-                                options.loggedOut = route.access.loggedOut;
-                                options.route = route.route;
-                                options.student = route.access.students;
-                                options.teacher = route.access.instructors;
-                                options.admin = route.access.admins;
-                                // if the render doesn't set the title then set it by the route
-                                if (!('title' in options)) {
-                                    options.title = `${route.title} | CLASS Learning System`;
-                                }
+                app[method](
+					route.route,
+					(function() {
+    return (req, res, next) => {
+        const previousRender = res.render;
+        res.render = (function() {
+            return function(template, options, cb) {
+                options = options ? options : {};
+                options.loggedOut = route.access.loggedOut;
+                options.route = route.route;
+                options.student = route.access.students;
+                options.teacher = route.access.instructors;
+                options.admin = route.access.admins;
+									// if the render doesn't set the title then set it by the route
+                if (!('title' in options)) {
+                    options.title = `${route.title} | CLASS Learning System`;
+                }
 
-                                // set the page header to be the route title if the pageHeader is not set
-                                if (!('pageHeader' in options)) {
-                                    options.pageHeader = route.title;
-                                }
+									// set the page header to be the route title if the pageHeader is not set
+                if (!('pageHeader' in options)) {
+                    options.pageHeader = route.title;
+                }
 
-                                // pass masquerading info to template
-                                if (req.session.masqueraderId) {
-                                    options.masquerading = true;
-                                    options.userEmail = req.App.user.email;
-                                }
+									// pass masquerading info to template
+                if (req.session.masqueraderId) {
+                    options.masquerading = true;
+                    options.userEmail = req.App.user.email;
+                }
 
-                                previousRender.call(this, template, options, cb);
-                            };
-                        }();
-                        next();
-                    };
-                }(), route.routeHandler[method]);
+                previousRender.call(
+										this,
+										template,
+										options,
+										cb
+									);
+            };
+        })();
+        next();
+    };
+})(),
+					route.routeHandler[method]
+				);
             }
         }
     }
     next();
 });
-
-
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
