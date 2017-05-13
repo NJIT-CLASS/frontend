@@ -7,17 +7,17 @@
 	    	{{#if namechangefailed }}
 				<div class="error form-error" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Error:</span>
-				Name was NOT updated! There may have been a connection issue. Try again in a few minutes.
-				</br>Error status code: {{statuscode}}
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "Name was NOT updated! There may have been a connection issue. Try again in a few minutes."}}
+			</br>{{__ "Error status code"}}: {{statuscode}}
 				</div>
 			{{/if}}
 
 			{{#if namechangesucceeded }}
 				<div class="success form-success" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Success:</span>
-				Name was successfully updated!
+					<span class="sr-only">{{__ "Success"}}:</span>
+				{{__ "Name was successfully updated!"}}
 				</div>
 			{{/if}}
 
@@ -48,18 +48,18 @@
 	    	{{#if emailchangefailed }}
 				<div class="error form-error" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Error:</span>
-				Email was NOT updated! Check your entered values and try again.
-				</br>Error status code: {{statuscode}}
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "Email was NOT updated! Check your entered values and try again."}}
+			</br>{{__ "Error status code"}}: {{statuscode}}
 				</div>
 			{{/if}}
 
 			{{#if emailchangesucceeded }}
 				<div class="success form-success" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Success:</span>
-				Email address was successfully updated!
-				</br>New email address: {{newemail}}
+					<span class="sr-only">{{__ "Success"}}:</span>
+				{{__ "Email address was successfully updated!"}}
+			</br>{{__ "New email address"}}: {{newemail}}
 				</div>
 			{{/if}}
 
@@ -90,24 +90,24 @@
 	    	{{#if passwordchangefailed }}
 				<div class="error form-error" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Error:</span>
+					<span class="sr-only">{{__ "Error"}}:</span>
 				{{__ "Password was NOT updated! Check your entered values and try again." }}
-				</br>Error status code: {{statuscode}}
+			</br>{{__ "Error status code"}}: {{statuscode}}
 				</div>
 			{{/if}}
 
 			{{#if passwordchangemismatch }}
 				<div class="error form-error" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Error:</span>
-				The new password you entered does not match the contents of the confirmation field. Try again.
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "The new password you entered does not match the contents of the confirmation field. Try again."}}
 				</div>
 			{{/if}}
 
 			{{#if passwordchangesucceeded }}
 				<div class="success form-success" role="alert">
 				<i class="fa fa-exclamation-circle"></i>
-					<span class="sr-only">Success:</span>
+					<span class="sr-only">{{__ "Success"}}:</span>
 				{{__ "Password was successfully updated!" }}
 				</div>
 			{{/if}}
@@ -147,8 +147,8 @@
 	  {{#if onlyPNG }}
 	    <div class="error form-error" role="alert">
 	    <i class="fa fa-exclamation-circle"></i>
-	      <span class="sr-only">Error:</span>
-	    Only PNG images
+	      <span class="sr-only">{{__ "Error"}}:</span>
+	    {{__ "Only PNG images"}}
 	    </div>
 	  {{/if}}
 

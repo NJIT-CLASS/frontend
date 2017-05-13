@@ -4,6 +4,7 @@ import request from 'request';
 import Select from 'react-select';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants';
 import InfoModal from './info-modal';
+import Strings from './strings.js';
 
 class Frames extends React.Component {
     constructor(props) {
@@ -20,10 +21,17 @@ class Frames extends React.Component {
             SelectedSubWorkflow: '',
             ShowModal: false,
             ModalInfo: {},
+            Strings: Strings
         };
     }
 
     componentWillMount() {
+
+        this.props.__(Strings, newStrings => {
+            this.setState({
+                Strings: newStrings
+            });
+        });
         const options = {
             method: 'GET',
             uri: `${this.props.apiUrl}/api/getAssignmentRecord/${this.props.AssignmentID}`,
@@ -82,27 +90,7 @@ class Frames extends React.Component {
         if (!this.state.DataLoaded) {
             return (<div />);
         }
-        const strings = {
-            all: 'All',
-            Incomplete: 'Incomplete',
-            Complete: 'Complete',
-            Late: 'Late',
-            Not_Needed: 'Not Needed',
-            Not_yet_started: 'Not Yet Started',
-            Started: 'Started',
-            Automatic: 'Automatic',
-            Student: 'Student',
-            FilterBy: 'Filter By',
-            Legend: 'Legend',
-            Course: 'Course',
-            Section: 'Section',
-            Semester: 'Semester',
-            Status: 'Status',
-            Task: 'Task',
-            Workflows: 'Workflows',
-            Subworkflow: 'Subworkflow',
-            WorkflowID: 'WorkflowID',
-        };
+        const strings = this.state.Strings;
 
 
         const colors = { Incomplete: 'incomplete',
@@ -157,6 +145,7 @@ class Frames extends React.Component {
                     TaskUserHistory: JSON.parse(task.UserHistory),
                     Link: link,
                     UserRole: task.User.UserType,
+                    Strings: strings
                 };
                 console.log(modalOptions);
                 const taskCellDiv = (
@@ -374,7 +363,7 @@ class Frames extends React.Component {
         const OptionsListStudents = [];
         OptionsListStudents.push({ value: '', label: strings.all });
         Students.forEach((Options) => {
-            OptionsListStudents.push({ value: Options, label: Options });
+            OptionsListStudents.push({ value: Options, label: strings.Options });
         }, this);
 
         const Status = [];
@@ -390,7 +379,7 @@ class Frames extends React.Component {
         OptionsListStatus.push({ value: '', label: strings.all });
 
         Status.forEach((Options) => {
-            OptionsListStatus.push({ value: Options, label: Options });
+            OptionsListStatus.push({ value: Options, label: strings.Options });
         }, this);
 
 
@@ -407,14 +396,14 @@ class Frames extends React.Component {
         OptionsListTask.push({ value: '', label: strings.all });
 
         Task.forEach((Options) => {
-            OptionsListTask.push({ value: Options, label: Options });
+            OptionsListTask.push({ value: Options, label: strings.Options });
         }, this);
 
         const OptionsListWorkflow = [];
         OptionsListWorkflow.push({ value: '', label: strings.all });
 
         this.state.WorkflowArray.forEach((Options) => {
-            OptionsListWorkflow.push({ value: Options, label: Options });
+            OptionsListWorkflow.push({ value: Options, label: strings.Options });
         }, this);
 
         const OptionsListSubWorkflow = [];

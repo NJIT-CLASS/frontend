@@ -20,7 +20,8 @@ apiMethods.get = function(endpoint, queryParameters, cb) {
     };
 
     request(options, function(err, response, body) {
-        return cb(err, response.statusCode, body);
+        let responseCode = response === undefined ? 500 : response.statusCode;
+        return cb(err, responseCode, body);
     });
 };
 
@@ -38,7 +39,8 @@ apiMethods.post = function(endpoint, body, cb) {
     };
 
     request(options, function(err, response, body) {
-        return cb(err, response.statusCode, body);
+        let responseCode = response === undefined ? 500 : response.statusCode;
+        return cb(err, responseCode, body);
     });
 };
 

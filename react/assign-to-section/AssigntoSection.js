@@ -8,6 +8,8 @@ import Tasks from './components/Tasks.js';
 import request from 'request';
 import Assignment from './components/Assignment.js';
 import WorkFlow from './components/WorkFlow.js';
+import Strings from './strings';
+
 var moment = require('moment');
 //import ModalInfo from '../assignment-records/info-modal';
 import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
@@ -37,12 +39,19 @@ class AssignToSectionContainer extends React.Component
             Sections: null,
             SubmitSuccess:false,
             SubmitError: false,
-            DataLoaded: false
+            DataLoaded: false,
+            Strings: Strings
         };
     }
 
     componentWillMount(){ //gets the appropraite assignment structure from the database before rendering the page
         let semestersArray = null;
+
+        this.props.__(Strings, newStrings => {
+            this.setState({
+                Strings: newStrings
+            });
+        });
 
         const options = {
             method: 'GET',
@@ -105,7 +114,6 @@ class AssignToSectionContainer extends React.Component
 
     onSubmit(){
     //saves the state data to the database
-
 
         let timingArray = this.state.WorkFlow.map(function(Workflow){
 
@@ -285,17 +293,17 @@ class AssignToSectionContainer extends React.Component
 
     render()
   {
-
+        let strings = this.state.Strings;
         let infoMessage = null;
-        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>Submit</button>);
+        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>);
         if(!this.state.DataLoaded){
             return (<div></div>);
         }
         if(this.state.SubmitSuccess){
-            infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false});}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}> Successfully submitted! </span>);
+            infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false});}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}>{strings.SubmitSuccess}</span>);
         }
         if(this.state.SubmitError){
-            infoMessage = (<span onClick={() => {this.setState({SubmitError: false});}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>Submit Error! Please check your work and try again </span>);
+            infoMessage = (<span onClick={() => {this.setState({SubmitError: false});}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>{strings.SubmitError}</span>);
         }
         let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
     {
@@ -309,7 +317,9 @@ class AssignToSectionContainer extends React.Component
             onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
             onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
             onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
-            onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)} />
+            onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)}
+            Strings={strings}
+          />
                 );
 
             },this);
@@ -319,7 +329,10 @@ class AssignToSectionContainer extends React.Component
             <WorkFlow WorkFlow = {workflow} workflowIndex ={workindex}
             onChangeCalendarWorkFlow = {this.onChangeCalendarWorkFlow.bind(this)}
             onChangeStartLaterWorkFlow = {this.onChangeStartLaterWorkFlow.bind(this)}
-            onChangeStartNowWorkFlow = {this.onChangeStartNowWorkFlow.bind(this)}/>
+            onChangeStartNowWorkFlow = {this.onChangeStartNowWorkFlow.bind(this)}
+            Strings={strings}
+
+          />
 
           {tasks}
         </div>);
@@ -338,6 +351,8 @@ class AssignToSectionContainer extends React.Component
           onChangeAssigmentName = {this.onChangeAssigmentName.bind(this)}
           onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
           onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
+          Strings={strings}
+
         />
 
 

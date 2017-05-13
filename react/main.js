@@ -42,7 +42,9 @@ if (addsectionContainerEl) {
     const userId = addsectionContainerEl.dataset.userId;
     const apiUrl = addsectionContainerEl.dataset.apiUrl;
 
-    ReactDOM.render(<AddSectionContainer userId={userId} apiUrl={apiUrl} />, addsectionContainerEl);
+
+    ReactDOM.render(<AddSectionContainer userId={userId} apiUrl={apiUrl} __={translationFunction}/>,addsectionContainerEl);
+
 }
 
 const adduserContainerEl = document.getElementById('add-user-container');
@@ -52,7 +54,9 @@ if (adduserContainerEl) {
     const apiUrl = adduserContainerEl.dataset.apiUrl;
     const userType = adduserContainerEl.dataset.userType;
 
-    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} />, adduserContainerEl);
+
+    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,adduserContainerEl);
+
 }
 
 const assignmentContainerEl = document.getElementById('create-assignment-container');
@@ -67,7 +71,9 @@ if (courseContainerEl) {
     const userId = courseContainerEl.dataset.userId; // in here variables are camelCase, in html variables are hyphened, -
     const apiUrl = courseContainerEl.dataset.apiUrl;
 
-    ReactDOM.render(<CourseContainer userId={userId} apiUrl={apiUrl} />, courseContainerEl);
+
+    ReactDOM.render(<CourseContainer userId={userId} apiUrl={apiUrl} __={translationFunction}/>, courseContainerEl);
+
 }
 
 const translationContainerEl = document.getElementById('translation-container');
@@ -98,7 +104,7 @@ if (templateContainerEl) {
         UserID={userId}
         apiUrl={apiUrl}
         TaskID={taskId}
-        translateFunction={translationFunction}
+        __={translationFunction}
       />, templateContainerEl);
 }
 
@@ -120,7 +126,9 @@ if (assignToSectionContainerEl) {
     const assignmentId = assignToSectionContainerEl.dataset.assignmentId;
     const apiUrl = assignToSectionContainerEl.dataset.apiUrl;
 
-    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID={assignmentId} CourseID={courseId} apiUrl={apiUrl} />, assignToSectionContainerEl);
+
+    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction}/>,assignToSectionContainerEl);
+
 }
 //
 const testingGroundContainerEl = document.getElementById('testing-container');
@@ -135,7 +143,9 @@ if (assignmentRecordContainer) {
     const userId = assignmentRecordContainer.dataset.userId;
     const assignmentId = assignmentRecordContainer.dataset.assignmentId;
     const apiUrl = assignmentRecordContainer.dataset.apiUrl;
-    ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} />, assignmentRecordContainer);
+
+    ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, assignmentRecordContainer);
+
 }
 
 const courseSectionMgmntContainer = document.getElementById('course-section-management');

@@ -7,18 +7,18 @@
     	{{#if emailchangefailed }}
 			<div class="error form-error" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
-				<span class="sr-only">Error:</span>
-			Email was NOT updated! Check your entered values and try again.
-			</br>Error status code: {{statuscode}}
+				<span class="sr-only">{{__ "Error"}}:</span>
+			{{__ "Email was NOT updated! Check your entered values and try again."}}
+		</br>{{__ "Error status code"}}: {{statuscode}}
 			</div>
 		{{/if}}
 
 		{{#if emailchangesucceeded }}
 			<div class="success form-success" role="alert">
 			<i class="fa fa-exclamation-circle"></i>
-				<span class="sr-only">Success:</span>
-			Email address was successfully updated!
-			</br>New email address: {{newemail}}
+				<span class="sr-only">{{__ "Success"}}:</span>
+			{{__ "Email address was successfully updated!"}}
+		</br>{{__ "New email address"}}: {{newemail}}
 			</div>
 		{{/if}}
 
@@ -42,7 +42,7 @@
 
 <div class="col-xs-6">
 	<div>
-      	<h1 align="right" class="statusPadding">Status</h1>
+      	<h1 align="right" class="statusPadding">{{__ "Status"}}</h1>
 	</div>
     <ul>
         {{#each instructors}}

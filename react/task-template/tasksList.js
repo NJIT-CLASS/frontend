@@ -1,0 +1,144 @@
+import React from 'react';
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants'; //contains constants and their values
+import MultiViewComponent from './multiViewComponent';
+import SuperViewComponent from './superViewComponent';
+
+const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
+    return <div>
+          {
+            TasksArray.map(function(task, idx) {
+        		// Goes over the array of tasks(starting from first task to this task)
+        		// and gives the Components an appropriate title.
+        		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
+
+                let compString = null;
+                console.log(task);
+                if (idx == TasksArray.length - 1) {
+                    switch (task.TaskActivity.Type) {
+                    case TASK_TYPES.CREATE_PROBLEM:
+                        compString = Strings.CreateProblemTitle;
+                        break;
+                    case TASK_TYPES.EDIT:
+                        compString = Strings.EditProblemTitle;
+                        break;
+                    case TASK_TYPES.COMMENT:
+                        compString = Strings.CommentTitle;
+                    case TASK_TYPES.SOLVE_PROBLEM:
+                        compString = Strings.SolveProblemTitle;
+                        break;
+                    case TASK_TYPES.GRADE_PROBLEM:
+                        compString = Strings.GradeProblemTitle;
+                        break;
+                    case TASK_TYPES.CRITIQUE:
+                        compString = Strings.CritiqueTitle;
+                    case TASK_TYPES.CONSOLIDATION:
+                        compString = Strings.ConsolidateProblemTitle;
+                        break;
+                    case TASK_TYPES.DISPUTE:
+                        compString = Strings.DisputeGradeTitle;
+                        break;
+                    case TASK_TYPES.RESOLVE_DISPUTE:
+                        compString = Strings.ResolveDisputeTitle;
+                        break;
+                    default:
+                        compString = '';
+                        break;
+                    }
+                    if (task.Status == 'Complete' || task.Status == 'complete') {
+                        return (
+        					<SuperViewComponent
+        						key={idx + 2000}
+        						index={idx}
+        						ComponentTitle={compString}
+        						TaskData={task.Data}
+        						Files={task.Files}
+        						Instructions={task.TaskActivity.Instructions}
+        						Rubric={task.TaskActivity.Rubric}
+        						TaskActivityFields={task.TaskActivity.Fields}
+        						Strings={Strings}
+        					/>
+                        );
+                    } else {
+                        return (
+        					<SuperComponent
+        						key={idx + 2000}
+        						TaskID={this.props.TaskID}
+        						UserID={this.props.UserID}
+        						Files={task.Files}
+        						ComponentTitle={compString}
+        						Type={task.TaskActivity.Type}
+        						FileUpload={task.TaskActivity.FileUpload}
+        						TaskData={task.Data}
+        						TaskStatus={task.Status}
+        						TaskActivityFields={task.TaskActivity.Fields}
+        						Instructions={task.TaskActivity.Instructions}
+        						Rubric={task.TaskActivity.Rubric}
+        						Strings={Strings}
+        						apiUrl={this.props.apiUrl}
+        					/>
+                        );
+                    }
+                } else {
+                    if (Array.isArray(task)) {
+                        return (
+        					<MultiViewComponent
+        						UsersTaskData={task}
+        						TaskID={this.props.TaskID}
+        						UserID={this.props.UserID}
+        						Strings={Strings}
+        					/>
+                        );
+                    } else {
+                        switch (task.TaskActivity.Type) {
+                        case TASK_TYPES.CREATE_PROBLEM:
+                            compString = Strings.CreateProblemTitle;
+                            break;
+                        case TASK_TYPES.EDIT:
+                            compString = Strings.EditProblemTitle;
+                            break;
+                        case TASK_TYPES.COMMENT:
+                            compString = Strings.CommentTitle;
+                        case TASK_TYPES.SOLVE_PROBLEM:
+                            compString = Strings.SolveProblemTitle;
+                            break;
+                        case TASK_TYPES.GRADE_PROBLEM:
+                            compString = Strings.GradeProblemTitle;
+                            break;
+                        case TASK_TYPES.CRITIQUE:
+                            compString = Strings.CritiqueTitle;
+                        case TASK_TYPES.CONSOLIDATION:
+                            compString = Strings.ConsolidateProblemTitle;
+                            break;
+                        case TASK_TYPES.DISPUTE:
+                            compString = Strings.DisputeGradeTitle;
+                            break;
+                        case TASK_TYPES.RESOLVE_DISPUTE:
+                            compString = Strings.ResolveDisputeTitle;
+                            break;
+                        default:
+                            compString = '';
+                            break;
+                        }
+
+                        return (
+        					<SuperViewComponent
+        						key={idx + 2000}
+        						index={idx}
+        						Instructions={task.TaskActivity.Instructions}
+        						Rubric={task.TaskActivity.Rubric}
+        						ComponentTitle={compString}
+        						TaskData={task.Data}
+        						Files={task.Files}
+        						TaskActivityFields={task.TaskActivity.Fields}
+        						Strings={Strings}
+        					/>
+                        );
+                    }
+                }
+            }, this)
+          }
+        </div>;
+
+};
+
+export default TasksList;

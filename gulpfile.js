@@ -14,7 +14,7 @@ const fs = require('fs');
 const argv = require('yargs').argv;
 const install = require('gulp-install');
 const del = require('del');
-const runSequence = require('gulp-run-sequence');
+const runSequence = require('run-sequence');
 const file = require('gulp-file');
 
 const compileReact = (rootFile, outputName, watch) => {
