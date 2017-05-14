@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import {LANGUAGES} from '../../server/utils/constants';
+import {LANGUAGES} from '../../server/utils/react_constants';
 
 class PageHeader extends React.Component {
     changeLanguage(language) {

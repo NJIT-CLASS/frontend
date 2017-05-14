@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 
 class SubTasksSidebarContainer extends React.Component {
     render() {

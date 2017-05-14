@@ -16,7 +16,7 @@ import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
 
-import { TASK_TYPES } from '../../server/utils/constants'; // contains constants and their values
+import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
 class SuperComponent extends React.Component {
     constructor(props) {

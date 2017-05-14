@@ -1,6 +1,6 @@
 const request = require('request');
 
-const consts = require('../utils/constants');
+const consts = require('../utils/react_constants');
 
 const apiUrl = endpoint => `${consts.API_URL}/api${endpoint}`;
 

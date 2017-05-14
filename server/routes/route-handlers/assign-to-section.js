@@ -1,4 +1,5 @@
-const consts = require('../../utils/constants');
+import {API_URL} from '../../utils/react_constants';
+
 exports.get = (req, res) => {
     if(req.App.user === undefined){
         res.redirect('/');
@@ -8,6 +9,6 @@ exports.get = (req, res) => {
         assignmentId: req.params.assignmentId,
         courseId: req.query.courseId,
         userId: req.App.user.userId,
-        apiUrl: consts.API_URL
+        apiUrl: API_URL
     });
 };

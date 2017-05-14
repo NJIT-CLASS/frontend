@@ -12,7 +12,7 @@ import Strings from './strings';
 
 var moment = require('moment');
 //import ModalInfo from '../assignment-records/info-modal';
-import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 
 class AssignToSectionContainer extends React.Component
 {

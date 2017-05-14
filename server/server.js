@@ -14,7 +14,7 @@ const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
 
 const consts = require('./utils/constants');
-
+const react_consts = require('./utils/react_constants');
 const app = express();
 
 const redisClient = redis.createClient({
@@ -149,7 +149,7 @@ app.use((req, res, next) => {
     }
 
 	// language options
-    const languages = consts.LANGUAGES;
+    const languages = react_consts.LANGUAGES;
 
     req.App.langOptions = [];
 
@@ -248,7 +248,7 @@ app.use((req, res, next) => {
 
         options.language = req.App.lang;
         options.languageOptions = req.App.langOptions;
-        options.apiUrl = consts.API_URL;
+        options.apiUrl = react_consts.API_URL;
 
         if (options.loggedOut) {
             options.layout = 'logged_out';

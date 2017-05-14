@@ -147,6 +147,7 @@ class Container extends React.Component {
 				<SectionManager
 					key={4}
 					apiUrl={this.props.apiUrl}
+          organizationID={this.state.organizationID}
 					changeID={this.changeSectionID.bind(this)}
 					strings={this.strings}
 					userID={this.props.UserID}

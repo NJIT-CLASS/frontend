@@ -2,7 +2,7 @@ import React from 'react';
 import Reactable from 'reactable';
 import request from 'request';
 import Select from 'react-select';
-import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import InfoModal from './info-modal';
 import Strings from './strings.js';
 

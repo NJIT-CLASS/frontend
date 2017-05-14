@@ -146,11 +146,12 @@ class SectionManager extends React.Component {
             body: {
                 semesterid: this.props.semesterID,
                 courseid: this.props.courseID,
-                name: this.state.identifier
+                name: this.state.identifier,
+                organizationid: this.props.organizationID
             },
             json: true
         };
-
+        
         request(saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');

@@ -1,0 +1,29 @@
+.about{
+  display: inline-flex;
+
+  .pl-description{
+    min-width: 30%;
+  }
+
+  .developers-section{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    h2{
+      margin-left: 10px;
+      padding-left: 10px;
+      display: block;
+      width: 100%;
+    }
+
+    div{
+      flex: 0 0 320px;
+
+      li{
+        text-align: center;
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import request from 'request';
@@ -13,10 +13,10 @@ class TaskDetails extends React.Component {
             assignmentDetail:[],
             type:this.props.task,
             currentTask: {
-            name:null,
-            desc:null,
-            dueDate:null,
-            taskAssignee:null,
+                name:null,
+                desc:null,
+                dueDate:null,
+                taskAssignee:null,
             },
             dpChecked:false,
             showCreateSemesterModal: false,
@@ -32,8 +32,8 @@ class TaskDetails extends React.Component {
         window.location('/dashboard') ;
     }
 
-createAssingment() {
-    let Assingment = this.state.currentTask;
+    createAssingment() {
+        let Assingment = this.state.currentTask;
         const options = {
             method: 'POST',
             uri: this.props.apiUrl + '/assignment/create',
@@ -48,7 +48,7 @@ createAssingment() {
 
         request(options, (err, res, body) => {
             // TODO: add error handling
-            console.log("Result status code:", res.status);
+            console.log('Result status code:', res.status);
 
         });
     }
@@ -95,9 +95,9 @@ createAssingment() {
             newDate = '0'+newDate;
         }
         if(correctMonth < 10){
-            correctMonth = '0'+correctMonth
+            correctMonth = '0'+correctMonth;
         }
-        let final = date.getFullYear()+"-"+correctMonth+"-"+newDate;
+        let final = date.getFullYear()+'-'+correctMonth+'-'+newDate;
         this.updateCTA(final,'dueDate');
     }
     spDate(e){
@@ -114,12 +114,12 @@ createAssingment() {
     }
 
 
-	render(){
+    render(){
         let content = null;
 
         switch(this.props.task) {
-            case TASK_TYPES.CREATE_PROBLEM:
-                content =(<div>
+        case TASK_TYPES.CREATE_PROBLEM:
+            content =(<div>
                     <div className="section">
                         <h3 className="title">{TASK_TYPES_TEXT.CREATE_PROBLEM}</h3>
                         <div className="section-content">
@@ -180,10 +180,10 @@ createAssingment() {
                     </div>
 
                     </div>);
-                break;
+            break;
                 //this is what it shoiuld be ***TASK_TYPES.Grade_PROBLEM *** but because of time we had to just leave like this
-            case "grade_problem":
-                content =(<div>
+        case 'grade_problem':
+            content =(<div>
                     <div className="section">
                         <h3 className="title">{TASK_TYPES_TEXT.GRADE_PROBLEM}</h3>
                         <div className="section-content">
@@ -244,9 +244,9 @@ createAssingment() {
                     </div>
 
                     </div>);
-                break;
-            case TASK_TYPES.SOLVE_PROBLEM:
-                content =(<div>
+            break;
+        case TASK_TYPES.SOLVE_PROBLEM:
+            content =(<div>
                     <div className="section">
                         <h3 className="title">{TASK_TYPES_TEXT.SOLVE_PROBLEM}</h3>
                         <div className="section-content">
@@ -307,9 +307,9 @@ createAssingment() {
                     </div>
 
                     </div>);
-                break;
-            case TASK_TYPES.EDIT:
-                content =(<div>
+            break;
+        case TASK_TYPES.EDIT:
+            content =(<div>
                     <div className="section">
                         <h3 className="title">{TASK_TYPES_TEXT.EDIT}</h3>
                         <div className="section-content">
@@ -370,19 +370,19 @@ createAssingment() {
                     </div>
 
                     </div>);
-                break;
-                case "done":
-                    window.location.href = '/dashboard';
-                    break;
+            break;
+        case 'done':
+            window.location.href = '/dashboard';
+            break;
         }
 
 
-		return (
+        return (
 			<div className="container">
                     {content}
             </div>
-		)
-	}
+        );
+    }
 }
 
 export default TaskDetails;

@@ -6,7 +6,7 @@ future stuff.
 */
 import React from 'react';
 import request from 'request';
-import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants'; // contains constants and their values
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
 
 // Input Components: These can be interactive with the user;
 import SuperComponent from './superComponent';

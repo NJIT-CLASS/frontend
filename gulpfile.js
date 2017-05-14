@@ -8,6 +8,7 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
+var uglify = require('gulp-uglify');
 const flow = require('gulp-flowtype');
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -21,7 +22,22 @@ const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
 
     function rebundle() {
-        bundler.bundle()
+
+        if(process.env.NODE_ENV === 'production'){
+            bundler.bundle()
+      .on('error', function(err) {
+          gutil.log(err);
+          gutil.beep();
+          this.emit('end');
+      })
+      .pipe(source(`${outputName}.js`))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('./.build/static'));
+
+        } else{
+
+            bundler.bundle()
       .on('error', function(err) {
           gutil.log(err);
           gutil.beep();
@@ -30,6 +46,8 @@ const compileReact = (rootFile, outputName, watch) => {
       .pipe(source(`${outputName}.js`))
       .pipe(buffer())
       .pipe(gulp.dest('./.build/static'));
+        }
+
     }
 
     if (watch) {
@@ -45,6 +63,9 @@ const compileReact = (rootFile, outputName, watch) => {
 const watchReact = function() {
     return compileReact(...arguments, true);
 };
+gulp.task('apply-prod-environment', function() {
+    process.env.NODE_ENV = 'production';
+});
 
 gulp.task('create-route', () => {
     const askOnlyIfNotAccessibleLoggedOut = (answers) => {
@@ -307,11 +328,6 @@ gulp.task('generate:build-fallback-settings', () => {
             name: 'server-port',
             message: 'server port (local port that frontend server will run on):'
         },
-        {
-            type: 'input',
-            name: 'api-url',
-            message: 'API url (full http://<host>:<port> url of backend server):'
-        },
     ];
 
     return inquirer.prompt(questions).then((answers) => {
@@ -322,8 +338,10 @@ exports.REDIS_HOST = '${answers['redis-host']}';
 exports.REDIS_PORT = ${answers['redis-port']};
 exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
-exports.API_URL = '${answers['api-url']}';
+
+// ###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###
 `;
+        console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
     .pipe(gulp.dest(argv.location || '../build'));
     });
@@ -355,12 +373,7 @@ gulp.task('generate:fallback-settings', () => {
             type: 'input',
             name: 'server-port',
             message: 'server port (local port that frontend server will run on):'
-        },
-        {
-            type: 'input',
-            name: 'api-url',
-            message: 'API url (full http://<host>:<port> url of backend server):'
-        },
+        }
     ];
 
     return inquirer.prompt(questions).then((answers) => {
@@ -371,15 +384,18 @@ exports.REDIS_HOST = '${answers['redis-host']}';
 exports.REDIS_PORT = ${answers['redis-port']};
 exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
-exports.API_URL = '${answers['api-url']}';
+
+// ###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###
+
 `;
+        console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
     .pipe(gulp.dest(__dirname));
     });
 });
 
 gulp.task('build-production', () => {
-    return runSequence(['build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
+    return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
 });
 
 gulp.task('default', [

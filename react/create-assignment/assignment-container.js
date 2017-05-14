@@ -1,5 +1,5 @@
 import React from 'react';
-import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import PageHeader from './page-header';
 import DetailsContainer from './details-container';
 import WorkflowDetailContainer from './workflow-detail-container';
@@ -67,14 +67,14 @@ class AssignmentContainer extends React.Component {
         this.setState({
             workflows : workflows,
             visibleWorkflowIndex: 0
-        })
+        });
     }
 
     changeWorkflow(){
         let oldIndex = this.state.visibleWorkflowIndex;
         if(this.state.visibleWorkflowIndex < this.state.workflows.length){
             this.setState({
-            visibleWorkflowIndex: oldIndex + 1
+                visibleWorkflowIndex: oldIndex + 1
             });
         }
 

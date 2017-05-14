@@ -5,7 +5,7 @@ const moment = require('moment');
 import Checkbox from '../shared/checkbox';
 import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
-import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants';
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import { RadioGroup, Radio } from 'react-radio-group';
 import ReactTooltip from 'react-tooltip';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/constants'; //contains constants and their values
+import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; //contains constants and their values
 import MultiViewComponent from './multiViewComponent';
 import SuperViewComponent from './superViewComponent';
 

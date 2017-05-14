@@ -6,7 +6,9 @@ class Container extends React.Component {
     constructor(props){
         super(props);
 
-        this.state = {};
+        this.state = {
+            Loaded: false
+        };
         this.strings = {
             account: 'Account',
             name: 'Name',
@@ -59,6 +61,7 @@ class Container extends React.Component {
 		// account for this discrepancy
         request(fetchOptions, (err, res, body) => {
             this.setState({
+                Loaded: true,
                 id: body.User.UserID,
                 official_first_name: body.User.FirstName,
                 official_last_name: body.User.LastName,
@@ -303,7 +306,9 @@ class Container extends React.Component {
 
     }
     render() {
-
+        if(!this.state.Loaded){
+            return (<div></div>);
+        }
 		// create name for display in card header
 		// prefer user-provided names over official names where possible
         let first_name = this.state.preferred_first_name ? this.state.preferred_first_name : this.state.official_first_name;
