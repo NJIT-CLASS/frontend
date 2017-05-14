@@ -4,7 +4,6 @@ exports.get = (req, res) => {
     if(req.App.user === undefined){
         return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
-    console.log(req.App);
     let coursesUrl = '/course/';
     if(req.App.user.role === 'student'){
         coursesUrl = '/getActiveEnrolledCourses/';
@@ -21,42 +20,21 @@ exports.get = (req, res) => {
 
             for (var i=0; i<body.Sections.length; i++){
 
-
                 sectionList.push(body.Sections[i]);
                 sectionAssignmentsCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this, '/getActiveAssignmentsForSection/' + body.Sections[i].SectionID);
-                apiCalls[body.Sections[i].SectionID] = ((Sections) => {
-                    return (callback)=> {
-                        req.App.api.get('/course/getsection/' + Sections.SectionID, (err, statusCode, bod) =>{
-                            var sectionMembers = bod.UserSection;
-                            var sectionMembersApiCalls = [];
-                            for (var q=0; q<sectionMembers.length; q++){
-                                sectionMembersApiCalls.push(req.App.api.get.bind(this, '/generalUser/' + sectionMembers[q].UserID));
-                            }
+                apiCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this,'/course/getsection/' + body.Sections[i].SectionID);
 
-                            async.parallel(sectionMembersApiCalls, (err, memberResults) => {
-
-
-                                var members = [];
-                                for (var w=0; w<memberResults.length; w++){
-                                    members.push (memberResults[w][1].User[0]);
-                                }
-                                callback(null, members);
-                            });
-
-
-                        });
-                    };
-                })(body.Sections[i]);
             }
 
             async.parallel(apiCalls, (err, results)=>{
                 async.parallel(sectionAssignmentsCalls, (err2,assignmentResults) => {
                     for(var i=0; i<sectionList.length; i++){
                         var currentSectionId = sectionList[i].SectionID;
-                        sectionList[i].members=results[currentSectionId];
+                        sectionList[i].members=results[currentSectionId][1].UserSection;
                         sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                     }
+                    console.log(sectionList);
 
                     res.render('course_page', {
                         showHeader:false,

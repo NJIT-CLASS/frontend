@@ -75,7 +75,7 @@ class Container extends React.Component {
                 new_phone: body.User.UserContact ? body.User.UserContact.Phone : null,
                 alias: body.User.UserContact ? body.User.UserContact.Alias : null,
                 new_alias: body.User.UserContact ? body.User.UserContact.Alias : null,
-                profilePicture: body.User.UserContact ? body.User.UserContact.ProfilePicture : null,
+                profilePicture: body.User.UserContact.ProfilePicture ? JSON.parse(body.User.UserContact.ProfilePicture)[0] : null,
                 avatar: body.User.UserContact ? body.User.UserContact.Avatar : null
 
             });
@@ -276,6 +276,32 @@ class Container extends React.Component {
         });
     }
 
+    uploadFiles(files){
+        let formData = new FormData();
+        formData.append('userId', this.props.UserID);
+        [].forEach.call(files, function (file) {
+            formData.append('files', file);
+        });
+
+        const x = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open( 'POST', `${this.props.apiUrl}/api/upload/profile-picture`, true);
+        xhr.onreadystatechange = function(){
+            if(this.readyState == 4) {
+                if(this.status == 200){
+                }
+                else{
+
+                }
+            }
+            else{
+
+            }
+
+        };
+        xhr.send(formData);
+
+    }
     render() {
 
 		// create name for display in card header
@@ -365,7 +391,7 @@ class Container extends React.Component {
 					<label>{this.strings.phoneNumber}</label>
 					<input type="text" value={this.state.new_phone == null ? '' : this.state.new_phone} onChange={this.changePhone.bind(this)} placeholder="(###) ###-####"></input>
 					<label>{this.strings.profilePicture}</label>
-					<Dropzone accept="image/*">{this.strings.upload}</Dropzone>
+					<Dropzone accept="image/*" onDrop={this.uploadFiles.bind(this)}>{this.strings.upload}</Dropzone>
 					<label>{this.strings.avatar}</label>
 					<Dropzone accept="image/*">{this.strings.upload}</Dropzone>
 				</form>
@@ -404,12 +430,14 @@ class Container extends React.Component {
         }
         return (
 			<div>
-				{ this.state.editing ? accountEdit : accountView }
+
+        <div className="inline-view">{ this.state.editing ? accountEdit : accountView }</div>
+
 				{ passwordChange }
 			</div>
         );
     }
-
+//<div className="inline-view"><img className="profile-picture" src={`${this.props.apiUrl}/api/download/file/${this.state.profilePicture}`}></img></div>
 }
 
 export default Container;
