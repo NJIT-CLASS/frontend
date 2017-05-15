@@ -66,9 +66,6 @@ class AssignmentDetailsComponent extends React.Component{
             <div className="section-divider">
               <div className="inner">
                 <label>{strings.AssignmentName}</label>
-                <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.HereIsNameForAssignment} data-for='test'></i>
-                  <ReactTooltip id='test' effect='solid' />
-                <br />
                 <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
                   ></input>
@@ -79,8 +76,8 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               <div className="inner">
-                <label>{strings.AssignmentType}</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.SpecifyType} data-for='AA_type'></i>
-                  <ReactTooltip id='AA_type' effect='solid'/>
+                <label>{strings.AssignmentType}</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.SpecifyType} data-for='AA_type_tooltip'></i>
+                  <ReactTooltip id='AA_type_tooltip' effect='solid'/>
                 <Select options={problemTypeList}
                   value={this.props.AssignmentActivityData.AA_type}
                   onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}

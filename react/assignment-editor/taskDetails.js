@@ -84,6 +84,10 @@ class TaskDetailsComponent extends React.Component {
         const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
 
+        const tooltipMessages = {
+
+        };
+
         const title = this.state.NewTask
             ? (this.props.TaskActivityData.TA_display_name)
             : (this.props.TaskActivityData.TA_display_name);
