@@ -44,17 +44,15 @@ class TaskDetailsComponent extends React.Component {
         };
     }
 
-    isAssigneeConstraintChecked(constraint, referId) {
-        if (this.props.TaskActivityData.TA_assignee_constraints[2] === undefined) {
+    isAssigneeConstraintChecked(constraint, taskID) {
+        const constraintArray = this.props.TaskActivityData.TA_assignee_constraints[2];
+
+        if(constraintArray === undefined || constraintArray[constraint] === undefined){
             return false;
+        }else{
+            return constraintArray[constraint].includes(taskID) ? true : false;
         }
-        if (this.props.TaskActivityData.TA_assignee_constraints[2][constraint] === undefined) {
-            return false;
-        }
-        if (this.props.TaskActivityData.TA_assignee_constraints[2][constraint].indexOf(referId) == -1) {
-            return false;
-        }
-        return true;
+
     }
 
     doesTaskHaveAssessmentFields() {
@@ -98,7 +96,7 @@ class TaskDetailsComponent extends React.Component {
             );
         }
 
-        const taskCreatedList = this.props.getAlreadyCreatedTasks(this.props.index, this.props.workflowIndex);
+        const taskCreatedList = this.props.callTaskFunction('getAlreadyCreatedTasks', this.props.index, this.props.workflowIndex);
         const simpleGradeOptionsView = null;
 
         // assignee constraint views
@@ -222,7 +220,7 @@ class TaskDetailsComponent extends React.Component {
             }
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers) {
-                const fieldSelectionList = this.props.getTaskFields(this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
+                const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
                   <label>
                     {field.label}
                     <Radio value={field.value} />
@@ -299,7 +297,7 @@ class TaskDetailsComponent extends React.Component {
 
             let removeButtonView = null;
             if (index != 0) {
-                removeButtonView = (<div className="remove-button" onClick={this.props.removeFieldButton.bind(this, this.props.index, this.props.workflowIndex, index)}>
+                removeButtonView = (<div className="remove-button" onClick={this.props.callTaskFunction.bind(this, 'removeFieldButton', this.props.index, this.props.workflowIndex, index)}>
                   <i className="fa fa-remove" aria-hidden="true" data-for="remove-icon" data-tip={strings.RemoveButtonTip} />
                   <ReactTooltip id="remove-icon" effect="solid" />
                 </div>);
@@ -370,7 +368,7 @@ class TaskDetailsComponent extends React.Component {
             <div className="section-button-area">
               <button
                 type="button" className="divider" onClick={() => {
-                    this.props.addFieldButton(this.props.index, this.props.workflowIndex);
+                    this.props.callTaskFunction('addFieldButton', this.props.index, this.props.workflowIndex);
                     const newDefFields = this.state.DefaultFieldForeign;
                     newDefFields.push(false);
                     this.setState({ DefaultFieldForeign: newDefFields });
@@ -487,7 +485,6 @@ class TaskDetailsComponent extends React.Component {
             const simpleGrade = (
               <div className="inner">
                 <label>{strings.AwardPointsForDoing}</label>
-
                 <Checkbox click={this.props.callTaskFunction.bind(this,'changeSimpleGradeCheck', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_simple_grade != 'none'} />
                 <br /> {simpleGradeOptions}
               </div>
@@ -501,10 +498,10 @@ class TaskDetailsComponent extends React.Component {
                     <label>
                       {strings.CanStudentsDisputeAssessment}
                     </label>
-                    <Checkbox isClicked={this.props.canDispute(this.props.index, this.props.workflowIndex, false)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Dispute', this.props.index, this.props.workflowIndex)} />
+                    <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, false)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Dispute', this.props.index, this.props.workflowIndex)} />
                   </div>
                 );
-                const consolidateOptions = this.props.canConsolidate(this.props.index, this.props.workflowIndex, false)
+                const consolidateOptions = this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)
                     ? (
                       <div>
                         <label>{strings.GradingThreshold}</label>
@@ -528,11 +525,11 @@ class TaskDetailsComponent extends React.Component {
 
                         </RadioGroup>
                         <br />
-                        <NumberField value={this.props.getTriggerConsolidationThreshold(this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this,'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
+                        <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this,'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
                         <br />
                         <label>{strings.ToBeConsolidatedAssessment}:
                             </label>
-                        <Select options={consolidationTypeValues} value={this.props.getConsolidateValue(this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
+                        <Select options={consolidationTypeValues} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                       </div>
                     )
                     : null;
@@ -540,19 +537,19 @@ class TaskDetailsComponent extends React.Component {
                     ? (
                       <div>
                         <label>{strings.ShouldAssessmentsBeConsolidated}</label>
-                        <Checkbox click={this.props.callTaskFunction.bind(this,'changeDataCheck', 'Assess_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.canConsolidate(this.props.index, this.props.workflowIndex, false)} />
+                        <Checkbox click={this.props.callTaskFunction.bind(this,'changeDataCheck', 'Assess_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)} />
                         <br /> {consolidateOptions}
                       </div>
                     )
                     : null;
-                const assessConstraint = this.props.getAssigneeInChild(false, this.props.index, this.props.workflowIndex);
+                const assessConstraint = this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex);
                 const numberOfAssessView = (assessConstraint == 'student' || assessConstraint == 'both')
                     ? (
                       <div>
                         <br />
                         <label>{strings.NumberOfAssessors}</label>
                         <br />
-                        <NumberField value={this.props.getAssessNumberofParticipants(this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this,'setAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} />
+                        <NumberField value={this.props.callTaskFunction('getAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this,'setAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} />
                         <br /> {showConsol}
                       </div>
                     )
@@ -563,7 +560,8 @@ class TaskDetailsComponent extends React.Component {
                         <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
                         <label>{strings.WhoCanAssess}</label>
                         <br />
-                        <Select options={assigneeWhoValues} value={this.props.getAssigneeInChild(false, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this,'changeAssigneeInChild', false, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfAssessView}
+                        <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this,'changeAssigneeInChild', false, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
+                         {numberOfAssessView}
                         <br /> {showDispute}
                       </div>
                     )
@@ -586,10 +584,10 @@ class TaskDetailsComponent extends React.Component {
                     <label>
                       {strings.CanStudentsDisputeReflection}
                     </label>
-                    <Checkbox isClicked={this.props.canDispute(this.props.index, this.props.workflowIndex, true)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Dispute', this.props.index, this.props.workflowIndex)} />
+                    <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, true)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Dispute', this.props.index, this.props.workflowIndex)} />
                   </div>
                 ) : null;
-                const consolidateOptions = this.props.canConsolidate(this.props.index, this.props.workflowIndex, true)
+                const consolidateOptions = this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, true)
                     ? (
                       <div>
                         <label>{strings.GradingThreshold}</label>
@@ -613,15 +611,15 @@ class TaskDetailsComponent extends React.Component {
 
                         </RadioGroup>
                         <br />
-                        <NumberField value={this.props.getTriggerConsolidationThreshold(this.props.index, this.props.workflowIndex, true)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this,'changeNumericData', 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)} size={6} />
+                        <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, true)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this,'changeNumericData', 'TA_trigger_consolidation_threshold_reflect', this.props.index, this.props.workflowIndex)} size={6} />
                         <br />
                         <label>{strings.ToBeConsolidatedReflection}
                         </label>
-                        <Select options={consolidationTypeValues} clearable={false} searchable={false} value={this.props.getConsolidateValue(this.props.index, this.props.workflowIndex, false)} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_function_type_Reflect', this.props.index, this.props.workflowIndex)} />
+                        <Select options={consolidationTypeValues} clearable={false} searchable={false} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, false)} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_function_type_Reflect', this.props.index, this.props.workflowIndex)} />
                       </div>
                     )
                     : null;
-                const showConsol = this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex) > 1
+                const showConsol = this.props.callTaskFunction('getReflectNumberofParticipants', this.props.index, this.props.workflowIndex) > 1
                     ? (
                       <div>
                         <label>{strings.ShouldReflectionsBeConsolidated}</label>
@@ -632,14 +630,14 @@ class TaskDetailsComponent extends React.Component {
                       </div>
                     )
                     : null;
-                const reflectConstr = this.props.getAssigneeInChild(true, this.props.index, this.props.workflowIndex);
+                const reflectConstr = this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex);
                 const numberOfReflectorsView = (reflectConstr == 'student' || reflectConstr == 'both')
                     ? (
                       <div>
                         <br />
                         <label>{strings.NumberOfStudents}</label>
                         <br />
-                        <NumberField value={this.props.getReflectNumberofParticipants(this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this,'setReflectNumberofParticipants', this.props.index, this.props.workflowIndex)} />
+                        <NumberField value={this.props.callTaskFunction('getReflectNumberofParticipants', this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this,'setReflectNumberofParticipants', this.props.index, this.props.workflowIndex)} />
                         <br /> {showConsol}
                       </div>
                     )
@@ -648,7 +646,7 @@ class TaskDetailsComponent extends React.Component {
                   <div>
                     <Select options={reflectionValues} onChange={this.props.callTaskFunction.bind(this,'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_reflection[0]} clearable={false} searchable={false} />
                     <label>{strings.WhoCanReflect}</label><br />
-                    <Select options={assigneeWhoValues} value={this.props.getAssigneeInChild(true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this,'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
+                    <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this,'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
                     <br /> {showDispute}
                   </div>
                 );
@@ -805,7 +803,7 @@ class TaskDetailsComponent extends React.Component {
             }
             const showNumberofStudents = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ?
             (<div>
-              <label>How many participants should there be for this task</label>
+              <label>{strings.HowManyParticipants}</label>
               <NumberField value={this.props.TaskActivityData.TA_number_participant} min={1} max={20} onChange={this.props.callTaskFunction.bind(this,'changeNumericData', 'TA_number_participant', this.props.index, this.props.workflowIndex)} />
             </div>
             ) : null;

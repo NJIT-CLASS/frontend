@@ -71,6 +71,7 @@ let strings = {
     AssigneeConstraints: 'Assignee Constraints',
     WhoCanDoTask: 'Who can do this task',
     WillThisBeGroupTask: 'Will this be a group task',
+    HowManyParticipants: 'How many participants should there be for this task',
     SeeSiblingsLabel: 'Since multiple people will work on this task, should they be able to see each other\'s responses while working on the task',
     DoesThisLeadToNewProblem: 'Does this lead to a new problem',
     DoesThisLeadToNewSolution: 'Does this lead to a new solution',
@@ -126,7 +127,8 @@ let strings = {
     AssignmentInstructions: 'Assignment Instructions (optional)',
     Submit: 'Submit',
     SubmitSuccessMessage: 'Successfully created assignment!',
-    ErrorMessage: 'Submit Error! Please check your work and try again'
+    ErrorMessage: 'Submit Error! Please check your work and try again',
+    SaveSuccessMessage: 'Assignment Saved.'
 };
 
 export default strings;

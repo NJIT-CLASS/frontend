@@ -84,6 +84,27 @@
 
   {{/if}}
 
+
+  {{#if partialAssignments}}
+  <div class="section">
+      <h2 class="title">{{__ "Saved Assignments"}}</h2>
+      <div class="section-content">
+          <div class="col-xs-6">
+            <ul>
+              {{#each partialAssignments}}
+
+              <li class="list-group-item">
+              <a href="/asa/{{../courseID}}?partialAssignmentId={{PartialAssignmentID}}">{{PartialAssignmentName}}</a>
+                </li>
+
+              {{/each}}
+            </ul>
+          </div>
+      </div>
+  </div>
+
+  {{/if}}
+
   </div>
 </div>
 

@@ -509,6 +509,10 @@ class AssignmentEditorContainer extends React.Component {
                     Courses: coursesArray
                 });
             });
+        }else{
+            this.setState({
+                CourseID: this.props.CourseID
+            });
         }
 
         //Load partially made assignment from the database
@@ -544,6 +548,12 @@ class AssignmentEditorContainer extends React.Component {
     //       return false;
     //   });
     // }
+    clearCurrentStructure(workflowIndex){
+        let newData = this.state.WorkflowDetails;
+        newData[workflowIndex].WorkflowStructure = cloneDeep(this.root);
+        newData[workflowIndex].Workflow = [cloneDeep(this.blankWorkflow)];
+        return this.setState({WorkflowDetails: newData});
+    }
 
     makeDefaultWorkflowStructure(workflowIndex){
       //this sets the default problem structure
@@ -552,7 +562,6 @@ class AssignmentEditorContainer extends React.Component {
         this.changeDataCheck('TA_allow_assessment', 2, workflowIndex);
         this.changeDataCheck('Assess_Consolidate', 2, workflowIndex);
         this.changeDataCheck('Assess_Dispute', 2, workflowIndex);
-      //
         this.checkAssigneeConstraintTasks(1, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(2, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(2, 'not', 1, workflowIndex);
@@ -567,10 +576,15 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     componentDidMount() {
-        this.makeDefaultWorkflowStructure(0);
-        this.setState({ Loaded: true});
+        if(this.state.PartialAssignmentID){
+            return this.setState({ Loaded: true});
+        }else{
+            this.makeDefaultWorkflowStructure(0);
+            return this.setState({ Loaded: true});
+        }
 
-        return;
+
+
     }
 
     makeSubWorkflows(root, workflowArray, workflowIndex){
@@ -660,8 +674,8 @@ class AssignmentEditorContainer extends React.Component {
         let AA_Data = assignmentData;
         workflowData.forEach((workflow, index) => {
             workflow.WorkflowStructure = this.unflattenTreeStructure(workflow.WorkflowStructure);
-        });
-
+        })
+;
         this.setState({
             AssignmentActivityData: assignmentData,
             WorkflowDetails: workflowData
@@ -2282,7 +2296,7 @@ class AssignmentEditorContainer extends React.Component {
         console.log(arguments);
         const args = [].slice.call(arguments);
         const functionName = args.shift();
-        this[functionName](...args);
+        return this[functionName](...args);
     }
 
     aFunction(a, b ,d,ra,j,r){
@@ -2300,6 +2314,18 @@ class AssignmentEditorContainer extends React.Component {
           </button>
         );
         let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
+
+        if(this.state.SaveSuccess){
+            infoMessage = (
+              <span onClick={() => {
+                  this.setState({SubmitSuccess: false});
+              }} className="small-info-message">
+              <span className="success-message">
+                {this.state.Strings.SaveSuccessMessage}
+              </span>
+              </span>
+          );
+        }
 
         if (this.state.SubmitSuccess) {
             infoMessage = (
@@ -2360,30 +2386,13 @@ class AssignmentEditorContainer extends React.Component {
                             TaskActivityData={task}
                             isOpen={this.state.SelectedTask == node.model.id}
                             Strings={this.state.Strings}
-                            changeNumericData={this.changeNumericData.bind(this)}
-                            changeInputData={this.changeInputData.bind(this)}
-                            changeDropdownData={this.changeDropdownData.bind(this)}
-                            changeTASimpleGradeCheck={this.changeTASimpleGradeCheck.bind(this)}
-                            changeTASimpleGradePoints={this.changeTASimpleGradePoints.bind(this)}
-                            changeInputFieldData={this.changeInputFieldData.bind(this)}
-                            changeNumericFieldData={this.changeNumericFieldData.bind(this)}
-                            changeDropdownFieldData={this.changeDropdownFieldData.bind(this)}
-                            changeFieldName={this.changeFieldName.bind(this)}
-                            changeFieldCheck={this.changeFieldCheck.bind(this)}
-                            changeFileUpload={this.changeFileUpload.bind(this)}
-                            changeDataCheck={this.changeDataCheck.bind(this)}
                             addFieldButton={this.addFieldButton.bind(this)}
                             removeFieldButton={this.removeFieldButton.bind(this)}
-                            changeRadioData={this.changeRadioData.bind(this)}
-                            changeSimpleGradeCheck={this.changeSimpleGradeCheck.bind(this)}
                             getReflectNumberofParticipants={this.getReflectNumberofParticipants.bind(this)}
-                            setReflectNumberofParticipants={this.setReflectNumberofParticipants.bind(this)}
                             getAssessNumberofParticipants={this.getAssessNumberofParticipants.bind(this)}
-                            setAssessNumberofParticipants={this.setAssessNumberofParticipants.bind(this)}
                             checkAssigneeConstraints={this.checkAssigneeConstraints.bind(this)}
                             checkAssigneeConstraintTasks={this.checkAssigneeConstraintTasks.bind(this)}
                             getAlreadyCreatedTasks={this.getAlreadyCreatedTasks.bind(this)}
-                            changeAssigneeInChild={this.changeAssigneeInChild.bind(this)}
                             getAssigneeInChild={this.getAssigneeInChild.bind(this)}
                             getTaskFields={this.getTaskFields.bind(this)}
                             setDefaultField={this.setDefaultField.bind(this)}
