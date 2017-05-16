@@ -210,9 +210,9 @@ class SemesterManager extends React.Component {
 					<label>{this.props.strings.name}</label>
 					<input type='text' onChange={this.changeName.bind(this)}></input>
 					<label>{this.props.strings.startDate}</label>
-					<input type='text' onChange={this.changeStartDate.bind(this)}></input>
+					<input type='date' onChange={this.changeStartDate.bind(this)}></input>
 					<label>{this.props.strings.endDate}</label>
-					<input type='text' onChange={this.changeEndDate.bind(this)}></input>
+					<input type='date' onChange={this.changeEndDate.bind(this)}></input>
 				</form>
 			</div>
 		);
