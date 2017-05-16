@@ -1,9 +1,12 @@
 import React from 'react';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; //contains constants and their values
+// Input Components: These can be interactive with the user;
+import SuperComponent from './superComponent';
+
 import MultiViewComponent from './multiViewComponent';
 import SuperViewComponent from './superViewComponent';
 
-const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
+const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
     return <div>
           {
             TasksArray.map(function(task, idx) {
@@ -12,7 +15,7 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
                 let compString = null;
-                console.log(task);
+                console.log(task, idx);
                 if (idx == TasksArray.length - 1) {
                     switch (task.TaskActivity.Type) {
                     case TASK_TYPES.CREATE_PROBLEM:
@@ -62,8 +65,9 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
                         return (
         					<SuperComponent
         						key={idx + 2000}
-        						TaskID={this.props.TaskID}
-        						UserID={this.props.UserID}
+                    index={idx}
+        						TaskID={TaskID}
+        						UserID={UserID}
         						Files={task.Files}
         						ComponentTitle={compString}
         						Type={task.TaskActivity.Type}
@@ -74,7 +78,7 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
-        						apiUrl={this.props.apiUrl}
+        						apiUrl={apiUrl}
         					/>
                         );
                     }
@@ -83,8 +87,8 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings }) => {
                         return (
         					<MultiViewComponent
         						UsersTaskData={task}
-        						TaskID={this.props.TaskID}
-        						UserID={this.props.UserID}
+        						TaskID={TaskID}
+        						UserID={UserID}
         						Strings={Strings}
         					/>
                         );

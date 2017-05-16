@@ -8,8 +8,7 @@ import React from 'react';
 import request from 'request';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
 
-// Input Components: These can be interactive with the user;
-import SuperComponent from './superComponent';
+
 // Display Components: These only display data retrived from the database. Not interactive.
 
 import HeaderComponent from './headerComponent';
@@ -233,6 +232,7 @@ class TemplateContainer extends React.Component {
               TaskID={this.props.TaskID}
               UserID={this.props.UserID}
               Strings={this.state.Strings}
+              apiUrl={this.props.apiUrl}
             />);
         }
 

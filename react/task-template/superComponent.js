@@ -139,9 +139,7 @@ class SuperComponent extends React.Component {
       // function makes a POST call and sends in the state variables which hold the user's input
         e.preventDefault(); // standard JavaScript behavior
       // if task is complete, don't allow saving new data
-        if (this.state.TaskStatus == 'complete') {
-            return;
-        }
+
 
 
         const options = {
@@ -178,9 +176,7 @@ class SuperComponent extends React.Component {
     submitData(e) {
         e.preventDefault();
       // don't allow submit if task is complete
-        if (this.state.TaskStatus == 'complete') {
-            return;
-        }
+
       // check if input is valid
         const validData = this.isValidData();
         if (validData) {
@@ -635,14 +631,13 @@ class SuperComponent extends React.Component {
 }
 SuperComponent.propTypes = {
     TaskActivityFields: PropTypes.object.isRequired,
-    TaskData: PropTypes.object.isRequired,
+    TaskData: PropTypes.array.isRequired,
     Strings: PropTypes.object.isRequired,
     ComponentTitle: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
-    Instructions: PropTypes.string.isRequired,
-    Rubric: PropTypes.string.isRequired,
-    TaskStatus: PropTypes.string.isRequired,
-    Files: PropTypes.object.isRequired,
+    Instructions: PropTypes.string,
+    Rubric: PropTypes.string,
+    TaskStatus: PropTypes.array,
+    Files: PropTypes.object,
     FileUpload: PropTypes.object.isRequired,
     Type: PropTypes.string.isRequired,
 
