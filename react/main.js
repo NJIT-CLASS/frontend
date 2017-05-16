@@ -8,13 +8,13 @@ import React from 'react';
 import request from 'request';
 import ReactDOM from 'react-dom';
 
-import AddSectionContainer from './add-section/add-section-container';
+//import AddSectionContainer from './add-section/add-section-container';
 import AddUserContainer from './add-user/add-user-container';
-import AssignmentContainer from './create-assignment/assignment-container';
+//import AssignmentContainer from './create-assignment/assignment-container';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
 import ClassPageContainer from './shared/class-page-container';
-import CourseContainer from './create-course/course-container';
+//import CourseContainer from './create-course/course-container';
 import TemplateContainer from './task-template/TemplateContainer';
 import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';

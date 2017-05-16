@@ -136,8 +136,25 @@ app.post('/api/change-admin-status', (req, res) => {
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
+  // language options
+    const languages = react_consts.LANGUAGES;
 	// default language
     res.locale = 'en';
+
+    if(req.headers['accept-language']){
+      //set language to user's browser configuration
+        let locales = languages.map(lang => lang.locale);
+        let browserLangs = req.headers['accept-language'].match(/[a-z]{2}/g);
+        for(let idx = 0; idx < browserLangs.length; idx +=1){
+            if(browserLangs[idx] in locales){
+                res.locale = browserLangs[idx];
+            }
+        }
+
+        locales = null;
+        browserLangs = null;
+
+    }
 
     if ('lang' in req.query) {
         req.session.lang = req.query.lang;
@@ -147,9 +164,6 @@ app.use((req, res, next) => {
     if ('lang' in req.session) {
         res.locale = req.session.lang;
     }
-
-	// language options
-    const languages = react_consts.LANGUAGES;
 
     req.App.langOptions = [];
 
