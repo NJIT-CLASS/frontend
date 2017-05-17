@@ -1,6 +1,8 @@
 import React from 'react';
 import request from 'request';
 import Select from 'react-select';
+import Datetime from 'react-datetime';
+
 
 class SemesterManager extends React.Component {
     constructor(props){
@@ -133,14 +135,16 @@ class SemesterManager extends React.Component {
             name: event.target.value
         });
     }
-    changeStartDate(event) {
+    changeStartDate(dateString) {
+        const date = dateString.format('YYYY-MM-DD');
         this.setState({
-            startDate: event.target.value
+            startDate: date
         });
     }
-    changeEndDate(event) {
+    changeEndDate(dateString) {
+        const date = dateString.format('YYYY-MM-DD');
         this.setState({
-            endDate: event.target.value
+            endDate: date
         });
     }
 	// save new semester, reload semester list on success
@@ -210,9 +214,17 @@ class SemesterManager extends React.Component {
 					<label>{this.props.strings.name}</label>
 					<input type='text' onChange={this.changeName.bind(this)}></input>
 					<label>{this.props.strings.startDate}</label>
-					<input type='date' onChange={this.changeStartDate.bind(this)}></input>
+          <Datetime
+                timeFormat={false}
+                closeOnSelect={true}
+                onChange={this.changeStartDate.bind(this)}
+          />
 					<label>{this.props.strings.endDate}</label>
-					<input type='date' onChange={this.changeEndDate.bind(this)}></input>
+          <Datetime
+                timeFormat={false}
+                closeOnSelect={true}
+                onChange={this.changeEndDate.bind(this)}
+          />
 				</form>
 			</div>
 		);
@@ -231,10 +243,21 @@ class SemesterManager extends React.Component {
 					<label>{this.props.strings.name}</label>
 					<input type='text' value={this.state.name} onChange={this.changeName.bind(this)}></input>
 					<label>{this.props.strings.startDate}</label>
-					<input type='text' value={this.state.startDate} onChange={this.changeStartDate.bind(this)}></input>
-					<label>{this.props.strings.endDate}</label>
-					<input type='text' value={this.state.endDate} onChange={this.changeEndDate.bind(this)}></input>
-				</form>
+          <Datetime
+                defaultValue={Datetime.moment(this.state.startDate, 'YYYY-MM-DD')}
+                timeFormat={false}
+                closeOnSelect={true}
+                onChange={this.changeStartDate.bind(this)}
+          />
+
+          <label>{this.props.strings.endDate}</label>
+          <Datetime
+                defaultValue={Datetime.moment(this.state.endDate, 'YYYY-MM-DD')}
+                timeFormat={false}
+                closeOnSelect={true}
+                onChange={this.changeEndDate.bind(this)}
+          />
+        </form>
 			</div>
 		);
 

@@ -81,25 +81,18 @@ class Assignment extends React.Component {
 
         return (
     <div style={{width:'fit-content',height: 'fit-content'}} className = "section">
-      <h1 className = "title">{strings.AssignmentDates}</h1>
-
+      <h1 className = "title">{this.props.Assignment.AssigmentName}</h1>
       <div className = "section-content">
         <table border="0" cellPadding="0" cellSpacing="0" className="tab">
           <tbody className="children">
-            <tr className="children">
-              <td className="children">
-                <h1>{strings.AssignmentName}</h1>
-              </td>
-            </tr>
-
-            <tr className="children">
+            {/*<tr className="children">
               <td className="children">
                 <form>
                   <input type="text" name="AssigmentName" value={this.props.Assignment.AssigmentName} onChange = {this.props.onChangeAssigmentName.bind(this)}>
                   </input>
                 </form>
               </td>
-            </tr>
+            </tr>*/}
 
             <tr className="children">
               <td className="children">

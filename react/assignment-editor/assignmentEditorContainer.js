@@ -455,7 +455,7 @@ class AssignmentEditorContainer extends React.Component {
                 AA_course: parseInt(this.props.CourseID),
                 AA_instructions: '',
                 AA_type: '',
-                AA_display_name: '',
+                AA_display_name: 'Assignment',
                 AA_section: null,
                 AA_semester: null,
                 AA_grade_distribution: null,
