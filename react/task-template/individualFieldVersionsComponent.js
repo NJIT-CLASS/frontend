@@ -1,5 +1,6 @@
 import React from 'react';
 import Rater from 'react-rater';
+import MarkupText from '../shared/markupTextView';
 
 class FieldVersionView extends React.Component{
     constructor(props){
@@ -12,13 +13,13 @@ class FieldVersionView extends React.Component{
   //  FieldIndex: int
     render(){
         let rubricView = null;
-        let instructions = null;
+        let instructionsView = null;
         let completeFieldView = null;
         let taskField = this.props.Field;
         let title = taskField.title;
         let fieldTitle = '';
 
-
+        console.log(this.props.Field);
         if(taskField.show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
             if(taskField.assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
                 fieldTitle = title + ' ' + this.props.Strings.Grade;
@@ -26,6 +27,18 @@ class FieldVersionView extends React.Component{
             else{
                 fieldTitle = title;
             }
+        }
+
+        if(this.props.Field.rubric !== ''){
+            rubricView = (<div>
+            <MarkupText classNames="regular-text" content={this.props.Field.rubric } />
+          </div>);
+        }
+
+        if(this.props.Field.instructions !== ''){
+            instructionsView = (<div>
+            <MarkupText classNames="regular-text" content={this.props.Field.instructions } />
+          </div>);
         }
 
         let versions = this.props.Versions.map(function(versionArray, vIndex){
@@ -40,7 +53,9 @@ class FieldVersionView extends React.Component{
                     justification = (<div key={this.props.FieldIndex + vIndex + 655}></div>);
                 }
                 else{
-                    justification = (<div key={this.props.FieldIndex + vIndex + 655} className="faded-big" dangerouslySetInnerHTML={{ __html: fieldVersion[1]}}></div>);
+                    justification = (
+                      <MarkupText classNames="faded-big" content={fieldVersion[1]} />
+                    );
                 }
             }
 
@@ -72,8 +87,9 @@ class FieldVersionView extends React.Component{
                 }
                 break;
             case 'text':
-                fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-big" dangerouslySetInnerHTML={{ __html: fieldVersion[0]}}>
-                </div>);
+                fieldContentBlock = (
+                    <MarkupText classNames="faded-big" content={fieldVersion[0]} />
+                  );
                 break;
             case 'numeric':
                 fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-small"> {fieldVersion[0]}
@@ -96,7 +112,7 @@ class FieldVersionView extends React.Component{
         completeFieldView =  (
           <div key={this.props.FieldIndex +200}>
 
-            {instructions}
+            {instructionsView}
             {rubricView}
             <br/>
             {versions}

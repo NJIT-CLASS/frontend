@@ -77,7 +77,8 @@ class SuperViewComponent extends React.Component {
                 // used in the future (WYSIWYG editor support)
                 TA_rubric_content = (
                   <div>
-                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div><div className="regular-text rubric" key={'rubric'} dangerouslySetInnerHTML={{ __html: this.props.Rubric }} />
+                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
+                    <MarkupText classNames="regular-text" content={this.props.Rubric} />
                   </div>
                 );
             }
@@ -93,8 +94,9 @@ class SuperViewComponent extends React.Component {
         if (this.props.Instructions != null && this.props.Instructions !== '') {
             TA_instructions = (
               <div >
-                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div><div className="regular-text instructions" dangerouslySetInnerHTML={{ __html: this.props.Instructions }} />
-              </div>);
+                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
+                  <MarkupText classNames="regular-text" content={this.props.Instructions} />
+                </div>);
         }
 
 

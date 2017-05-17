@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'request';
+import InputPassword from 'react-ux-password-field';
 import Dropzone from 'react-dropzone';
 
 class Container extends React.Component {
@@ -37,7 +38,12 @@ class Container extends React.Component {
             yes: 'Yes',
             no: 'No',
             admin: 'Administrator',
-            instructor: 'Instructor'
+            instructor: 'Instructor',
+            Bad: 'Bad',
+            NotGood: 'Not good',
+            Decent: 'Decent',
+            Strong: 'Strong',
+            Great: 'Great'
         };
     }
 
@@ -426,7 +432,8 @@ class Container extends React.Component {
 						<label>{this.strings.currentPassword}</label>
 						<input type="password" onChange={this.changeCurrentPassword.bind(this)}></input>
 						<label>{this.strings.newPassword}</label>
-						<input type="password" onChange={this.changeNewPassword.bind(this)}></input>
+            <input type="password" onChange={this.changeNewPassword.bind(this)}></input>
+
 						<label>{this.strings.confirmPassword}</label>
 						<input type="password" onChange={this.changeConfirmPassword.bind(this)}></input>
 					</form>

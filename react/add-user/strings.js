@@ -10,4 +10,9 @@ export default {
     AddUser: 'Add User',
     IsAdmin: 'Admin?',
     IsInstructor: 'Instructor?',
+    Bad: 'Bad',
+    NotGood: 'Not good',
+    Decent: 'Decent',
+    Strong: 'Strong',
+    Great: 'Great'
 };

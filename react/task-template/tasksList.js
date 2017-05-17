@@ -131,6 +131,7 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
         						Rubric={task.TaskActivity.Rubric}
         						ComponentTitle={compString}
         						TaskData={task.Data}
+                    Status={task.Status}
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}

@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import request from 'request';
 import Checkbox from '../shared/checkbox';
+import InputPassword from 'react-ux-password-field';
 import {clone, cloneDeep} from 'lodash';
 import Strings from './strings.js';
 
@@ -69,8 +70,8 @@ class AddUserContainer extends React.Component {
         return this.setState({pass: pass});
     }
 
-    onChangePass(event){
-        this.setState({pass: event.target.value});
+    onChangePass(pass, isStrongEnough){
+        this.setState({pass: pass});
     }
 
     adduserSubmit(content){
@@ -198,11 +199,11 @@ class AddUserContainer extends React.Component {
                   <td>
                     <div>
                       <label>{Strings.Password}:</label>
-                      <input type="text"
-                        name="pass"
-                        value={this.state.pass}
-                        onChange={this.onChangePass.bind(this)}
-                      />
+                      <br />
+                      <InputPassword onChange={this.onChangePass.bind(this)}
+                                     minLength={6}
+                                     strengthLang={[Strings.Bad, Strings.NotGood, Strings.Decent, Strings.Strong, Strings.Great]}
+                                   />
 
 
                     </div>

@@ -15,9 +15,10 @@ const MarkupText = ({content, classNames}) => {
         mode: 'white',
         list: whitelist
     };
+    // <Markup className={classNames} content={bleach.sanitize(content, options)}/>
 
     return(
-    <Markup className='regular-text' content={bleach.sanitize(content, options)}/>
+      <div className={classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(content, options)}}></div>
     );
 
 

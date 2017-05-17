@@ -102,7 +102,6 @@ class SuperComponent extends React.Component {
             TaskData: tdata,
             TaskActivityFields: tAdata,
             TaskResponse: latestVersion,
-            TaskStatus: tstat,
             FileUploadsSatisfied: filesSatisfied,
             NumberFilesStored: filesUploadedCount,
             DisputeStatus: disputeStat,
@@ -139,7 +138,7 @@ class SuperComponent extends React.Component {
       // function makes a POST call and sends in the state variables which hold the user's input
         e.preventDefault(); // standard JavaScript behavior
       // if task is complete, don't allow saving new data
-        if (this.state.TaskStatus.includes('complete')) {
+        if (this.props.TaskStatus.includes('complete')) {
             return;
         }
 
@@ -178,7 +177,7 @@ class SuperComponent extends React.Component {
     submitData(e) {
         e.preventDefault();
       // don't allow submit if task is complete
-        if (this.state.TaskStatus.includes('complete')) {
+        if (this.props.TaskStatus.includes('complete')) {
             return;
         }
       // check if input is valid
@@ -350,7 +349,8 @@ class SuperComponent extends React.Component {
             infoMessage = (<span onClick={() => { this.setState({ SubmitSuccess: false }); }} style={{ backgroundColor: '#00AB8D', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)' }}>{this.props.Strings.SubmitSuccessMessage}</span>);
         }
 
-        if (this.state.TaskStatus.includes('complete')) {
+        console.log(this.state);
+        if (!this.props.TaskStatus.includes('complete')) {
             formButtons = (<div>
               <br />
               <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
@@ -382,7 +382,7 @@ class SuperComponent extends React.Component {
                 TA_rubric_content = (
                   <div>
                     <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
-                    <MarkupText key={'rubric'} content={this.props.Rubric} />
+                    <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Rubric} />
 
                   </div>
                   );
@@ -420,7 +420,7 @@ class SuperComponent extends React.Component {
             TA_instructions = (
               <div >
                 <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
-                <MarkupText key={'rubric'} content={this.props.Instructions} />
+                <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Instructions} />
               </div>);
         }
           // creating all input fields here
@@ -604,7 +604,7 @@ class SuperComponent extends React.Component {
             return completeFieldView;
         }, this);
 
-        if (this.state.TaskStatus === 'Complete') {
+        if (this.props.TaskStatus === 'Complete') {
             formButtons = (<div />);
         }
 
