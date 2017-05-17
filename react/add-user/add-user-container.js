@@ -13,6 +13,8 @@ class AddUserContainer extends React.Component {
             lastname: '',
             email: '',
             role: 'Student',
+            instructor: false,
+            admin: false,
             firstnameError: false,
             lastnameError: false,
             displayError: false,
@@ -34,6 +36,18 @@ class AddUserContainer extends React.Component {
         this.setState({role: user_role.value});
 
     }
+
+    onChangeAdminRole(e){
+        this.setState({
+            admin : !this.state.admin
+        });
+    }
+    onChangeInstructorRole(e){
+        this.setState({
+            instructor : !this.state.instructor
+        });
+    }
+
     onChangeFirstname(name){
         this.setState({firstname: name.target.value});
     }
@@ -61,11 +75,8 @@ class AddUserContainer extends React.Component {
 
     adduserSubmit(content){
         content.preventDefault();
-        const firstname = this.state.firstname;
-        const lastname = this.state.lastname;
-        const email = this.state.email;
-        const role = this.state.role;
-        const pass = this.state.pass;
+
+        const {firstname, lastname, email,admin,instructor, pass} = this.state;
         const firstnameError = firstname.length === 0 ? true : false;
         const lastnameError = lastname.length === 0 ? true : false;
         if( firstnameError || lastnameError ){
@@ -90,7 +101,8 @@ class AddUserContainer extends React.Component {
                 firstname: firstname,
                 lastname: lastname,
                 email: email,
-                role: role,
+                instructor: instructor,
+                admin: admin,
                 password: pass
             },
             json: true
@@ -175,17 +187,13 @@ class AddUserContainer extends React.Component {
                   </div>
                   </td><td>
                     <div>
-                      <label>{Strings.Role}:</label>
-                      <Select
-                        name="role"
-                        value={this.state.role}
-                        options={roles}
-                        clearable={true}
-                        searchable={true}
-                        onChange={this.onChangeRole.bind(this)}
-                      />
+                      <label>{Strings.IsAdmin}:</label>
+                      <Checkbox click={this.onChangeAdminRole.bind(this)} isClicked={this.state.admin} />
                     </div>
-                  </td></tr>
+                    <div><label>{Strings.IsInstructor}:</label>
+                    <Checkbox click={this.onChangeInstructorRole.bind(this)} isClicked={this.state.instructor} /></div>
+                  </td>
+                </tr>
                 <tr>
                   <td>
                     <div>

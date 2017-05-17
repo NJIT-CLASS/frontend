@@ -4,6 +4,7 @@
 */
 import React from 'react';
 import PropTypes from 'prop-types';
+import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 
@@ -16,42 +17,9 @@ class SuperViewComponent extends React.Component {
             TaskData: {},
             ShowRubric: false,
             FieldRubrics: [],
-            TaskActivityFields: {},
+            Ready: false,
             Error: false,
         };
-    }
-
-    componentWillMount() {
-        const tdata = this.props.TaskData;
-        let tAdata = this.props.TaskActivityFields;
-        console.log('Data in Component', tdata);
-        if (!tdata || tdata.length === 0 || !tAdata || tAdata === '{}') {
-        // this checks to make sure all the necessary data isn't empty. If it is,
-        // it will cause errors, so set the Error state to true to prevent rendering
-            this.setState({ Error: true });
-            return;
-        }
-
-        // Sometimes, the data isn't parsed, so it needs to be parsed
-        if (tAdata.constructor !== Object) {
-            tAdata = JSON.parse(this.props.TaskActivityFields);
-        }
-
-
-        for (let i = 0; i < tAdata.number_of_fields; i += 1) {
-            for (let j = 0; j < tdata.length; j += 1) {
-                if (tdata[j][i] == null) {
-                  // make sure that the number of fields in the Task matches the
-                  //  number of fields in the Task Activity
-                    this.setState({ Error: true });
-                    return;
-                }
-            }
-        }
-        this.setState({
-            TaskData: tdata,
-            TaskActivityFields: tAdata,
-        });
     }
 
     toggleContent() {
@@ -95,9 +63,6 @@ class SuperViewComponent extends React.Component {
         let TA_instructions = null;
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
 
-        if (this.state.Error) { // if there was an error loading the data, show an Error component
-            return (<ErrorComponent />);
-        }
 
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
@@ -132,13 +97,13 @@ class SuperViewComponent extends React.Component {
               </div>);
         }
 
-        console.log(this.state.TaskData);
 
-        const fields = this.state.TaskActivityFields.field_titles.map((field, index) => {
+        console.log(this.props.TaskActivityFields, this.props.TaskData);
+        const fields = this.props.TaskActivityFields.field_titles.map((field, index) => {
             let fieldTitle = '';
             let fieldTitleText = '';
-            if (this.state.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
-                if (this.state.TaskActivityFields[index].assessment_type != null) { // add "Grade" to assess fields to make pretty
+            if (this.props.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
+                if (this.props.TaskActivityFields[index].assessment_type != null) { // add "Grade" to assess fields to make pretty
                     fieldTitleText = `${field} ${this.props.Strings.Grade}`;
                 } else {
                     fieldTitleText = field;
@@ -152,7 +117,7 @@ class SuperViewComponent extends React.Component {
             return (<div>
               <b>{fieldTitle}</b>
               <br />
-              <VersionView Versions={this.state.TaskData} Field={this.state.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+              <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);
 

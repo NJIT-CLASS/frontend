@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +55,7 @@ class App extends React.Component {
             />
             <div className="ql-editor" dangerouslySetInnerHTML={{ __html: this.state.EditorHTML }}>
             </div>
+
 
           </div>
 

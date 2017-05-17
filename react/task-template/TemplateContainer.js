@@ -39,9 +39,6 @@ class TemplateContainer extends React.Component {
             CourseID: null,
             CourseName: '',
             CourseNumber: '',
-            AssignmentTitle: '',
-            AssignmentID: null,
-            AssignmentDescription: '',
             TaskActivityType: '',
             TaskStatus: '',
             SemesterID: null,
@@ -88,9 +85,7 @@ class TemplateContainer extends React.Component {
                 this.setState({ Error: true });
                 return;
             }
-            console.log(bod);
             this.props.__(strings, (newStrings) => {
-                console.log('request', bod);
 
                 request(options, (err, res, body) => {
                     if (res.statusCode != 200) {
@@ -112,13 +107,12 @@ class TemplateContainer extends React.Component {
                         let parseTaskList = bod.superTask.map((task) => {
                             const newTask = task;
                             if (task.Data !== null) {
-                                if (Array.isArray(task.Data)) {
+                                if(typeof newTask.Data !== 'object'){
+                                    newTask.Data = JSON.parse(task.Data);
+                                } else{
                                     newTask.Data = task.Data;
-                                } else if (task.Data.constructor === Object) {
-                                    newTask.Data = [task.Data];
-                                } else {
-                                    newTask.Data = [JSON.parse(task.Data)];
                                 }
+
                             } else {
                                 newTask.Data = [new Object()];
                             }
@@ -130,23 +124,18 @@ class TemplateContainer extends React.Component {
                             } else {
                                 newTask.Files = task.Files;
                             }
-                            if (
-    								newTask.TaskActivity.Fields !== null &&
-    								newTask.TaskActivity.Fields.constructor !==
-    									Object
-    							) {
-                                newTask.TaskActivity.Fields = JSON.parse(
-    									task.TaskActivity.Fields,
-    								);
+                            if (newTask.TaskActivity.Fields !== null &&newTask.TaskActivity.Fields.constructor !==Object) {
+                                newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
                             }
+
+                            newTask.Status = JSON.parse(task.Status);
                             if (
     								newTask.TaskActivity.FileUpload !== null &&
     								newTask.TaskActivity.FileUpload.constructor !==
     									Object
     							) {
                                 newTask.TaskActivity.FileUpload = JSON.parse(
-    									task.TaskActivity.FileUpload,
-    								);
+    									task.TaskActivity.FileUpload);
                             }
 
                             return newTask;
@@ -154,23 +143,14 @@ class TemplateContainer extends React.Component {
                         const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
-                        const alreadyArrayedTasks = [];
                         parseTaskList.forEach((task, index) => {
-                            if (
-    								skipIndeces.includes(index) ||
-    								task.TaskActivity.Type ==
-    									TASK_TYPES.NEEDS_CONSOLIDATION
-    							) {
+                            if (skipIndeces.includes(index) ||task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
                                 return;
                             }
                             if (task.TaskActivity.NumberParticipants > 1) {
-                                const newArray = parsedTaskList.filter((t, idx) => {
-                                    if (
-    										t.TaskActivity.TaskActivityID ===
-    										task.TaskActivity.TaskActivityID
-    									) {
+                                const newArray = parseTaskList.filter((t, idx) => {
+                                    if (t.TaskActivity.TaskActivityID ===task.TaskActivity.TaskActivityID) {
                                         skipIndeces.push(idx);
-
                                         return true;
                                     }
                                     return false;
@@ -184,17 +164,16 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
-                        console.log('Task data after manipulation', taskList);
                     }
+
+                    console.log('tasklist', taskList);
 
 
                     this.setState({
                         Loaded: true,
                         CourseName: body.courseName,
                         CourseNumber: body.courseNumber,
-                        AssignmentTitle: body.assignmentName,
-                        AssignmentID: body.assignmentID,
-                        AssignmentDescription: body.assignmentDescription,
+                        Assignment: body.assignment,
                         TaskActivityType: body.taskActivityType,
                         SemesterID: body.semesterID,
                         SemesterName: body.semesterName,
@@ -255,10 +234,7 @@ class TemplateContainer extends React.Component {
                   CourseName={this.state.CourseName}
                   CourseName={this.state.CourseName}
                   CourseNumber={this.state.CourseNumber}
-                  AssignmentTitle={this.state.AssignmentTitle}
-                  AssignmentDescription={
-								this.state.AssignmentDescription
-							}
+                  Assignment={this.state.Assignment}
                   TaskActivityType={this.state.TaskActivityType}
                   SemesterName={this.state.SemesterName}
                   Strings={this.state.Strings}

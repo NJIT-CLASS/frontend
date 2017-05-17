@@ -15,7 +15,6 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
                 let compString = null;
-                console.log(task, idx);
                 if (idx == TasksArray.length - 1) {
                     switch (task.TaskActivity.Type) {
                     case TASK_TYPES.CREATE_PROBLEM:

@@ -11,11 +11,12 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
 
     req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
+        
         if(body && body.UserID && body.Message == 'Success'){
             req.session.userId = body.UserID;
             req.session.token = body.Token;
-            if(body.Status != null && body.Status == 1){ // THIS WILL REDIRECT TO SETTINGS IF THE USER IS NEWLY ADDED.
-                return res.redirect('/settings');
+            if(statusCode !== 401 && body.Pending === true){ // THIS WILL REDIRECT TO SETTINGS IF THE USER IS NEWLY ADDED.
+                return res.redirect('/account');
             }else return res.redirect(req.body.url || '/');
         }
 

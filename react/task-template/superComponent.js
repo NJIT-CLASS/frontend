@@ -12,6 +12,7 @@ import { RadioGroup, Radio } from 'react-radio-group';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import FileUpload from './fileUpload';
+import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
@@ -92,8 +93,7 @@ class SuperComponent extends React.Component {
               tdata[title] = tAdata[title].default_content;
             });*/
         }
-        // if no TaskStatus is given, assume complete
-        const tstat = (this.props.TaskStatus != null) ? this.props.TaskStatus : 'Incomplete';
+
         const disputeStat = (this.props.Type == TASK_TYPES.DISPUTE) ? false : null;
 
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
@@ -139,7 +139,9 @@ class SuperComponent extends React.Component {
       // function makes a POST call and sends in the state variables which hold the user's input
         e.preventDefault(); // standard JavaScript behavior
       // if task is complete, don't allow saving new data
-
+        if (this.state.TaskStatus.includes('complete')) {
+            return;
+        }
 
 
         const options = {
@@ -176,7 +178,9 @@ class SuperComponent extends React.Component {
     submitData(e) {
         e.preventDefault();
       // don't allow submit if task is complete
-
+        if (this.state.TaskStatus.includes('complete')) {
+            return;
+        }
       // check if input is valid
         const validData = this.isValidData();
         if (validData) {
@@ -346,7 +350,7 @@ class SuperComponent extends React.Component {
             infoMessage = (<span onClick={() => { this.setState({ SubmitSuccess: false }); }} style={{ backgroundColor: '#00AB8D', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)' }}>{this.props.Strings.SubmitSuccessMessage}</span>);
         }
 
-        if (this.state.TaskStatus != 'Complete') {
+        if (this.state.TaskStatus.includes('complete')) {
             formButtons = (<div>
               <br />
               <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
@@ -377,7 +381,9 @@ class SuperComponent extends React.Component {
             if (this.state.ShowRubric) {
                 TA_rubric_content = (
                   <div>
-                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div><div className="regular-text rubric" key={'rubric'} dangerouslySetInnerHTML={{ __html: this.props.Rubric }} />
+                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
+                    <MarkupText key={'rubric'} content={this.props.Rubric} />
+
                   </div>
                   );
             }
@@ -413,8 +419,8 @@ class SuperComponent extends React.Component {
         if (this.props.Instructions != null && this.props.Instructions != '') {
             TA_instructions = (
               <div >
-                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div><div className="regular-text instructions" dangerouslySetInnerHTML={{ __html: this.props.Instructions }} />
-
+                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
+                <MarkupText key={'rubric'} content={this.props.Instructions} />
               </div>);
         }
           // creating all input fields here

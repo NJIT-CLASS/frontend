@@ -7,5 +7,7 @@ export default {
     Role: 'Role',
     Password: 'Password',
     GeneratePassword: 'Generate Password',
-    AddUser: 'Add User'
+    AddUser: 'Add User',
+    IsAdmin: 'Admin?',
+    IsInstructor: 'Instructor?',
 };

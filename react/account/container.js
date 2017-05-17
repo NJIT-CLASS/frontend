@@ -78,7 +78,7 @@ class Container extends React.Component {
                 new_phone: body.User.UserContact ? body.User.UserContact.Phone : null,
                 alias: body.User.UserContact ? body.User.UserContact.Alias : null,
                 new_alias: body.User.UserContact ? body.User.UserContact.Alias : null,
-                profilePicture: body.User.UserContact.ProfilePicture ? JSON.parse(body.User.UserContact.ProfilePicture)[0] : null,
+                profilePicture: body.User.UserContact.ProfilePicture ? JSON.parse(body.User.UserContact.ProfilePicture) : null,
                 avatar: body.User.UserContact ? body.User.UserContact.Avatar : null
 
             });

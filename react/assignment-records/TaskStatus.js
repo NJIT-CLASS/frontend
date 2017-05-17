@@ -51,7 +51,7 @@ class Frames extends React.Component {
                     DataLoaded: true,
                     Info: body.Info,
                     WorkflowArray: body.Workflows,
-                },
+                }
           );
         });
     }
@@ -140,7 +140,7 @@ class Frames extends React.Component {
                 const modalOptions = {
                     TA_Type: task.TaskActivity.Name,
                     StudentName: task.User.UserName,
-                    TaskStatus: task.Status,
+                    TaskStatus: JSON.parse(task.Status)[0],
                     TaskID: task.TaskInstanceID,
                     TaskUserHistory: JSON.parse(task.UserHistory),
                     Link: link,
@@ -148,23 +148,25 @@ class Frames extends React.Component {
                     Strings: strings
                 };
                 console.log(modalOptions);
+                let taskStatus = JSON.parse(task.Status)[0];
+
                 const taskCellDiv = (
-                  <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[task.Status]}`}>
+                  <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[taskStatus]}`}>
                     <a key={`link for ${task.TaskInstanceID}`} href={link}>
-                      {task.User.UserName}
+                      {task.User.FirstName}
                       <br key={`break one for ${task.TaskInstanceID}`} />
                       <h6> User ID: {task.User.UserID}
                         <br key={`break two for ${task.TaskInstanceID}`} />
                         Task ID: {task.TaskInstanceID}
                       </h6>
                     </a>
-                    {letters[task.Status]}
+                    {letters[taskStatus]}
                   </td>
                 );
 
                 // modal style link view
                 /* const taskCellDiv = (
-                  <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[task.Status]}`}>
+                  <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[taskStatus]}`}>
                     <div key={`link for ${task.TaskInstanceID}`}
                           onClick={()=>{
                               this.setState({
@@ -180,7 +182,7 @@ class Frames extends React.Component {
                         Task ID: {task.TaskInstanceID}
                       </h6>
                     </div>
-                    {letters[task.Status]}
+                    {letters[taskStatus]}
                   </td>
                 );*/
 
@@ -203,7 +205,7 @@ class Frames extends React.Component {
                 }
 
         /* filtering by student,status, and task. */
-                else if ((task.User.UserName == this.state.SelectedStudent.label) && (task.Status == this.state.SelectedStatus.label) && (task.TaskActivity.Type == this.state.SelectedTask.label)) {
+                else if ((task.User.UserName == this.state.SelectedStudent.label) && (taskStatus == this.state.SelectedStatus.label) && (task.TaskActivity.Type == this.state.SelectedTask.label)) {
                     if (WorkflowIDDisplayed[0] == null) {
                         WorkflowIDDisplayed[index] = task.WorkflowInstanceID;
                     } else {
@@ -218,7 +220,7 @@ class Frames extends React.Component {
                 }
 
         /* filtering by student and status. */
-                else if ((task.User.UserName == this.state.SelectedStudent.label) && (task.Status == this.state.SelectedStatus.label)) {
+                else if ((task.User.UserName == this.state.SelectedStudent.label) && (taskStatus == this.state.SelectedStatus.label)) {
                     if (((this.state.SelectedStudent != '') && (this.state.SelectedStatus != '')) && (this.state.SelectedTask != '')) {
                         count++;
                         return (<td key={`Col for ${task.TaskInstanceID}`} className="EmptyCell" />);
@@ -238,7 +240,7 @@ class Frames extends React.Component {
                 }
 
         /* filtering by task and status */
-                else if ((task.TaskActivity.Type == this.state.SelectedTask.label) && (task.Status == this.state.SelectedStatus.label)) {
+                else if ((task.TaskActivity.Type == this.state.SelectedTask.label) && (taskStatus == this.state.SelectedStatus.label)) {
                     if (((this.state.SelectedStudent != '') && (this.state.SelectedStatus != '')) && (this.state.SelectedTask != '')) {
                         count++;
                         return (<td key={`Col for ${task.TaskInstanceID}`} className="EmptyCell" />);
@@ -278,7 +280,7 @@ class Frames extends React.Component {
                 }
 
         /* filtering by one of student,status, or task. */
-                else if ((task.User.UserName == this.state.SelectedStudent.label) || (task.Status == this.state.SelectedStatus.label) || (task.TaskActivity.Type == this.state.SelectedTask.label)) {
+                else if ((task.User.UserName == this.state.SelectedStudent.label) || (taskStatus == this.state.SelectedStatus.label) || (task.TaskActivity.Type == this.state.SelectedTask.label)) {
                     if (((this.state.SelectedStudent != '') && (this.state.SelectedStatus != '')) && (this.state.SelectedTask != '')) {
                         count++;
                         return (<td key={`Col for ${task.TaskInstanceID}`} className="EmptyCell" />);

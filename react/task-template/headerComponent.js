@@ -22,11 +22,11 @@ class HeaderComponent extends React.Component {
 
     render() {
         return ( <div className="section card-2" >
-                  <h2 className = "title template-header" >{this.props.AssignmentTitle} </h2>
+                  <h2 className = "title template-header" >{this.props.Assignment.DisplayName} </h2>
                     <div className = "section-content section-header" >
                       <div name = "course-title" className = "regular-text" >
                       <b> {this.props.Strings.Course}: </b>{this.props.CourseNumber} - {this.props.CourseName} - {this.props.SemesterName}
-                        <div className="assignment-description">{this.props.AssignmentDescription}</div>
+                        <div className="assignment-description">{this.props.Assignment.Instructions}</div>
                     </div>
                   </div>
                 </div>

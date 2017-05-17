@@ -2388,19 +2388,7 @@ class AssignmentEditorContainer extends React.Component {
                             Strings={this.state.Strings}
                             addFieldButton={this.addFieldButton.bind(this)}
                             removeFieldButton={this.removeFieldButton.bind(this)}
-                            getReflectNumberofParticipants={this.getReflectNumberofParticipants.bind(this)}
-                            getAssessNumberofParticipants={this.getAssessNumberofParticipants.bind(this)}
-                            checkAssigneeConstraints={this.checkAssigneeConstraints.bind(this)}
-                            checkAssigneeConstraintTasks={this.checkAssigneeConstraintTasks.bind(this)}
-                            getAlreadyCreatedTasks={this.getAlreadyCreatedTasks.bind(this)}
-                            getAssigneeInChild={this.getAssigneeInChild.bind(this)}
-                            getTaskFields={this.getTaskFields.bind(this)}
-                            setDefaultField={this.setDefaultField.bind(this)}
-                            getConsolidateValue={this.getConsolidateValue.bind(this)}
-                            getTriggerConsolidationThreshold={this.getTriggerConsolidationThreshold.bind(this)}
                             changeSelectedTask={this.changeSelectedTask.bind(this)}
-                            canConsolidate={this.canConsolidate.bind(this)}
-                            canDispute={this.canDispute.bind(this)}
                             callTaskFunction={this.callTaskFunction.bind(this)}
                           /> );
                         }
