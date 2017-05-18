@@ -1,6 +1,6 @@
 import React from 'react';
 import request from 'request';
-import InputPassword from 'react-ux-password-field';
+import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 
 class Container extends React.Component {
@@ -279,6 +279,12 @@ class Container extends React.Component {
             new_password: event.target.value
         });
     }
+    changeNewMeterPassword(newPass, isValid) {
+        console.log(newPass, isValid);
+        this.setState({
+            new_password: newPass
+        });
+    }
     changeConfirmPassword(event) {
         this.setState({
             confirm_password: event.target.value
@@ -363,6 +369,7 @@ class Container extends React.Component {
 						{ phone }
 						{ instructor }
 						{ admin }
+
 					</tbody></table>
 				</div>
 			</div>
@@ -432,8 +439,7 @@ class Container extends React.Component {
 						<label>{this.strings.currentPassword}</label>
 						<input type="password" onChange={this.changeCurrentPassword.bind(this)}></input>
 						<label>{this.strings.newPassword}</label>
-            <input type="password" onChange={this.changeNewPassword.bind(this)}></input>
-
+            <PasswordField onChange={this.changeNewMeterPassword.bind(this)} Strings={this.strings} />
 						<label>{this.strings.confirmPassword}</label>
 						<input type="password" onChange={this.changeConfirmPassword.bind(this)}></input>
 					</form>

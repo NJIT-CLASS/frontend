@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import request from 'request';
 import Checkbox from '../shared/checkbox';
-import InputPassword from 'react-ux-password-field';
+import PasswordField from '../shared/passwordField';
 import {clone, cloneDeep} from 'lodash';
 import Strings from './strings.js';
 
@@ -200,11 +200,7 @@ class AddUserContainer extends React.Component {
                     <div>
                       <label>{Strings.Password}:</label>
                       <br />
-                      <InputPassword onChange={this.onChangePass.bind(this)}
-                                     minLength={6}
-                                     strengthLang={[Strings.Bad, Strings.NotGood, Strings.Decent, Strings.Strong, Strings.Great]}
-                                   />
-
+                      <PasswordField onChange={this.onChangePass.bind(this)} Strings={Strings} />
 
                     </div>
                   </td>

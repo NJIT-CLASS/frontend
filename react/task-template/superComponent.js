@@ -9,7 +9,7 @@ import request from 'request';
 import Select from 'react-select';
 import Rater from 'react-rater';
 import { RadioGroup, Radio } from 'react-radio-group';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import FileUpload from './fileUpload';
 import MarkupText from '../shared/markupTextView';
@@ -390,9 +390,9 @@ class SuperComponent extends React.Component {
 
             TA_rubric = (<div key={'rub'}>
               <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <ReactCSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
+              <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
                 {TA_rubric_content}
-              </ReactCSSTransitionGroup>
+              </CSSTransitionGroup>
 
             </div>);
         }
@@ -471,7 +471,7 @@ class SuperComponent extends React.Component {
                   >
                     {rubricButtonText}
                   </button>
-                  <ReactCSSTransitionGroup
+                  <CSSTransitionGroup
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={300}
                     transitionAppearTimeout={500}
@@ -480,7 +480,7 @@ class SuperComponent extends React.Component {
                     transitionEnter transitionLeave
                   >
                     {rubric_content}
-                  </ReactCSSTransitionGroup>
+                  </CSSTransitionGroup>
                 </div>
               );
             }

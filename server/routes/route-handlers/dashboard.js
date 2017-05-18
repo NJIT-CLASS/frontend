@@ -5,11 +5,10 @@ exports.get = (req, res) => {
 
     }
 
-    req.App.api.get('/getCourseCreated/' + req.App.user.userId, (err, statusCode, body) => {
+    req.App.api.get('/course/getCourses/' + req.App.user.userId, (err, statusCode, body) => {
         var courseList = [];
         var completedTasksList = [];
         var pendingTasksList = [];
-
 
         for(var i=0; i<body.Courses.length; i++){
             courseList.push(body.Courses[i]);

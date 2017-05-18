@@ -153,7 +153,7 @@ class Frames extends React.Component {
                 const taskCellDiv = (
                   <td key={`Col for ${task.TaskInstanceID}`} className={`ColLineColor ${colors[taskStatus]}`}>
                     <a key={`link for ${task.TaskInstanceID}`} href={link}>
-                      {task.User.FirstName}
+                      {taskStatus === 'automatic' ? strings.Automatic : task.User.FirstName}
                       <br key={`break one for ${task.TaskInstanceID}`} />
                       <h6> User ID: {task.User.UserID}
                         <br key={`break two for ${task.TaskInstanceID}`} />

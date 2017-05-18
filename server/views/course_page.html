@@ -23,14 +23,16 @@
   					</li>
   					{{/each}}
   					 </ul>
-             {{#if assignments}}
-                <br />
-                <div class="list-subheader">{{__ "Ongoing Assignments"}}</div>
-               <ul>
-                 {{#each assignments}}
-                      <li class="list-group-item"><a href="/assignment-record/{{AssignmentInstanceID}}">{{Assignment.DisplayName}}</a></li>
-                 {{/each}}
-               </ul>
+             {{#if ../instructorOrAdmin}}
+               {{#if assignments}}
+                  <br />
+                  <div class="list-subheader">{{__ "Ongoing Assignments"}}</div>
+                 <ul>
+                   {{#each assignments}}
+                        <li class="list-group-item"><a href="/assignment-record/{{AssignmentInstanceID}}">{{Assignment.DisplayName}}</a></li>
+                   {{/each}}
+                 </ul>
+              {{/if}}
             {{/if}}
   		</div>
   </form>

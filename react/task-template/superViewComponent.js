@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -85,9 +86,9 @@ class SuperViewComponent extends React.Component {
 
             TA_rubric = (<div key={'rub'}>
               <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <ReactCSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
+              <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
                 {TA_rubric_content}
-              </ReactCSSTransitionGroup>
+              </CSSTransitionGroup>
             </div>);
         }
 

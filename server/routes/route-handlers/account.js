@@ -4,7 +4,7 @@ exports.get = (req, res) => {
         res.redirect('/');
     }
     res.render('account', {
-        scripts: ['/static/react_apps.js'],
+        scripts: ['/static/react_apps.js', '/static/vendor/zxcvbn.min.js'],
         userId: req.App.user.userId,
         apiUrl: API_URL
     });

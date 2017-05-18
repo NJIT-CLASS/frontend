@@ -37,13 +37,18 @@ exports.get = (req, res) => {
                             sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                         }
+                        let isInstructor = (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false;
+                        let isAdmin = req.App.user.admin;
+                        let instructOrAdmin = isInstructor || isAdmin;
                         res.render('course_page', {
                             showHeader:false,
                             sectionList: sectionList,
                             courseID: req.params.Id,
                             partialAssignments: partialAssignmentsBody.PartialAssignments,
                             assignmentsList: assignmentsArray,
-                            instructor: (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false,
+                            instructor: isInstructor,
+                            admin: req.App.user.admin,
+                            instructorOrAdmin: instructOrAdmin,
                             courseTitle: body.Course.Name,
                             courseNumber: body.Course.Number,
                             courseDescription: body.Course.Description

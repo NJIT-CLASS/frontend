@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from '../shared/modal';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 class ModalInfo extends React.Component{
 
@@ -53,9 +53,9 @@ class ModalInfo extends React.Component{
         }
 
         return (<div className="animate-fast fadeIn">
-            <ReactCSSTransitionGroup transitionName="example" transitionEnter={false} transitionLeaveTimeout={200}>
+            <CSSTransitionGroup transitionName="example" transitionEnter={false} transitionLeaveTimeout={200}>
               {modalView}
-            </ReactCSSTransitionGroup>
+            </CSSTransitionGroup>
             </div>
         );
     }

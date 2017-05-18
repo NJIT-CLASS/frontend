@@ -31,6 +31,7 @@ exports.setup = (translate) => {
     helperFunctions.dateFormat = function(date) {
         return moment(date, 'YYYY-MM-DD  HH:mm:ss').format('MMMM Do, YYYY h:mm a');
     };
+
     helperFunctions.cutLength = function(str) {
         if (str.length > 25){
             return str.substring(0,25) + '...';
