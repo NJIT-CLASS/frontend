@@ -1,9 +1,10 @@
 import React from 'react';
 import InputPassword from 'react-ux-password-field';
 
-const PasswordField = ({onChange, Strings}) => {
+const PasswordField = ({value, onChange, Strings}) => {
     return (
     <InputPassword onChange={onChange.bind(this)}
+                  passwordString={value}
                  minLength={6}
                  strengthLang={[Strings.Bad, Strings.NotGood, Strings.Decent, Strings.Strong, Strings.Great]}
                />

@@ -200,7 +200,7 @@ class AddUserContainer extends React.Component {
                     <div>
                       <label>{Strings.Password}:</label>
                       <br />
-                      <PasswordField onChange={this.onChangePass.bind(this)} Strings={Strings} />
+                      <PasswordField value={this.state.pass} onChange={this.onChangePass.bind(this)} Strings={Strings} />
 
                     </div>
                   </td>
