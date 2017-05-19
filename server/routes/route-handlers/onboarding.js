@@ -3,7 +3,7 @@ exports.get = (req, res) => {
         if(statusCode === 400){
             return res.render('onboarding');
         }
-        return res.status(404);
+        return res.status(404).end();
     });
 };
 
@@ -26,7 +26,7 @@ exports.post = (req, res) => {
 
     req.App.api.get('/initial', (err, statusCode, body) => {
         if(statusCode !== 400){
-            return res.status(404);
+            return res.status(404).end();;
         }
 
         req.App.api.post('/adduser', {
