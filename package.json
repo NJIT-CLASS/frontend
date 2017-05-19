@@ -33,7 +33,6 @@
     "prop-types": "^15.5.8",
     "rc-tooltip": "^3.4.3",
     "react": "^15.5.4",
-    "react-addons-css-transition-group": "^15.5.2",
     "react-checkbox-list": "^0.0.2",
     "react-confirm": "^0.1.14",
     "react-datepicker": "^0.46.0",

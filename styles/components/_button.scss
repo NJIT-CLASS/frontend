@@ -3,7 +3,6 @@ button {
     background-color: #00AB8D;
     border-radius: 3px;
     border-color: #1ab394;
-    // float: right;
     text-align: right;
     align-self: flex-end;
     color: #ffffff;
@@ -90,4 +89,8 @@ button {
   .remove-button{
     display: inline;
     float:right;
+  }
+
+  .float-button{
+     float: right;
   }

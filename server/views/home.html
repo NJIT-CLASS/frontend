@@ -8,10 +8,17 @@
         <div class="section-content">
             <input type="hidden" name="url" value="{{returnUrl}}"/>
             {{#if credentialsError }}
-                <div class="error form-error">
-                  <i class="fa fa-exclamation-circle"></i>
-                  <span>{{__ "Error: Wrong Email Address / Password"}}</span>
-                </div>
+                {{#if timeout}}
+                    <div class="error form-error">
+                      <i class="fa fa-exclamation-circle"></i>
+                      <span>{{__ "Wrong Email Address / Password:"}} {{__ "Try again in "}} {{timeout}} {{__ " minutes"}}</span>
+                    </div>
+                {{else}}
+                    <div class="error form-error">
+                      <i class="fa fa-exclamation-circle"></i>
+                      <span>{{__ "Error: Wrong Email Address / Password"}}</span>
+                    </div>
+                {{/if}}
             {{/if}}
 
             {{#if serverError }}
