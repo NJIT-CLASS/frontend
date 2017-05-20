@@ -9,7 +9,7 @@
 const
     version = '1.0.0.4',
     CACHE = version + '::PLA',
-    offlineURL = '/offline.html',
+    offlineURL = '/static/offline.html',
     installFilesEssential = [
         '/static/vendor/font-awesome.min.css',
         '/static/main.css',
@@ -30,7 +30,7 @@ const
 
 // install static assets
 function installStaticFiles() {
-
+    console.log('installign static');
     return caches.open(CACHE)
         .then(cache => {
 
@@ -62,7 +62,7 @@ function clearOldCaches() {
 
 // application installation
 self.addEventListener('install', event => {
-
+    console.log('INSTALLING...');
     // cache core files
     event.waitUntil(
         installStaticFiles()
@@ -146,7 +146,9 @@ function fromCache(request) {
 // application fetch network data
 
 self.addEventListener('fetch', function(event) {
-    console.log(event);
+    console.log('fetch was called', event);
+
+    if(!event.request.url.match('/static')) return;
     event.respondWith(
 
         fromCache(event.request)

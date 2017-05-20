@@ -112,8 +112,6 @@ class FieldVersionView extends React.Component{
         completeFieldView =  (
           <div key={this.props.FieldIndex +200}>
 
-            {instructionsView}
-            {rubricView}
             <br/>
             {versions}
           </div>

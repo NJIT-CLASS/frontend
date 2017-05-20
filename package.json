@@ -59,6 +59,7 @@
     "tree-model": "^1.0.6"
   },
   "devDependencies": {
+    "autoprefixer": "^7.1.1",
     "babel-cli": "^6.24.1",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -82,6 +83,7 @@
     "gulp-flowtype": "^1.0.0",
     "gulp-install": "^1.1.0",
     "gulp-nodemon": "^2.2.1",
+    "gulp-postcss": "^7.0.0",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^2.1.2",
     "inquirer": "^3.0.6",

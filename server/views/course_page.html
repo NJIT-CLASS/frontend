@@ -40,29 +40,28 @@
 
   {{/each}}
 
-  {{#if assignmentsList}}
-  <div class="section">
-      <h2 class="title">{{__ "Course Assignments"}}</h2>
-      <div class="section-content">
-  		<div class="col-xs-6">
-          		<ul>
-  				  {{#each assignmentsList}}
+  {{#if instructorOrAdmin}}
+      {{#if assignmentsList}}
+      <div class="section">
+          <h2 class="title">{{__ "Course Assignments"}}</h2>
+          <div class="section-content">
+      		<div class="col-xs-6">
+              		<ul>
+      				  {{#each assignmentsList}}
 
-  					<li class="list-group-item">
-  					<a href="/assign-to-section/{{AssignmentID}}?courseId={{CourseID}}">{{Name}}</a>
-  				    </li>
+      					<li class="list-group-item">
+      					<a href="/assign-to-section/{{AssignmentID}}?courseId={{CourseID}}">{{Name}}</a>
+      				    </li>
 
-                     {{/each}}
-                  </ul>
+                         {{/each}}
+                      </ul>
+              </div>
           </div>
       </div>
-  </div>
-
-  {{else}}
-  <div></div>
-
+      {{else}}
+      <div></div>
+      {{/if}}
   {{/if}}
-
   {{#if activeAssignments}}
   <div class="section">
       <h2 class="title">{{__ "Ongoing Assignments"}}</h2>

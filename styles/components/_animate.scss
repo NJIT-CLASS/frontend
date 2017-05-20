@@ -1,11 +1,9 @@
 
 .animate {
- -webkit-animation-duration: 0.7s;
  animation-duration: 0.7s;
 }
 /*=== Kindly Taken from: https://fabriceleven.com/dev/quickly-add-css-fade-in-animations/ by Alex Gurevich ===*/
 .animate-fast {
- -webkit-animation-duration: 0.4s;
  animation-duration: 0.4s;
 }
 
@@ -51,26 +49,18 @@
 
 /*=== Optional Delays, change values here  ===*/
 .one {
--webkit-animation-delay: 0.4s;
--moz-animation-delay: 0.4s;
 animation-delay: 0.4s;
 }
 
 .two {
--webkit-animation-delay: 1.7s;
--moz-animation-delay: 1.7s;
 animation-delay: 1.7s;
 }
 
 .three {
--webkit-animation-delay: 2.3s;
--moz-animation-delay: 2.3s;
 animation-delay: 2.3s;
 }
 
 .four {
--webkit-animation-delay: 3.3s;
--moz-animation-delay: 3.3s;
 animation-delay: 3.3s;
 }
 
@@ -96,7 +86,6 @@ animation-delay: 3.3s;
 }
 
 .fadeIn {
- -webkit-animation-name: fadeIn;
  animation-name: fadeIn;
 }
 
@@ -105,32 +94,27 @@ animation-delay: 3.3s;
 @-webkit-keyframes fadeInDown {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(0, -100%, 0);
    transform: translate3d(0, -100%, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 @keyframes fadeInDown {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(0, -100%, 0);
    transform: translate3d(0, -100%, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 
 .fadeInDown {
- -webkit-animation-name: fadeInDown;
  animation-name: fadeInDown;
 }
 
@@ -138,32 +122,27 @@ animation-delay: 3.3s;
 @-webkit-keyframes fadeInUp {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(0, 100%, 0);
    transform: translate3d(0, 100%, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 @keyframes fadeInUp {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(0, 100%, 0);
    transform: translate3d(0, 100%, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 
 .fadeInUp {
- -webkit-animation-name: fadeInUp;
  animation-name: fadeInUp;
 }
 
@@ -171,32 +150,27 @@ animation-delay: 3.3s;
 @-webkit-keyframes fadeInLeft {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(-100%, 0, 0);
    transform: translate3d(-100%, 0, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 @keyframes fadeInLeft {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(-100%, 0, 0);
    transform: translate3d(-100%, 0, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 
 .fadeInLeft {
- -webkit-animation-name: fadeInLeft;
  animation-name: fadeInLeft;
 }
 
@@ -205,32 +179,27 @@ animation-delay: 3.3s;
 @-webkit-keyframes fadeInRight {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(100%, 0, 0);
    transform: translate3d(100%, 0, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 @keyframes fadeInRight {
  from {
    opacity: 0;
-   -webkit-transform: translate3d(100%, 0, 0);
    transform: translate3d(100%, 0, 0);
  }
 
  to {
    opacity: 1;
-   -webkit-transform: none;
    transform: none;
  }
 }
 
 .fadeInRight {
- -webkit-animation-name: fadeInRight;
  animation-name: fadeInRight;
 }
 

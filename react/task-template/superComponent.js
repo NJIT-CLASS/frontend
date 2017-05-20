@@ -389,7 +389,7 @@ class SuperComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+              <button type="button" className="float-button in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
               <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
                 {TA_rubric_content}
               </CSSTransitionGroup>
@@ -466,7 +466,7 @@ class SuperComponent extends React.Component {
                 rubricView = (<div key={1200}>
                   <button
                     type="button"
-                    className="in-line"
+                    className=" float-button in-line"
                     onClick={this.toggleFieldRubric.bind(this, idx)}
                   >
                     {rubricButtonText}

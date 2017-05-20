@@ -1,11 +1,11 @@
-/*if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
 
   // register service worker
-    navigator.serviceWorker.register('/service-worker.js', {scope: '/static/'}).then(reg => {
+    navigator.serviceWorker.register('/service-worker.js').then(reg => {
         console.log('Scope', reg.scope);
     });
 }
-*/
+
 
 
 function addLanguageQuery(str) {

@@ -85,7 +85,7 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
               <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
                 {TA_rubric_content}
               </CSSTransitionGroup>
@@ -101,24 +101,75 @@ class SuperViewComponent extends React.Component {
         }
 
 
-        console.log(this.props.TaskActivityFields, this.props.TaskData);
         const fields = this.props.TaskActivityFields.field_titles.map((field, index) => {
             let fieldTitle = '';
             let fieldTitleText = '';
+            let fieldInstructions = null;
+            let fieldRubric = null;
+
             if (this.props.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
-                if (this.props.TaskActivityFields[index].assessment_type != null) { // add "Grade" to assess fields to make pretty
-                    fieldTitleText = `${field} ${this.props.Strings.Grade}`;
-                } else {
-                    fieldTitleText = field;
-                }
+                fieldTitleText = field;
+
 
                 fieldTitle = (<div>
                   <br />
                   <div key={index + 600}>{fieldTitleText}</div>
                 </div>);
             }
+
+            if (this.props.TaskActivityFields[index].rubric != '') { // if Rubric is empty, don't show anything
+                let rubric_content = null;
+                const buttonTextHelper = this.props.TaskActivityFields[index].show_title ? field : '';
+                const rubricButtonText = this.state.FieldRubrics[index] ? this.props.Strings.HideRubric : this.props.Strings.ShowRubric;
+
+                if (this.state.FieldRubrics[index]) {
+                    rubric_content = (
+                      <div key={this.props.TaskActivityFields[index].title}>
+                        <div className="boldfaces"> {fieldTitleText} {this.props.Strings.Rubric} </div>
+                        <div className="regular-text rubric">
+                          {this.props.TaskActivityFields[index].rubric}
+                        </div>
+                      </div>);
+                }
+
+                fieldRubric = (<div key={1200}>
+                  <button
+                    type="button"
+                    className=" float-button in-line"
+                    onClick={this.toggleFieldRubric.bind(this, index)}
+                  >
+                    {rubricButtonText}
+                  </button>
+                  <CSSTransitionGroup
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}
+                    transitionAppearTimeout={500}
+                    transitionName="example"
+                    transitionAppear={false}
+                    transitionEnter transitionLeave
+                  >
+                    {rubric_content}
+                  </CSSTransitionGroup>
+                </div>
+              );
+            }
+
+            if (this.props.TaskActivityFields[index].instructions !== '') { // if instructions are empty, don't display anything
+                fieldInstructions = (
+                  <div key={1100}>
+                    <div className="boldfaces">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                    <div className="regular-text instructions">
+                      {this.props.TaskActivityFields[index].instructions}
+                    </div>
+                  </div>
+              );
+            }
+
+
             return (<div>
               <b>{fieldTitle}</b>
+              {fieldInstructions}
+              {fieldRubric}
               <br />
               <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);

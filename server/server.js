@@ -24,13 +24,12 @@ const redisClient = redis.createClient({
 });
 
 app.use('/static', express.static(`${__dirname}/static`));
-
-app.use(cookieParser());
-app.use(
-	bodyParser.urlencoded({
-    extended: true
-})
+app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`)
 );
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(bodyParser.json());
 
 app.use(session(redisClient));

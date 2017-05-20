@@ -10,6 +10,6 @@ module.exports = {
         students: false,
         loggedOut: false
     },
-    icon: 'fa-archive',
-    sidebar: false
+    icon: 'file-text',
+    sidebar: true
 };

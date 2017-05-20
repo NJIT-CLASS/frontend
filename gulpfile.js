@@ -8,7 +8,7 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
-var uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify');
 const flow = require('gulp-flowtype');
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -17,6 +17,9 @@ const install = require('gulp-install');
 const del = require('del');
 const runSequence = require('run-sequence');
 const file = require('gulp-file');
+const postcss      = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+
 
 const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
@@ -249,6 +252,7 @@ gulp.task('sass', () => {
         sass.logError.call(this, error);
         gutil.beep();
     }))
+    .pipe(postcss([ autoprefixer() ]))
     .pipe(gulp.dest('./.build/static'));
 });
 

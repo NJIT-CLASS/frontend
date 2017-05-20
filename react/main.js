@@ -8,13 +8,10 @@ import React from 'react';
 import request from 'request';
 import ReactDOM from 'react-dom';
 
-//import AddSectionContainer from './add-section/add-section-container';
 import AddUserContainer from './add-user/add-user-container';
-//import AssignmentContainer from './create-assignment/assignment-container';
 import AssignmentEditorContainer from './assignment-editor/assignmentEditorContainer';
 import AssignToSectionContainer from './assign-to-section/AssigntoSection';
 import ClassPageContainer from './shared/class-page-container';
-//import CourseContainer from './create-course/course-container';
 import TemplateContainer from './task-template/TemplateContainer';
 import TranslationContainer from './translation/translation-container';
 import TestingGroundContainer from './testing/test';
@@ -37,66 +34,34 @@ const translationFunction = (objOfStrings, cb) => {
     });
 };
 
-const addsectionContainerEl = document.getElementById('add-section-container');
-if (addsectionContainerEl) {
-    const userId = addsectionContainerEl.dataset.userId;
-    const apiUrl = addsectionContainerEl.dataset.apiUrl;
+const reactElem = document.getElementById('react-page'); //get the react DOM element decalred in the server/views
 
+const currentPage = reactElem.dataset.page;     // get some variables that are used in several pages
+const userId = reactElem.dataset.userId;
+const apiUrl = reactElem.dataset.apiUrl;
+const courseId = reactElem.dataset.courseId;
+const assignmentId = reactElem.dataset.assignmentId;
+/**
+ * Decide which page is displayed currently and render the appropriate component
+ */
+switch (currentPage) {
+case 'add-user-container':
+    const userType = reactElem.dataset.userType;
+    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,reactElem);
+    break;
 
-    ReactDOM.render(<AddSectionContainer userId={userId} apiUrl={apiUrl} __={translationFunction}/>,addsectionContainerEl);
-
-}
-
-const adduserContainerEl = document.getElementById('add-user-container');
-
-if (adduserContainerEl) {
-    const userId = adduserContainerEl.dataset.userId;
-    const apiUrl = adduserContainerEl.dataset.apiUrl;
-    const userType = adduserContainerEl.dataset.userType;
-
-
-    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,adduserContainerEl);
-
-}
-
-const assignmentContainerEl = document.getElementById('create-assignment-container');
-
-if (assignmentContainerEl) {
-    ReactDOM.render(<AssignmentContainer />, assignmentContainerEl);
-}
-
-const courseContainerEl = document.getElementById('create-course-container'); // get id from .html file
-
-if (courseContainerEl) {
-    const userId = courseContainerEl.dataset.userId; // in here variables are camelCase, in html variables are hyphened, -
-    const apiUrl = courseContainerEl.dataset.apiUrl;
-
-
-    ReactDOM.render(<CourseContainer userId={userId} apiUrl={apiUrl} __={translationFunction}/>, courseContainerEl);
-
-}
-
-const translationContainerEl = document.getElementById('translation-container');
-
-if (translationContainerEl) {
+case 'translation-container':
     const translationApp = (
       <ClassPageContainer>
         <TranslationContainer />
       </ClassPageContainer>
     );
+    ReactDOM.render(translationApp, reactElem);
+    break;
 
-    ReactDOM.render(translationApp, document.getElementById('translation-container'));
-}
-
-const templateContainerEl = document.getElementById('template-container');
-
-if (templateContainerEl) {
-    const userId = templateContainerEl.dataset.userId;
-    const apiUrl = templateContainerEl.dataset.apiUrl;
-    const taskId = templateContainerEl.dataset.taskId;
-    const sectionId = templateContainerEl.dataset.sectionId;
-    const courseId = templateContainerEl.dataset.courseId;
-
+case 'template-container':
+    const taskId = reactElem.dataset.taskId;
+    const sectionId = reactElem.dataset.sectionId;
     ReactDOM.render(
       <TemplateContainer
         SectionID={sectionId}
@@ -105,59 +70,32 @@ if (templateContainerEl) {
         apiUrl={apiUrl}
         TaskID={taskId}
         __={translationFunction}
-      />, templateContainerEl);
-}
+      />, reactElem);
+    break;
 
-const assignmentEditorContainerEl = document.getElementById('assignment-editor-container');
+case 'assignment-editor-container':
+    const partialAssignmentId = reactElem.dataset.partialAssignmentId;
+    ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
 
-if (assignmentEditorContainerEl) {
-    const userId = assignmentEditorContainerEl.dataset.userId;
-    const courseId = assignmentEditorContainerEl.dataset.courseId;
-    const assignmentId = assignmentEditorContainerEl.dataset.assignmentId;
-    const partialAssignmentId = assignmentEditorContainerEl.dataset.partialAssignmentId;
-    const apiUrl = assignmentEditorContainerEl.dataset.apiUrl;
-    ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} apiUrl={apiUrl} __={translationFunction} />, assignmentEditorContainerEl);
-}
-const assignToSectionContainerEl = document.getElementById('assign-to-section-container');
+case 'assign-to-section-container':
+    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction}/>,reactElem);
+    break;
 
-if (assignToSectionContainerEl) {
-    const userId = assignToSectionContainerEl.dataset.userId;
-    const courseId = assignToSectionContainerEl.dataset.courseId;
-    const assignmentId = assignToSectionContainerEl.dataset.assignmentId;
-    const apiUrl = assignToSectionContainerEl.dataset.apiUrl;
+case 'testing-container':
+    ReactDOM.render(<TestingGroundContainer />, reactElem);
+    break;
 
+case 'assignment-record-container':
+    ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
+    break;
 
-    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction}/>,assignToSectionContainerEl);
+case 'course-section-management':
+    ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
 
-}
-//
-const testingGroundContainerEl = document.getElementById('testing-container');
+case 'account':
+    ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
 
-if (testingGroundContainerEl) {
-    ReactDOM.render(<TestingGroundContainer />, testingGroundContainerEl);
-}
-
-const assignmentRecordContainer = document.getElementById('assignment-record-container');
-
-if (assignmentRecordContainer) {
-    const userId = assignmentRecordContainer.dataset.userId;
-    const assignmentId = assignmentRecordContainer.dataset.assignmentId;
-    const apiUrl = assignmentRecordContainer.dataset.apiUrl;
-
-    ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, assignmentRecordContainer);
-
-}
-
-const courseSectionMgmntContainer = document.getElementById('course-section-management');
-if (courseSectionMgmntContainer) {
-    const userId = courseSectionMgmntContainer.dataset.userId;
-    const apiUrl = courseSectionMgmntContainer.dataset.apiUrl;
-    ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, courseSectionMgmntContainer);
-}
-
-const accountContainer = document.getElementById('account');
-if (accountContainer) {
-    const userId = accountContainer.dataset.userId;
-    const apiUrl = accountContainer.dataset.apiUrl;
-    ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, accountContainer);
 }
