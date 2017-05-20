@@ -294,7 +294,7 @@ gulp.task('clean:build', () => {
 });
 
 gulp.task('move:server-build', () => {
-    const dest = gulp.dest(argv.location || '../build' + '/server');
+    const dest = gulp.dest(argv.location + '/server'|| '../build' + '/server');
     return gulp.src(['.build/**/*'])
   .pipe(dest);
 });
