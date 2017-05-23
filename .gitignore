@@ -45,6 +45,8 @@ fallback_settings.js
 
 .configuration
 
+.tern-project
+
 runFront.bat
 
 runBack.bat

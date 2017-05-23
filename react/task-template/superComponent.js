@@ -50,6 +50,7 @@ class SuperComponent extends React.Component {
             PassFailValue: null,
             DisputeStatus: null,
             FileUploadsSatisfied: false,
+            LockSubmit: false
         };
     }
 
@@ -71,7 +72,7 @@ class SuperComponent extends React.Component {
             if (data.constructor === Object) {
                 return data;
             }
-            console.log(typeof data);
+
             return JSON.parse(data);
         });
 
@@ -180,6 +181,12 @@ class SuperComponent extends React.Component {
         if (this.props.TaskStatus.includes('complete')) {
             return;
         }
+
+      //check if submit is in progress
+        if(this.state.LockSubmit){
+            return;
+        }
+
       // check if input is valid
         const validData = this.isValidData();
         if (validData) {
@@ -193,21 +200,27 @@ class SuperComponent extends React.Component {
                 },
                 json: true,
             };
+            this.setState({
+                LockSubmit: true
+            });
             request(options, (err, res, body) => {
                 console.log(body);
                 if (res.statusCode != 200) {
-                    this.setState({ InputError: true });
+                    this.setState({ InputError: true,
+                        LockSubmit: false });
                 } else {
                     this.setState({
                         SubmitSuccess: true,
                         InputError: false,
                         TaskStatus: 'Complete',
+                        LockSubmit: false
                     });
                 }
             });
         } else {
             this.setState({
                 InputError: true,
+                LockSubmit: false
             });
         }
     }
@@ -349,7 +362,7 @@ class SuperComponent extends React.Component {
             infoMessage = (<span onClick={() => { this.setState({ SubmitSuccess: false }); }} style={{ backgroundColor: '#00AB8D', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)' }}>{this.props.Strings.SubmitSuccessMessage}</span>);
         }
 
-        console.log(this.state);
+
         if (!this.props.TaskStatus.includes('complete')) {
             formButtons = (<div>
               <br />

@@ -17,7 +17,6 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
 
     req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
-        console.log('status:', statusCode);
         if(!body){
             return res.render('home',{
                 credentialsError: true

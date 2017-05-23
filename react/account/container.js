@@ -280,7 +280,6 @@ class Container extends React.Component {
         });
     }
     changeNewMeterPassword(newPass, isValid) {
-        console.log(newPass, isValid);
         this.setState({
             new_password: newPass
         });
@@ -439,7 +438,7 @@ class Container extends React.Component {
 						<label>{this.strings.currentPassword}</label>
 						<input type="password" onChange={this.changeCurrentPassword.bind(this)}></input>
 						<label>{this.strings.newPassword}</label>
-            <PasswordField onChange={this.changeNewMeterPassword.bind(this)} Strings={this.strings} />
+            <PasswordField value={this.state.new_password} onChange={this.changeNewMeterPassword.bind(this)} Strings={this.strings} />
 						<label>{this.strings.confirmPassword}</label>
 						<input type="password" onChange={this.changeConfirmPassword.bind(this)}></input>
 					</form>

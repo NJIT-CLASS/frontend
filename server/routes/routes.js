@@ -5,6 +5,7 @@ const pages = [
     'dashboard',
     'my-account',
     'course-section-management',
+    'create-assignment',
     'assignment-editor',
     'administrator',
     'add-user',

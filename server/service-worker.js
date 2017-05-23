@@ -7,7 +7,7 @@
 'use strict';
 
 const
-    version = '1.0.0.4',
+    version = '1.0.0.5',
     CACHE = version + '::PLA',
     offlineURL = '/static/offline.html',
     installFilesEssential = [

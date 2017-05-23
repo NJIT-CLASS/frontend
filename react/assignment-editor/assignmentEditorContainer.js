@@ -355,7 +355,8 @@ class AssignmentEditorContainer extends React.Component {
             TA_number_participant: 1,
             TA_assignee_constraints: [
                 'student',
-                'individual', {'same_as': [2]}
+                'individual',
+                {}
             ],
             TA_trigger_consolidation_threshold: [15,'percent'],
             TA_fields: null
@@ -368,7 +369,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_name: TASK_TYPES_TEXT.CONSOLIDATION,
             TA_assignee_constraints: [
                 'student',
-                'individual', {'same_as': [2]}
+                'individual', {}
             ],
             TA_is_final_grade: true,
             TA_fields: {
@@ -989,7 +990,6 @@ class AssignmentEditorContainer extends React.Component {
 
 
         needsConsolData.TA_assignee_constraints = ['student', 'individual', {'same_as': [parentIndex]}];
-        consolData.TA_assignee_constraints = ['student', 'individual', {'same_as': [parentIndex]}];
 
         newData[workflowIndex].Workflow.push(needsConsolData);
         newData[workflowIndex].Workflow.push(consolData);
@@ -1960,6 +1960,10 @@ class AssignmentEditorContainer extends React.Component {
         return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_trigger_consolidation_threshold'][0];
     }
 
+    getTriggerConsolidationRadioOption(taskIndex, workflowIndex, isReflect){
+        let targetIndex = this.getConsolidationIndex(isReflect, taskIndex, workflowIndex);
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_trigger_consolidation_threshold'][1];
+    }
 
     changeNumericFieldData(stateField, taskIndex, field, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
@@ -2101,6 +2105,34 @@ class AssignmentEditorContainer extends React.Component {
         }
     }
 
+    getSeeSibblings(taskIndex, workflowIndex, isAssess){
+        const targetIndex = (isAssess ? this.getAssessIndex(taskIndex, workflowIndex) : this.getReflectIndex(taskIndex, workflowIndex));
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].SeeSibblings;
+    }
+
+    setSeeSibblings(taskIndex, workflowIndex, isAssess){
+        const targetIndex = (isAssess ? this.getAssessIndex(taskIndex, workflowIndex) : this.getReflectIndex(taskIndex, workflowIndex));
+        let newData = this.state.WorkflowDetails;
+        newData[workflowIndex].Workflow[targetIndex].SeeSibblings = !newData[workflowIndex].Workflow[targetIndex].SeeSibblings;
+
+        this.setState({
+            WorkflowDetails: newData
+        });
+    }
+
+    setEvaluationByLabels(taskIndex, fieldIndex, workflowIndex, event){
+        let newData = this.state.WorkflowDetails;
+        let newVal = event.target.value.split(',');
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].list_of_labels = newVal;
+        this.setState({
+            WorkflowDetails: newData
+        });
+
+    }
+
+    //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
     //-----------------------------------------------------------------------------
 
     //////////////////   Assignment Details Functions  //////////////////////////////////
@@ -2293,17 +2325,11 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     callTaskFunction(){
-        console.log(arguments);
+      //Passed to taskDetails to call every other function defined here.
+      //This is just to pass only a few functions down
         const args = [].slice.call(arguments);
         const functionName = args.shift();
         return this[functionName](...args);
-    }
-
-    aFunction(a, b ,d,ra,j,r){
-        console.log(a, b ,d, ra,j,r);
-        this.setState({
-            Garbage: a
-        });
     }
 
     render() {

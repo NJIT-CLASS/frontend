@@ -19,7 +19,7 @@ class FieldVersionView extends React.Component{
         let title = taskField.title;
         let fieldTitle = '';
 
-        console.log(this.props.Field);
+        
         if(taskField.show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
             if(taskField.assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
                 fieldTitle = title + ' ' + this.props.Strings.Grade;
