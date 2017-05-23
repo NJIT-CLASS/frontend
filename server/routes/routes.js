@@ -22,7 +22,8 @@ const pages = [
     'assign-to-section',
     'testing-ground',
     'task-status-table',
-    'onboarding'
+    'onboarding',
+    'initial-password-change',
 ];
 
 var pageConfigs = [];

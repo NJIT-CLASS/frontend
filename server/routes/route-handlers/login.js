@@ -34,7 +34,7 @@ exports.post = (req, res) => {
             req.session.token = body.Token;
             // THIS WILL REDIRECT TO SETTINGS IF THE USER IS NEWLY ADDED.
             if(body.Pending === true){
-                return res.redirect('/account');
+                return res.redirect('/initial-password-change');
             } else {
                 return res.redirect(req.body.url || '/');
             }
