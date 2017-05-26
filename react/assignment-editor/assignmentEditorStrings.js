@@ -1,9 +1,11 @@
-let strings = {
+import {TASK_TYPES_TEXT} from '../../server/utils/react_constants';
+
+const taskStrings = {
     DisplayName: 'Display name', //TaskDetails Strings
     RemoveButtonTip: 'Remove',
     HowManyRequiredFiles: 'How many required files',
     MaximumNumberOfOptionalFiles: 'Maximum number of optional files',
-    AreAnyFileUploadsRequired: 'Are any file uploads required',
+    AreAnyFileUploadsRequired: 'Are file uploads involved',
     TaskInstructions: 'Task Instructions',
     TaskRubric: 'Task Rubric',
     TypeInstructionsHere: 'Type the instructions here',
@@ -103,6 +105,8 @@ let strings = {
     BothInstructorStudents: 'Both Instructor and Students independently',
     Average: 'Average',
     Other: 'Other',
+};
+const assignmentStrings = {
     Essay: 'Essay', //AssignmentDetails Strings
     Homework: 'Homework',
     Quiz: 'Quiz',
@@ -118,6 +122,10 @@ let strings = {
     SpecifyType: 'Specify a type',
     HowManyDifferentTypesOfProblems: 'How Many Different Types of Problems',
     Instructions: 'Instructions',
+    DefaultAssignmentName: 'Assignment',
+};
+
+const workflowStrings = {
     MultipleChoice: 'Multiple Choice', //Problem Details Strings
     ShortAnswer: 'Short Answer',
     ComputerProgram: 'Computer Program',
@@ -131,7 +139,47 @@ let strings = {
     Submit: 'Submit',
     SubmitSuccessMessage: 'Successfully created assignment!',
     ErrorMessage: 'Submit Error! Please check your work and try again',
-    SaveSuccessMessage: 'Assignment Saved.'
+    SaveSuccessMessage: 'Assignment Saved',
+    CourseIDNull: 'A course needs to be specified',
+    DefaultWorkflowName: 'Problem',
 };
 
-export default strings;
+const defaultTaskFieldsStrings = {
+    Field: 'Field',
+    Easy: 'Easy',
+    Medium: 'Medium',
+    Hard: 'Hard',
+    CreateProblemName: TASK_TYPES_TEXT.CREATE_PROBLEM,
+    CreateOverallInstructions: 'Create a new problem for another student to solve.',
+    CreateDefaultFieldTitle: 'Problem 1',
+    EditProblemName: TASK_TYPES_TEXT.EDIT,
+    EditOverallInstructions:'Edit the problem to ensure that it makes sense.',
+    EditFieldTitle: 'Explanation',
+    EditFieldInstructions: 'Enter an explanation of the edits you have made.',
+    CommentName: TASK_TYPES_TEXT.COMMENT,
+    CommentOverallInstructions: 'Comment on the problem.',
+    SolveProblemName: TASK_TYPES_TEXT.SOLVE_PROBLEM,
+    SolveOverallInstructions: 'Solve the problem.',
+    SolveDefaultFieldTitle: 'Solution',
+    GradeName: 'Grade the Solution',
+    GradeCorrectnessTitle: 'Correctness',
+    GradeCorrectnessInstructions: 'Grade the solution on how correct it is.',
+    GradeCompletenessTitle: 'Completeness',
+    GradeCompletenessInstructions: 'Grade the solution on whether you feel it completely answered the problem.',
+    CritiqueName: TASK_TYPES_TEXT.CRITIQUE,
+    CritiqueFieldTitle: 'Critique',
+    NeedsConsolidationName: TASK_TYPES_TEXT.NEEDS_CONSOLIDATION,
+    ConsolidateName: TASK_TYPES_TEXT.CONSOLIDATION,
+    ConsolidateOverallInstructions: 'Consolidate the prior set of opinions into a single, fair representation.',
+    DisputeName: TASK_TYPES_TEXT.DISPUTE,
+    DisputeOverallInstructions: 'Decide whether to dispute your grade or not. If you do, you must justify your grades.',
+    ResolveDisputeName: TASK_TYPES_TEXT.RESOLVE_DISPUTE,
+    ResolveDisputeOverallInstructions: 'Resolve the dispute by evaluating it yourself. (You may consider all the other participant’s evaluations.)',
+
+};
+
+const tooltipMessages = {
+
+};
+
+export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...defaultTaskFieldsStrings};

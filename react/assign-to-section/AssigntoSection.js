@@ -70,6 +70,8 @@ class AssignToSectionContainer extends React.Component
 
         request(options, (err, res, body) => {
             request(semOptions, (err2, res2, bod2) => {
+                console.log(body);
+                console.log(bo2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
                     let tasks = body.taskActivityCollection[key].map(function(task){
                         return {
@@ -114,7 +116,7 @@ class AssignToSectionContainer extends React.Component
     fetchSectionsForSemester()  {
         const options = {
             method: 'GET',
-            uri: `${this.props.apiUrl}/api/getCourseSections/${this.props.CourseID}`,
+            uri: `${this.props.apiUrl}/api/getCourseSections/allowed/${this.props.CourseID}`,
             qs: {
                 userID: this.props.UserID,
                 semesterID: this.state.Assignment.Semester

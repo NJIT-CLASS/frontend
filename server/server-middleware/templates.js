@@ -24,9 +24,10 @@ exports.setup = (translate) => {
     };
 
     helperFunctions.ifEqual = function(arg1, arg2, options) {
-        if (arg1 === arg2) {
+        if(arg1 === arg2) {
             return options.fn(this);
         }
+        return options.inverse(this);
     };
     helperFunctions.dateFormat = function(date) {
         return moment(date, 'YYYY-MM-DD  HH:mm:ss').format('MMMM Do, YYYY h:mm a');

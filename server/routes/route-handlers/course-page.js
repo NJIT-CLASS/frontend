@@ -5,9 +5,6 @@ exports.get = (req, res) => {
         return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     let coursesUrl = '/course/';
-    if(req.App.user.role === 'student'){
-        coursesUrl = '/getActiveEnrolledCourses/';
-    }
     req.App.api.get(coursesUrl + req.params.Id, (err, statusCode, body) =>{
         const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
 
@@ -34,6 +31,15 @@ exports.get = (req, res) => {
                         for(var i=0; i<sectionList.length; i++){
                             var currentSectionId = sectionList[i].SectionID;
                             sectionList[i].members=results[currentSectionId][1].UserSection;
+                            sectionList[i].instructors = results[currentSectionId][1].UserSection.filter(member => {
+                                return member.Role === 'Instructor';
+                            });
+                            sectionList[i].students = results[currentSectionId][1].UserSection.filter(member => {
+                                return member.Role === 'Student';
+                            });
+                            sectionList[i].observers = results[currentSectionId][1].UserSection.filter(member => {
+                                return member.Role === 'Observer';
+                            });
                             sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                         }

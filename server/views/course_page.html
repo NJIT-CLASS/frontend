@@ -9,20 +9,59 @@
   <div class="flex-container">
   {{#each sectionList}}
   <form name="display_course_info flex-child" role="form" class="section" method="POST" action="#">
-      <h2 class="title">{{Name}}</h2>
+      <h2 class="title">{{Name}} - {{Semester.Name}}</h2>
       <div class="section-content">
-
-  				 <div class="list-subheader" name="course_page_description">
-  				 {{Description}}
-  				 </div>
-  				 <br>
+            {{#if Description}}
+      				 <div class="list-subheader" name="course_page_description">
+      				 {{Description}}
+      				 </div>
+  				     <br>
+            {{/if}}
 
   					<ul>
-  					{{#each members}}
-  					<li class="list-group-item">{{User.FirstName}} {{User.LastName}}
-  					</li>
-  					{{/each}}
+            {{#if instructors}}
+              <div class="list-faded-subheader">{{__ "Instructors"}}</div>
+              {{#each instructors}}
+                <li class="list-group-item">
+                  {{#ifEqual User.FirstName ""}}
+                    {{User.UserContact.Email}}
+
+                  {{else}}
+                    {{User.FirstName}} {{User.LastName}}
+                  {{/ifEqual}}
+                </li>
+              {{/each}}
+            {{/if}}
+
+            {{#if students}}
+            <div class="list-faded-subheader">{{__ "Students"}}</div>
+              {{#each students}}
+              <li class="list-group-item">
+                {{#ifEqual User.FirstName ""}}
+                  {{User.UserContact.Email}}
+
+                {{else}}
+                  {{User.FirstName}} {{User.LastName}}
+                {{/ifEqual}}
+              </li>
+              {{/each}}
+            {{/if}}
+
+            {{#if observers}}
+            <div class="list-faded-subheader">{{__ "Observers"}}</div>
+              {{#each observers}}
+              <li class="list-group-item">
+                {{#ifEqual User.FirstName ""}}
+                  {{User.UserContact.Email}}
+
+                {{else}}
+                  {{User.FirstName}} {{User.LastName}}
+                {{/ifEqual}}
+              </li>
+              {{/each}}
+            {{/if}}
   					 </ul>
+
              {{#if ../instructorOrAdmin}}
                {{#if assignments}}
                   <br />

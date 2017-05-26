@@ -39,14 +39,36 @@ class AssignmentEditorContainer extends React.Component {
         this.tree = new TreeModel(); //this is the tree making object. It is not a tree structure but has the tree methods
         this.root = this.tree.parse({id: 0, isSubWorkflow: 0}); // this is the root of the tree structure. A copy is made for each workflow
         this.nullNode = this.tree.parse({id: -1}); // this is the null Node template, it has an id of -1
+
+        this.state = {
+            CurrentWorkflowIndex: 0,
+            LastTaskChanged: 0,
+            SelectedTask:0,
+            SubmitSuccess: false,
+            ResumingFromSaved: false,
+            SubmitButtonShow: true,
+            SaveSuccess: false,
+            SubmitError: false,
+            InfoMessage: '',
+            InfoMessageType: '', //success || error
+            Loaded: false,
+            Courses: null,
+            Semesters: null,
+            PartialAssignmentID: this.props.PartialAssignmentID != '' ? this.props.PartialAssignmentID : null,
+            Strings: Strings
+        };
+    }
+
+    makeTaskParameterTemplates(){
+        const strings = this.state.Strings;
         this.defaultFields = {
-            title: 'Field',
+            title: strings.Field,
             show_title: false,
             assessment_type: null,
             numeric_min: 0,
             numeric_max: 40,
             rating_max: 5,
-            list_of_labels: ['Easy', 'Medium', 'Difficult'],
+            list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
             field_type: 'text',
             requires_justification: false,
             instructions: '',
@@ -57,8 +79,6 @@ class AssignmentEditorContainer extends React.Component {
             ],
             default_content: ['', '']
         };
-
-
 
         var createTaskObject = function(taskOptionsObject) {
             let newTask = {
@@ -115,9 +135,9 @@ class AssignmentEditorContainer extends React.Component {
             return newTask;
         };
 
-        //////////// Defining all Task Types Here /////////
+      //////////// Defining all Task Types Here /////////
         this.createProblemTask = createTaskObject({
-            TA_display_name: 'Create Problem',
+            TA_display_name: strings.CreateProblemName,
             TA_type: TASK_TYPES.CREATE_PROBLEM,
             TA_name: TASK_TYPES_TEXT.CREATE_PROBLEM,
             VersionEvaluation: 'last',
@@ -126,20 +146,23 @@ class AssignmentEditorContainer extends React.Component {
             TA_assignee_constraints: [
                 'student', 'individual', {}
             ],
-            TA_overall_instructions: 'Create a new problem for another student to solve.',
+            TA_overall_instructions: strings.CreateOverallInstructions,
             TA_number_participant: 1,
+            // TA_allow_reflection: [
+            //     'edit', 'wait'
+            // ],
             TA_function_type: 'max',
             TA_fields: {
                 number_of_fields: 1,
-                field_titles: ['Problem 1'],
+                field_titles: [strings.CreateDefaultFieldTitle],
                 0: {
-                    title: 'Problem 1',
+                    title: strings.CreateDefaultFieldTitle,
                     show_title: false,
                     assessment_type: null,
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: '',
@@ -154,10 +177,10 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.editProblemTask = createTaskObject({
-            TA_display_name: 'Edit Problem',
+            TA_display_name: strings.EditProblemName,
             TA_type: TASK_TYPES.EDIT,
             TA_name: TASK_TYPES_TEXT.EDIT,
-            TA_overall_instructions: 'Edit the problem to ensure that it makes sense.',
+            TA_overall_instructions: strings.EditOverallInstructions,
             VersionEvaluation: 'whole',
             TA_assignee_constraints: [
                 'instructor',
@@ -165,37 +188,20 @@ class AssignmentEditorContainer extends React.Component {
                     'not_in_workflow_instance': []
                 }
             ],
-        });
-
-        this.commmentProblemTask = createTaskObject({
-            TA_display_name: 'Comment on Problem',
-            TA_type: TASK_TYPES.COMMENT,
-            TA_name: TASK_TYPES_TEXT.COMMENT,
-            TA_overall_instructions: 'Comment on the problem.',
-            VersionEvaluation: 'whole',
-            TA_assignee_constraints: [
-                'student',
-                'group', {
-                    'not_in_workflow_instance': []
-                }
-            ],
-            TA_allow_reflection: [
-                'none', 'don\'t wait'
-            ],
             TA_fields: {
                 number_of_fields: 1,
-                field_titles: ['Field'],
+                field_titles: [strings.EditFieldTitle],
                 0: {
-                    title: 'Field',
-                    show_title: false,
+                    title: strings.EditFieldTitle,
+                    show_title: true,
                     assessment_type: null,
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
-                    instructions: '',
+                    instructions: strings.EditFieldInstructions,
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -206,26 +212,48 @@ class AssignmentEditorContainer extends React.Component {
             }
         });
 
+        this.commmentProblemTask = createTaskObject({
+            TA_display_name: strings.CommentName,
+            TA_type: TASK_TYPES.COMMENT,
+            TA_name: TASK_TYPES_TEXT.COMMENT,
+            TA_overall_instructions: strings.CommentOverallInstructions,
+            VersionEvaluation: 'whole',
+            TA_assignee_constraints: [
+                'student',
+                'individual', {
+                    'not_in_workflow_instance': []
+                }
+            ],
+            TA_allow_reflection: [
+                'none', 'don\'t wait'
+            ],
+            TA_fields: {
+                number_of_fields: 1,
+                field_titles: [strings.Field],
+                0: cloneDeep(this.defaultFields)
+            }
+        });
+
         this.solveProblemTask = createTaskObject({
-            TA_display_name: 'Solve the Problem',
+            TA_display_name: strings.SolveProblemName,
             TA_type: TASK_TYPES.SOLVE_PROBLEM,
             TA_name:  TASK_TYPES_TEXT.SOLVE_PROBLEM,
-            TA_overall_instructions: 'Solve the problem.',
+            TA_overall_instructions: strings.SolveOverallInstructions,
             VersionEvaluation: 'last',
             TA_assignee_constraints: ['student',
                 'individual', {}
             ],
             TA_fields: {
                 number_of_fields: 1,
-                field_titles: ['Solution'],
+                field_titles: [strings.SolveDefaultFieldTitle],
                 0: {
-                    title: 'Solution',
+                    title: strings.SolveDefaultFieldTitle,
                     show_title: false,
                     assessment_type: null,
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
                     instructions: '',
@@ -240,7 +268,7 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.gradeSolutionTask = createTaskObject({
-            TA_display_name: 'Grade the Solution',
+            TA_display_name: strings.GradeName,
             TA_type: TASK_TYPES.GRADE_PROBLEM,
             TA_name: TASK_TYPES_TEXT.GRADE_PROBLEM,
             TA_assignee_constraints: [
@@ -251,18 +279,18 @@ class AssignmentEditorContainer extends React.Component {
             TA_number_participant: 2,
             TA_fields: {
                 number_of_fields: 2,
-                field_titles: ['Correctness','Completeness'],
+                field_titles: [strings.GradeCorrectnessTitle,strings.GradeCompletenessTitle],
                 0: {
-                    title: 'Correctness',
+                    title: strings.GradeCorrectnessTitle,
                     show_title: true,
                     assessment_type: 'grade',
                     numeric_min: 0,
                     numeric_max: 50,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
-                    instructions: 'Grade the solution on how correct it is.',
+                    instructions: strings.GradeCorrectnessInstructions,
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -271,16 +299,16 @@ class AssignmentEditorContainer extends React.Component {
                     default_content: ['', '']
                 },
                 1: {
-                    title: 'Completeness',
+                    title: strings.GradeCompletenessTitle,
                     show_title: true,
                     assessment_type: 'grade',
                     numeric_min: 0,
                     numeric_max: 50,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
-                    instructions: 'Grade the solution on whether you feel it completely answered the problem.',
+                    instructions: strings.GradeCompletenessInstructions,
                     rubric: '',
                     justification_instructions: '',
                     default_refers_to: [
@@ -292,7 +320,7 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.critiqueSolutionTask = createTaskObject({
-            TA_display_name: 'Critique the Solution',
+            TA_display_name: strings.CritiqueName,
             TA_type: TASK_TYPES.CRITIQUE,
             TA_documentation:'',
             TA_name: TASK_TYPES_TEXT.CRITIQUE,
@@ -304,15 +332,15 @@ class AssignmentEditorContainer extends React.Component {
             TA_number_participant: 1,
             TA_fields: {
                 number_of_fields: 1,
-                field_titles: ['Critique'],
+                field_titles: [strings.CritiqueFieldTitle],
                 0: {
-                    title: 'Critique',
+                    title: strings.CritiqueFieldTitle,
                     show_title: false,
                     assessment_type: 'numeric',
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: false,
                     instructions: '',
@@ -327,7 +355,7 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.needsConsolidationTask = createTaskObject({
-            TA_display_name: 'Needs Consolidation',
+            TA_display_name: strings.NeedsConsolidationName,
             TA_type: TASK_TYPES.NEEDS_CONSOLIDATION,
             TA_documentation:'',
             TA_name: TASK_TYPES_TEXT.NEEDS_CONSOLIDATION,
@@ -335,16 +363,16 @@ class AssignmentEditorContainer extends React.Component {
             TA_assignee_constraints: [
                 'student',
                 'individual',
-                {}
+              {}
             ],
             TA_trigger_consolidation_threshold: [15,'percent'],
             TA_fields: null
         });
 
         this.consolidationTask = createTaskObject({
-            TA_display_name: 'Consolidate',
+            TA_display_name: strings.ConsolidateName,
             TA_type: TASK_TYPES.CONSOLIDATION,
-            TA_overall_instructions: 'Consolidate the different grades into a single, fair grade.',
+            TA_overall_instructions: strings.ConsolidateOverallInstructions,
             TA_name: TASK_TYPES_TEXT.CONSOLIDATION,
             TA_assignee_constraints: [
                 'student',
@@ -358,10 +386,10 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.disputeTask = createTaskObject({
-            TA_display_name: 'Dispute the Grades',
+            TA_display_name: strings.DisputeName,
             TA_type: TASK_TYPES.DISPUTE,
             TA_name: TASK_TYPES_TEXT.DISPUTE,
-            TA_overall_instructions: 'Decide whether to dispute your grade or not. If you do, you must justify your grades.',
+            TA_overall_instructions: strings.DisputeOverallInstructions,
             TA_at_duration_end: 'resolved',
             TA_what_if_late: null,
             TA_assignee_constraints: [
@@ -375,9 +403,10 @@ class AssignmentEditorContainer extends React.Component {
         });
 
         this.resolveDisputeTask = createTaskObject({
-            TA_display_name: 'Resolve the Dispute',
+            TA_display_name: strings.ResolveDisputeName,
             TA_type: TASK_TYPES.RESOLVE_DISPUTE,
             TA_name: TASK_TYPES_TEXT.RESOLVE_DISPUTE,
+            TA_overall_instructions: strings.ResolveDisputeOverallInstructions,
             TA_assignee_constraints: [
                 'instructor',
                 'individual', {}
@@ -389,23 +418,23 @@ class AssignmentEditorContainer extends React.Component {
             }
         });
 
-        this.completeTask = createTaskObject({
-            TA_display_name: 'Complete',
-            TA_type: TASK_TYPES.COMPLETED,
-            TA_documentation:'',
-            TA_name: TASK_TYPES_TEXT.COMPLETED,
-            TA_assignee_constraints: [
-                'student', 'individual', {}
-            ],
-            TA_fields: null
-        });
-        ///----------------------
+        // this.completeTask = createTaskObject({
+        //     TA_display_name: 'Complete',
+        //     TA_type: TASK_TYPES.COMPLETED,
+        //     TA_documentation:'',
+        //     TA_name: TASK_TYPES_TEXT.COMPLETED,
+        //     TA_assignee_constraints: [
+        //         'student', 'individual', {}
+        //     ],
+        //     TA_fields: null
+        // });
+      ///----------------------
 
         let standardWorkflow = [cloneDeep(this.createProblemTask)];
 
-        //template for the standard workflow
+      //template for the standard workflow
         this.blankWorkflow = {
-            WA_name: 'Problem',
+            WA_name: strings.DefaultWorkflowName,
             WA_type: '',
             WA_number_of_sets: 1,
             WA_documentation: '',
@@ -416,26 +445,14 @@ class AssignmentEditorContainer extends React.Component {
             WorkflowStructure: cloneDeep(this.root) //this is the tree structure for that particular workflow
         };
 
-        this.state = {
-            CurrentWorkflowIndex: 0,
-            LastTaskChanged: 0,
-            SelectedTask:0,
-            SubmitSuccess: false,
-            ResumingFromSaved: false,
-            SubmitButtonShow: true,
-            SaveSuccess: false,
-            SubmitError: false,
-            Loaded: false,
-            Courses: null,
-            Semesters: null,
-            PartialAssignmentID: this.props.PartialAssignmentID != '' ? this.props.PartialAssignmentID : null,
+        this.setState({
             AssignmentActivityData: {
                 AA_userID: parseInt(this.props.UserID),
-                AA_name: 'Assignment',
+                AA_name: strings.DefaultAssignmentName,
                 AA_course: parseInt(this.props.CourseID),
                 AA_instructions: '',
                 AA_type: '',
-                AA_display_name: 'Assignment',
+                AA_display_name: strings.DefaultAssignmentName,
                 AA_section: null,
                 AA_semester: null,
                 AA_grade_distribution: null,
@@ -443,8 +460,9 @@ class AssignmentEditorContainer extends React.Component {
                 NumberofWorkflows: 1
             },
             WorkflowDetails: [cloneDeep(this.blankWorkflow)],
-            Strings: Strings
-        };
+        });
+
+
     }
 
     componentWillMount() {
@@ -456,72 +474,78 @@ class AssignmentEditorContainer extends React.Component {
         //Get the translated Strings
         this.props.__(this.state.Strings, (newStrings) => {
             this.setState({Strings: newStrings});
-        });
+
 
         //Get the semesters
-        const semesterOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester',
-            json: true
-        };
-        request(semesterOptions, (err, res, body) => {
-            semestersArray = body.Semesters.map(function(sem) {
-                return ({value: sem.SemesterID, label: sem.Name});
+            const semesterOptions = {
+                method: 'GET',
+                uri: this.props.apiUrl + '/api/semester',
+                json: true
+            };
+            request(semesterOptions, (err, res, body) => {
+                semestersArray = body.Semesters.map(function(sem) {
+                    return ({value: sem.SemesterID, label: sem.Name});
+                });
+                semestersArray.push({value: null, label: 'All'});
+                this.setState({
+                    Semesters: semestersArray
+                });
             });
-            semestersArray.push({value: null, label: 'All'});
-            this.setState({
-                Semesters: semestersArray
-            });
-        });
 
         //Get courses if one was not already chosen
-        if (this.props.CourseID === '*' || this.props.CourseID === '') {
-            const coursesOptions = {
-                method: 'GET',
-                uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.UserID,
-                json: true
-            };
-            request(coursesOptions, (err, res, bod) => {
-                coursesArray = bod.Courses.map(function(course) {
-                    return ({value: course.CourseID, label: course.Name});
+            if (this.props.CourseID === '*' || this.props.CourseID === '') {
+                const coursesOptions = {
+                    method: 'GET',
+                    uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.UserID,
+                    json: true
+                };
+                request(coursesOptions, (err, res, bod) => {
+                    coursesArray = bod.Courses.map(function(course) {
+                        return ({value: course.CourseID, label: course.Name});
+                    });
+                    this.setState({
+                        Courses: coursesArray
+                    });
                 });
+            }else{
                 this.setState({
-                    Courses: coursesArray
+                    CourseID: this.props.CourseID
                 });
-            });
-        }else{
-            this.setState({
-                CourseID: this.props.CourseID
-            });
-        }
+            }
 
         //Load partially made assignment from the database
-        if(this.props.PartialAssignmentID !== ''){
-            const assignmentOptions = {
-                method: 'GET',
-                uri: this.props.apiUrl + '/api/partialAssignments/ById/' + this.props.PartialAssignmentID,
-                qs: {
-                    userId: this.props.UserID,
-                    courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
-                },
-                json: true
-            };
+            if(this.props.PartialAssignmentID !== ''){
+                const assignmentOptions = {
+                    method: 'GET',
+                    uri: this.props.apiUrl + '/api/partialAssignments/ById/' + this.props.PartialAssignmentID,
+                    qs: {
+                        userId: this.props.UserID,
+                        courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
+                    },
+                    json: true
+                };
 
-            console.log(assignmentOptions);
+                console.log(assignmentOptions);
 
-            request(assignmentOptions, (err3, res3, assignBody) => {
-                console.log(assignBody, res3);
+                request(assignmentOptions, (err3, res3, assignBody) => {
+                    console.log(assignBody, res3);
 
-                if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
-                    return;
-                }
-                this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
-            });
-        }
+                    if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
+                        return;
+                    }
+                    this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
+                    return this.setState({ Loaded: true});
 
+                });
+            } else {
+                this.makeTaskParameterTemplates();
+                this.makeDefaultWorkflowStructure(0);
+                return this.setState({ Loaded: true});
 
+            }
+
+        });
     }
-
 
     /**
      * [clearCurrentStructure Unused right now but could be helpful for different default structures]
@@ -553,16 +577,10 @@ class AssignmentEditorContainer extends React.Component {
         this.checkAssigneeConstraintTasks(5, 'not', 3, workflowIndex);
         this.checkAssigneeConstraintTasks(6, 'same_as', 2, workflowIndex);
         this.checkAssigneeConstraintTasks(7, 'not', 2, workflowIndex);
+        this.checkAssigneeConstraintTasks(7, 'not', 6, workflowIndex);
     }
 
     componentDidMount() {
-        if(this.state.PartialAssignmentID){
-            return this.setState({ Loaded: true});
-        }else{
-            this.makeDefaultWorkflowStructure(0);
-            return this.setState({ Loaded: true});
-        }
-
 
 
     }
@@ -674,8 +692,12 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
+            showMessage(this.state.Strings.CourseIDNull);
             console.log('CourseID null');
-            this.setState({SubmitError: true});
+            this.setState({
+                InfoMessage: this.state.Strings.CourseIDNull,
+                InfoMessageType: 'error'
+            });
             return;
         }
         let sendData = cloneDeep(this.state.AssignmentActivityData);
@@ -694,7 +716,7 @@ class AssignmentEditorContainer extends React.Component {
                 assignment: sendData,
                 userId: this.props.UserID,
                 partialAssignmentId: this.state.PartialAssignmentID,
-                courseId: this.state.CourseID
+                courseId: this.state.AssignmentActivityData.AA_course
             },
             json: true
         };
@@ -703,13 +725,19 @@ class AssignmentEditorContainer extends React.Component {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
                 console.log(body);
+                showMessage(this.state.Strings.SaveSuccessMessage);
+
                 this.setState({
                     PartialAssignmentID: body.PartialAssignmentID,
-                    SaveSuccess: true
+                    InfoMessage: this.state.Strings.SaveSuccessMessage,
+                    InfoMessageType: 'success'
                 });
             } else {
-                console.log('');
-                this.setState({SaveError: true});
+                showMessage(this.state.Strings.ErrorMessage);
+                this.setState({
+                    InfoMessage: this.state.Strings.ErrorMessage,
+                    InfoMessageType: 'error'
+                });
             }
 
         });
@@ -737,8 +765,12 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
+            showMessage(this.state.Strings.CourseIDNull);
             console.log('CourseID null');
-            this.setState({SubmitError: true});
+            this.setState({
+                InfoMessage: this.state.Strings.CourseIDNull,
+                InfoMessageType: 'error'
+            });
             return;
         }
         //Place Workflows in AssignmentActivityData object for compatability with backend call
@@ -876,10 +908,18 @@ class AssignmentEditorContainer extends React.Component {
         request(options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
-                this.setState({SubmitSuccess: true, SubmitButtonShow: false});
+                showMessage(this.state.Strings.SubmitSuccessMessage);
+                this.setState({
+                    InfoMessage: this.state.Strings.SubmitSuccessMessage,
+                    InfoMessageType: 'success',
+                    SubmitButtonShow: false});
             } else {
                 console.log('Submit failed');
-                this.setState({SubmitError: true});
+                showMessage(this.state.Strings.ErrorMessage);
+                this.setState({
+                    InfoMessage: this.state.Strings.ErrorMessage,
+                    InfoMessageType: 'error'
+                });
             }
 
         });
@@ -1566,14 +1606,20 @@ class AssignmentEditorContainer extends React.Component {
 
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
         let linkedFields = workflowData[linkedIndex].TA_fields;
+        let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
+
+        let oldFields = cloneDeep(workflowData[taskIndex].TA_fields);
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
-        for(let i = 0; i < linkedFields.number_of_fields; i++){
-            workflowData[taskIndex].TA_fields[i + oldNumberOfFields] = linkedFields[i];
+
+        workflowData[taskIndex].TA_fields = linkedFields;
+
+        for(let i = 0; i < oldNumberOfFields; i++){
+            workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
         }
 
-        workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedFields.number_of_fields;
-        workflowData[taskIndex].TA_fields.field_titles = [...oldFieldTitles, ...linkedFields.field_titles];
+        workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedNumberOfFields;
+        workflowData[taskIndex].TA_fields.field_titles = [...linkedFields.field_titles, ...oldFieldTitles];
 
         return workflowData;
     }
@@ -1633,7 +1679,6 @@ class AssignmentEditorContainer extends React.Component {
 
     changeDataCheck(stateField, taskIndex, workflowIndex, firstIndex) {
         let newData = this.state.WorkflowDetails;
-
         switch (stateField) {
         case 'TA_allow_reflection':
             {
@@ -2481,36 +2526,48 @@ class AssignmentEditorContainer extends React.Component {
         );
         let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
 
-        if(this.state.SaveSuccess){
-            infoMessage = (
-              <span onClick={() => {
-                  this.setState({SubmitSuccess: false});
-              }} className="small-info-message">
-              <span className="success-message">
-                {this.state.Strings.SaveSuccessMessage}
-              </span>
-              </span>
-          );
-        }
+        // if(this.state.SaveSuccess){
+        //     infoMessage = (
+        //       <span onClick={() => {
+        //           this.setState({SubmitSuccess: false});
+        //       }} className="small-info-message">
+        //       <span className="success-message">
+        //         {this.state.Strings.SaveSuccessMessage}
+        //       </span>
+        //       </span>
+        //   );
+        // }
+        //
+        // if (this.state.SubmitSuccess) {
+        //     infoMessage = (
+        //         <span onClick={() => {
+        //             this.setState({SubmitSuccess: false});
+        //         }} className="small-info-message">
+        //         <span className="success-message">
+        //           {this.state.Strings.SubmitSuccessMessage}
+        //         </span>
+        //         </span>
+        //     );
+        //
+        // }
+        // if (this.state.SubmitError && !this.state.SubmitSuccess) {
+        //     infoMessage = (
+        //         <span onClick={() => {
+        //             this.setState({SubmitError: false});
+        //         }} className="small-info-message">
+        //         <div className="error-message">{this.state.Strings.ErrorMessage}</div>
+        //         </span>
+        //     );
+        // }
 
-        if (this.state.SubmitSuccess) {
+        if(this.state.InfoMessage !== ''){
             infoMessage = (
                 <span onClick={() => {
-                    this.setState({SubmitSuccess: false});
+                    this.setState({InfoMessage: ''});
                 }} className="small-info-message">
-                <span className="success-message">
-                  {this.state.Strings.SubmitSuccessMessage}
+                <span className={`${this.state.InfoMessageType}-message`}>
+                  {this.state.InfoMessage}
                 </span>
-                </span>
-            );
-
-        }
-        if (this.state.SubmitError && !this.state.SubmitSuccess) {
-            infoMessage = (
-                <span onClick={() => {
-                    this.setState({SubmitError: false});
-                }} className="small-info-message">
-                <div className="error-message">{this.state.Strings.ErrorMessage}</div>
                 </span>
             );
         }
@@ -2606,7 +2663,7 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-                  {infoMessage}
+
                   <div>
                     <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
                       Courses={this.state.Courses} Semesters={this.state.Semesters}
@@ -2617,7 +2674,8 @@ class AssignmentEditorContainer extends React.Component {
                     />
                     <br/> {workflowsView}
                     <br/>
-                    <div className="section-button-area">
+                    {infoMessage}
+                    <div className="section-button-area add-margin-for-button">
                       {submitButtonView}
                       {saveButtonView}
                     </div>
