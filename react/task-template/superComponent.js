@@ -88,11 +88,13 @@ class SuperComponent extends React.Component {
         if ((Object.keys(latestVersion).length === 0 && latestVersion.constructor === Object) || latestVersion == null) {
             latestVersion.number_of_fields = tAdata.number_of_fields;
             for (let i = 0; i < tAdata.number_of_fields; i++) {
-                latestVersion[i] = tAdata[i].default_content;
+                if(tAdata[i].default_refers_to[0] !== null){
+                    latestVersion[i] = this.props.getLinkedTaskValues(tAdata[i].default_refers_to[0], tAdata[i].default_refers_to[1]);
+                } else {
+                    latestVersion[i] = tAdata[i].default_content;
+
+                }
             }
-            /* tAdata.field_titles.forEach(function(title){
-              tdata[title] = tAdata[title].default_content;
-            });*/
         }
 
         const disputeStat = (this.props.Type == TASK_TYPES.DISPUTE) ? false : null;
@@ -120,10 +122,22 @@ class SuperComponent extends React.Component {
                     return false;
                 }
             }
-
             if (this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') {
                 return false;
             }
+
+            if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment')) {
+                if (isNaN(this.state.TaskResponse[i][0])) {
+                    return false;
+                }
+                if (this.state.TaskResponse[i][0] < parseInt(this.state.TaskActivityFields[i].numeric_min) || this.state.TaskResponse[i][0] > parseInt(this.state.TaskActivityFields[i].numeric_max)) {
+                    return false;
+                }
+            }
+            if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0] > 45000) { // checks to see if the input is a reasonable length
+                return false;
+            }
+
         }
 
         if (this.props.FileUpload.mandatory > 0) {
@@ -135,7 +149,7 @@ class SuperComponent extends React.Component {
         return true;
     }
 
-    saveData(e) {
+    saveData(e) { //NEEDS TO BE UPDATED TO SUPPORT VERSIONING
       // function makes a POST call and sends in the state variables which hold the user's input
         e.preventDefault(); // standard JavaScript behavior
       // if task is complete, don't allow saving new data
@@ -156,13 +170,12 @@ class SuperComponent extends React.Component {
         };
 
         request(options, (err, res, body) => {
+            console.log(res, body);
             if (res.statusCode != 200) {
-                this.setState({ InputError: true });
+                showMessage(this.props.Strings.InputErrorMessage);
             } else {
-                this.setState({
-                    SaveSuccess: true,
-                    InputError: false,
-                });
+
+                showMessage(this.props.Strings.SaveSuccessMessage);
             }
         });
     }
@@ -210,18 +223,18 @@ class SuperComponent extends React.Component {
                         LockSubmit: false });
                 } else {
                     this.setState({
-                        SubmitSuccess: true,
-                        InputError: false,
-                        TaskStatus: 'Complete',
-                        LockSubmit: false
+                        TaskStatus: 'Complete'
                     });
+
+                    showMessage(this.props.Strings.SubmitSuccessMessage);
                 }
             });
         } else {
             this.setState({
-                InputError: true,
                 LockSubmit: false
             });
+
+            showMessage(this.props.Strings.InputErrorMessage);
         }
     }
 
@@ -251,22 +264,19 @@ class SuperComponent extends React.Component {
 
     handleContentChange(index, event) {
       // updates task data with new user input in grading fields
-        if (this.state.TaskActivityFields[index] != null && (this.state.TaskActivityFields[index].field_type == 'numeric' || this.state.TaskActivityFields[index].field_type == 'assessment' || this.state.TaskActivityFields[index].field_type == 'self assessment')) {
-            if (isNaN(event.target.value)) {
-                return;
-            }
-            if (event.target.value < parseInt(this.state.TaskActivityFields[index].numeric_min) || event.target.value > parseInt(this.state.TaskActivityFields[index].numeric_max)) {
-                return;
-            }
-        }
-        if (typeof (event.target.value) === 'string' && event.target.value.length > 45000) { // checks to see if the input is a reasonable length
-            return;
-        }
+
         const newTaskResponse = this.state.TaskResponse;
         newTaskResponse[index][0] = event.target.value;
         this.setState({
             TaskResponse: newTaskResponse,
         });
+    }
+
+    handleRadioChange(index, val){
+        console.log(index, val);
+        const newData = this.state.TaskResponse;
+        newData[index][0] = val;
+        this.setState({ TaskResponse: newData });
     }
 
     handleJustificationChange(index, event) {
@@ -350,16 +360,18 @@ class SuperComponent extends React.Component {
         }
 
         if (this.state.InputError) {
-            infoMessage = (<span style={{ backgroundColor: '#ed5565', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565' }}>{this.props.Strings.InputErrorMessage}</span>);
+            infoMessage = (
+                <span className="message-view" onClick={() => { this.setState({ InputError: false }); }}>{this.props.Strings.InputErrorMessage}</span>
+);
             // old Modal style:
             // infoMessage = (<Modal title="Submit Error"  close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
         }
 
         if (this.state.SaveSuccess) {
-            infoMessage = (<span onClick={() => { this.setState({ SaveSuccess: false }); }} style={{ backgroundColor: '#00AB8D', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)' }}>{this.props.Strings.SaveSuccessMessage}</span>);
+            infoMessage = (<span className="message-view" onClick={() => { this.setState({ SaveSuccess: false }); }}>{this.props.Strings.SaveSuccessMessage}</span>);
         }
         if (this.state.SubmitSuccess) {
-            infoMessage = (<span onClick={() => { this.setState({ SubmitSuccess: false }); }} style={{ backgroundColor: '#00AB8D', color: 'white', padding: '10px', display: 'block', margin: '20px 10px', textSize: '16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)' }}>{this.props.Strings.SubmitSuccessMessage}</span>);
+            infoMessage = (<span className="message-view" onClick={() => { this.setState({ SubmitSuccess: false }); }}>{this.props.Strings.SubmitSuccessMessage}</span>);
         }
 
 
@@ -525,10 +537,15 @@ class SuperComponent extends React.Component {
             let fieldInput = null;
             switch (this.state.TaskActivityFields[idx].field_type) {
             case 'assessment':
-            case 'self-assessment':
+            case 'self assessment':
                 switch (this.state.TaskActivityFields[idx].assessment_type) {
                 case 'grade':
-                    fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />);
+                    fieldInput = (<div>
+                      <input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />
+                      <div>{this.props.Strings.Min}: {this.state.TaskActivityFields[idx].numeric_min}</div>
+                      <div>{this.props.Strings.Max}: {this.state.TaskActivityFields[idx].numeric_max}</div>
+                      <br/>
+                    </div>);
                     break;
                 case 'rating':
                     fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={latestVersion[idx][0]} onRate={this.handleStarChange.bind(this, idx)} />);
@@ -536,13 +553,7 @@ class SuperComponent extends React.Component {
                 case 'pass':
                     fieldInput = (<div className="true-checkbox">
                       <RadioGroup
-                        selectedValue={latestVersion[idx][0]} onChange={
-                            (val) => {
-                                const newData = latestVersion;
-                                newData[idx][0] = val;
-                                this.setState({ TaskData: newData });
-                            }
-                          }
+                        selectedValue={latestVersion[idx][0]} onChange={this.handleRadioChange.bind(this, idx)}
                       >
                         <label>{this.props.Strings.Pass} <Radio value={'pass'} /> </label>
                         <label>{this.props.Strings.Fail} <Radio value={'fail'} /> </label>

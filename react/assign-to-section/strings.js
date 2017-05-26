@@ -11,6 +11,8 @@ export default {
     ExpireAfter: 'Expire After a Number of Days',
     ExpireAt: 'Expire at a Certain Time',
     EntireProblemStartTime: 'Entire Problem Start Time',
+    NoSectionsAvailable: 'No Sections Available',
+    Sections: 'Sections',
 
 
 

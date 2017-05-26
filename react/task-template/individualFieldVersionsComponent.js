@@ -19,7 +19,7 @@ class FieldVersionView extends React.Component{
         let title = taskField.title;
         let fieldTitle = '';
 
-        
+
         if(taskField.show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
             if(taskField.assessment_type != null){ //if it's  grade task, simply add 'Grade' to make it prettier
                 fieldTitle = title + ' ' + this.props.Strings.Grade;
@@ -62,7 +62,7 @@ class FieldVersionView extends React.Component{
             let fieldContentBlock = null;
             switch(taskField.field_type){
             case 'assessment':
-            case 'self-assessment':
+            case 'self assessment':
                 switch(taskField.assessment_type){
                 case 'grade':
                     fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-small"> {fieldVersion[0]}

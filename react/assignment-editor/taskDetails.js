@@ -96,9 +96,7 @@ class TaskDetailsComponent extends React.Component {
             SimpleGrade:''
         };
 
-        const title = this.state.NewTask
-            ? (this.props.TaskActivityData.TA_display_name)
-            : (this.props.TaskActivityData.TA_display_name);
+        const title = this.props.TaskActivityData.TA_display_name;
 
         if (!this.props.isOpen) {
             return (
@@ -383,13 +381,7 @@ class TaskDetailsComponent extends React.Component {
             );
         }, this);
 
-        const buttonToggle = (
-
-          <div
-            className="inner block" style={{
-                alignContent: 'right',
-            }}
-          >
+        const fieldButton = (
             <div className="section-button-area">
               <button
                 type="button" className="divider" onClick={() => {
@@ -403,24 +395,23 @@ class TaskDetailsComponent extends React.Component {
                 {strings.AddAnotherField}
               </button>
             </div>
-            <br />
-            <div>
-              <label
-                style={{
-                    display: 'inline-block',
-                    float: 'right',
-                }}
-              >{strings.ShowAdvancedOptions}?</label>
-              <br />
-              <ToggleSwitch
-                isClicked={this.state.ShowAdvanced} click={() => {
-                    this.setState({
-                        ShowAdvanced: !this.state.ShowAdvanced,
-                    });
-                }}
-              />
-            </div>
+        );
 
+        const toggleView = (
+          <div className="section-button-area">
+            <label
+              style={{
+                  display: 'inline-block'
+              }}
+            >{strings.ShowAdvancedOptions}?</label>
+            <br />
+            <ToggleSwitch
+              isClicked={this.state.ShowAdvanced} click={() => {
+                  this.setState({
+                      ShowAdvanced: !this.state.ShowAdvanced,
+                  });
+              }}
+            />
           </div>
         );
 
@@ -624,7 +615,7 @@ class TaskDetailsComponent extends React.Component {
                     ? (
                       <div>
                         <label>{strings.ShouldReflectionsBeConsolidated}</label>
-                        <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.AllowConsolidations[0]} />
+                        <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, true)} />
                         <br />
                         <div>
                           <label>{strings.SeeSibblingsInParent}</label>
@@ -886,7 +877,10 @@ class TaskDetailsComponent extends React.Component {
                 {taskInstructions}
                 {taskRubric}
                 {inputFields}
-                {buttonToggle}
+                <div className="inner block" >
+                {fieldButton}
+                {toggleView}
+                </div>
               </div>
 
               {advancedOptionsView}

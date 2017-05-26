@@ -5,16 +5,22 @@ exports.get = (req, res) => {
 };
 
 exports.post = (req, res) => {
+    if(req.body.email === ''){
+        return res.render('masquerade', {
+            Error: true
+        });
+    }
+
     const email = req.body.email;
     req.App.api.get(`/getUserId/${email}`, (err, statusCode, body) => {
         if (body.UserID !== -1) {
             const currentUserId = req.session.userId;
             req.session.userId = body.UserID;
             req.session.masqueraderId = currentUserId;
-            res.redirect('/');
+            return res.redirect('/');
         }
         else {
-            res.render('masquerade', {
+            return res.render('masquerade', {
                 Error: true
             });
         }

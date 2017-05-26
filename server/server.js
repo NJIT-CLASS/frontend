@@ -385,7 +385,7 @@ app.use(function(req, res, next) {
                 }
 
 									// pass masquerading info to template
-                if (req.session.masqueraderId) {
+                if (req.session.masqueraderId && options.route !== '/') {
                     options.masquerading = true;
                     options.userEmail = req.App.user.email;
                 }

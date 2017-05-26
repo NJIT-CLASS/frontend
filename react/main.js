@@ -18,6 +18,7 @@ import TestingGroundContainer from './testing/test';
 import TaskStatusTable from './assignment-records/TaskStatus';
 import CourseSectionManagement from './course-section-management/container';
 import AccountManagement from './account/container';
+import QuickAssignmentReport from './quick-assignment-report/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {

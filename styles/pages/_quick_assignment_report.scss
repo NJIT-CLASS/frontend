@@ -1,0 +1,28 @@
+.quick-assignment-report{
+  display: inline-block;
+  width: 100vw;
+
+  .workflow-block{
+    display: inline;
+  }
+  .workflow-activity{
+    width: 20px;
+  }
+  .workflow-instance{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+  }
+  .task-activity-block{
+    //display: flex;
+  }
+  .task-instance{
+    padding: 10px;
+    flex: 1 0 100px;
+    .task-type{
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+
+}

@@ -73,7 +73,7 @@ let strings = {
     AssigneeConstraints: 'Assignee Constraints',
     WhoCanDoTask: 'Who can do this task',
     WillThisBeGroupTask: 'Will this be a group task',
-    HowManyParticipants: 'How many participants should there be for this task',
+    HowManyParticipants: 'How many students should there be for this task',
     SeeSibblingsLabel: 'Since multiple people will work on this task, should they be able to see each other\'s responses while working on the task',
     SeeSibblingsInParent: 'Should students be abe to see each other\'s work while in progress?',
     DoesThisLeadToNewProblem: 'Does this lead to a new problem',

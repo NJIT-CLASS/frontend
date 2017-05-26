@@ -6,7 +6,7 @@ import SuperComponent from './superComponent';
 import MultiViewComponent from './multiViewComponent';
 import SuperViewComponent from './superViewComponent';
 
-const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
+const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues }) => {
     return <div>
           {
             TasksArray.map(function(task, idx) {
@@ -51,7 +51,7 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
-        						ComponentTitle={compString}
+        						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
         						Files={task.Files}
         						Instructions={task.TaskActivity.Instructions}
@@ -68,7 +68,8 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-        						ComponentTitle={compString}
+                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+        						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
         						TaskData={task.Data}
@@ -129,7 +130,7 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl }) => {
         						index={idx}
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
-        						ComponentTitle={compString}
+        						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
                     Status={task.Status}
         						Files={task.Files}

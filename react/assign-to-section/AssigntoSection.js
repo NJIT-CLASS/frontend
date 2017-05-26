@@ -36,7 +36,7 @@ class AssignToSectionContainer extends React.Component
                 Time:moment().format('YYYY-MM-DD HH:mm:ss'),
                 AssigmentName:''
             },
-            Sections: null,
+            Sections: [],
             SubmitSuccess:false,
             SubmitError: false,
             DataLoaded: false,
@@ -104,11 +104,32 @@ class AssignToSectionContainer extends React.Component
                     Assignment: newA,
                     Semesters:semestersArray,
                     WorkFlow:workflows,
-                    Sections: body.sectionIDs,
                     DataLoaded: true
                 });
             });
 
+        });
+    }
+
+    fetchSectionsForSemester()  {
+        const options = {
+            method: 'GET',
+            uri: `${this.props.apiUrl}/api/getCourseSections/${this.props.CourseID}`,
+            qs: {
+                userID: this.props.UserID,
+                semesterID: this.state.Assignment.Semester
+            },
+            json: true
+        };
+
+        request(options, (err, res, body) => {
+            let sectionsList = body.Sections.map((section) => {
+                return {value: section.SectionID, label: section.Name};
+            });
+
+            this.setState({
+                Sections: sectionsList
+            });
         });
     }
 
@@ -198,8 +219,9 @@ class AssignToSectionContainer extends React.Component
 
     onChangeSemesterAssignment(val){
         let newA = this.state.Assignment;
-        newA.Semester = val;
+        newA.Semester = val.value;
         this.setState({Assignment: newA});
+        this.fetchSectionsForSemester();
     }
 
     onChangeSectionAssignment(sectionID) //Section is automatically passed in by CheckBoxList module

@@ -63,6 +63,11 @@ function uploadFiles(e, url, vars){
 
 }
 
+function showMessage(message){
+    document.getElementById('message-view').innerText = message;
+    document.getElementById('message-view').classList.remove('closed');
+}
+
 document.onload = function() {
     js = {};
 
@@ -118,10 +123,21 @@ document.onload = function() {
         }
     };
 
+
     var checkboxEls = document.getElementsByClassName('checkbox');
 
     [].forEach.call(checkboxEls, function (el) {
         el.addEventListener('click', js.checkbox.switch.bind(el));
         el.dataset.checked = el.classList.contains('checked') ? true : false;
     });
+
+    js.message = {
+        close: function(){
+            this.classList.add('closed');
+        }
+    };
+
+    var messageViewEl = document.getElementById('message-view');
+    messageViewEl.addEventListener('click', js.message.close.bind(messageViewEl));
+
 }();

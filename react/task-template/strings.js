@@ -39,6 +39,7 @@ let strings = {
     selectLabel: 'Select Files',
     uploadedLabel: 'Uploaded',
     Max: 'Max',
+    Min: 'Min'
 
 };
 

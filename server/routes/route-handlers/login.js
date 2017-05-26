@@ -3,6 +3,12 @@ exports.get = (req, res) => {
         return res.redirect('/dashboard');
     }
 
+    if('masqueraderId' in req.session){
+        delete req.session.masqueraderId;
+    }
+
+  
+
     req.App.api.get('/initial', (err, statusCode, body) => {
         if(statusCode == 400){
             return res.redirect('/onboarding');
@@ -17,16 +23,14 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
 
     req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
-        if(!body){
-            return res.render('home',{
-                credentialsError: true
-            });
-        }
+
+
 
         switch(statusCode){
         case 500:
             return res.render('home',{
-                serverError: true
+                serverError: true,
+                returnUrl: req.body.url
             });
         case 201:
         case 200:
@@ -39,14 +43,23 @@ exports.post = (req, res) => {
                 return res.redirect(req.body.url || '/');
             }
         case 401:
-            if(body.Timeout){
+            if(!body){
+                if(body.Timeout){
+                    return res.render('home',{
+                        credentialsError: true,
+                        timeout: body.Timeout,
+                        returnUrl: req.body.url
+                    });
+                }
                 return res.render('home',{
                     credentialsError: true,
-                    timeout: body.Timeout
+                    returnUrl: req.body.url
                 });
-            } else {
+            }
+            else {
                 return res.render('home',{
-                    credentialsError: true
+                    credentialsError: true,
+                    returnUrl: req.body.url
                 });
             }
 

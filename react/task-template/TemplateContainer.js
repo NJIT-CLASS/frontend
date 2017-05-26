@@ -192,6 +192,34 @@ class TemplateContainer extends React.Component {
         this.getTaskData();
     }
 
+    /**
+     * [getLinkedTaskValues Gets the Data for a linked task that uses default_refers_to]
+     * @param  {[number]} taskActivityID [ID of the Task Activity, first index in default_refers_to]
+     * @param  {[number]} fieldIndex     [field index in the Task Activity Fields object, second index on default_refers_to]
+     * @return {[array]}                ['response', 'justification']
+     */
+    getLinkedTaskValues(taskActivityID, fieldIndex){
+        let returningValues = ['', ''];
+        this.state.Data.forEach((task) => {
+            if(Array.isArray(task)){
+              /// If multiple participants, assume that whichever is first in the array is desired
+                task.forEach((miniTask) => {
+                    if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
+                    //if multiple versions, assume that the lastest version is desired
+                        returningValues = miniTask.Data[miniTask.Data.length - 1][fieldIndex];
+                    }
+                });
+            } else {
+                if(task.TaskActivity.TaskActivityID === taskActivityID){
+                  //if multiple versions, assume that the lastest version is desired
+
+                    returningValues = task.Data[task.Data.length - 1][fieldIndex];
+                }
+            }
+        });
+        return returningValues;
+    }
+
     render() {
         let renderView = null;
         if (this.state.Error) {
@@ -208,6 +236,7 @@ class TemplateContainer extends React.Component {
         } else {
             renderView = (<TasksList
               TasksArray={this.state.Data}
+              getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
               TaskID={this.props.TaskID}
               UserID={this.props.UserID}
               Strings={this.state.Strings}

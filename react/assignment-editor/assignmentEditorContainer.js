@@ -71,12 +71,13 @@ class AssignmentEditorContainer extends React.Component {
                 TA_name: '',
                 TA_overall_instructions: '',
                 TA_overall_rubric: '',
-                TA_fields: {},
+                TA_fields: {
+                    number_of_fields: 0,
+                    field_titles: []
+                },
                 SimpleGradePointReduction: 0,
-                AllowConsolidations: [
-                    false, false
-                ],
                 StartDelay: false,
+                CustomNameSet: false,
                 TA_file_upload: {'mandatory': 0, 'optional': 0},
                 TA_due_type: [
                     'duration', 4320
@@ -164,28 +165,6 @@ class AssignmentEditorContainer extends React.Component {
                     'not_in_workflow_instance': []
                 }
             ],
-            TA_fields: {
-                number_of_fields: 1,
-                field_titles: ['Field'],
-                0: {
-                    title: 'Field',
-                    show_title: false,
-                    assessment_type: null,
-                    numeric_min: 0,
-                    numeric_max: 40,
-                    rating_max: 5,
-                    list_of_labels: ['Easy', 'Medium', 'Difficult'],
-                    field_type: 'text',
-                    requires_justification: false,
-                    instructions: '',
-                    rubric: '',
-                    justification_instructions: '',
-                    default_refers_to: [
-                        null, null
-                    ],
-                    default_content: ['', '']
-                }
-            }
         });
 
         this.commmentProblemTask = createTaskObject({
@@ -543,12 +522,12 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
-    // findMainGradeTask(workflow, workflowStructure, workflowIndex){
-    //   workflowStructure.walk({strategy: 'breadth'}, function (node) {
-    //     if (node.model.id === 121)
-    //       return false;
-    //   });
-    // }
+
+    /**
+     * [clearCurrentStructure Unused right now but could be helpful for different default structures]
+     * @param  {[number]} workflowIndex [the Workflow to clear]
+     * @return {[void]}               [description]
+     */
     clearCurrentStructure(workflowIndex){
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].WorkflowStructure = cloneDeep(this.root);
@@ -855,7 +834,7 @@ class AssignmentEditorContainer extends React.Component {
             workflow.WA_grade_distribution = newGradeDist;
 
           // B5 Link Fields in Tasks
-            let taskTypesToLink = [TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+            let taskTypesToLink = [TASK_TYPES.EDIT,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
             let taskstoLink = workflow.Workflow.map((task,index) => {
                 if(taskTypesToLink.includes(task.TA_type)){
                     return index;
@@ -980,6 +959,10 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     addConsolidation(parentIndex, workflowIndex) {
+
+        if(this.hasConsolidate(parentIndex, workflowIndex)){
+            return;
+        }
         let newData = this.state.WorkflowDetails;
 
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
@@ -1192,7 +1175,39 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
+    /**
+     * [hasConsolidate checks whether given task has a consolidation task with it]
+     * @param  {[number]}  taskIndex
+     * @param  {[number]}  workflowIndex
+     * @return {Boolean}
+     */
+    hasConsolidate(taskIndex, workflowIndex){
+        let selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == taskIndex;
+        });
+
+        if(!selectedNode.children[this.CONSOL_DISP_IDX]){
+            return false;
+        }
+
+        if(!selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX]){
+            return false;
+        }
+
+        let needsConsolIndex = selectedNode.children[this.CONSOL_DISP_IDX].model.id;
+        let consolIndex = selectedNode.children[this.CONSOL_DISP_IDX].children[this.CONSOL_DISP_IDX].model.id;
+
+        if(this.state.WorkflowDetails[workflowIndex].Workflow[consolIndex].TA_type === TASK_TYPES.CONSOLIDATION){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     getConsolidationIndex(reflect, index, workflowIndex) {
+      //see if reflect or assess has consolidate task and return its index
+      //doesn't check if task is consol or dispute
         let targetIndex = null;
         if (reflect) {
             targetIndex = this.getReflectIndex(index, workflowIndex);
@@ -1306,6 +1321,10 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     removeConsolidation(parentIndex, workflowIndex) {
+        if(!this.hasConsolidate(parentIndex, workflowIndex)){
+            return;
+        }
+
         let newData = this.state.WorkflowDetails;
         var selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
@@ -1383,14 +1402,110 @@ class AssignmentEditorContainer extends React.Component {
 
 
         newData[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant = value;
-
-        if (value <= 1 && newData[workflowIndex].Workflow[index].AllowConsolidations[1] == true) {
-            newData[workflowIndex].Workflow[index].AllowConsolidations[1] = false;
-            this.removeConsolidationfromAssess(this.getAssessIndex(index, workflowIndex), workflowIndex);
+        if(value > 1){
+            if(!this.hasConsolidate(selectedNode.model.id, workflowIndex)){
+            //add consolidation task
+                this.addConsolidation(selectedNode.model.id, workflowIndex);
+            }
+        } else {
+            if(this.hasConsolidate(selectedNode.model.id, workflowIndex)){
+            // remove consolidation task
+                this.removeConsolidation(selectedNode.model.id, workflowIndex);
+            }
         }
         this.setState({WorkflowDetails: newData});
     }
 
+    /**
+     * [propogateNameChangeDownTree sends name change in task down to other tasks]
+     * @param  {[number]} startIndex    [index to begin searching the tree]
+     * @param  {[number]} workflowIndex [workflow's array index]
+     * @return {[void]}
+     */
+    propogateNameChangeDownTree(startIndex, workflowIndex){
+
+        let newData = this.state.WorkflowDetails;
+        let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id === startIndex;
+        });
+
+        selectedNode.walk(function(node){
+            if(node.model.id === -1 || node.model.id === startIndex){
+                return;
+            }
+
+            if(newData[workflowIndex].Workflow[node.model.id].CustomNameSet){
+                return;
+            }
+
+            newData[workflowIndex].Workflow[node.model.id].TA_display_name = this.computeNewName(newData, node.model.id, workflowIndex);
+
+        }, this);
+
+        this.setState({
+            WorkflowDetails: newData
+        });
+    }
+
+    /**
+     * [computeNewName Returns a string of the task type concatenated with the previous task's name]
+     * @param  {[type]} stateData     [passed down this.state.WorkflowDetails (may be ahead of actual state)]
+     * @param  {[type]} taskIndex
+     * @param  {[type]} workflowIndex
+     * @return {[string]}            [new name string]
+     */
+    computeNewName(stateData, taskIndex, workflowIndex){
+        let newName = '';
+        let taskType = stateData[workflowIndex].Workflow[taskIndex].TA_type;
+        let prefixString = '';
+        switch(taskType){
+        case TASK_TYPES.CREATE_PROBLEM:
+            prefixString = 'Create';
+            break;
+        case TASK_TYPES.EDIT:
+            prefixString = 'Edit';
+            break;
+        case TASK_TYPES.COMMENT:
+            prefixString = 'Comment on';
+            break;
+        case TASK_TYPES.SOLVE_PROBLEM:
+            prefixString = 'Solve';
+            break;
+        case TASK_TYPES.GRADE_PROBLEM:
+            prefixString = 'Grade';
+            break;
+        case TASK_TYPES.CRITIQUE:
+            prefixString = 'Critique';
+            break;
+        case TASK_TYPES.CONSOLIDATION:
+            prefixString = 'Consolidate';
+            break;
+        case TASK_TYPES.DISPUTE:
+            prefixString = 'Dispute of';
+            break;
+        case TASK_TYPES.RESOLVE_DISPUTE:
+            prefixString = 'Resolve';
+            break;
+        }
+        newName = prefixString;
+
+        let previousTaskIndex = stateData[workflowIndex].WorkflowStructure
+        .first((node) => {
+            return node.model.id === taskIndex;
+        }).parent.model.id;
+
+        newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
+
+        return newName;
+    }
+
+    /**
+     * setReflectNumberofParticipants
+     * [Changes the task's Reflect task's Number of participants and adds/removes consolidation task if needed]                                          ]
+     * @param {[number]} index         [index of parent of Reflect task]
+     * @param {[number]} workflowIndex
+     * @param {[number]} value         [new numerical value]
+     */
     setReflectNumberofParticipants(index, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
         let x = this; //root.first chnages this context, so need to save it here
@@ -1400,9 +1515,16 @@ class AssignmentEditorContainer extends React.Component {
 
         newData[workflowIndex].Workflow[selectedNode.model.id].TA_number_participant = value;
 
-        if (value <= 1 && newData[workflowIndex].Workflow[index].AllowConsolidations[0] == true) {
-            newData[workflowIndex].Workflow[index].AllowConsolidations[0] = false;
-            this.removeConsolidation(this.getReflectIndex(index, workflowIndex));
+        if(value > 1){
+            if(!this.hasConsolidate(selectedNode.model.id, workflowIndex)){
+            //add consolidation task
+                this.addConsolidation(selectedNode.model.id, workflowIndex);
+            }
+        } else {
+            if(this.hasConsolidate(selectedNode.model.id, workflowIndex)){
+            // remove consolidation task
+                this.removeConsolidation(selectedNode.model.id, workflowIndex);
+            }
         }
 
         this.setState({WorkflowDetails: newData});
@@ -1483,12 +1605,10 @@ class AssignmentEditorContainer extends React.Component {
         case 'reflect':
             newData = this.removeTask(newData, this.REFLECT_IDX, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[taskIndex].TA_allow_reflection[0] = 'none';
-            newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
             break;
         case 'assess':
             newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[taskIndex].TA_allow_assessment = 'none';
-            newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
             break;
         case 'dispute':
             break;
@@ -1664,12 +1784,10 @@ class AssignmentEditorContainer extends React.Component {
 
         case 'Reflect_Consolidate':
             {
-                if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0]) {
+                if (this.hasConsolidate(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex)) {
                     this.removeConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
-                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = false;
                 } else {
                     this.addConsolidation(this.getReflectIndex(taskIndex, workflowIndex), workflowIndex);
-                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[0] = true;
                 }
             }
             break;
@@ -1690,12 +1808,10 @@ class AssignmentEditorContainer extends React.Component {
 
         case 'Assess_Consolidate':
             {
-                if (newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1]) {
+                if (this.hasConsolidate(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex)) {
                     this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
-                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = false;
                 } else {
                     this.addConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
-                    newData[workflowIndex].Workflow[taskIndex].AllowConsolidations[1] = true;
                 }
             }
             break;
@@ -1910,7 +2026,17 @@ class AssignmentEditorContainer extends React.Component {
             if (e.target.value.length > 254) {
                 return;
             }
+            //propogate name change down tree and save new val
+            let newData = this.state.WorkflowDetails;
+            const oldName = newData[workflowIndex].Workflow[taskIndex].TA_display_name;
+            newData[workflowIndex].Workflow[taskIndex].TA_display_name = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].CustomNameSet = true;
+            this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+            this.propogateNameChangeDownTree(taskIndex, workflowIndex);
+
+            return;
         }
+
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[taskIndex][stateField] = e.target.value;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
@@ -1948,6 +2074,20 @@ class AssignmentEditorContainer extends React.Component {
             let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex2]['TA_trigger_consolidation_threshold'][0] = value;
             break;
+        case 'TA_number_participant':
+            if(value > 1){
+                if(!this.hasConsolidate(taskIndex, workflowIndex)){
+                //add consolidation task
+                    this.addConsolidation(taskIndex, workflowIndex);
+                }
+            } else {
+                if(this.hasConsolidate(taskIndex, workflowIndex)){
+                // remove consolidation task
+                    this.removeConsolidation(taskIndex, workflowIndex);
+                }
+            }
+
+            newData[workflowIndex].Workflow[taskIndex][stateField] = value;
         default:
             newData[workflowIndex].Workflow[taskIndex][stateField] = value;
             break;
@@ -2400,26 +2540,23 @@ class AssignmentEditorContainer extends React.Component {
                 let tV = new Array();
                 workflow.WorkflowStructure.walk({strategy: 'pre'}, function(node) {
                     if (node.model.id != -1) {
-                        let task = workflow.Workflow[node.model.id];
-                        if (task.TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || task.TA_type == TASK_TYPES.COMPLETED) {
+                        if (workflow.Workflow[node.model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || workflow.Workflow[node.model.id].TA_type == TASK_TYPES.COMPLETED) {
                             return null;
                         }
-                        if (Object.keys(task).length !== 0) {
-                            tV.push(<TaskDetailsComponent key={index + '-' + node.model.id}
-                            index={node.model.id}
-                            workflowIndex={index}
-                            LastTaskChanged={this.state.LastTaskChanged}
-                            TaskActivityData={task}
-                            isOpen={this.state.SelectedTask == node.model.id}
-                            Strings={this.state.Strings}
-                            addFieldButton={this.addFieldButton.bind(this)}
-                            removeFieldButton={this.removeFieldButton.bind(this)}
-                            changeSelectedTask={this.changeSelectedTask.bind(this)}
-                            callTaskFunction={this.callTaskFunction.bind(this)}
-                          /> );
+                        if (Object.keys(workflow.Workflow[node.model.id]).length !== 0) {
+                            tV.push(
+                              <div className={node.model.id === this.state.SelectedTask
+                                ? 'workflow-task-list-item selected' : 'workflow-task-list-item' }
+                                onClick={this.changeSelectedTask.bind(this, node.model.id)
+                                }
+                                key={`${index}-${node.model.id}-list-item`}
+                                >
+                                  {workflow.Workflow[node.model.id].TA_display_name}
+                              </div>);
                         }
                     }
                 }, this);
+
                 tabListAr.push(
                     <Tab key={'tab stub ' + index}>{workflow.WA_name}</Tab>
                 );
@@ -2436,7 +2573,24 @@ class AssignmentEditorContainer extends React.Component {
                               />
                             <br/>
                             <br/>
-                            {tV}
+                            <div className='task-details-section'>
+                              <div className='workflow-task-list'>
+                                {tV}
+                              </div>
+                              <div className='current-task-view'>
+                                  <TaskDetailsComponent key={index + '-' + this.state.SelectedTask}
+                                  index={this.state.SelectedTask}
+                                  workflowIndex={index}
+                                  LastTaskChanged={this.state.LastTaskChanged}
+                                  TaskActivityData={this.state.WorkflowDetails[index].Workflow[this.state.SelectedTask]}
+                                  isOpen={true}
+                                  Strings={this.state.Strings}
+                                  changeSelectedTask={this.changeSelectedTask.bind(this)}
+                                  callTaskFunction={this.callTaskFunction.bind(this)}
+                                />
+                              </div>
+                            </div>
+
                     </TabPanel>
                 );
             }, this);

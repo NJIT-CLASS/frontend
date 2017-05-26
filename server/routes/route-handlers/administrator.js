@@ -16,7 +16,6 @@ exports.get = (req, res) => {
     }
     req.App.api.get('/instructor/all', (err, statusCode, body) => {
         async.map(body.Instructors, getInstructorEmails.bind(null, req), (err, results) => {
-            console.log(results);
             res.render('admin', {
                 instructors: results
             });

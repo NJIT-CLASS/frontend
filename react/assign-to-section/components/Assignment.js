@@ -72,12 +72,16 @@ class Assignment extends React.Component {
       </div>
     );
         }
+        let checkBoxList = <div>{strings.NoSectionsAvailable}</div>;
 
-        let checkBoxList = this.props.SectionsList.map((section)=>{
-            return(<div style={{display: 'inline-block'}}>
-      <label>{section.label}</label> <Checkbox isClicked={this.isSectionChecked(section.value)} click={this.props.onChangeSectionAssignment.bind(this, section.value)}/>
-    </div>);
-        });
+        if(this.props.SectionsList.length > 0){
+            checkBoxList = this.props.SectionsList.map((section)=>{
+                return(<div style={{display: 'inline-block'}}>
+                        <label>{section.label}</label> <Checkbox isClicked={this.isSectionChecked(section.value)} click={this.props.onChangeSectionAssignment.bind(this, section.value)}/>
+                      </div>);
+            });
+        }
+
 
         return (
     <div style={{width:'fit-content',height: 'fit-content'}} className = "section">
@@ -102,13 +106,12 @@ class Assignment extends React.Component {
 
             <tr className="children">
               <td className="children">
-                <h1> Sections </h1>
+                <h1> {strings.Sections} </h1>
               </td>
             </tr>
 
             <tr className="children" >
               <td className="children">
-
                 {checkBoxList}
               </td>
             </tr>

@@ -46,7 +46,10 @@
 	</div>
     <ul>
         {{#each instructors}}
-            <li class="list-group-item">{{email}}
+            <li class="list-group-item">
+								<div class="list-email">
+									{{email}}
+								</div>
                 {{#if admin}}
                 <div class="toggle-switch true right">
                 {{else}}
