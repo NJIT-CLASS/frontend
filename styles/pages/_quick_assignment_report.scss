@@ -1,12 +1,29 @@
 .quick-assignment-report{
   display: inline-block;
   width: 100vw;
+  background-color: white;
+  padding: 10px;
+
+  .inline-filters{
+    display: inline-block;
+  }
 
   .workflow-block{
-    display: inline;
+    display:flex;
+    flex-direction: row;
   }
-  .workflow-activity{
+  .workflow-activity-block{
+    display:flex;
+    flex-direction: column;
+  }
+  .workflow-activity-label{
     width: 20px;
+    padding: 8px;
+  }
+  .workflow-instance-label{
+    width: 20px;
+    padding: 8px;
+    border:1px solid #bfbfbf;
   }
   .workflow-instance{
     display: flex;
@@ -19,6 +36,7 @@
   .task-instance{
     padding: 10px;
     flex: 1 0 100px;
+
     .task-type{
       font-size: 18px;
       font-weight: 500;

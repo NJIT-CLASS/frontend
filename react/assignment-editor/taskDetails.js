@@ -243,6 +243,7 @@ class TaskDetailsComponent extends React.Component {
             }
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers) {
+                
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
                   <label>
                     {field.label}
@@ -265,7 +266,7 @@ class TaskDetailsComponent extends React.Component {
                     <RadioGroup
                       key={`taskFieldDefault${2}`} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value) => {
                           this.setState({ CurrentTaskFieldSelection: value });
-                          this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
+                          //this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
                       }}
                     >
                       {taskCreatedList.map(task => (

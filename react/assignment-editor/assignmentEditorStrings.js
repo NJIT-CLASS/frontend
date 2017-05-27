@@ -142,6 +142,7 @@ const workflowStrings = {
     SaveSuccessMessage: 'Assignment Saved',
     CourseIDNull: 'A course needs to be specified',
     DefaultWorkflowName: 'Problem',
+    SimpleGradeWorkflowDistribution: 'Aggregated grade for doing indicated tasks on time'
 };
 
 const defaultTaskFieldsStrings = {

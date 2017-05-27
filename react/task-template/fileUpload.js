@@ -122,9 +122,10 @@ class FileUpload extends React.Component{
                 uploadView = (
                   <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                     <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
-                    <label  htmlFor="file-upload-input">{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}/{this.props.MinUploads}</label>
-
+                    <label  htmlFor="file-upload-input">{this.props.Strings.buttonLabel}</label>
+                    <div className="inline">{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}/{this.props.MinUploads}</div>
                     <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
+
                   </form>
               );
             }else{
@@ -133,7 +134,15 @@ class FileUpload extends React.Component{
             }
             break;
         case 'error':
-            uploadView = (<div>Upload Error</div>);
+            uploadView = (<div>Upload Error
+              <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
+                <label  htmlFor="file-upload-input">{this.props.Strings.buttonLabel}</label>
+                <div className="inline">{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}/{this.props.MinUploads}</div>
+                <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
+
+              </form>
+            </div>);
             break;
         default:
             uploadView = <div></div>;

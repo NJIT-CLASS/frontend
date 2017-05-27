@@ -436,6 +436,7 @@ class AssignmentEditorContainer extends React.Component {
         this.blankWorkflow = {
             WA_name: strings.DefaultWorkflowName,
             WA_type: '',
+            CustomProblemTypes: [],
             WA_number_of_sets: 1,
             WA_documentation: '',
             WA_default_group_size: 1,
@@ -1086,6 +1087,7 @@ class AssignmentEditorContainer extends React.Component {
         }
     }
 
+
     addDispute(parentIndex, workflowIndex) {
         let newData = this.state.WorkflowDetails;
 
@@ -1432,6 +1434,19 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
+    /**
+     * [getParentIndex Gets the index of the task's direct parent]
+     * @param  {[number]} taskIndex
+     * @param  {[number]} workflowIndex
+     * @return {[number]}               [parentId]
+     */
+    getParentIndex(taskIndex, workflowIndex){
+        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id === taskIndex;
+        });
+        return selectedNode.parent.model.id;
+    }
+
     setAssessNumberofParticipants(index, workflowIndex, value) {
         let newData = this.state.WorkflowDetails;
         let x = this; //root.first changes this context, so need to save it here
@@ -1575,6 +1590,19 @@ class AssignmentEditorContainer extends React.Component {
     ////////////// Task Activity change methods //////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
+
+    /**
+     * [getParentID Gets the id of the 'owner' task of the task at taskIndex]
+     * [The difference between this and getParentIndex is that the parent task is not
+     *  necessarily the 'owner' task, as is the case with the tasks in the
+     *  excludedTasks array below
+     * ]
+     * @param  {[Node]} root         [root of the tree to scan from, may not be the same as the state-stored root]
+     * @param  {[state object]} workflowData [the workflow data to work with, may not be the same as the state-stored data]
+     *                                        [corresponds to this.state.WorkflowDetails[index].Workflow]
+     * @param  {[number]} taskIndex
+     * @return {[number]}              [owner parent ID]
+     */
     getParentID(root, workflowData, taskIndex){
         let excludedTasks = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
       /* This function returns the parent task of of Consolidate, Dispute, or Resolve Task.
@@ -2206,6 +2234,15 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = temp;
         newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 0;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+        if(temp === 'exists'){
+            this.addSimpleGradeToGradeDistribution(workflowIndex);
+
+        } else if (temp === 'none'){
+            this.removeSimpleGradeFromGradeDistribution(workflowIndex);
+
+        }
+
     }
 
     changeTASimpleGradeCheck(taskIndex, workflowIndex) {
@@ -2239,7 +2276,6 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getAlreadyCreatedTasks(currTaskIndex, workflowIndex) { //change to get from tree
-
         let tasksPath = new Array();
         this.state.WorkflowDetails[workflowIndex].WorkflowStructure.walk(function(node) {
 
@@ -2262,20 +2298,45 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getTaskFields(currTaskIndex, workflowIndex) {
+        let returnList = [];
+        const taskTypesToUseParentIndex = [TASK_TYPES.EDIT];
+        const taskTypesToUseParentID = [TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
+        //Difference here is that edit task has fields in its direct parent
+        //Other tasks have to use getParentID to scan up the tree to find a task that actually has fields
+
         if (currTaskIndex == null) {
             return [];
         }
-        let fieldList = this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_fields.field_titles.map(function(title, taskIndex) {
-            return {value: taskIndex, label: title};
+        let fieldList = this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_fields.field_titles.map(function(title, fieldIndex) {
+            return {value: `${currTaskIndex}:${fieldIndex}`, label: title};
         });
+        let linkedTaskFieldsList = [];
+        if(taskTypesToUseParentIndex.includes(this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_type)){
+            const parentIndex = this.getParentIndex(currTaskIndex, workflowIndex);
+            linkedTaskFieldsList = this.state.WorkflowDetails[workflowIndex].Workflow[parentIndex].TA_fields.field_titles.map((title, fieldIndex) => {
+                return {value: `${parentIndex}:${fieldIndex}`, label: title};
+            });
+        }
+        if(taskTypesToUseParentID.includes(this.state.WorkflowDetails[workflowIndex].Workflow[currTaskIndex].TA_type)){
+            const parentIndex = this.getParentID(this.state.WorkflowDetails[workflowIndex].WorkflowStructure, this.state.WorkflowDetails[workflowIndex].Workflow,currTaskIndex);
+            linkedTaskFieldsList = this.state.WorkflowDetails[workflowIndex].Workflow[parentIndex].TA_fields.field_titles.map((title, fieldIndex) => {
+                return {value: `${parentIndex}:${fieldIndex}`, label: title};
+            });
+        }
 
-        return fieldList;
+        return [...linkedTaskFieldsList,...fieldList ];
     }
 
     setDefaultField(defIndex, fieldIndex, taskIndex, workflowIndex, val) {
         let newData = this.state.WorkflowDetails;
+        if(defIndex === 1){
+            let newRefersToArray = val.split(':').map(i => parseInt(i));
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = newRefersToArray;
+            return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+        }
         newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defIndex] = val;
-        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+        return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
 
@@ -2439,6 +2500,79 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newWorkflowDetails});
     } // this is special for the grade distribution object
 
+
+    /**
+     * [addSimpleGradeToGradeDistribution Adds simple to Workflow Grade Distribution]
+     * @param {[number]} workflowIndex
+     */
+    addSimpleGradeToGradeDistribution(workflowIndex){
+        let stateData = this.state.WorkflowDetails;
+        if('simple' in stateData[workflowIndex].WA_grade_distribution){
+            return;
+        }
+        stateData[workflowIndex].WA_grade_distribution['simple'] = 0;
+        let distKeys = Object.keys(stateData[workflowIndex].WA_grade_distribution);
+        let count = distKeys.length;
+
+        distKeys.forEach(function(task) {
+            stateData[workflowIndex].WA_grade_distribution[task] = Math.floor(100 / count);
+        });
+
+        stateData[workflowIndex].WA_grade_distribution[distKeys[count - 1]] = Math.floor(100 / count) + (100 % count);
+        stateData[workflowIndex].NumberOfGradingTask += 1;
+
+        distKeys = null;
+        count = null;
+
+
+        return this.setState({
+            WorkflowDetails: stateData
+        });
+    }
+
+    /**
+     * [removeSimpleGradeFromGradeDistribution Removes the 'simple' value from the
+     *                                         Workflow Grade distribution if needed]
+     * @param  {[number]} workflowIndex
+     * @return {[void]}
+     */
+    removeSimpleGradeFromGradeDistribution(workflowIndex){
+        let stateData = this.state.WorkflowDetails;
+        if(!('simple' in stateData[workflowIndex].WA_grade_distribution)){
+            return;
+        }
+
+        if(this.scanWorkflowForSimpleGrade(workflowIndex)){
+            return;
+        } else {
+            let stateData = this.state.WorkflowDetails;
+            delete stateData[workflowIndex].WA_grade_distribution.simple;
+            this.setState({
+                WorkflowDetails: stateData
+            });
+            return;
+        }
+
+
+    }
+
+    /**
+     * [scanWorkflowForSimpleGrade Goes over the workflow to find if any tasks have
+     *                             a simple grade. Returns true if it finds any that
+     *                             aren't set to 'none']
+     * @param  {[number]} workflowIndex
+     * @return {[boolean]}
+     */
+    scanWorkflowForSimpleGrade(workflowIndex){
+        let count = this.state.WorkflowDetails[workflowIndex].Workflow.length;
+        for (var i = 0; i < count; i++) {
+            if(this.state.WorkflowDetails[workflowIndex].Workflow[i].TA_simple_grade !== 'none'){
+                return true;
+            }
+        }
+        return false;
+
+    }
     checkWorkflowGradeDist(workflowIndex, stateData, taskChangedIndex, value) {
         let distKeys = Object.keys(stateData[workflowIndex].WA_grade_distribution);
         let sum = Object.values(stateData[workflowIndex].WA_grade_distribution).reduce((a, b) => a + b, 0);
@@ -2503,6 +2637,13 @@ class AssignmentEditorContainer extends React.Component {
         return newArray;
     }
 
+    addCustomProblemType(workflowIndex, val){
+        let newData = this.state.WorkflowDetails;
+        newData[workflowIndex].CustomProblemTypes.push({value: val.value, label: val.label});
+        this.setState({
+            WorkflowDetails: newData
+        });
+    }
     ///---------------------------------------------------------------------------
 
     changeSelectedTask(val){ //if ever want to implement single task-based view
@@ -2626,6 +2767,7 @@ class AssignmentEditorContainer extends React.Component {
                               changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
                               changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
                               changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}
+                              addCustomProblemType={this.addCustomProblemType.bind(this)}
                               Strings={this.state.Strings}
                               />
                             <br/>

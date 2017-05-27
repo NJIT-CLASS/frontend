@@ -88,7 +88,7 @@ case 'testing-container':
     break;
 
 case 'assignment-record-container':
-    ReactDOM.render(<TaskStatusTable UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
+    ReactDOM.render(<QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
     break;
 
 case 'course-section-management':

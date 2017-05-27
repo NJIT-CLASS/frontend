@@ -20,6 +20,9 @@
 	// handle disabled state
 	&.is-disabled > .Select-control {
 		background-color: $select-input-bg-disabled;
+		&:hover {
+			box-shadow: none;
+		}
 	}
 	&.is-disabled .Select-arrow-zone {
 		cursor: default;
@@ -37,18 +40,23 @@
 	color: $select-text-color;
 	cursor: default;
 	display: table;
+	border-spacing: 0;
+	border-collapse: separate;
 	height: $select-input-height;
 	outline: none;
 	overflow: hidden;
 	position: relative;
-	width: 250px;
-	transition: all 200ms ease;
+	width: 280px;
 	@media screen and (max-width: $mobile-brk) {
 		width: calc(100vw - 60px);
 	}
 
 	&:hover {
-		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+		box-shadow: $select-input-hover-box-shadow;
+	}
+
+	.Select-input:focus {
+		outline: none;
 	}
 }
 
@@ -64,7 +72,8 @@
 	border-color: darken($select-input-border-color, 10%) $select-input-border-color lighten($select-input-border-color, 5%);
 
 	// flip the arrow so its pointing up when the menu is open
-	> .Select-arrow {
+	.Select-arrow {
+		top: -2px;
 		border-color: transparent transparent $select-arrow-color;
 		border-width: 0 $select-arrow-width $select-arrow-width;
 	}
@@ -78,12 +87,12 @@
 
 .is-focused:not(.is-open) > .Select-control {
 	border-color: $select-input-border-focus lighten($select-input-border-focus, 5%) lighten($select-input-border-focus, 5%);
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px fade($select-input-border-focus,50%);
+	box-shadow: $select-input-box-shadow-focus;
 }
 
 // placeholder
-
-.Select-placeholder {
+.Select-placeholder,
+.Select--single > .Select-control .Select-value {
 	bottom: 0;
 	color: $select-input-placeholder;
 	left: 0;
@@ -101,29 +110,22 @@
 	white-space: nowrap;
 }
 
-.has-value > .Select-control > .Select-placeholder {
-	color: $select-text-color;
-}
+.has-value.Select--single > .Select-control .Select-value,
+.has-value.is-pseudo-focused.Select--single > .Select-control .Select-value {
+	.Select-value-label {
+		color: $select-text-color;
+	}
+	a.Select-value-label {
+		cursor: pointer;
+		text-decoration: none;
 
-// value with custom renderer
-
-.Select-value {
-	color: $select-input-placeholder;
-	left: 0;
-	padding: $select-padding-vertical 52px $select-padding-vertical $select-padding-horizontal;
-	position: absolute;
-	right: -($select-arrow-width + $select-padding-horizontal);
-	top: 0;
-
-	// crop text
-	max-width: 100%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.has-value > .Select-control > .Select-value {
-	color: $select-text-color;
+		&:hover,
+		&:focus {
+			color: $select-link-hover-color;
+			outline: none;
+			text-decoration: underline;
+		}
+	}
 }
 
 
@@ -135,7 +137,6 @@
 	padding-left: $select-padding-horizontal;
 	padding-right: $select-padding-horizontal;
 	vertical-align: middle;
-	outline: none !important;
 
 	> input {
 		background: none transparent;
@@ -145,17 +146,24 @@
 		display: inline-block;
 		font-family: inherit;
 		font-size: inherit;
-		height: $select-input-internal-height;
+		// height: $select-input-internal-height;
 		margin: 0;
 		outline: none;
-		padding: 0;
+		// padding: 0;
+		line-height: 14px;  /* For IE 8 compatibility */
+		padding: (($select-input-internal-height - 14) / 2 - 2) 0 (($select-input-internal-height - 14) / 2 + 2);  /* For IE 8 compatibility */
 		-webkit-appearance: none;
 
 		.is-focused & {
-			cursor: default;
+			cursor: text;
 		}
 	}
 
+}
+
+// fake-hide the input when the control is pseudo-focused
+.has-value.is-pseudo-focused .Select-input {
+	opacity: 0;
 }
 
 // fake input
@@ -203,6 +211,18 @@
 	width: $select-clear-width;
 }
 
+.Select--multi .Select-multi-value-wrapper {
+  display: inline-block;
+}
+.Select .Select-aria-only {
+	display: inline-block;
+	height: 1px;
+	width: 1px;
+	margin: -1px;
+	clip: rect(0,0,0,0);
+	overflow: hidden;
+}
+
 
 // arrow indicator
 
@@ -223,6 +243,7 @@
 	display: inline-block;
 	height: 0;
 	width: 0;
+	position: relative;
 }
 .is-open .Select-arrow,
 .Select-arrow-zone:hover > .Select-arrow {

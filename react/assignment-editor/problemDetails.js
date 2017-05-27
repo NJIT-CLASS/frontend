@@ -1,7 +1,7 @@
 /* This Component is contains the workflow input fields. It gets its data and functions from the AssignmentEditorContainer.
 */
 import React from 'react';
-import Select from 'react-select';
+import Select, {Creatable} from 'react-select';
 import ToggleSwitch from '../shared/toggleSwitch';
 import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
@@ -13,19 +13,27 @@ class ProblemDetailsComponent extends React.Component{
       //numWorkflows
       // this.props.workflowIndex
         this.state = {
-            ShowContent: true
+            ShowContent: true,
+            CustomProblemTypes: [],
         };
     }
 
     mapTasksToOptions(){
         return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
+            if(task === 'simple'){
+                return {id: task, name: this.props.Strings.SimpleGradeWorkflowDistribution, weight: this.props.WorkflowDetails.WA_grade_distribution[task] };
+            }
             return {id: task, name: this.props.WorkflowDetails.Workflow[task].TA_display_name, weight: this.props.WorkflowDetails.WA_grade_distribution[task] };
         },this);
     }
 
     render(){
         let strings = this.props.Strings;
-        let problemTypeValues=[{value: 'essay', label: strings.Essay}, {value: 'multiple_choice', label: strings.MultipleChoice}, {value: 'short_answer' ,label: strings.ShortAnswer },{value: 'program', label: strings.ComputerProgram}];
+        let problemTypeValues=[{value: 'essay', label: strings.Essay},
+        {value: 'multiple_choice', label: strings.MultipleChoice},
+        {value: 'short_answer' ,label: strings.ShortAnswer },
+        {value: 'program', label: strings.ComputerProgram},
+            ...this.props.WorkflowDetails.CustomProblemTypes];
         let gradingTasks = this.mapTasksToOptions();
 
         let gradeDistView = null;
@@ -56,11 +64,11 @@ class ProblemDetailsComponent extends React.Component{
 
           <div className='inner'>
             <label>{strings.ProblemType}</label>
-            <Select options={problemTypeValues}
+            <Creatable options={problemTypeValues}
                       value={this.props.WorkflowDetails.WA_type}
                       onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
                       clearable={false}
-                      searchable={false}
+                      onNewOptionClick={this.props.addCustomProblemType.bind(this, this.props.workflowIndex)}
                       />
           </div>
           <br />

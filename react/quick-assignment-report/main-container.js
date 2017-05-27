@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
 import request from 'request';
 import AssignmentComponent from './assignment-component';
+import FilterSection from './filtersSection';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            AssignmentData: {}
+            AssignmentData: {},
+            Filters: {
+                Type: '',
+                Status: [''],
+                WorkflowID: ''
+            }
         };
+
+        this.changeFilterType = this.changeFilterType.bind(this);
+        this.changeFilterWorkflowID = this.changeFilterWorkflowID.bind(this);
+        this.changeFilterStatus = this.changeFilterStatus.bind(this);
     }
 
     componentWillMount(){
@@ -27,9 +37,35 @@ class QuickAssignmentReport extends Component {
         });
     }
 
+    changeFilterType(val){
+        let newFilters = this.state.Filters;
+        newFilters.Type = val.value;
+        this.setState({
+            Filters: newFilters
+        });
+    }
+
+    changeFilterWorkflowID(val){
+        let newFilters = this.state.Filters;
+        newFilters.WorkflowID = val.value;
+        this.setState({
+            Filters: newFilters
+        });
+    }
+
+    changeFilterStatus(statusArray){
+        let newFilters = this.state.Filters;
+        newFilters.Status = statusArray.map(t => t.value);
+        this.setState({
+            Filters: newFilters
+        });
+    }
+
     render(){
-        return <div className="quick-assignment-report">
-          <AssignmentComponent Assignment={this.state.AssignmentData}/>
+        return <div className="quick-assignment-report" >
+          <FilterSection Filters={this.state.Filters} changeFilterStatus={this.changeFilterStatus}
+             changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType} />
+          <AssignmentComponent Assignment={this.state.AssignmentData} Filters={this.state.Filters}/>
         </div>;
     }
 
