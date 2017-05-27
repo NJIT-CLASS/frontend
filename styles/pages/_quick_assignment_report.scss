@@ -1,6 +1,5 @@
 .quick-assignment-report{
   display: inline-block;
-  width: 100vw;
   background-color: white;
   padding: 10px;
 
@@ -35,12 +34,30 @@
   }
   .task-instance{
     padding: 10px;
-    flex: 1 0 100px;
+    flex: 0 0 100px;
+    border:1px solid #bfbfbf;
 
     .task-type{
       font-size: 18px;
       font-weight: 500;
     }
+  }
+
+  .empty-block-placeholder{
+    width: 100px;
+    background-color: #eeeeee;
+  }
+
+  .legend-table{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+  }
+
+  .legend-block{
+    padding:10px;
+    border:1px solid #bfbfbf;
+    flex: 0 1 150px;
   }
 
 }

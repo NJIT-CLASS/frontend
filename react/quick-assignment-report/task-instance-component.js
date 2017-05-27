@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({ TaskInstance, Filters }) => {
+const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
@@ -11,6 +11,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters }) => {
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
 
+    //from old task status table
     const colors = { Incomplete: 'incomplete',
         complete: 'complete',
         Late: 'late',
@@ -20,20 +21,49 @@ const TaskInstanceComponent = ({ TaskInstance, Filters }) => {
         bypassed:'bypassed',
         automatic: 'automatic',
     };
+
+    const letters = {
+        Incomplete: '(I)',
+        complete: '(C)',
+        Late: '(!)',
+        'Not Needed': '(X)',
+        not_yet_started: '(NS)',
+        started: '(S)',
+        automatic: '(A)',
+    };
+
+
     const link = `/task/${TaskInstance.TaskInstanceID}`;
 
+    //hide according to status filter
     if(!showTaskInstance){
-        return null;
+        return <div className={'task-instance empty-block-placeholder'}>
+        </div>;
     }
 
-    return (<div className={`task-instance ${colors[taskStatus[0]]}`}>
-      <a href={link}>
+    //hide details if Automatic task
+    let taskInformation = null;
+    if(taskStatus[0] === 'automatic'){
+        taskInformation = <div>
+        <div className="task-type">{TaskActivity.Type}</div>
+        <div>{taskStatus[0]}</div>
+        <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+        <br />
+        <br />
+
+      </div>;
+    } else {
+        taskInformation = <a href={link}>
           <div className="task-type">{TaskActivity.Type}</div>
           <div> {UserContact.Email} </div>
           <div>TaskID: {TaskInstance.TaskInstanceID}</div>
           <div> UserID: {User.UserID} </div>
-          <div>{taskStatus[0]}</div>
-        </a>
+          <div>{letters[taskStatus[0]]}</div>
+        </a>;
+    }
+
+    return (<div className={`task-instance ${colors[taskStatus[0]]}`}>
+      {taskInformation}
       </div>
     );
 };

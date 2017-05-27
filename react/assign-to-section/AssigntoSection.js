@@ -71,17 +71,18 @@ class AssignToSectionContainer extends React.Component
         request(options, (err, res, body) => {
             request(semOptions, (err2, res2, bod2) => {
                 console.log(body);
-                console.log(bo2);
+                console.log(bod2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
                     let tasks = body.taskActivityCollection[key].map(function(task){
+                        const dueTypeArray = JSON.parse(task.defaults);
                         return {
                             ID: task.taskActivityID,
                             Type:task.type,
                             Name: task.name,
-                            StartNow:true,
-                            StartLater:false,
+                            StartNow:dueTypeArray[0] === 'duration',
+                            StartLater:dueTypeArray[0] === 'specific time',
                             Time:4320,
-                            TimeArray:['duration', 4320]
+                            TimeArray: dueTypeArray
                         };
                     }, this);
 
@@ -249,7 +250,7 @@ class AssignToSectionContainer extends React.Component
         newA[workflowIndex].Tasks[index].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
         newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
 
-        this.setState({Tasks: newA});
+        this.setState({WorkFlow: newA});
     }
 
     onChangeMultipleTasks(index, workflowIndex, value) // value automatically passed in by NumericInput
@@ -262,7 +263,7 @@ class AssignToSectionContainer extends React.Component
 
         newA[workflowIndex].Tasks[index].Time = value*1440;
         newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
-        this.setState({Tasks: newA});
+        this.setState({WorkFlow: newA});
     }
 
     onChangeExpireNumberOfDaysTasks(index, workflowIndex)
@@ -272,7 +273,7 @@ class AssignToSectionContainer extends React.Component
         newA[workflowIndex].Tasks[index].StartLater=false;
         newA[workflowIndex].Tasks[index].Time = 3 * 1440;
         newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
-        this.setState({Tasks: newA});
+        this.setState({WorkFlow: newA});
     }
 
     onChangeCertainTimeTasks(index, workflowIndex)
@@ -282,7 +283,7 @@ class AssignToSectionContainer extends React.Component
         newA[workflowIndex].Tasks[index].StartLater=true;
         newA[workflowIndex].Tasks[index].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
         newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
-        this.setState({Tasks: newA});
+        this.setState({WorkFlow: newA});
     }
 
 //-----------------------------------------------------------------------------

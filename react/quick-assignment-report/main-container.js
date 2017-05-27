@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import request from 'request';
 import AssignmentComponent from './assignment-component';
 import FilterSection from './filtersSection';
+import LegendSection from './legendSection';
+import strings from './strings';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -13,7 +15,9 @@ class QuickAssignmentReport extends Component {
                 Type: '',
                 Status: [''],
                 WorkflowID: ''
-            }
+            },
+            Strings: strings,
+            Loaded: false
         };
 
         this.changeFilterType = this.changeFilterType.bind(this);
@@ -29,12 +33,18 @@ class QuickAssignmentReport extends Component {
             json: true
         };
 
-        request(options, (err,res, body) => {
-            console.log(body);
-            this.setState({
-                AssignmentData: body.Result
+        this.props.__(strings, (newStrings) => {
+            request(options, (err,res, body) => {
+                console.log(body);
+                this.setState({
+                    AssignmentData: body.Result,
+                    Strings: newStrings,
+                    Loaded: true
+                });
             });
         });
+
+
     }
 
     changeFilterType(val){
@@ -62,10 +72,19 @@ class QuickAssignmentReport extends Component {
     }
 
     render(){
+        if(!this.state.Loaded){
+            return <div></div>;
+        }
+
         return <div className="quick-assignment-report" >
           <FilterSection Filters={this.state.Filters} changeFilterStatus={this.changeFilterStatus}
-             changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType} />
-          <AssignmentComponent Assignment={this.state.AssignmentData} Filters={this.state.Filters}/>
+             changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType}
+             Strings={this.state.Strings}
+           />
+           <LegendSection Strings={this.state.Strings} />
+          <AssignmentComponent Assignment={this.state.AssignmentData}
+                               Filters={this.state.Filters}
+                               Strings={this.state.Strings}/>
         </div>;
     }
 

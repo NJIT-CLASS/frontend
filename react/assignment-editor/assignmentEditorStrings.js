@@ -162,7 +162,7 @@ const defaultTaskFieldsStrings = {
     SolveProblemName: TASK_TYPES_TEXT.SOLVE_PROBLEM,
     SolveOverallInstructions: 'Solve the problem.',
     SolveDefaultFieldTitle: 'Solution',
-    GradeName: 'Grade the Solution',
+    GradeName: TASK_TYPES_TEXT.GRADE_PROBLEM,
     GradeCorrectnessTitle: 'Correctness',
     GradeCorrectnessInstructions: 'Grade the solution on how correct it is.',
     GradeCompletenessTitle: 'Completeness',

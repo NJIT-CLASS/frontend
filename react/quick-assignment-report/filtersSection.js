@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import {TASK_TYPES} from '../../server/utils/react_constants';
 
-const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterWorkflowID}) => {
-    const typeOptions = [{value: '', label: 'Task Type'}, {value: 'grade_problem', label: 'grade_problem'}];
-    const statusOptions = [{value: 'Incomplete', label:'Incomplete'},
-    {value: 'complete', label: 'Complete'},
-    {value: 'Late', label: 'Late'},
-    {value: 'Not Needed', label: 'Not Needed' },
-    {value: 'not_yet_started', label: 'Not yet started'},
-    {value: 'started', label: 'Started'},
-    {value: 'bypassed', label: 'Bypassed'},
-    {value: 'automatic', label: 'Automatic'}];
-    const workflowOptions = [{value:'', label: 'WorkflowID'}];
+const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterWorkflowID, Strings}) => {
+    const typeOptions = [{value: '', label: Strings.TaskType},
+    {value: TASK_TYPES.CREATE_PROBLEM ,label: Strings.CreateProblemName},
+    {value: TASK_TYPES.EDIT,label: Strings.EditProblemName},
+    {value: TASK_TYPES.SOLVE_PROBLEM ,label: Strings.SolveProblemName},
+    {value: TASK_TYPES.GRADE_PROBLEM ,label: Strings.GradeName},
+    {value: TASK_TYPES.CRITIQUE ,label: Strings.CritiqueName},
+    {value: TASK_TYPES.NEEDS_CONSOLIDATION ,label: Strings.NeedsConsolidationName},
+    {value: TASK_TYPES.CONSOLIDATION ,label: Strings.ConsolidateName},
+    {value: TASK_TYPES.DISPUTE,label: Strings.DisputeName},
+    {value: TASK_TYPES.RESOLVE_DISPUTE ,label: Strings.ResolveDisputeName},
+    ];
+
+    const statusOptions = [{value: 'Incomplete', label:Strings.Incomplete},
+    {value: 'complete', label: Strings.Complete},
+    {value: 'Late', label: Strings.Late},
+    {value: 'Not Needed', label: Strings.NotNeeded },
+    {value: 'not_yet_started', label: Strings.NotYetStarted},
+    {value: 'started', label: Strings.Started},
+    {value: 'bypassed', label: Strings.Bypassed},
+    {value: 'automatic', label: Strings.Automatic}];
+    const workflowOptions = [{value:'', label: Strings.WorkflowID}];
 
     const typeFilter = (
         <Select  options={typeOptions}
