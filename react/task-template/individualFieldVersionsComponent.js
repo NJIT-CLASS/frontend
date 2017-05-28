@@ -18,6 +18,7 @@ class FieldVersionView extends React.Component{
         let taskField = this.props.Field;
         let title = taskField.title;
         let fieldTitle = '';
+        let justificationInstructions = null;
 
 
         if(taskField.show_title){ // fieldTitle is shown next to the field, so only show if instructor sets show_title to true
@@ -41,6 +42,12 @@ class FieldVersionView extends React.Component{
           </div>);
         }
 
+        if(this.props.Field.justification_instructions !== ''){
+            justificationInstructions = (<div>
+            <MarkupText classNames="regular-text" content={this.props.Field.justificationInstructions } />
+          </div>);
+        }
+
         let versions = this.props.Versions.map(function(versionArray, vIndex){
 
             let justification = null;
@@ -50,11 +57,19 @@ class FieldVersionView extends React.Component{
 
             if(taskField.requires_justification){
                 if(fieldVersion[1] == ''){
-                    justification = (<div key={this.props.FieldIndex + vIndex + 655}></div>);
+                    justification = (
+                      <div>
+                        <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
+                        <div key={this.props.FieldIndex + vIndex + 655}></div>
+                      </div>
+                    );
                 }
                 else{
                     justification = (
-                      <MarkupText classNames="faded-big" content={fieldVersion[1]} />
+                      <div>
+                        <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
+                        <MarkupText classNames="faded-big" content={fieldVersion[1]} />
+                      </div>
                     );
                 }
             }

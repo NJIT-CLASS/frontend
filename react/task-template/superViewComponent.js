@@ -106,6 +106,7 @@ class SuperViewComponent extends React.Component {
             let fieldTitleText = '';
             let fieldInstructions = null;
             let fieldRubric = null;
+            let justificationInstructions = null;
 
             if (this.props.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
                 fieldTitleText = field;
@@ -125,7 +126,7 @@ class SuperViewComponent extends React.Component {
                 if (this.state.FieldRubrics[index]) {
                     rubric_content = (
                       <div key={this.props.TaskActivityFields[index].title}>
-                        <div className="boldfaces"> {fieldTitleText} {this.props.Strings.Rubric} </div>
+                        <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
                         <div className="regular-text rubric">
                           {this.props.TaskActivityFields[index].rubric}
                         </div>
@@ -135,7 +136,7 @@ class SuperViewComponent extends React.Component {
                 fieldRubric = (<div key={1200}>
                   <button
                     type="button"
-                    className=" float-button in-line"
+                    className="float-button in-line"
                     onClick={this.toggleFieldRubric.bind(this, index)}
                   >
                     {rubricButtonText}
@@ -157,7 +158,7 @@ class SuperViewComponent extends React.Component {
             if (this.props.TaskActivityFields[index].instructions !== '') { // if instructions are empty, don't display anything
                 fieldInstructions = (
                   <div key={1100}>
-                    <div className="boldfaces">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                    <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                     <div className="regular-text instructions">
                       {this.props.TaskActivityFields[index].instructions}
                     </div>
@@ -165,11 +166,20 @@ class SuperViewComponent extends React.Component {
               );
             }
 
+            if(this.props.TaskActivityFields[index].justification_instructions !== ''){
+                justificationInstructions = (<div>
+                  <div className=".template-field-justification-instructions-label-label">{fieldTitleText} {this.props.Strings.JustificationInstructions}</div>
+
+                <MarkupText className="regular-text" content={this.props.TaskActivityFields[index].justification_instructions}/>
+              </div>);
+            }
+
 
             return (<div>
-              <b>{fieldTitle}</b>
+              <div className="template-field-title">{fieldTitle}</div>
               {fieldInstructions}
               {fieldRubric}
+
               <br />
               <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);

@@ -47,7 +47,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
       <div class="section-content">
       <div class="col-xs-6">
         <table width="100%" class="sticky-enabled tableheader-processed sticky-table">
-         <thead><tr><th>{{__ "Assignment"}}</th><th>{{__ "Type"}}</th><th>{{__ "Course"}}</th><th>{{__ "Due Date"}}</th> </tr></thead>
+         <thead><tr><th>{{__ "Assignment"}}</th><th>{{__ "Type"}}</th><th>{{__ "Course"}}</th><th>{{__ "End Date"}}</th> </tr></thead>
         <tbody>
           {{#each completedTasksList}}
           <tr>
@@ -56,7 +56,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
             </td>
             <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
             <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
-            <td data-label={{__ 'Due Date'}}>{{dateFormat EndDate}}</td>
+            <td data-label={{__ 'End Date'}}>{{dateFormat ActualEndDate}}</td>
           <tr>
             {{/each}}
       </tbody>

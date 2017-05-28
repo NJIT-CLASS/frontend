@@ -29,6 +29,13 @@ exports.setup = (translate) => {
         }
         return options.inverse(this);
     };
+
+    helperFunctions.ifEmpty = function(arg1, options) {
+        if(arg1 === null || arg1 === undefined || arg1 === '' || arg1.length === 0) {
+            return options.fn(this);
+        }
+        return options.inverse(this);
+    };
     helperFunctions.dateFormat = function(date) {
         return moment(date, 'YYYY-MM-DD  HH:mm:ss').format('MMMM Do, YYYY h:mm a');
     };

@@ -27,7 +27,7 @@ let strings = {
     Rubric: 'Rubric',
     Instructions: 'Instructions',
     InputPlaceholder: 'Type your response here',
-    JustificationPlaceholder: 'Type your response here',
+    JustificationPlaceholder: 'Type your justification here',
     Pass: 'Pass',
     Fail: 'Fail',
     LabelDirections: 'Choose from one of the labels below',
@@ -39,6 +39,8 @@ let strings = {
     selectLabel: 'Select Files',
     uploadedLabel: 'Uploaded',
     Max: 'Max',
+    Justification: 'Justification',
+    JustificationInstructions: 'Justification Instructions'
 
 };
 

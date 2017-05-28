@@ -273,10 +273,16 @@ class SuperComponent extends React.Component {
     }
 
     handleRadioChange(index, val){
-        console.log(index, val);
-        const newData = this.state.TaskResponse;
+        let newData = this.state.TaskResponse;
         newData[index][0] = val;
         this.setState({ TaskResponse: newData });
+    }
+    handleSelectChange(index, val){
+        let newData = this.state.TaskResponse;
+        newData[index][0] = val.value;
+        this.setState({
+            TaskResponse: newData,
+        });
     }
 
     handleJustificationChange(index, event) {
@@ -284,7 +290,7 @@ class SuperComponent extends React.Component {
             return;
         }
         // updates task data with new user input in justification fields
-        const newTaskResponse = this.state.TaskResponse;
+        let newTaskResponse = this.state.TaskResponse;
         newTaskResponse[index][1] = event.target.value;
 
         this.setState({
@@ -294,7 +300,7 @@ class SuperComponent extends React.Component {
 
     handleStarChange(index, value) {
       // updates rating grade in taskdata
-        const newResponse = this.state.TaskResponse;
+        let newResponse = this.state.TaskResponse;
         newResponse[index][0] = value.rating;
 
         this.setState({
@@ -393,8 +399,8 @@ class SuperComponent extends React.Component {
                     <h2 className="title">{this.props.ComponentTitle} </h2>
                   </div>
                   <div className="section-content">
-                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
                     <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
+                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
                   </div>
                 </div>
               </div>);
@@ -481,7 +487,7 @@ class SuperComponent extends React.Component {
                 if (this.state.FieldRubrics[idx]) {
                     rubric_content = (
                       <div key={this.state.TaskActivityFields[idx].title}>
-                        <div className="boldfaces"> {fieldTitleText} {this.props.Strings.Rubric} </div>
+                        <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
                         <div className="regular-text rubric">
                           {this.state.TaskActivityFields[idx].rubric}
                         </div>
@@ -513,7 +519,7 @@ class SuperComponent extends React.Component {
             if (this.state.TaskActivityFields[idx].instructions !== '') { // if instructions are empty, don't display anything
                 instructions = (
                   <div key={1100}>
-                    <div className="boldfaces">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                    <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                     <div className="regular-text instructions">
                       {this.state.TaskActivityFields[idx].instructions}
                     </div>
@@ -566,6 +572,9 @@ class SuperComponent extends React.Component {
                     if (typeof labels === 'string') {
                         labels = labels.split(',');
                     }
+                    labels = labels.map(label => {
+                      return {value: label, label: label};
+                    });
                     fieldInput = (<div>
                       <label>{this.props.Strings.LabelDirections}</label>
                       <Select
@@ -573,13 +582,7 @@ class SuperComponent extends React.Component {
                         options={labels}
                         selectedValue={latestVersion[idx][0]}
                         value={latestVersion[idx][0]}
-                        onChange={(e) => {
-                            const newData = latestVersion;
-                            newData[idx][0] = e.value;
-                            this.setState({
-                                TaskData: newData,
-                            });
-                        }}
+                        onChange={this.handleSelectChange.bind(this, idx)}
                         clearable={false}
                         searchable={false}
                       />
@@ -613,10 +616,9 @@ class SuperComponent extends React.Component {
               {fieldInput}
               {justification}
             </div>);
-
             completeFieldView = (
               <div key={idx + 200}>
-                <b>{fieldTitle}</b>
+                <div className="template-field-title">{fieldTitle}</div>
                 {instructions}
                 {rubricView}
                 <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length - 1)} Field={this.state.TaskActivityFields[idx]} FieldIndex={idx} Strings={this.props.Strings} />

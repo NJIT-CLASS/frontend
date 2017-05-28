@@ -23,12 +23,12 @@
               <div class="list-faded-subheader">{{__ "Instructors"}}</div>
               {{#each instructors}}
                 <li class="list-group-item">
-                  {{#ifEqual User.FirstName ""}}
+                  {{#ifEmpty User.FirstName}}
                     {{User.UserContact.Email}}
 
                   {{else}}
                     {{User.FirstName}} {{User.LastName}}
-                  {{/ifEqual}}
+                  {{/ifEmpty}}
                 </li>
               {{/each}}
             {{/if}}
@@ -37,12 +37,12 @@
             <div class="list-faded-subheader">{{__ "Students"}}</div>
               {{#each students}}
               <li class="list-group-item">
-                {{#ifEqual User.FirstName ""}}
+                {{#ifEmpty User.FirstName}}
                   {{User.UserContact.Email}}
 
                 {{else}}
                   {{User.FirstName}} {{User.LastName}}
-                {{/ifEqual}}
+                {{/ifEmpty}}
               </li>
               {{/each}}
             {{/if}}
@@ -51,12 +51,12 @@
             <div class="list-faded-subheader">{{__ "Observers"}}</div>
               {{#each observers}}
               <li class="list-group-item">
-                {{#ifEqual User.FirstName ""}}
+                {{#ifEmpty User.FirstName}}
                   {{User.UserContact.Email}}
 
                 {{else}}
                   {{User.FirstName}} {{User.LastName}}
-                {{/ifEqual}}
+                {{/ifEmpty}}
               </li>
               {{/each}}
             {{/if}}

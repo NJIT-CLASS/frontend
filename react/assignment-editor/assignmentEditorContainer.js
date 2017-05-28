@@ -991,6 +991,7 @@ class AssignmentEditorContainer extends React.Component {
             break;
         case this.CREATE_IDX:
             stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
+            stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
             break;
         case this.SOLVE_IDX:
             stateData = this.changeDataCheck('TA_allow_assessment', newTaskIndex, workflowIndex, stateData);
@@ -2397,6 +2398,8 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
+
+    
     //-----------------------------------------------------------------------------
     //-----------------------------------------------------------------------------
     //-----------------------------------------------------------------------------

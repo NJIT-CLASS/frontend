@@ -11,7 +11,7 @@ const taskStrings = {
     TypeInstructionsHere: 'Type the instructions here',
     TypeRubricHere: 'Type the rubric here',
     FieldJustificationInstructions: 'Field Justification Instructions',
-    TypeJustificationInstructions: 'Type insructions for the justification here',
+    TypeJustificationInstructions: 'Type instructions for the justification here',
     Min: 'Min',
     Max: 'Max',
     AssessmentType: 'Assessment Type',
