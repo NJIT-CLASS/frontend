@@ -1,0 +1,21 @@
+<div class="section">
+    <div class="title">{{__ "Masquerade"}}</div>
+    <form method="POST" class="section-content">
+        {{#if Error}}
+        <div class="error form-error">
+          <i class="fa fa-exclamation-circle"></i>
+          <span>{{__ "Sorry, that user does not exist."}}</span>
+        </div>
+        {{/if}}
+        <div class="masquerade-form-section">
+          <label>{{__ "What user do you want to masquerade as?"}}</label>
+          <div>
+              <input type="text" placeholder="johndoe@email.com" name="email"/>
+          </div>
+          <div class="row">
+              <button type="submit">{{__ "Masquerade"}}</button>
+          </div>
+        </div>
+
+    </form>
+</div>

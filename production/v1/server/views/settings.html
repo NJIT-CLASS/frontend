@@ -1,0 +1,216 @@
+<div class="flex-container">
+	<form name="form_changeName" role="form" class="section" method="POST" action="/settings">
+		<input type="hidden" name="what_was_changed" value="name">
+	    <h2 class="title">{{__ "Change Name"}}</h2>
+	    <div class="section-content">
+
+	    	{{#if namechangefailed }}
+				<div class="error form-error" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "Name was NOT updated! There may have been a connection issue. Try again in a few minutes."}}
+			</br>{{__ "Error status code"}}: {{statuscode}}
+				</div>
+			{{/if}}
+
+			{{#if namechangesucceeded }}
+				<div class="success form-success" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Success"}}:</span>
+				{{__ "Name was successfully updated!"}}
+				</div>
+			{{/if}}
+
+	        <div class="form-group">
+	            <label class="control-label col-sm-2" for="field_firstName">{{__ "First Name"}}</label>
+	            <div class="col-sm-10">
+	                <input class="form-control" name="field_firstName" id="field_firstName" type="text" value="{{userFirstName}}" required>
+	            </div>
+	        </div>
+	        <div class="form-group">
+	            <label class="control-label col-sm-2" for="field_lastName">{{__ "Last Name"}}</label>
+	            <div class="col-sm-10">
+	                <input class="form-control" name="field_lastName" id="field_lastName" type="text" value="{{userLastName}}" required>
+	            </div>
+	        </div>
+	        <!-- TODO: Change this to a button or input when using this as a form -->
+					<div class="section-button-area">
+	        	<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+					</div>
+	    </div>
+	</form> <!-- End of 'change name' panel -->
+
+	<form name="form_changeEmail" role="form" class="section" method="POST" action="/settings">
+		<input type="hidden" name="what_was_changed" value="email">
+	    <h2 class="title">{{__ "Change Your Email Address"}}</h2>
+	    <div class="section-content">
+
+	    	{{#if emailchangefailed }}
+				<div class="error form-error" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "Email was NOT updated! Check your entered values and try again."}}
+			</br>{{__ "Error status code"}}: {{statuscode}}
+				</div>
+			{{/if}}
+
+			{{#if emailchangesucceeded }}
+				<div class="success form-success" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Success"}}:</span>
+				{{__ "Email address was successfully updated!"}}
+			</br>{{__ "New email address"}}: {{newemail}}
+				</div>
+			{{/if}}
+
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_newEmail">{{__ "New Email Address"}}</label>
+	        	<div class="col-sm-10">
+	            	<input class="form-control" name="field_newEmail" id="field_newEmail" type="text" value="{{userEmail}}" required>
+	        	</div>
+	        </div>
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_password">{{__ "Password"}}</label>
+	            <div class="col-sm-10">
+	            	<input class="form-control" name="field_password" id="field_password" type="password" required>
+	        	</div>
+	        </div>
+	        <!-- TODO: Change this to a button or input when using this as a form -->
+					<div class="section-button-area">
+						<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+					</div>
+	    </div>
+	</form> <!-- End of 'change email' panel -->
+
+	<form name="form_changePassword" role="form" class="section" method="POST" action="/settings">
+		<input type="hidden" name="what_was_changed" value="password">
+	    <h2 class="title">{{__ "Change Password"}}</h2>
+	    <div class="section-content">
+
+	    	{{#if passwordchangefailed }}
+				<div class="error form-error" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "Password was NOT updated! Check your entered values and try again." }}
+			</br>{{__ "Error status code"}}: {{statuscode}}
+				</div>
+			{{/if}}
+
+			{{#if passwordchangemismatch }}
+				<div class="error form-error" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Error"}}:</span>
+				{{__ "The new password you entered does not match the contents of the confirmation field. Try again."}}
+				</div>
+			{{/if}}
+
+			{{#if passwordchangesucceeded }}
+				<div class="success form-success" role="alert">
+				<i class="fa fa-exclamation-circle"></i>
+					<span class="sr-only">{{__ "Success"}}:</span>
+				{{__ "Password was successfully updated!" }}
+				</div>
+			{{/if}}
+
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_currentPassword">{{__ "Current Password"}}</label>
+	        	<div class="col-sm-10">
+	            	<input class="form-control" name="field_currentPassword" id="field_currentPassword" type="password" required>
+	        	</div>
+	        </div>
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_newPassword">{{__ "New Password"}}</label>
+	            <div class="col-sm-10">
+	            	<input class="form-control" name="field_newPassword" id="field_newPassword" type="password" required>
+	        	</div>
+	        </div>
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_confirmNewPassword">{{__ "Confirm Password"}}</label>
+	            <div class="col-sm-10">
+	            	<input class="form-control" name="field_confirmNewPassword" id="field_confirmNewPassword" type="password" required>
+	        	</div>
+	        </div>
+	        <!-- TODO: Change this to a button or input when using this as a form -->
+	        <!-- TODO: Check if confirm field matches new field before submitting -->
+					<div class="section-button-area">
+						<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+					</div>
+	    </div>
+	</form> <!-- End of 'change password' panel -->
+
+
+	<form name="uploadImage" role="form" class="section" method="POST" enctype="multipart/form-data" action="/settings" onsubmit="uploadFiles(event, '{{apiUrl}}', {userId: {{userId}} });">
+	  <input type="hidden" name="what_was_changed" value="upload-img" />
+	  <h2 class="title">{{__ "Upload Profile Picture"}}</h2>
+	  <div class="section-content">
+
+	  {{#if onlyPNG }}
+	    <div class="error form-error" role="alert">
+	    <i class="fa fa-exclamation-circle"></i>
+	      <span class="sr-only">{{__ "Error"}}:</span>
+	    {{__ "Only PNG images"}}
+	    </div>
+	  {{/if}}
+
+	    <div class="form-group">
+	    	<input class="form-control" id="upload-input" name="profilePicture" type="file" multiple accept="image/*"></input>
+		</div>
+			<div class="section-button-area">
+				<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+			</div>
+	  </div>
+	</form>
+</div>
+
+
+<!-- TODO: need a way to prevent user from submitting form if they're not an admin in the first place -->
+<!--<form name="form_userStatus" role="form" class="section tooltip" method="POST" action="/accountmanagement">
+	<input type="hidden" name="what_was_changed" value="status">
+    <h2 class="title">{{__ "Your Account Status"}}</h2>
+    <div class="section-content">
+
+    	{{#if adminoptoutfailed }}
+			<div class="error form-error" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Error:</span>
+			Failed to opt out of admin status. Check your entered password and try again.
+			</br>Error status code: {{statuscode}}
+			</div>
+		{{/if}}
+
+		{{#if adminoptoutsucceeded }}
+			<div class="success form-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">Success:</span>
+			Successfully opted out of admin privileges.
+			</div>
+		{{/if}}-->
+
+   		<!-- TODO: add other statuses here -->
+        <!-- <div class="form-group">{{__ "Current Status"}}:
+        {{#if userIsAdmin}}
+        	Administrator
+        {{/if}}
+        </div>-->
+
+        <!-- TODO: fill in boolean variable that indicates admin status here -->
+        <!-- TODO: how do we make that text bold? -->
+        <!-- {{#if userIsAdmin }}
+
+	        <div class="form-group">
+	        	<label class="control-label col-sm-2" for="field_statusPassword">{{__ "Password"}}</label>
+	            <div class="col-sm-10">
+	            	<input class="form-control" name="field_statusPassword" id="field_statusPassword" type="password" required>
+                    <span class="tooltiptext">
+                         {{__ "To opt out of being an administrator, enter your password here and click Submit"}}</br>
+                        <p style="color:#ED4337">{{__ "This change can not be reversed!"}}</p>
+                    </span>
+	        	</div>
+	        </div>
+
+	        <button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+        {{/if}}
+
+
+    </div> -->
+<!--</form> --><!-- End of 'account status' panel -->

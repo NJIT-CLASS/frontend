@@ -397,8 +397,26 @@ class AssignmentEditorContainer extends React.Component {
                 'individual', {}
             ],
             TA_fields: {
-                number_of_fields: 0,
-                field_titles: []
+                number_of_fields: 1,
+                field_titles: [strings.DisputeFieldName],
+                0: {
+                    title: strings.DisputeFieldName,
+                    show_title: false,
+                    assessment_type: null,
+                    numeric_min: 0,
+                    numeric_max: 40,
+                    rating_max: 5,
+                    list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
+                    field_type: 'text',
+                    requires_justification: false,
+                    instructions: strings.DisputeFieldInstructions,
+                    rubric: '',
+                    justification_instructions: '',
+                    default_refers_to: [
+                        null, null
+                    ],
+                    default_content: ['', '']
+                }
             }
         });
 
@@ -456,7 +474,7 @@ class AssignmentEditorContainer extends React.Component {
                 AA_display_name: strings.DefaultAssignmentName,
                 AA_section: null,
                 AA_semester: null,
-                AA_grade_distribution: null,
+                AA_grade_distribution: {0: 100},
                 AA_documentation: '',
                 NumberofWorkflows: 1
             },
@@ -2399,7 +2417,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
 
-    
+
     //-----------------------------------------------------------------------------
     //-----------------------------------------------------------------------------
     //-----------------------------------------------------------------------------
@@ -2443,23 +2461,41 @@ class AssignmentEditorContainer extends React.Component {
             let difference = this.state.AssignmentActivityData.NumberofWorkflows - value;
             if (difference > 0) {
                 while (difference > 0) {
+                  let removeIndex = newWorkflowData.length-1;
                     newWorkflowData.pop();
                     difference -= 1;
                 }
                 newData[fieldName] = value;
-                this.setState({AssignmentActivityData: newData});
+                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length)
+                this.setState({AssignmentActivityData: newData, WorkflowDetails: newWorkflowData});
             }
             else if (difference < 0) {
                 while (difference < 0) {
                     newWorkflowData.push(cloneDeep(this.blankWorkflow));
+                    this.setState({WorkflowDetails: newWorkflowData})
+                    this.makeDefaultWorkflowStructure(newWorkflowData.length-1);
                     difference += 1;
                 }
                 newData[fieldName] = value;
+                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length)
                 this.setState({AssignmentActivityData: newData});
-                this.makeDefaultWorkflowStructure(newWorkflowData.length-1);
             }
         }
     }
+
+    makeNewAssignmentGradeDist(workflowLength){
+      console.log('new length', workflowLength);
+      let newGradeDist = {};
+      let fairSharePoints = Math.floor(100/workflowLength);
+      let leftOverPoints = 100 % workflowLength;
+      for(let i = 0; i < workflowLength; i++){
+        newGradeDist[i] = fairSharePoints;
+      }
+      newGradeDist[0] += leftOverPoints;
+
+      return newGradeDist;
+    }
+
 
     ////////////////    Workflow (Problem) Details functions    ////////////////////
 
@@ -2784,36 +2820,37 @@ class AssignmentEditorContainer extends React.Component {
                 );
                 tabPanelAr.push(
                     <TabPanel key={'tab ' + index}>
-                            <ProblemDetailsComponent key={'Workflows' + index} workflowIndex={index}
-                              WorkflowDetails={workflow}
-                              NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
-                              changeWorkflowData={this.changeWorkflowData.bind(this)}
-                              changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
-                              changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
-                              changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}
-                              addCustomProblemType={this.addCustomProblemType.bind(this)}
-                              Strings={this.state.Strings}
-                              />
-                            <br/>
-                            <br/>
-                            <div className='task-details-section'>
-                              <div className='workflow-task-list'>
-                                {tV}
-                              </div>
-                              <div className='current-task-view'>
-                                  <TaskDetailsComponent key={index + '-' + this.state.SelectedTask}
-                                  index={this.state.SelectedTask}
-                                  workflowIndex={index}
-                                  LastTaskChanged={this.state.LastTaskChanged}
-                                  TaskActivityData={this.state.WorkflowDetails[index].Workflow[this.state.SelectedTask]}
-                                  isOpen={true}
-                                  Strings={this.state.Strings}
-                                  changeSelectedTask={this.changeSelectedTask.bind(this)}
-                                  callTaskFunction={this.callTaskFunction.bind(this)}
-                                />
-                              </div>
+                        <div >
+                          <ProblemDetailsComponent key={'Workflows' + index} workflowIndex={index}
+                            WorkflowDetails={workflow}
+                            NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
+                            changeWorkflowData={this.changeWorkflowData.bind(this)}
+                            changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
+                            changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
+                            changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}
+                            addCustomProblemType={this.addCustomProblemType.bind(this)}
+                            Strings={this.state.Strings}
+                            />
+                          <br/>
+                          <br/>
+                          <div className='task-details-section'>
+                            <div className='workflow-task-list'>
+                              {tV}
                             </div>
-
+                            <div className='current-task-view'>
+                                <TaskDetailsComponent key={index + '-' + this.state.SelectedTask}
+                                index={this.state.SelectedTask}
+                                workflowIndex={index}
+                                LastTaskChanged={this.state.LastTaskChanged}
+                                TaskActivityData={this.state.WorkflowDetails[index].Workflow[this.state.SelectedTask]}
+                                isOpen={true}
+                                Strings={this.state.Strings}
+                                changeSelectedTask={this.changeSelectedTask.bind(this)}
+                                callTaskFunction={this.callTaskFunction.bind(this)}
+                              />
+                            </div>
+                          </div>
+                        </div>
                     </TabPanel>
                 );
             }, this);
@@ -2845,8 +2882,6 @@ class AssignmentEditorContainer extends React.Component {
                       {submitButtonView}
                       {saveButtonView}
                     </div>
-
-
                   </div>
                 </div>
             );

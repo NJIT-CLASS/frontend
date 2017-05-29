@@ -26,7 +26,7 @@ class QuickAssignmentReport extends Component {
     }
 
     componentWillMount(){
-        const url = `http://localhost:3000/api/getAssignmentReport/alternate/${this.props.AssignmentID}`;
+        const url = `${this.props.apiUrl}/api/getAssignmentReport/alternate/${this.props.AssignmentID}`;
         const options = {
             method: 'GET',
             uri: url,

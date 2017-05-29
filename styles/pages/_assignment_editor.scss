@@ -75,7 +75,13 @@
   font-size: 22px;
   padding: 20px 30px 20px 30px;
   color: #4b4d4e;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #eeeeee;
+  }
 }
+
 .workflow-task-list-item.selected{
 background-color: #dddddd;
 }

@@ -1,0 +1,62 @@
+<!-- CURRENTLY HARD CODED for profile image -->
+<!-- TODO: retrieve user's profile image in the backend -->
+<div class="flex-container">
+  <div class='flex-section'>
+      <div class="section">
+        <h2 class="title">{{__ "My Information"}}</h2>
+  		  <div class="section-content">
+  				<div style="width:100%">
+  					<table width="100%" class="myAccount">
+  						<tr>
+  							<td rowspan="5">
+  								<img src="http://localhost:3000/api/download/file/{{profilePicture}}" alt="image" style="
+  								display:block; margin:0 auto;
+  								vertical-align:middle;
+  								text-align:center;
+  								width:65px; height:65px;user-drag: none;
+  							 user-select: none;
+  							 -moz-user-select: none;
+  							 -webkit-user-drag: none;
+  							 -webkit-user-select: none;
+  							 -ms-user-select: none;">
+  							</td>
+  						</tr>
+  						<tr>
+  							<td>
+  									{{__ "Name"}}:
+  							</td>
+
+  							<td>
+  								<span>{{userFirstName}} {{userLastName}}</span>
+  							</td>
+  						</tr>
+  						<tr>
+  							<td>
+  									{{__ "E-mail"}}:
+  							</td>
+
+  							<td>
+  								<span>{{userEmail}}</span>
+  							</td>
+  						</tr>
+  						<tr>
+  							<td>
+  									{{__ "Country"}}:
+  							</td>
+  							<td>
+  								<span>{{userCountry}}</span>
+  							</td>
+  						</tr>
+  						<tr>
+  							<td>
+  									{{__ "City/Hometown"}}:
+  							</td>
+  							<td>
+  								<span>{{userCity}}</span>
+  							</td>
+  						</tr>
+  				</div>
+  			</div>
+      </div>
+	</div>
+</div>

@@ -1,0 +1,67 @@
+
+<form name="form_addInstructor" role="form" class="section" method="POST">
+	<input type="hidden" name="what_was_changed" value="email">
+    <h2 class="title">{{__ "Add New Instructor"}}</h2>
+    <div class="section-content">
+
+    	{{#if emailchangefailed }}
+			<div class="error form-error" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">{{__ "Error"}}:</span>
+			{{__ "Email was NOT updated! Check your entered values and try again."}}
+		</br>{{__ "Error status code"}}: {{statuscode}}
+			</div>
+		{{/if}}
+
+		{{#if emailchangesucceeded }}
+			<div class="success form-success" role="alert">
+			<i class="fa fa-exclamation-circle"></i>
+				<span class="sr-only">{{__ "Success"}}:</span>
+			{{__ "Email address was successfully updated!"}}
+		</br>{{__ "New email address"}}: {{newemail}}
+			</div>
+		{{/if}}
+
+        <div class="form-group">
+        	<label class="control-label col-sm-2" for="field_newEmail">{{__ "Instructor Email Address"}}</label>
+        	<div class="col-sm-10">
+            	<input class="form-control" name="email" id="field_newEmail" type="text" value="{{userEmail}}" required>
+        	</div>
+        </div>
+				<div class="section-button-area">
+					<button type="submit" class="btn btn-lg">{{__ "Submit"}}</a>
+
+				</div>
+    </div>
+</form> <!-- End of 'change email' panel -->
+
+<form name="form_promoteInstructorToAdmin" role="form" class="section" method="POST" action="#">
+	<input type="hidden" name="what_was_changed" value="password">
+    <h2 class="title">{{__ "Promote Instructor"}}</h2>
+    <div class="section-content">
+
+<div class="col-xs-6">
+	<div>
+      	<h1 align="right" class="statusPadding">{{__ "Status"}}</h1>
+	</div>
+    <ul>
+        {{#each instructors}}
+            <li class="list-group-item">
+								<div class="list-email">
+									{{email}}
+								</div>
+                {{#if admin}}
+                <div class="toggle-switch true right">
+                {{else}}
+                <div class="toggle-switch false right" data-onclick="toggleClick"  data-userid="{{ userId }}">
+                {{/if}}
+                	<div class="bubble"></div>
+                	<div class="text-true">{{ __ "Yes" }}</div>
+                	<div class="text-false">{{ __ "No" }}</div>
+                </div>
+            </li>
+        {{/each}}
+    </ul>
+        </div>
+    </div>
+</form> <!-- End of 'change password' panel -->

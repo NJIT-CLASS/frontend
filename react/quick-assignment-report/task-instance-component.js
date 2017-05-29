@@ -30,6 +30,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
         not_yet_started: '(NS)',
         started: '(S)',
         automatic: '(A)',
+        bypassed: '(B)',
     };
 
 

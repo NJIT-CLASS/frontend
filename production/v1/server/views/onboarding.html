@@ -1,0 +1,49 @@
+<div class="login-container">
+    <h2>
+        <i class="fa fa-graduation-cap"></i>
+        <span>{{ __ "CLASS System" }}</span>
+    </h2>
+
+
+    <form role="form" class="section" method="POST" action="/onboarding">
+        <h3 class="title">{{__ "Welcome"}}</h3>
+        <div class="section-content">
+          <div class="initial-user">
+            {{__ "Welcome to the Participatory Learning Approach"}}  <br />
+            {{__ "You're the first one here, so let's setup your account"}} <br />
+            <br />
+
+            {{#if mismatchPassword}}
+                <div class="error form-error">
+                  <i class="fa fa-exclamation-circle"></i>
+                  <span>{{__ "The passwords you entered didn't match"}}</span>
+                </div>
+            {{/if}}
+
+            {{#if fieldsMissing}}
+              <div class="error form-error">
+                <i class="fa fa-exclamation-circle"></i>
+                <span>{{__ "You're missing some fields"}}</span>
+              </div>
+            {{/if}}
+
+            {{#if serverError}}
+                <div class="error form-error">
+                  <i class="fa fa-exclamation-circle"></i>
+                  <span>{{__ "There was a problem with the server. Please try again later"}}</span>
+                </div>
+            {{/if}}
+
+            <div class="form-group">
+              <input class="form-control" type="text" placeholder="{{__ 'First Name'}}" name="firstname" autofocus required/>
+              <input class="form-control" type="text" placeholder="{{__ 'Last Name'}}" name="lastname" required/>
+              <input class="form-control" type="email" placeholder="{{__ 'Email'}}" name="email" required/>
+              <input class="form-control" type="password" placeholder="{{__ 'Password'}}" name="password" required >
+              <input class="form-control" type="password" placeholder="{{__ 'Confirm Password'}}" name="confirmpassword" required>
+
+            </div>
+            <button type="submit" class="float-button">{{ __ "Make Account" }}</button>
+          </div>
+        </div>
+    </form>
+</div>

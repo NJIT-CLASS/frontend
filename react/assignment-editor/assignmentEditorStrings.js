@@ -176,6 +176,8 @@ const defaultTaskFieldsStrings = {
     DisputeOverallInstructions: 'Decide whether to dispute your grade or not. If you do, you must justify your grades.',
     ResolveDisputeName: TASK_TYPES_TEXT.RESOLVE_DISPUTE,
     ResolveDisputeOverallInstructions: 'Resolve the dispute by evaluating it yourself. (You may consider all the other participant’s evaluations.)',
+    DisputeFieldName: 'Justification',
+    DisputeFieldInstructions: 'Explain why the other evaluators were incorrect and why you are correct instead.',
 
 };
 
