@@ -260,10 +260,28 @@ class UserManager extends React.Component {
     }
 	// save all users, set count and total to suppress inefficient API calls
     saveMultiple(users) {
-        let num_users = users.length;
-        for (let i = 0; i < num_users; i++) {
-            this.saveSingle(users[i], i+1, num_users);
-        }
+        // let num_users = users.length;
+        // for (let i = 0; i < num_users; i++) {
+        //     this.saveSingle(users[i], i+1, num_users);
+        // }
+        const saveOptions = {
+            method: 'POST',
+            uri: this.props.apiUrl + '/api/sectionUsers/addMany/' + this.props.sectionID,
+            body: {
+                users: users
+            },
+            json: true
+        };
+
+        request(saveOptions, (err, res, body) => {
+            if(err || res.statusCode == 500) {
+                console.log('Error submitting!');
+                return false;
+            } else {
+                this.fetchAll(this.props.sectionID);
+
+            }
+        });
     }
 	// store CSV data to state
     onCSVInput(event) {
