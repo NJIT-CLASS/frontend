@@ -5,7 +5,12 @@ exports.get = (req, res) => {
         return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     let coursesUrl = '/course/';
-    req.App.api.get(coursesUrl + req.params.Id, (err, statusCode, body) =>{
+
+
+    if(req.App.user.type === 'student'){
+        coursesUrl = '/getActiveEnrolledSections/';
+    }
+    req.App.api.get(`${coursesUrl}${req.params.Id}?studentID=${req.App.user.userId}`, (err, statusCode, body) =>{
         const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
 
         req.App.api.get('/getAssignments/' + req.params.Id, (err, statusCode, assignmentsBody) => {

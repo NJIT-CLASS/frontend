@@ -2497,6 +2497,8 @@ class AssignmentEditorContainer extends React.Component {
     }
 
 
+
+
     ////////////////    Workflow (Problem) Details functions    ////////////////////
 
     addGradeDist(stateData, workflowIndex) {

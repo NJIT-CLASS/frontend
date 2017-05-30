@@ -117,7 +117,7 @@ class AssignToSectionContainer extends React.Component
     fetchSectionsForSemester()  {
         const options = {
             method: 'GET',
-            uri: `${this.props.apiUrl}/api/getCourseSections/allowed/${this.props.CourseID}`,
+            uri: `${this.props.apiUrl}/api/getCourseSections/${this.props.CourseID}`,
             qs: {
                 userID: this.props.UserID,
                 semesterID: this.state.Assignment.Semester
