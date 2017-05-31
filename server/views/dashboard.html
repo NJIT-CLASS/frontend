@@ -31,7 +31,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
           <td data-label={{__ 'Assignment'}}>
             <a href="/task/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
           </td>
-          <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
+          <td data-label={{__ 'Type'}}>{{TaskActivity.DisplayName}}</td>
           <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
           <td data-label={{__ 'Due Date'}}>{{dateFormat EndDate}}</td>
         <tr>
@@ -52,9 +52,9 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
           {{#each completedTasksList}}
           <tr>
             <td data-label={{__ 'Assignment'}}>
-              <a href="/task/{{TaskInstanceID}}?courseId={{AssignmentInstance.Section.Course.CourseID}}&amp;sectionId={{AssignmentInstance.Section.SectionID}}">{{cutLength AssignmentInstance.Assignment.Name}}
+              <a href="/task/{{TaskInstanceID}}">{{cutLength AssignmentInstance.Assignment.Name}}
             </td>
-            <td data-label={{__ 'Type'}}>{{TaskActivity.Name}}</td>
+            <td data-label={{__ 'Type'}}>{{TaskActivity.DisplayName}}</td>
             <td data-label={{__ 'Course'}}>{{cutLength AssignmentInstance.Section.Course.Name}}</td>
             <td data-label={{__ 'End Date'}}>{{dateFormat ActualEndDate}}</td>
           <tr>

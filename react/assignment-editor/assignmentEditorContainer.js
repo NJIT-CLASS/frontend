@@ -121,6 +121,7 @@ class AssignmentEditorContainer extends React.Component {
                 TA_number_participant: 1,
                 TA_function_type: 'max',
                 TA_allow_dispute: false,
+                AllowConsolidation: false,
                 TA_trigger_consolidation_threshold: [],
                 TA_leads_to_new_problem: false,
                 TA_leads_to_new_solution: false
@@ -336,7 +337,7 @@ class AssignmentEditorContainer extends React.Component {
                 0: {
                     title: strings.CritiqueFieldTitle,
                     show_title: false,
-                    assessment_type: 'numeric',
+                    assessment_type: 'grade',
                     numeric_min: 0,
                     numeric_max: 40,
                     rating_max: 5,
@@ -1060,7 +1061,7 @@ class AssignmentEditorContainer extends React.Component {
         needsConsolidateNode.addChildAtIndex(consolidateNode, this.CONSOL_DISP_IDX);
 
 
-
+        stateData[workflowIndex].Workflow[parentIndex].AllowConsolidation = true;
         selectedNode = this.fillGaps(selectedNode, this.CONSOL_DISP_IDX);
         if (selectedNode.children[this.CONSOL_DISP_IDX] == undefined) {
             selectedNode.addChildAtIndex(needsConsolidateNode, this.CONSOL_DISP_IDX);
@@ -1433,7 +1434,7 @@ class AssignmentEditorContainer extends React.Component {
             selectedNode.addChildAtIndex(clone(this.nullNode), this.CONSOL_DISP_IDX);
 
         }
-
+        newData[workflowIndex].Workflow[parentIndex].AllowConsolidation = false;
         this.setState({WorkflowDetails: newData});
     }
 
@@ -1665,7 +1666,7 @@ class AssignmentEditorContainer extends React.Component {
          case future support for adding more fields on top of linked fields is desired*/
 
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
-        let linkedFields = workflowData[linkedIndex].TA_fields;
+        let linkedFields = cloneDeep(workflowData[linkedIndex].TA_fields);
         let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
 
         let oldFields = cloneDeep(workflowData[taskIndex].TA_fields);
@@ -2273,15 +2274,16 @@ class AssignmentEditorContainer extends React.Component {
 
         newData[workflowIndex].Workflow[taskIndex].TA_simple_grade = temp;
         newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 0;
-        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
         if(temp === 'exists'){
-            this.addSimpleGradeToGradeDistribution(workflowIndex);
+            newData = this.addSimpleGradeToGradeDistribution(newData, workflowIndex);
 
         } else if (temp === 'none'){
             this.removeSimpleGradeFromGradeDistribution(workflowIndex);
 
         }
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
 
     }
 
@@ -2539,6 +2541,8 @@ class AssignmentEditorContainer extends React.Component {
 
             gradedTasks = null;
             count = null;
+
+            stateData[workflowIndex].WA_grade_distribution = this.addSimpleGradeToGradeDistribution(stateData, count);
         }
 
         return stateData;
@@ -2567,8 +2571,7 @@ class AssignmentEditorContainer extends React.Component {
      * [addSimpleGradeToGradeDistribution Adds simple to Workflow Grade Distribution]
      * @param {[number]} workflowIndex
      */
-    addSimpleGradeToGradeDistribution(workflowIndex){
-        let stateData = this.state.WorkflowDetails;
+    addSimpleGradeToGradeDistribution(stateData, workflowIndex){
         if('simple' in stateData[workflowIndex].WA_grade_distribution){
             return;
         }
@@ -2587,9 +2590,7 @@ class AssignmentEditorContainer extends React.Component {
         count = null;
 
 
-        return this.setState({
-            WorkflowDetails: stateData
-        });
+        return stateData;
     }
 
     /**

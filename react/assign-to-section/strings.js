@@ -13,6 +13,8 @@ export default {
     EntireProblemStartTime: 'Entire Problem Start Time',
     NoSectionsAvailable: 'No Sections Available',
     Sections: 'Sections',
+    NoSectionsSelected: 'Please choose a section',
+    
 
 
 

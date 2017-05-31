@@ -37,9 +37,9 @@ class AssignToSectionContainer extends React.Component
                 AssigmentName:''
             },
             Sections: [],
-            SubmitSuccess:false,
-            SubmitError: false,
             DataLoaded: false,
+            InfoMessage: '',
+            InfoMessageType:'',
             Strings: Strings
         };
     }
@@ -138,6 +138,14 @@ class AssignToSectionContainer extends React.Component
 
     onSubmit(){
     //saves the state data to the database
+      if(this.state.Assignment.Section.length === 0){
+        showMessage(this.state.Strings.NoSectionsSelected);
+        this.setState({
+          InfoMessage: this.state.Strings.NoSectionsSelected,
+          InfoMessageType: 'error'
+        });
+        return;
+      }
 
         let timingArray = this.state.WorkFlow.map(function(Workflow){
 
@@ -174,13 +182,18 @@ class AssignToSectionContainer extends React.Component
         console.log(options);
         request(options, (err, res, body) => {
             if(res.statusCode === 200){
-                console.log('Submit worked');
+                console.log(this.state.Strings.SubmitSuccess);
                 this.setState({
-                    SubmitSuccess: true
+                    InfoMessage: this.state.Strings.SubmitSuccess,
+                    InfoMessageType: 'success'
                 });
             }
             else{
-                console.log('Something went wrong');
+                console.log(this.state.Strings.SubmitError);
+                this.setState({
+                    InfoMessage: this.state.Strings.SubmitError,
+                    InfoMessageType: 'success'
+                });
             }
         });
         return;
@@ -324,11 +337,15 @@ class AssignToSectionContainer extends React.Component
         if(!this.state.DataLoaded){
             return (<div></div>);
         }
-        if(this.state.SubmitSuccess){
-            infoMessage = (<span onClick={() => {this.setState({SubmitSuccess: false});}} style={{backgroundColor: '#00AB8D', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px rgb(0, 171, 141)'}}>{strings.SubmitSuccess}</span>);
-        }
-        if(this.state.SubmitError){
-            infoMessage = (<span onClick={() => {this.setState({SubmitError: false});}} style={{backgroundColor: '#ed5565', color: 'white',padding: '10px', display: 'block',margin: '20px 10px', textSize:'16px', textAlign: 'center', boxShadow: '0 1px 10px #ed5565'}}>{strings.SubmitError}</span>);
+
+        if(this.state.InfoMessage !== ''){
+            infoMessage = (<span onClick={() => {
+                this.setState({InfoMessage: ''});
+            }} className="small-info-message">
+            <span className={`${this.state.InfoMessageType}-message`}>
+              {this.state.InfoMessage}
+            </span>
+            </span>);
         }
         let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
     {
@@ -365,7 +382,6 @@ class AssignToSectionContainer extends React.Component
 
         return (
       <div>
-        {infoMessage}
 
         <Assignment Assignment={this.state.Assignment}
           SectionsList={this.state.Sections}
@@ -382,6 +398,8 @@ class AssignToSectionContainer extends React.Component
 
 
         {workflowView}
+        {infoMessage}
+
         <div className="align-right">
           {buttonView}
         </div>

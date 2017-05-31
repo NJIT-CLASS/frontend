@@ -31,6 +31,11 @@ exports.post = (req, res) => {
                 mismatchPassword: true
             });
         }
+        else if (newpassword.length < 6) {
+            return res.render('initial-password-change', {
+                shortPassword: true
+            });
+        }
 
         req.App.api.post('/update/password',{
             userId: req.App.user.userId,
