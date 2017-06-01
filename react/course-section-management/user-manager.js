@@ -268,7 +268,10 @@ class UserManager extends React.Component {
             method: 'POST',
             uri: this.props.apiUrl + '/api/sectionUsers/addMany/' + this.props.sectionID,
             body: {
-                users: users,
+                users: users.map((user) => {
+                  user.role = this.props.role;
+                  return user;
+                }),
                 role: this.props.role
             },
             json: true

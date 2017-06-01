@@ -73,15 +73,29 @@ class AssignToSectionContainer extends React.Component
                 console.log(body);
                 console.log(bod2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
+                    let taskDaysPast = 0;
                     let tasks = body.taskActivityCollection[key].map(function(task){
-                        const dueTypeArray = JSON.parse(task.defaults);
+                        let dueTypeArray = JSON.parse(task.defaults);
+                        console.log('duettype for ', task.taskActivityID, dueTypeArray)
+                        if(dueTypeArray[0] === 'specific time'){
+                          if(!isNaN(dueTypeArray[1])){
+                            taskDaysPast += dueTypeArray[1];
+                            dueTypeArray = ['specific time', moment().add(Math.floor((taskDaysPast + dueTypeArray[1])/1440), 'days').format('YYYY-MM-DD')+(' 23:59')];
+                          }
+
+
+                        }
+                        else{
+                          taskDaysPast += dueTypeArray[1];
+                        }
+
                         return {
                             ID: task.taskActivityID,
                             Type:task.type,
                             Name: task.name,
                             StartNow:dueTypeArray[0] === 'duration',
                             StartLater:dueTypeArray[0] === 'specific time',
-                            Time:4320,
+                            Time:dueTypeArray[1],
                             TimeArray: dueTypeArray
                         };
                     }, this);
@@ -213,7 +227,7 @@ class AssignToSectionContainer extends React.Component
         let newA = this.state.Assignment;
         newA.StartNow = false;
         newA.StartLater = true;
-        newA.Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        newA.Time = moment().add(3, 'days').format('YYYY-MM-DD HH:mm:ss');
         this.setState({Assignment: newA});
     }
 
@@ -292,20 +306,34 @@ class AssignToSectionContainer extends React.Component
     onChangeCertainTimeTasks(index, workflowIndex)
   {
         let newA = this.state.WorkFlow;
+        newA[workflowIndex].Tasks[index].Time = this.getAddedTime(index, workflowIndex);
+        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
         newA[workflowIndex].Tasks[index].StartNow= false;
         newA[workflowIndex].Tasks[index].StartLater=true;
-        newA[workflowIndex].Tasks[index].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
-        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
+
         this.setState({WorkFlow: newA});
     }
 
+
+    getAddedTime(index, workflowIndex){
+      let count = 3*1440;
+      for(let i = index-1; i >= 0 ; i--){
+        if(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[0] === 'specific time'){
+          return moment(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1], 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+        } else {
+          count += this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1];
+        }
+      }
+
+      return moment(this.state.WorkFlow[workflowIndex].Time, 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+    }
 //-----------------------------------------------------------------------------
 
 /////////// Functions used in WorkFlow Component ///////////////////////////////
     onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
   {
         let newA = this.state.WorkFlow;
-        newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');;
+        newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
         this.setState({WorkFlow: newA});
     }
 
@@ -314,7 +342,7 @@ class AssignToSectionContainer extends React.Component
         let newA = this.state.WorkFlow;
         newA[workflowIndex].StartNow = false;
         newA[workflowIndex].StartLater = true;
-        newA[workflowIndex].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        newA[workflowIndex].Time = moment().add(3, 'days').format('YYYY-MM-DD HH:mm:ss');
         this.setState({WorkFlow: newA});
     }
 

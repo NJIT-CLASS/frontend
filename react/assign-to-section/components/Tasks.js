@@ -41,7 +41,7 @@ class Tasks extends React.Component {
       <div style={{display: 'block', overflowX:'visible',overflow: 'visible',height: '400px'}}>
         <Datetime
               open={true}
-              defaultValue={moment().add(3, 'days').format('MM/DD/YYYY')+(' 11:59 PM')}
+              defaultValue={moment(this.props.Tasks.Time, 'YYYY-MM-DD HH:mm:ss').format('MM/DD/YYYY hh:mm a')}
               renderDay={this.renderDay}
               renderMonth={this.renderMonth}
               renderYear={this.renderYear}

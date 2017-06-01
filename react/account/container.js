@@ -2,7 +2,6 @@ import React from 'react';
 import request from 'request';
 import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
-
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -447,10 +446,10 @@ class Container extends React.Component {
         }
         return (
 			<div>
-
+        <div className="inline-view"><img className="profile-picture" src={`${this.props.apiUrl}/api/download/file/${this.state.profilePicture}`}></img></div>
         <div className="inline-view">{ this.state.editing ? accountEdit : accountView }</div>
-
 				{ passwordChange }
+
 			</div>
         );
     }
