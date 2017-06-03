@@ -42,6 +42,30 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`
+    delete queryStrings.endpoint;
+
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+      res.status(statusCode).json(body);
+      res.end();
+
+    });
+});
+
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`
+    delete postVars.endpoint;
+
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+      res.status(statusCode).json(body);
+      res.end();
+
+    });
+});
+
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
 
@@ -112,6 +136,7 @@ app.post('/api/translations', (req, res) => {
 
     res.status(200).end();
 });
+
 
 app.post('/api/change-admin-status', (req, res) => {
     const userId = req.body.userId;

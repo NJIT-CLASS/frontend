@@ -1,7 +1,8 @@
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
+
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -57,14 +58,10 @@ class Container extends React.Component {
 	// retrieve information from User, UserLogin, and UserContact tables
 	// initiate editable fields with current state (prefixed with new_)
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/generalUser/' + this.props.UserID,
-            json: true
-        };
+
 		// not all users have UserLogin row, so the ternary operators
 		// account for this discrepancy
-        request(fetchOptions, (err, res, body) => {
+      apiCall.get(`/generalUser/${this.props.UserID}`, (err, res, body) => {
             this.setState({
                 Loaded: true,
                 id: body.User.UserID,
@@ -109,17 +106,12 @@ class Container extends React.Component {
             });
         } else {
             const passwordOptions = {
-                method: 'POST',
-                uri: this.props.apiUrl + '/api/update/password',
-                body: {
                     userId: this.state.id,
                     oldPasswd: this.state.current_password,
                     newPasswd: this.state.new_password
-                },
-                json: true
-            };
+                };
 
-            request(passwordOptions, (err, res, body) => {
+            apiCall.post('/update/password',passwordOptions, (err, res, body) => {
                 if (err || res.statusCode == 401) {
                     console.log('Error submitting!');
                     this.setState({
@@ -170,14 +162,9 @@ class Container extends React.Component {
         let user = this.validate();
         if (user) {
             user.UserID = this.state.id;
-            const saveOptions = {
-                method: 'POST',
-                uri: this.props.apiUrl + '/api/userContact',
-                body: user,
-                json: true
-            };
+            const saveOptions = user;
 
-            request(saveOptions, (err, res, body) => {
+            apiCall.post('/userContact', saveOptions, (err, res, body) => {
                 if (err || res.statusCode == 401 || res.statusCode == 404) {
                     console.log('Error submitting!');
                     return;
@@ -446,7 +433,6 @@ class Container extends React.Component {
         }
         return (
 			<div>
-        <div className="inline-view"><img className="profile-picture" src={`${this.props.apiUrl}/api/download/file/${this.state.profilePicture}`}></img></div>
         <div className="inline-view">{ this.state.editing ? accountEdit : accountView }</div>
 				{ passwordChange }
 

@@ -14,5 +14,6 @@ export default {
     NotGood: 'Not good',
     Decent: 'Decent',
     Strong: 'Strong',
-    Great: 'Great'
+    Great: 'Great',
+    SuccessfulAdd: 'User added successfully',
 };

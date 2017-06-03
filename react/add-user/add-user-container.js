@@ -1,10 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-import request from 'request';
 import Checkbox from '../shared/checkbox';
 import PasswordField from '../shared/passwordField';
 import {clone, cloneDeep} from 'lodash';
 import Strings from './strings.js';
+import apiCall from '../shared/apiCall';
 
 class AddUserContainer extends React.Component {
     constructor(props) {
@@ -95,21 +95,18 @@ class AddUserContainer extends React.Component {
         }
 
 
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/adduser',
-            body: {
+        const vars = {
                 firstname: firstname,
                 lastname: lastname,
                 email: email,
                 instructor: instructor,
                 admin: admin,
                 password: pass
-            },
-            json: true
-        };
+            };
 
-        request(options, (err, res, body) => {
+        //request(options, (err, res, body) => {
+        apiCall.post('/addUser', vars, (err, res, body) => {
+          showMessage(this.state.Strings.SuccessfulAdd);
             console.log(body.Message);
         });
     }

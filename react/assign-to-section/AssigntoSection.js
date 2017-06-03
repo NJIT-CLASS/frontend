@@ -5,7 +5,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Tasks from './components/Tasks.js';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Assignment from './components/Assignment.js';
 import WorkFlow from './components/WorkFlow.js';
 import Strings from './strings';
@@ -53,23 +53,13 @@ class AssignToSectionContainer extends React.Component
             });
         });
 
-        const options = {
-            method: 'GET',
-            uri: this.props.apiUrl +'/api/getAssignToSection/',
-            qs:{
+        const getAssignQueryStrings = {
                 courseid: this.props.CourseID,
                 assignmentid: this.props.AssignmentID
-            },
-            json: true
-        };
-        const semOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester',
-            json: true
-        };
+            };
 
-        request(options, (err, res, body) => {
-            request(semOptions, (err2, res2, bod2) => {
+        apiCall.get('/getAssignToSection',getAssignQueryStrings, (err, res, body) => {
+            apiCall.get('/semester', (err2, res2, bod2) => {
                 console.log(body);
                 console.log(bod2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
@@ -130,16 +120,11 @@ class AssignToSectionContainer extends React.Component
 
     fetchSectionsForSemester()  {
         const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/getCourseSections/${this.props.CourseID}`,
-            qs: {
                 userID: this.props.UserID,
                 semesterID: this.state.Assignment.Semester
-            },
-            json: true
-        };
+            };
 
-        request(options, (err, res, body) => {
+        apiCall.get(`/getCourseSections/${this.props.CourseID}`, options, (err, res, body) => {
             let sectionsList = body.Sections.map((section) => {
                 return {value: section.SectionID, label: section.Name};
             });
@@ -187,16 +172,13 @@ class AssignToSectionContainer extends React.Component
         };
 
 
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
-            body: newData,
-            json: true
-        };
+        const options = newData;
+
         console.log(options);
-        request(options, (err, res, body) => {
+        apiCall.post('/getAssignToSection/submit/', options, (err, res, body) => {
             if(res.statusCode === 200){
                 console.log(this.state.Strings.SubmitSuccess);
+                showMessage(this.state.Strings.SubmitSuccess);
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitSuccess,
                     InfoMessageType: 'success'
@@ -204,6 +186,7 @@ class AssignToSectionContainer extends React.Component
             }
             else{
                 console.log(this.state.Strings.SubmitError);
+                showMessage(this.state.Strings.SubmitError);
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitError,
                     InfoMessageType: 'success'
