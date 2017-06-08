@@ -182,6 +182,16 @@ const defaultTaskFieldsStrings = {
 };
 
 const tooltipMessages = {
+  ActivitySemesterMessage: '',
+  ActivityCourseMessage: '',
+  AssignmentNumberProblemsMessage: '',
+  AssignmentInstructionsMessage: '',
+  ProblemNameMessage: '',
+  ProblemTypeMessage: '',
+  ProblemDocumentationMessage: '',
+  ProblemDefaultGroupSizeMessage: '',
+  ProblemNumberOfSetsMessage: '',
+  
 
 };
 

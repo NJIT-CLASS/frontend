@@ -5,6 +5,7 @@ import Select, {Creatable} from 'react-select';
 import ToggleSwitch from '../shared/toggleSwitch';
 import NumberField from '../shared/numberField';
 import Checkbox from '../shared/checkbox';
+import Tooltip from '../shared/tooltip';
 
 class ProblemDetailsComponent extends React.Component{
     constructor(props){
@@ -58,12 +59,14 @@ class ProblemDetailsComponent extends React.Component{
             multipleWorkflowsView = (<div>
           <div className='inner'>
             <label>{strings.ProblemName}</label>
+            <Tooltip Text={strings.ProblemNameMessage} ID={`WA_name-${this.props.workflowIndex}-tooltip`}/>
             <br />
             <input type="text" placeholder={strings.Name} value={this.props.WorkflowDetails.WA_name} onChange={this.props.changeWorkflowInputData.bind(this, 'WA_name', this.props.workflowIndex)}/>
           </div>
 
           <div className='inner'>
             <label>{strings.ProblemType}</label>
+            <Tooltip Text={strings.ProblemTypeMessage} ID={`WA_type-${this.props.workflowIndex}-tooltip`}/>
             <Creatable options={problemTypeValues}
                       value={this.props.WorkflowDetails.WA_type}
                       onChange={this.props.changeWorkflowDropdownData.bind(this,'WA_type',this.props.workflowIndex)}
@@ -74,6 +77,8 @@ class ProblemDetailsComponent extends React.Component{
           <br />
           <div className='inner block'>
             <label>{strings.Description}</label>
+            <Tooltip Text={strings.ProblemDocumentationMessage} ID={`WA_documentation-${this.props.workflowIndex}-tooltip`}/>
+
             <br />
             <textarea className="big-text-field" placeholder={strings.Description}
                       value={this.props.WorkflowDetails.WA_documentation}
@@ -95,15 +100,16 @@ class ProblemDetailsComponent extends React.Component{
 
               <div className='inner'>
                 <label>{strings.HowManyPeoplePerGroup}</label>
+                <Tooltip Text={strings.ProblemDefaultGroupSizeMessage} ID={`WA_default_group_size-${this.props.workflowIndex}-tooltip`}/>
                 <br />
                 <NumberField min={1}
                               max={25}
                               value={this.props.WorkflowDetails.WA_default_group_size}
                               onChange={this.props.changeWorkflowData.bind(this,'WA_default_group_size',this.props.workflowIndex)}/>
               </div>
-
               <div className='inner'>
                 <label>{strings.HowManyProblems}</label>
+                <Tooltip Text={strings.ProblemNumberOfSetsMessage} ID={`WA_number_of_sets-${this.props.workflowIndex}-tooltip`}/>
                 <br />
                   <NumberField min={1}
                                 max={20}

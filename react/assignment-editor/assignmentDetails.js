@@ -6,6 +6,7 @@ import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 import Checkbox from '../shared/checkbox';
 import ReactTooltip from 'react-tooltip';
+import Tooltip from '../shared/tooltip';
 
 class AssignmentDetailsComponent extends React.Component{
     constructor(props){
@@ -35,7 +36,9 @@ class AssignmentDetailsComponent extends React.Component{
 
         semesterView = (
         <div className="inner">
+
           <label>strings.RestrictToSemester</label>
+          <Tooltip Text={strings.ActivitySemesterMessage} ID={'AA_semester_tooltip'}/>
           <Select options={semesterList}
              value={this.props.AssignmentActivityData.AA_semester}
             onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
@@ -48,6 +51,7 @@ class AssignmentDetailsComponent extends React.Component{
         if(this.props.Courses){
             coursesView = (<div>
           <label>{strings.Course}</label>
+          <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
           <Select options={courseList}
                   value={this.props.AssignmentActivityData.AA_course}
                   placeholder={strings.SelectACourse}
@@ -76,8 +80,8 @@ class AssignmentDetailsComponent extends React.Component{
               </div>
 
               <div className="inner">
-                <label>{strings.AssignmentType}</label><i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={strings.SpecifyType} data-for='AA_type_tooltip'></i>
-                  <ReactTooltip id='AA_type_tooltip' effect='solid'/>
+                <label>{strings.AssignmentType}</label>
+                <Tooltip Text={strings.SpecifyType} ID={'AA_type_tooltip'}/>
                 <Select options={problemTypeList}
                   value={this.props.AssignmentActivityData.AA_type}
                   onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
@@ -89,6 +93,7 @@ class AssignmentDetailsComponent extends React.Component{
                {/*set numericinput max to real world limit of numebr of max problems*/}
               <div className='inner'>
                 <label>{strings.HowManyDifferentTypesOfProblems}</label>
+                <Tooltip Text={strings.AssignmentNumberProblemsMessage} ID={'AA_number_of_workflows_tooltips'} />
                 <br />
                 <NumberField min={1}
                             max={100}
@@ -99,6 +104,7 @@ class AssignmentDetailsComponent extends React.Component{
 
               <div className="inner block">
                 <label>{strings.AssignmentInstructions}</label>
+                <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
                 <br />
                 <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
