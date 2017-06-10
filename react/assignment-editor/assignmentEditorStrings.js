@@ -2,7 +2,6 @@ import {TASK_TYPES_TEXT} from '../../server/utils/react_constants';
 
 const taskStrings = {
     DisplayName: 'Display name', //TaskDetails Strings
-    RemoveButtonTip: 'Remove',
     HowManyRequiredFiles: 'How many required files',
     MaximumNumberOfOptionalFiles: 'Maximum number of optional files',
     AreAnyFileUploadsRequired: 'Are file uploads involved',
@@ -191,8 +190,51 @@ const tooltipMessages = {
   ProblemDocumentationMessage: '',
   ProblemDefaultGroupSizeMessage: '',
   ProblemNumberOfSetsMessage: '',
-  
-
+  RemoveButtonTip: 'Remove',
+  TaskDisplayName: '',
+  TaskRequiredFilesMessage: '',
+  TaskOptionalFilesMessage: '',
+  TaskInstructionsMessage: '',
+  TaskRubricMessage: '',
+  TaskJustificationInstructionsMessage: '',
+  TaskFieldEvalByLabelsMessage: '',
+  TaskAssessmentTypeMessage: '',
+  TaskDefaultFieldContentFromOthersMessage: '',
+  TaskDefaultFieldContentMessage: '',
+  TaskShowFieldNameMessage: '',
+  TaskFieldTypeMessage: '',
+  TaskFieldInstructionsMessage: '',
+  TaskDueTypeMessage: '',
+  TaskDelayBeforeStartingMessage: '',
+  TaskOneOrSeparateMessage: '',
+  TaskSeeSameActivityMessage: '',
+  TaskAtDurationEndMessage: '',
+  TaskWhoCanAssessMessage: '',
+  TaskSeeSibblingsMessage: '',
+  TaskAssessmentNumberOfParticipantsMessage: '',
+  TaskCanConsolidateMessage: '',
+  TaskCanDisputeMessage:'',
+  TaskConsolidateThresholdMessage:'',
+  TaskAllowAssessmentMessage: '',
+  TaskReflectNumberOfParticipantsMessage: '',
+  TaskWhoCanReflectMessage: '',
+  TaskAllowReflectionMessage: '',
+  TaskAllowRevisionMessage: '',
+  TaskVersionEvaluationMessage: '',
+  TaskLeadsToNewProblemMessage: '',
+  TaskLeadToNewSolutionMessage: '',
+  TaskAssigneeConstraintMessage: '',
+  TaskNumOfParticipantsMessage: '',
+  TaskConstraintNoneMessage: '',
+  TaskConstraintNewToProblemMessage: '',
+  TaskConstraintSameAsMessage: '',
+  TaskConstraintInSameGroupAsMessage: '',
+  TaskConstraintNotInMessage: '',
+  TaskConstraintChooseFromMessage: '',
+  TaskGetFieldContentMessage: '',
+  TaskGroupTaskMessage:'',
+  TaskConsolidateFunctionMessage: '',
+  TaskWhoCanDoMessage:''
 };
 
-export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...defaultTaskFieldsStrings};
+export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...defaultTaskFieldsStrings, ...tooltipMessages};

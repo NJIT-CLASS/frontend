@@ -104,31 +104,17 @@ class AddUserContainer extends React.Component {
                 password: pass
             };
 
-        //request(options, (err, res, body) => {
+
         apiCall.post('/addUser', vars, (err, res, body) => {
           showMessage(this.state.Strings.SuccessfulAdd);
             console.log(body.Message);
         });
     }
 
-  /*checkThesuser(){
-    const options = {
-      method: 'GET',
-      uri: 'http://localhost:400/api/adduser',
-      body: {
-        userid: 1
-      },
-      json: true
-    };
 
-    request(options, (err, res, body) => {
-
-    })
-  }*/
 
 
     render() {
-  //  checkThesuser();
         let errorView = null;
         const Strings = this.state.Strings;
         var roles = [

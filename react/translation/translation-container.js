@@ -2,7 +2,6 @@ import React from 'react';
 import request from 'request';
 import {clone} from 'lodash';
 import PropTypes from 'prop-types';
-
 import StringsContainer from './strings-container';
 import PageHeader from './page-header';
 

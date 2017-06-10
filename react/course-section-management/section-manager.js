@@ -1,5 +1,5 @@
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 
 class SectionManager extends React.Component {
@@ -27,15 +27,10 @@ class SectionManager extends React.Component {
 	// store in ID, Name tuples for select dropdown
     fetchAll(courseID, semesterID) {
         const fetchAllOptions = {
-            method: 'GET',
-            qs: {
                 semesterID: semesterID
-            },
-            uri: this.props.apiUrl + '/api/getCourseSections/' + courseID,
-            json: true
-        };
+            };
 
-        request(fetchAllOptions, (err, res, body) => {
+        apiCall.get(`/getCourseSections/${courseID}`, fetchAllOptions, (err, res, body) => {
             let list = [];
             for (let section of body.Sections) {
                 list.push({ value: section.SectionID, label: section.Name });
@@ -47,12 +42,7 @@ class SectionManager extends React.Component {
     }
 	// fetch single section information for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/section/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+        apiCall.get(`/section/${this.state.id}`, (err, res, body) => {
             this.setState({
                 identifier: body.Section.Name,
                 editing: true
@@ -73,12 +63,7 @@ class SectionManager extends React.Component {
 	// casading deletes need to be thought through (which tables should be cascaded)
 	// add confirmation to prevent accidental deletion
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/section/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+        apiCall.get(`/section/delete/${this.state.id}`, deleteOptions, (err, res, body) => {
             this.changeID({
                 value: null
             });
@@ -89,16 +74,11 @@ class SectionManager extends React.Component {
 	// exit edit or create mode on successful save, reload section list with new section
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/updatesection',
-            body: {
                 name: this.state.identifier,
                 sectionid: this.state.id
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post('/course/updatesection', updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -141,18 +121,13 @@ class SectionManager extends React.Component {
 	// save new section, set new sectionID, reload section list with new section
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/createsection',
-            body: {
                 semesterid: this.props.semesterID,
                 courseid: this.props.courseID,
                 name: this.state.identifier,
                 organizationid: this.props.organizationID
-            },
-            json: true
-        };
-        
-        request(saveOptions, (err, res, body) => {
+            };
+
+        apiCall.post('/course/createsection', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;

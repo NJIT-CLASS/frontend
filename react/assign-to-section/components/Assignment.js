@@ -4,7 +4,6 @@ It gets its functions and data from its parent.
 
 import React from 'react';
 var moment = require('moment');
-import request from 'request';
 import Checkbox from '../../shared/checkbox';
 import Select from 'react-select';
 import Datetime from 'react-datetime';

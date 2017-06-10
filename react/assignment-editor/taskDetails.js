@@ -8,6 +8,8 @@ import ToggleSwitch from '../shared/toggleSwitch';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import { RadioGroup, Radio } from 'react-radio-group';
 import ReactTooltip from 'react-tooltip';
+import Tooltip from '../shared/tooltip';
+
 
 class TaskDetailsComponent extends React.Component {
 
@@ -82,19 +84,6 @@ class TaskDetailsComponent extends React.Component {
         const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
 
-        const tooltipMessages = {
-            DisplayName: '',
-            FileUploads: '',
-            TaskInstructions: '',
-            TaskRubric: '',
-            DueType: '',
-            StartDelay: '',
-            OneOrSeparate: '',
-            SeeSameActivity: '',
-            AtDurationEnd: '',
-            WhatIfLate: '',
-            SimpleGrade:''
-        };
 
         const title = this.props.TaskActivityData.TA_display_name;
 
@@ -119,6 +108,7 @@ class TaskDetailsComponent extends React.Component {
         // TA_display_name
         const displayName = (
           <div className="inner">
+            <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-display-name-tooltip`} />
             <label>{strings.DisplayName}</label>
             <br />
             <input type="text" placeholder={strings.DisplayName} value={this.props.TaskActivityData.TA_display_name} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_display_name', this.props.index, this.props.workflowIndex)} /><br />
@@ -136,12 +126,17 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
                   <label>
                     {strings.HowManyRequiredFiles}</label>
+                    <Tooltip Text={strings.TaskRequiredFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-required-files-tooltip`} />
+
                   <br />
                   <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'mandatory', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.mandatory} />
                 </div>
                 <div className="inner">
                   <label>
-                    {strings.MaximumNumberOfOptionalFiles}</label>
+                    {strings.MaximumNumberOfOptionalFiles}
+                  </label>
+                  <Tooltip Text={strings.TaskOptionalFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-optional-files-tooltip`} />
+
                   <br />
                   <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'optional', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.optional} />
 
@@ -166,6 +161,8 @@ class TaskDetailsComponent extends React.Component {
         const taskInstructions = (
           <div className="inner block">
             <label>{strings.TaskInstructions}</label>
+            <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
+
             <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_instructions} />
           </div>
 
@@ -175,6 +172,7 @@ class TaskDetailsComponent extends React.Component {
         const taskRubric = (
           <div className="inner block">
             <label>{strings.TaskRubric}</label>
+            <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
             <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_rubric} />
           </div>
         );
@@ -191,6 +189,7 @@ class TaskDetailsComponent extends React.Component {
                 ? (
                   <div className="inner block" key={index + 200}>
                     <label>{strings.FieldJustificationInstructions}</label>
+                    <Tooltip Text={strings.TaskJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
                     <textarea className="big-text-field" placeholder={`${strings.TypeJustificationInstructions}...`} value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} />
                   </div>
                 )
@@ -228,6 +227,8 @@ class TaskDetailsComponent extends React.Component {
                 } else if (this.props.TaskActivityData.TA_fields[index].assessment_type === 'evaluation') {
                     assessmentTypeView = (<div>
                     <label>{strings.EvaluationByLabelsLabel}</label><br/>
+                    <Tooltip Text={strings.TaskFieldEvalByLabelsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-eval-by-labels-tooltip`} />
+
                     <input type="text" value={this.props.TaskActivityData.TA_fields[index].list_of_labels.join(',')} onChange={this.props.callTaskFunction.bind(this, 'setEvaluationByLabels', this.props.index, index, this.props.workflowIndex)}></input>
                   </div>);
                 }
@@ -235,6 +236,8 @@ class TaskDetailsComponent extends React.Component {
                 fieldTypeOptions = (
                   <div>
                     <label>{strings.AssessmentType}</label>
+                    <Tooltip Text={strings.TaskAssessmentTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-assessment-type-tooltip`} />
+
                     <br />
                     <Select key={index + 300} options={assessmentTypeValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownFieldData', 'assessment_type', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].assessment_type} searchable={false} clearable={false} />
                     <br /> {assessmentTypeView}
@@ -243,7 +246,7 @@ class TaskDetailsComponent extends React.Component {
             }
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers) {
-                
+
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
                   <label>
                     {field.label}
@@ -281,6 +284,8 @@ class TaskDetailsComponent extends React.Component {
                     defaultContentView = (
                       <div className="inner block">
                         <label>{strings.DefaultContentFromOtherTasks}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentFromOthersMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-from-others-tooltip`} />
+
                         {defaultContentWrapper}
                         {fieldSelection}
                       </div>
@@ -289,6 +294,8 @@ class TaskDetailsComponent extends React.Component {
                     defaultContentView = (
                       <div className="inner block">
                         <label>{strings.DefaultContentForField}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+
                         <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
                       </div>
                     );
@@ -299,21 +306,25 @@ class TaskDetailsComponent extends React.Component {
                         display: 'inline',
                     }}
                   >
-                    <label>{strings.GetDataFromAnotherTaskInstead}?
-                            <Checkbox
-                              isClicked={this.state.DefaultFieldForeign[index]} click={() => {
-                                  const newData = this.state.DefaultFieldForeign;
-                                  newData[index] = !newData[index];
-                                  this.setState({ DefaultFieldForeign: newData });
-                              }}
-                            />
-                    </label>
+                    <label>{strings.GetDataFromAnotherTaskInstead}</label>
+                      <Tooltip Text={strings.TaskGetFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-get-field-content-tooltip`} />
+
+                    <Checkbox
+                      isClicked={this.state.DefaultFieldForeign[index]} click={() => {
+                          const newData = this.state.DefaultFieldForeign;
+                          newData[index] = !newData[index];
+                          this.setState({ DefaultFieldForeign: newData });
+                      }}
+                    />
+
                   </div>
                 );
             } else {
                 defaultContentView = (
                   <div className="inner block">
                     <label>{strings.DefaultContentForField}</label>
+                    <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+
                     <textarea className="big-text-field" placeholder={`${strings.DefaultContentForField}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
                   </div>
                 );
@@ -345,12 +356,16 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
                   <label>
                     {strings.ShowThisName}?
-                  </label><br />
+                  </label>
+                  <Tooltip Text={strings.TaskShowFieldNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-show-field-name-tooltip`} />
+                  <br />
                   <Checkbox isClicked={this.props.TaskActivityData.TA_fields[index].show_title} click={this.props.callTaskFunction.bind(this, 'changeFieldCheck', 'show_title', this.props.index, index, this.props.workflowIndex)} />
                 </div>
 
                 <div className="inner">
                   <label>{strings.FieldType}</label>
+                  <Tooltip Text={strings.TaskFieldTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-type-tooltip`} />
+
                   <br />
 
                   <Select key={index} options={fieldTypeValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownFieldData', 'field_type', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].field_type} clearable={false} searchable={false} />
@@ -358,17 +373,23 @@ class TaskDetailsComponent extends React.Component {
                 </div>
 
                 <div className="inner">
-                  <label>{strings.RequiresJustification} ?</label><br />
+                  <label>{strings.RequiresJustification} ?</label>
+                  <Tooltip Text={strings.TaskRequiresJustificationMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-requires-justification-tooltip`} />
+                  <br />
                   <Checkbox click={this.props.callTaskFunction.bind(this, 'changeFieldCheck', 'requires_justification', this.props.index, index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_fields[index].requires_justification} />
                 </div>
 
                 <div className="inner block">
                   <label>{strings.FieldInstructions} ({strings.Optional})</label>
+                  <Tooltip Text={strings.TaskFieldInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-instructions-tooltip`} />
+
                   <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].instructions} />
                 </div>
 
                 <div className="inner block">
                   <label>{strings.FieldRubric}</label>
+                  <Tooltip Text={strings.TaskFieldRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-tooltip`} />
+
                   <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].rubric} />
                 </div>
 
@@ -421,6 +442,8 @@ class TaskDetailsComponent extends React.Component {
             const dueType = (
               <div className="inner">
                 <label>{strings.ShouldTaskEndAtCertainTime}</label>
+                <Tooltip Text={strings.TaskDueTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-due-type-tooltip`} />
+
                 <br />
                 <RadioGroup selectedValue={this.props.TaskActivityData.TA_due_type[0]} onChange={this.props.callTaskFunction.bind(this, 'changeRadioData', 'TA_due_type', this.props.index, this.props.workflowIndex)}>
                   <label>
@@ -438,6 +461,8 @@ class TaskDetailsComponent extends React.Component {
             const startDelay = (
               <div className="inner">
                 <label>{strings.DelayBeforeStartingTask}</label>
+                <Tooltip Text={strings.TaskDelayBeforeStartingMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-delay-before-starting-tooltip`} />
+
                 <br />
                 <RadioGroup selectedValue={this.props.TaskActivityData.StartDelay} onChange={this.props.callTaskFunction.bind(this, 'changeRadioData', 'StartDelay', this.props.index, this.props.workflowIndex)}>
                   <label>
@@ -453,6 +478,8 @@ class TaskDetailsComponent extends React.Component {
             const oneOrSeparate = this.props.index == 0 ? (
               <div className="inner">
                 <label>{strings.DoesEveryoneGetSameProblem}</label>
+                <Tooltip Text={strings.TaskOneOrSeparateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-one-or-separate-tooltip`} />
+
                 <br />
                 <RadioGroup selectedValue={this.props.TaskActivityData.TA_one_or_separate} onChange={this.props.callTaskFunction.bind(this, 'changeRadioData', 'TA_one_or_separate', this.props.index, this.props.workflowIndex)}>
                   <label><Radio value={false} />
@@ -466,6 +493,8 @@ class TaskDetailsComponent extends React.Component {
             const seeSameActivity = (
               <div className="inner">
                 <label>{strings.SeeSameActivity}</label>
+                <Tooltip Text={strings.TaskSeeSameActivityMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-see-same-activity-tooltip`} />
+
                 <Checkbox isClicked={this.props.TaskActivityData.SeeSameActivity} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'SeeSameActivity', this.props.index, this.props.workflowIndex)} />
               </div>
             );
@@ -473,6 +502,8 @@ class TaskDetailsComponent extends React.Component {
             const atDurationEnd = (
               <div className="inner">
                 <label>{strings.WhatHappensWhenTaskEnds}</label>
+                <Tooltip Text={strings.TaskAtDurationEndMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-at-duration-end-tooltip`} />
+
                 <br />
                 <Select value={this.props.TaskActivityData.TA_at_duration_end} options={onTaskEndValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_at_duration_end', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
               </div>
@@ -483,6 +514,8 @@ class TaskDetailsComponent extends React.Component {
                   <div className="inner">
                     <label>
                       {strings.WhatIfLate}</label>
+                      <Tooltip Text={strings.TaskWhatIfLateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-what-if-late-tooltip`} />
+
                     <Select options={onLateValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_what_if_late', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_what_if_late} clearable={false} searchable={false} autoBlur />
                   </div>
                 )
@@ -502,6 +535,8 @@ class TaskDetailsComponent extends React.Component {
             const simpleGrade = (
               <div className="inner">
                 <label>{strings.AwardPointsForDoing}</label>
+                <Tooltip Text={strings.TaskSimpleGradeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-simple-grade-tooltip`} />
+
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeSimpleGradeCheck', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_simple_grade != 'none'} />
                 <br /> {simpleGradeOptions}
               </div>
@@ -515,6 +550,9 @@ class TaskDetailsComponent extends React.Component {
                     <label>
                       {strings.CanStudentsDisputeAssessment}
                     </label>
+
+                    <Tooltip Text={strings.TaskCanDisputeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-dispute-tooltip`} />
+
                     <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, false)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Dispute', this.props.index, this.props.workflowIndex)} />
                   </div>
                 );
@@ -522,6 +560,8 @@ class TaskDetailsComponent extends React.Component {
                     ? (
                       <div>
                         <label>{strings.GradingThreshold}</label>
+                        <Tooltip Text={strings.TaskConsolidateThresholdMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-grading-threshold-tooltip`} />
+
                         <br />
                         <RadioGroup
                           selectedValue={this.props.callTaskFunction('getTriggerConsolidationRadioOption', this.props.index, this.props.workflowIndex, false)} onChange={(val) => {
@@ -544,8 +584,9 @@ class TaskDetailsComponent extends React.Component {
                         <br />
                         <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
                         <br />
-                        <label>{strings.ToBeConsolidatedAssessment}:
-                            </label>
+                        <label>{strings.ToBeConsolidatedAssessment}</label>
+                        <Tooltip Text={strings.TaskConsolidateFunctionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-consolidation-function-tooltip`} />
+
                         <Select options={consolidationTypeValues} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                       </div>
                     )
@@ -554,10 +595,13 @@ class TaskDetailsComponent extends React.Component {
                     ? (
                       <div>
                         <label>{strings.ShouldAssessmentsBeConsolidated}</label>
+                        <Tooltip Text={strings.TaskCanConsolidateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-can-consolidate-tooltip`} />
+
                         <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)} />
                         <br /> {consolidateOptions}
                         <div>
                           <label>{strings.SeeSibblingsInParent}</label>
+                          <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-see-sibblings-tooltip`} />
                           <Checkbox
                             click={this.props.callTaskFunction.bind(this, 'setSeeSibblings', this.props.index, this.props.workflowIndex, true)}
                             isClicked={this.props.callTaskFunction('getSeeSibblings', this.props.index, this.props.workflowIndex, true)}
@@ -572,6 +616,7 @@ class TaskDetailsComponent extends React.Component {
                       <div>
                         <br />
                         <label>{strings.NumberOfAssessors}</label>
+                        <Tooltip Text={strings.TaskAssessmentNumberOfParticipantsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-number-of-participants-tooltip`} />
                         <br />
                         <NumberField value={this.props.callTaskFunction('getAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this, 'setAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} />
                         <br /> {showConsol}
@@ -583,6 +628,8 @@ class TaskDetailsComponent extends React.Component {
                       <div>
                         <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
                         <label>{strings.WhoCanAssess}</label>
+                        <Tooltip Text={strings.TaskWhoCanAssessMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-assess-tooltip`} />
+
                         <br />
                         <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', false, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                         {numberOfAssessView}
@@ -595,6 +642,8 @@ class TaskDetailsComponent extends React.Component {
             const allowAssessment = (
               <div className="inner">
                 <label>{strings.AllowAnAssessment}</label>
+                <Tooltip Text={strings.TaskAllowAssessmentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-assessment-tooltip`} />
+
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_assessment != 'none'} /> {allowAssesmentOptions}
               </div>
             );
@@ -608,6 +657,8 @@ class TaskDetailsComponent extends React.Component {
                     <label>
                       {strings.CanStudentsDisputeReflection}
                     </label>
+                    <Tooltip Text={strings.TaskCanDisputeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-reflect-dispute-tooltip`} />
+
                     <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, true)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Dispute', this.props.index, this.props.workflowIndex)} />
                   </div>
                 ) : null;
@@ -616,10 +667,14 @@ class TaskDetailsComponent extends React.Component {
                     ? (
                       <div>
                         <label>{strings.ShouldReflectionsBeConsolidated}</label>
+                        <Tooltip Text={strings.TaskCanConsolidateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-reflect-can-consolidate-tooltip`} />
+
                         <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Reflect_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, true)} />
                         <br />
                         <div>
                           <label>{strings.SeeSibblingsInParent}</label>
+                          <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-reflect-see-sibblings-tooltip`} />
+
                           <Checkbox
                             click={this.props.callTaskFunction.bind(this, 'setSeeSibblings', this.props.index, this.props.workflowIndex, false)}
                             isClicked={this.props.callTaskFunction('getSeeSibblings', this.props.index, this.props.workflowIndex, false)}
@@ -634,6 +689,8 @@ class TaskDetailsComponent extends React.Component {
                       <div>
                         <br />
                         <label>{strings.NumberOfStudents}</label>
+                        <Tooltip Text={strings.TaskReflectNumberOfParticipantsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-reflect-number-of-participants-tooltip`} />
+
                         <br />
                         <NumberField value={this.props.callTaskFunction('getReflectNumberofParticipants', this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this, 'setReflectNumberofParticipants', this.props.index, this.props.workflowIndex)} />
                         <br /> {showConsol}
@@ -644,6 +701,8 @@ class TaskDetailsComponent extends React.Component {
                   <div>
                     <Select options={reflectionValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_reflection[0]} clearable={false} searchable={false} />
                     <label>{strings.WhoCanReflect}</label><br />
+                    <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
+
                     <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
                     <br /> {showDispute}
                   </div>
@@ -653,6 +712,8 @@ class TaskDetailsComponent extends React.Component {
               <div className="inner">
                 <label>{strings.AllowReflection}</label>
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_allow_reflection[0] != 'none'} />
+                <Tooltip Text={strings.TaskAllowReflectionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-reflection-tooltip`} />
+
                 {allowReflectionOptions}
               </div>
             );
@@ -661,6 +722,7 @@ class TaskDetailsComponent extends React.Component {
             const allowRevision = (
               <div className="inner">
                 <label>{strings.AllowRevision}</label>
+                <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
                 <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
               </div>
             );
@@ -668,6 +730,7 @@ class TaskDetailsComponent extends React.Component {
             const versionEvaluation = this.props.TaskActivityData.TA_allow_revisions === true ? (
               <div className="inner">
                 <label>{strings.VersionEvaluation}</label>
+                <Tooltip Text={strings.TaskVersionEvaluationMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-version-evaluation-tooltip`} />
                 <Select value={this.props.TaskActivityData.VersionEvaluation} clearable={false} options={versionEvaluationValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'VersionEvaluation', this.props.index, this.props.workflowIndex)} />
               </div>
             ) : null;
@@ -760,39 +823,51 @@ class TaskDetailsComponent extends React.Component {
                         <label>{strings.ShouldAssigneeHaveRelationship}</label>
                         <br />
                         <label>{strings.None}</label>
+                        <Tooltip Text={strings.TaskConstraintNoneMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-none-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'none', this.props.workflowIndex)} isClicked={Object.keys(this.props.TaskActivityData.TA_assignee_constraints[2]).length === 0} style={{
                               marginRight: '8px',
                           }}
                         />
                         <label>{strings.NewToProblem}</label>
+                        <Tooltip Text={strings.TaskConstraintNewToProblemMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-new-to-problem-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'not_in_workflow_instance', this.props.workflowIndex)} isClicked={!!this.props.TaskActivityData.TA_assignee_constraints[2].not_in_workflow_instance}
                         />
                         <label>{strings.SameAs}</label>
+                        <Tooltip Text={strings.TaskConstraintSameAsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-same-as-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'same_as', this.props.workflowIndex)} isClicked={!!this.props.TaskActivityData.TA_assignee_constraints[2].same_as} style={{
                               marginRight: '8px',
                           }}
                         />
                         <label>{strings.InSameGroupAs}</label>
+                        <Tooltip Text={strings.TaskConstraintInSameGroupAsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-in-same-group-as-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'group_with_member', this.props.workflowIndex)} isClicked={!!this.props.TaskActivityData.TA_assignee_constraints[2].group_with_member} style={{
                               marginRight: '8px',
                           }}
                         />
                         <label>{strings.NotIn}</label>
+                        <Tooltip Text={strings.TaskConstraintNotInMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-not-in-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'not', this.props.workflowIndex)} isClicked={!!this.props.TaskActivityData.TA_assignee_constraints[2].not} style={{
                               marginRight: '8px',
                           }}
                         />
-                        <label>{strings.ChooseFrom}
-                        </label>
+                        <label>{strings.ChooseFrom}</label>
+                        <Tooltip Text={strings.TaskConstraintChooseFromMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-constraint-choose-from-tooltip`} />
+
                         <Checkbox
                           click={this.props.callTaskFunction.bind(this, 'checkAssigneeConstraints', this.props.index, 'choose_from', this.props.workflowIndex)} isClicked={!!this.props.TaskActivityData.TA_assignee_constraints[2].choose_from}
                         />
-                        <br /> {sameAsOptions}
+                        <br />
+                        {sameAsOptions}
                         {inSameGroupAsOptions}
                         {notInOptions}
                         {chooseFromOptions}
@@ -803,26 +878,35 @@ class TaskDetailsComponent extends React.Component {
             const showNumberofStudents = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ?
             (<div>
               <label>{strings.HowManyParticipants}</label>
+              <Tooltip Text={strings.TaskNumOfParticipantsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-num-of-participants-tooltip`} />
+
               <NumberField value={this.props.TaskActivityData.TA_number_participant} min={1} max={20} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_number_participant', this.props.index, this.props.workflowIndex)} />
             </div>
             ) : null;
             assigneeConstraints = (
               <div className="inner">
                 <label>{strings.AssigneeConstraints}</label>
+                <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
+
                 <br />
                 <label>{strings.WhoCanDoTask}</label>
+                <Tooltip Text={strings.TaskWhoCanDoMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-who-can-do-tooltip`} />
+
                 <br />
                 <Select options={assigneeWhoValues} value={this.props.TaskActivityData.TA_assignee_constraints[0]} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                 {showNumberofStudents}
                 <label>{strings.WillThisBeGroupTask}</label>
+                <Tooltip Text={strings.TaskGroupTaskMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-group-task-tooltip`} />
+
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'} />
                 {assigneeRelations}
               </div>
             );
 
-            const seeSiblings = (this.props.TaskActivityData.TA_number_participant > 1) ? (
+            const seeSibblings = (this.props.TaskActivityData.TA_number_participant > 1) ? (
               <div className="inner">
                 <label>{strings.SeeSibblingsLabel}
+                  <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-see-sibblings-tooltip`} />
                   <Checkbox isClicked={this.props.TaskActivityData.SeeSibblings} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'SeeSibblings', this.props.index, this.props.workflowIndex)} />
                 </label>
               </div>
@@ -833,6 +917,8 @@ class TaskDetailsComponent extends React.Component {
             const leadsToNewProblem = (
               <div className="inner">
                 <label>{strings.DoesThisLeadToNewProblem}?</label>
+                <Tooltip Text={strings.TaskLeadsToNewProblemMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-leads-to-new-problem-tooltip`} />
+
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_leads_to_new_problem', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_problem} />
               </div>
             );
@@ -841,6 +927,8 @@ class TaskDetailsComponent extends React.Component {
             const leadsToNewSolution = (
               <div className="inner">
                 <label>{strings.DoesThisLeadToNewSolution}?</label>
+                <Tooltip Text={strings.TaskLeadToNewSolutionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-leads-to-new-solution-tooltip`} />
+
                 <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_leads_to_new_solution', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_leads_to_new_solution} />
               </div>
             );
@@ -859,7 +947,7 @@ class TaskDetailsComponent extends React.Component {
                   {allowReflection}
                   {allowRevision}
                   {versionEvaluation}
-                  {seeSiblings}
+                  {seeSibblings}
                   {leadsToNewProblem}
                   {leadsToNewSolution}
                 </div>

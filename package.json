@@ -30,6 +30,7 @@
     "interweave": "^5.0.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "multer": "^1.3.0",
     "prop-types": "^15.5.8",
     "rc-tooltip": "^3.4.3",
     "react": "^15.5.4",

@@ -6,7 +6,6 @@
 */
 
 import React from 'react';
-import request from 'request';
 import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import ErrorComponent from './errorComponent';
 import SuperViewComponent from './superViewComponent';

@@ -30,7 +30,6 @@ class QuickAssignmentReport extends Component {
         const url = `/getAssignmentReport/alternate/${this.props.AssignmentID}`;
 
         this.props.__(strings, (newStrings) => {
-            //request(options, (err,res, body) => {
             apiCall.get(url, (err,res, body) => {
                 console.log(body);
                 this.setState({

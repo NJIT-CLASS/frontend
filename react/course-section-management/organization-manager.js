@@ -1,5 +1,5 @@
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Dropzone from 'react-dropzone';
 
@@ -15,13 +15,7 @@ class OrganizationManager extends React.Component {
 	// retrieve all organizations in system
 	// format as organizationID, Name tuples for select component
     fetchAll() {
-        const fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization',
-            json: true
-        };
-
-        request(fetchAllOptions, (err, res, body) => {
+        apiCall.get('/organization', (err, res, body) => {
             let list = [];
             for (let org of body.Organization) {
                 list.push({ value: org.OrganizationID, label: org.Name});
@@ -33,12 +27,7 @@ class OrganizationManager extends React.Component {
     }
 	// get single organization information for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+        apiCall.get(`/organization/${this.state.id}`, (err, res, body) => {
             this.setState({
                 name: body.Organization.Name,
                 editing: true
@@ -60,12 +49,7 @@ class OrganizationManager extends React.Component {
 	// opportunity for MASSIVE accidental data loss
 	// reload organization list after deletion, nullify selected ID, propagate to parent
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+        apiCall.get(`/organization/delete/${this.state.id}`, deleteOptions, (err, res, body) => {
             this.changeID({
                 value: null
             });
@@ -75,15 +59,10 @@ class OrganizationManager extends React.Component {
 	// update organization name, logo editing should be added
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/organization/update/' + this.state.id,
-            body: {
                 Name: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post(`/organization/update/${this.state.id}`, updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -127,16 +106,11 @@ class OrganizationManager extends React.Component {
 	// reload organization list to show new organization
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/createorganization',
-            body: {
 				//userid: this.props.userID,
                 organizationname: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post('/createorganization', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;

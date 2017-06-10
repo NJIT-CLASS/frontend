@@ -5,7 +5,7 @@
 */
 import React from 'react';
 import PropTypes from 'prop-types';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Rater from 'react-rater';
 import { RadioGroup, Radio } from 'react-radio-group';
@@ -159,17 +159,12 @@ class SuperComponent extends React.Component {
 
 
         const options = {
-            method: 'POST',
-            uri: `${this.props.apiUrl}/api/taskInstanceTemplate/create/save`,
-            body: {
                 taskInstanceid: this.props.TaskID,
                 userid: this.props.UserID,
                 taskInstanceData: this.state.TaskResponse,
-            },
-            json: true,
-        };
+            };
 
-        request(options, (err, res, body) => {
+        apiCall.post(`/taskInstanceTemplate/create/save`, options, (err, res, body) => {
             console.log(res, body);
             if (res.statusCode != 200) {
                 showMessage(this.props.Strings.InputErrorMessage);
@@ -204,19 +199,14 @@ class SuperComponent extends React.Component {
         const validData = this.isValidData();
         if (validData) {
             const options = {
-                method: 'POST',
-                uri: `${this.props.apiUrl}/api/taskInstanceTemplate/create/submit`,
-                body: {
                     taskInstanceid: this.props.TaskID,
                     userid: this.props.UserID,
                     taskInstanceData: this.state.TaskResponse,
-                },
-                json: true,
-            };
+                };
             this.setState({
                 LockSubmit: true
             });
-            request(options, (err, res, body) => {
+            apiCall.post(`/taskInstanceTemplate/create/submit`, options, (err, res, body) => {
                 console.log(body);
                 if (res.statusCode != 200) {
                     this.setState({ InputError: true,
@@ -334,19 +324,15 @@ class SuperComponent extends React.Component {
 
     willNotDispute() {
         const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/skipDispute/${this.props.TaskID}`,
-            qs: {
                 userid: this.props.UserID,
-            },
-            json: true,
-        };
+            };
 
-        request(options, (err, res, body) => {
+        apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
             console.log(err, res, body);
+            window.location.href= "/"; //uncomment when finished w/ skipDispute
+
         });
 
-      // window.location.href= "/dashboard"; //uncomment when finished w/ skipDispute
     }
 
     render() {

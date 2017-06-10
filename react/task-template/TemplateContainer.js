@@ -5,9 +5,8 @@ future stuff.
 
 */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
-
 
 // Display Components: These only display data retrived from the database. Not interactive.
 
@@ -56,38 +55,26 @@ class TemplateContainer extends React.Component {
 		// this function makes an API call and saves the data into appropriate state variables
 
         const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl
-				}/api/taskInstanceTemplate/main/${
-				this.props.TaskID}`,
-            qs: {
 				// query strings
                 courseID: this.props.CourseID,
                 userID: this.props.UserID,
                 sectionID: this.props.SectionID,
-            },
-            json: true,
-        };
+            };
 
 		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
 		// for rendering
         const options2 = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/superCall/${this.props.TaskID}`,
-            qs: {
                 userID: this.props.UserID,
-            },
-            json: true,
-        };
+            };
 
-        request(options2, (err, res, bod) => {
+        apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
             if (res.statusCode != 200) {
                 this.setState({ Error: true });
                 return;
             }
             this.props.__(strings, (newStrings) => {
 
-                request(options, (err, res, body) => {
+                apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`,options, (err, res, body) => {
                     if (res.statusCode != 200) {
                         this.setState({ Error: true });
                         return;

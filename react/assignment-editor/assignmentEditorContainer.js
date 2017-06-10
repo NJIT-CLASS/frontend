@@ -5,13 +5,13 @@
 // add TA_minimum_duration: Add number of minutes that a task must last if they start it late
 // Assignee constraint second level of checkboxes needs isClicked prop set
 import React from 'react';
-import request from 'request';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
 
 var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
 let FlatToNested = require('flat-to-nested');
 
+import apiCall from '../shared/apiCall';
 import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
@@ -497,12 +497,8 @@ class AssignmentEditorContainer extends React.Component {
 
 
         //Get the semesters
-            const semesterOptions = {
-                method: 'GET',
-                uri: this.props.apiUrl + '/api/semester',
-                json: true
-            };
-            request(semesterOptions, (err, res, body) => {
+
+            apiCall.get('/semester', (err, res, body) => {
                 semestersArray = body.Semesters.map(function(sem) {
                     return ({value: sem.SemesterID, label: sem.Name});
                 });
@@ -514,12 +510,8 @@ class AssignmentEditorContainer extends React.Component {
 
         //Get courses if one was not already chosen
             if (this.props.CourseID === '*' || this.props.CourseID === '') {
-                const coursesOptions = {
-                    method: 'GET',
-                    uri: this.props.apiUrl + '/api/getCourseCreated/' + this.props.UserID,
-                    json: true
-                };
-                request(coursesOptions, (err, res, bod) => {
+
+                apiCall.get(`/getCourseCreated/${this.props.UserID}`, (err, res, bod) => {
                     coursesArray = bod.Courses.map(function(course) {
                         return ({value: course.CourseID, label: course.Name});
                     });
@@ -536,18 +528,13 @@ class AssignmentEditorContainer extends React.Component {
         //Load partially made assignment from the database
             if(this.props.PartialAssignmentID !== ''){
                 const assignmentOptions = {
-                    method: 'GET',
-                    uri: this.props.apiUrl + '/api/partialAssignments/ById/' + this.props.PartialAssignmentID,
-                    qs: {
                         userId: this.props.UserID,
                         courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
-                    },
-                    json: true
-                };
+                    };
 
                 console.log(assignmentOptions);
 
-                request(assignmentOptions, (err3, res3, assignBody) => {
+                apiCall.get(`/partialAssignments/ById/${this.props.PartialAssignmentID}`,assignmentOptions, (err3, res3, assignBody) => {
                     console.log(assignBody, res3);
 
                     if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
@@ -730,18 +717,13 @@ class AssignmentEditorContainer extends React.Component {
         console.log(sendData);
 
         const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/assignment/save',
-            body: {
                 assignment: sendData,
                 userId: this.props.UserID,
                 partialAssignmentId: this.state.PartialAssignmentID,
                 courseId: this.state.AssignmentActivityData.AA_course
-            },
-            json: true
-        };
+            };
 
-        request(options, (err, res, body) => {
+        apiCall.post('/assignment/save', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
                 console.log(body);
@@ -915,17 +897,12 @@ class AssignmentEditorContainer extends React.Component {
 
 
         const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/assignment/create',
-            body: {
                 assignment: sendData,
                 userId: this.props.UserID,
                 partialAssignmentId: this.state.PartialAssignmentID
-            },
-            json: true
-        };
+            };
 
-        request(options, (err, res, body) => {
+        apiCall.post('/assignment/create', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
                 showMessage(this.state.Strings.SubmitSuccessMessage);
@@ -1315,7 +1292,6 @@ class AssignmentEditorContainer extends React.Component {
 
     getReflectIndex(parentIndex, workflowIndex, stateData) {
         let workflowData = stateData || this.state.WorkflowDetails;
-          console.log('getReflectIndex', workflowData);
         var selectedNode = workflowData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == parentIndex;
         });

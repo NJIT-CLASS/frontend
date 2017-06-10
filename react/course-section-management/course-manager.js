@@ -1,6 +1,6 @@
 import React from 'react';
-import request from 'request';
 import Select from 'react-select';
+import apiCall from '../shared/apiCall';
 
 class CourseManager extends React.Component {
     constructor(props){
@@ -25,12 +25,7 @@ class CourseManager extends React.Component {
 	// list is used in select element
 	// courses displayed in "Number - Name" format
     fetchAll(organizationID) {
-        let fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/getOrganizationCourses/' + organizationID,
-            json: true
-        };
-        request(fetchAllOptions, (err, res, body) => {
+        apiCall.get(`/getOrganizationCourses/${organizationID}`, (err, res, body) => {
             let list = [];
             for (let course of body.Courses) {
                 list.push({ value: course.CourseID, label: course.Number + ' – ' + course.Name });
@@ -42,12 +37,8 @@ class CourseManager extends React.Component {
     }
 	// fetch course info for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/course/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+
+        apiCall.get(`/course/${this.state.id}`, (err, res, body) => {
             this.setState({
                 name: body.Course.Name,
                 number: body.Course.Number,
@@ -67,12 +58,8 @@ class CourseManager extends React.Component {
     }
 	// delete course, cascade deletes
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/course/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+
+        apiCall.get(`/course/delete/${this.state.id}`, (err, res, body) => {
             this.changeID({
                 value: null
             });
@@ -82,16 +69,11 @@ class CourseManager extends React.Component {
 	// update number and name of course, reload course list, exit edit mode
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/update/' + this.state.id,
-            body: {
                 Number: this.state.number,
                 Name: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post(`/course/update/${this.state.id}`,updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -140,18 +122,13 @@ class CourseManager extends React.Component {
 	// save new course, update selected courseID, reload course list
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/create',
-            body: {
                 userid: this.props.userID,
                 number: this.state.number,
                 Name: this.state.name,
                 organizationid: this.props.organizationID
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post('/course/create', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -190,7 +167,7 @@ class CourseManager extends React.Component {
 			</div>
 		);
 
-    
+
 		// display form to create new course
         let create = (
 			<div className='card'>

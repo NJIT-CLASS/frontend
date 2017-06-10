@@ -1,6 +1,6 @@
 import Checkbox from '../shared/checkbox';
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 var parse = require('csv-parse/lib/sync');
 
@@ -47,12 +47,8 @@ class UserManager extends React.Component {
 	// role is passed as prop to this component, used in API URL
 	// store users in array of objects in state
     fetchAll(sectionID) {
-        const fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/sectionUsers/' + sectionID + '/' + this.props.role,
-            json: true
-        };
-        request(fetchAllOptions, (err, res, body) => {
+
+        apiCall.get(`/sectionUsers/${sectionID}/${this.props.role}`, (err, res, body) => {
             let users = [];
             for (let user of body.SectionUsers) {
                 users.push({
@@ -234,20 +230,15 @@ class UserManager extends React.Component {
 	// this way, the user list is updated only AFTER the last of the users is saved
     saveSingle(user, count=1, total=1) {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/sectionUsers/' + this.props.sectionID,
-            body: {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 active: user.active,
                 volunteer: user.volunteer,
                 role: this.props.role
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post(`/sectionUsers/${this.props.sectionID}`, saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return false;
@@ -265,25 +256,19 @@ class UserManager extends React.Component {
         //     this.saveSingle(users[i], i+1, num_users);
         // }
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/sectionUsers/addMany/' + this.props.sectionID,
-            body: {
                 users: users.map((user) => {
                   user.role = this.props.role;
                   return user;
                 }),
                 role: this.props.role
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post(`/sectionUsers/addMany/${this.props.sectionID}`, saveOptions, (err, res, body) => {
             if(err || res.statusCode == 500) {
                 console.log('Error submitting!');
                 return false;
             } else {
                 this.fetchAll(this.props.sectionID);
-
             }
         });
     }

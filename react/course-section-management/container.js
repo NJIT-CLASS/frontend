@@ -1,5 +1,4 @@
 import React from 'react';
-import request from 'request';
 import Select from 'react-select';
 
 // important component cards for each entity type
