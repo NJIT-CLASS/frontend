@@ -6,13 +6,15 @@ const request = require('request');
 const redis = require('redis');
 const _ = require('lodash');
 const multer  = require('multer');
+var FormData = require('form-data');
+var fs = require('fs');
+
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
 const apiMethods = require('./server-middleware/api').apiMethods;
 const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
-
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
 const app = express();
@@ -34,7 +36,7 @@ app.use(bodyParser.json());
 
 app.use(session(redisClient));
 var upload = multer({
-  dest: './files'
+    dest: './files'
 });
 app.use((req, res, next) => {
     req.App = {};
@@ -46,59 +48,67 @@ app.use((req, res, next) => {
 
 app.get('/api/generalCall', (req, res) => {
     let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`
+    let endpoint = `${req.query.endpoint}`;
     delete queryStrings.endpoint;
 
     req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-      res.status(statusCode).json(body);
-      res.end();
+        res.status(statusCode).json(body);
+        res.end();
 
     });
 });
 
 app.post('/api/generalCall', (req, res) => {
     let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`
+    let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
 
     req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-      res.status(statusCode).json(body);
-      res.end();
+        res.status(statusCode).json(body);
+        res.end();
 
     });
 });
 
 app.post('/api/file/upload', upload.array('files'), (req, res) => {
-  let postVars = req.body;
-  let endpoint = `${req.body.endpoint}`
-  delete postVars.endpoint;
-  const formData = new FormData();
-  req.files.forEach(file => {
-    console.log(file);
-    formData.append('files', file);
-  })
-  Object.keys(postVars).forEach(function(key){
-      formData.append(`${key}`, postVars[key]);
-  });
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    const formData = new FormData();
+    req.files.forEach(file => {
+        console.log(file);
+        formData.append('files', fs.createReadStream(file.path));
+        //
+        //{
+        //     value:  fs.createReadStream(file.path),
+        //     options: {
+        //         filename: file.originalname,
+        //         contentType: file.mimetype
+        //     }
+        // }
+    });
+    Object.keys(postVars).forEach(function(key){
+        formData.append(`${key}`, postVars[key]);
+    });
 
-  var xhr = new XMLHttpRequest();
-  xhr.open( 'POST', `${consts.API_URL}/api/upload/profile-picture`, true);
-  xhr.onreadystatechange = function(){
-      if(this.readyState == 4) {
-          if(this.status == 200){
-            console.log('Success', this.responseText);
+    var xhr = new XMLHttpRequest();
+    xhr.open( 'POST', `${consts.API_URL}/api/upload/profile-picture`, true);
+    xhr.onreadystatechange = function(){
+        if(this.readyState == 4) {
+            if(this.status == 200){
+                console.log('Success', this.responseText);
 
-          }
-          else{
-              console.log('Sorry, there was an error', this.responseText);
-          }
-      }
-      else{
-          console.log('Uploading...');
-      }
+            }
+            else{
+                console.log('Sorry, there was an error', this.responseText);
+            }
+        }
+        else{
+            console.log('Uploading...');
+        }
 
-  };
-  xhr.send(formData);
+    };
+    xhr.send(formData);
 });
 
 app.get('/api/getTranslatedString', (req, res) => {

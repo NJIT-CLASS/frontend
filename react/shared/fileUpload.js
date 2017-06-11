@@ -1,58 +1,93 @@
 import React from 'react';
+import ButtonView from './fileUploadViews/buttonView';
+import DropzoneView from './fileUploadViews/dropzoneView';
+import { API_URL } from '../../server/utils/react_constants';
 
 class FileUpload extends React.Component{
     constructor(props){
         super(props);
         //PROPS:
-        // changeNumber(num)
+        // onChange({conditionsMet, numberOfUploads})
         // MinUploads
         //  MaxUploads
-        //  UserID
-        //  apiUrl
+        //  endpoint (URL)
+        //  InitialNumberUploaded
+        //  PostVars //object containing any POST variables to be sent with the files eg. userId
+        //
         this.state = {
             UploadStatus: 'start', //start,error,pending,success
             Response: null,
             Files:[],
-            NumberUploaded: 0,
-            HasFiles: false
+            NumberUploaded: this.props.InitialNumberUploaded || 0,
+            HasFiles: false,
+            NumberJustUploaded: 0
         };
+
+        this.uploadFiles = this.uploadFiles.bind(this);
+        this.selectClick = this.selectClick.bind(this);
     }
 
-    uploadFiles(){
+    uploadFiles(files){
         this.setState({
             UploadStatus: 'pending'
         });
         let formData = new FormData();
-        formData.append('userId', this.props.UserID);
+
+        Object.keys(this.props.PostVars).forEach(key => {
+            formData.append(key, this.props.PostVars[key]);
+        });
+
         let filesAr = [];
-        let upperLimit = this.refs.uploadInput.files.length;
-        if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
-            [].forEach.call(this.refs.uploadInput.files, function (file) {
-                filesAr.push(file);
+        let upperLimit = 0;
+
+        if(files === undefined){ //regular button
+            upperLimit = this.uploadRef.files.length;
+            if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
+                [].forEach.call(this.uploadRef.files, function (file) {
+                    filesAr.push(file);
+                    formData.append('files', file);
+                });
+            }
+            else{
+                let totalUploads = this.state.NumberUploaded;
+                upperLimit = this.uploadRef.files.length < (this.props.MaxUploads - totalUploads) ? this.uploadRef.files.length : (this.props.MaxUploads - totalUploads);
+                for(let i = 0; i < upperLimit; i++){
+                    filesAr.push(this.uploadRef.files[i]);
+                    formData.append('files', this.uploadRef.files[i]);
+                }
+            }
+        } else{
+          //DropZone
+            upperLimit = files.length;
+            [].forEach.call(files, function (file) {
                 formData.append('files', file);
+                filesAr.push(file);
             });
         }
-        else{
-            upperLimit = this.refs.uploadInput.files.length < (this.props.MaxUploads - this.state.NumberUploaded) ? this.refs.uploadInput.files.length : (this.props.MaxUploads - this.state.NumberUploaded);
-            for(let i = 0; i < upperLimit; i++){
-                formData.append('files', this.refs.uploadInput.files[i]);
-            }
-        }
-        this.setState({Files: filesAr});
+
+        this.setState({
+            Files: filesAr,
+            NumberJustUploaded: upperLimit
+        });
+
         const x = this;
         var xhr = new XMLHttpRequest();
-        xhr.open( 'POST', `${this.props.apiUrl}/api/upload/files`, true);
+        xhr.open( 'POST',`${API_URL}${this.props.endpoint}`, true);
+        //xhr.open( 'POST', `${window.location.protocol}//${window.location.host}/api/file/upload`, true);
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
-                    let newNum = x.state.NumberUploaded + upperLimit;
+                    let newNum = x.state.NumberUploaded + x.state.NumberJustUploaded;
                     x.setState({
                         UploadStatus: 'success',
                         Response: this.responseText,
                         NumberUploaded: newNum
                     });
-                    console.log('NumberUploaded', newNum, x.state.NumberUploaded);
-                    x.props.changeNumber(x.state.NumberUploaded);
+                    let changedConditions = {
+                        conditionsMet: (x.state.NumberUploaded >= x.props.MinUploads) && (x.state.NumberUploaded <= x.props.MaxUploads),
+                        numberOfUploads: newNum
+                    };
+                    x.props.onChange(changedConditions);
                 }
                 else{
                     x.setState({
@@ -81,50 +116,22 @@ class FileUpload extends React.Component{
 
     render(){
         let uploadView = null;
-        let label = this.props.Strings.selectLabel;
-        if(this.refs.uploadInput !== undefined && this.refs.uploadInput.files.length > 0){
-            label = `${this.refs.uploadInput.files.length} ${this.props.Strings.filesLabel}`;
-        }
-        <div className="inline"> {this.props.Strings.Min}: {this.props.MinUploads}    {this.props.Strings.Max}: {this.props.MaxUploads}</div>;
-        switch(this.state.UploadStatus){
-        case 'start':
-            uploadView = (
-              <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-                <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
-                <label  htmlFor="file-upload-input">{label}</label><div>({this.props.Strings.Min} {this.props.MinUploads})</div>
+        switch(this.props.View){
+        case 'button':
+            uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={this.state.UploadStatus}
+                                      NumberUploaded={this.state.NumberUploaded} MinUploads={this.props.MinUploads}
+                                      MaxUploads={this.props.MaxUploads} selectClick={this.selectClick}
+                                      uploadRef={el => this.uploadRef = el} HasFiles={this.state.HasFiles}
 
-                <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
-              </form>
-          );
+                            />);
             break;
-        case 'pending':
-            uploadView = (
-              <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-            );
+        case 'dropzone':
+            uploadView = (<DropzoneView uploadFiles={this.uploadFiles} Strings={this.props.Strings}/>);
             break;
-        case 'success':
-            if(this.state.NumberUploaded < this.props.MinUploads){
-                uploadView = (
-                  <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-                    <input onChange={this.selectClick.bind(this)} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
-                    <label  htmlFor="file-upload-input">{this.props.Strings.uploadedLabel} {this.state.NumberUploaded}/{this.props.MinUploads}</label>
-                    <button type="button" ref="button" value="Upload" onClick={this.uploadFiles.bind(this)}>{this.props.Strings.buttonLabel}</button>
-                  </form>
-              );
-            }else{
-                uploadView = (<div>Upload Complete</div>);
-
-            }
-            break;
-        case 'error':
-            uploadView = (<div>Upload Error</div>);
-            break;
-        default:
-            uploadView = <div></div>;
         }
 
         return (
-          <div className="upload-view-section">
+          <div >
             {uploadView}
           </div>
         );
@@ -138,9 +145,14 @@ FileUpload.defaultProps = {
         selectLabel: 'Select Files',
         uploadedLabel: 'Uploaded',
         Min: 'Min',
-        Max: 'Max'
+        Max: 'Max',
+        upload: 'Upload',
+        UploadComplete: 'Upload Complete',
+        UploadError: 'Upload Error'
     },
-    changeNumber: function(newNum){}
+    MinUploads: 0,
+    MaxUploads: 1,
+    onChange: function(newNum){}
 
 };
 

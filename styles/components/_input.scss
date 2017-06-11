@@ -5,7 +5,7 @@ input[type=date],
 input[type=number],
 textarea {
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
     @media screen and (max-width: $mobile-brk) {
       width: 100%
      }

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
+import FileUpload from '../shared/fileUpload';
 
 class App extends React.Component {
     constructor(props) {
@@ -58,6 +59,8 @@ class App extends React.Component {
 
 
           </div>
+
+          <FileUpload View="dropzone" endpoint={'/api/upload/profile-picture'} PostVars={{userId: 70}}/>
 
           </div>
         );

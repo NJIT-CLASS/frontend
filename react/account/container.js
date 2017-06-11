@@ -2,6 +2,8 @@ import React from 'react';
 import apiCall from '../shared/apiCall';
 import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
+import FileUpload from '../shared/fileUpload';
+
 
 class Container extends React.Component {
     constructor(props){
@@ -61,7 +63,7 @@ class Container extends React.Component {
 
 		// not all users have UserLogin row, so the ternary operators
 		// account for this discrepancy
-      apiCall.get(`/generalUser/${this.props.UserID}`, (err, res, body) => {
+        apiCall.get(`/generalUser/${this.props.UserID}`, (err, res, body) => {
             this.setState({
                 Loaded: true,
                 id: body.User.UserID,
@@ -106,10 +108,10 @@ class Container extends React.Component {
             });
         } else {
             const passwordOptions = {
-                    userId: this.state.id,
-                    oldPasswd: this.state.current_password,
-                    newPasswd: this.state.new_password
-                };
+                userId: this.state.id,
+                oldPasswd: this.state.current_password,
+                newPasswd: this.state.new_password
+            };
 
             apiCall.post('/update/password',passwordOptions, (err, res, body) => {
                 if (err || res.statusCode == 401) {
@@ -276,32 +278,6 @@ class Container extends React.Component {
         });
     }
 
-    uploadFiles(files){
-        let formData = new FormData();
-        formData.append('userId', this.props.UserID);
-        [].forEach.call(files, function (file) {
-            formData.append('files', file);
-        });
-
-        const x = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open( 'POST', `${this.props.apiUrl}/api/upload/profile-picture`, true);
-        xhr.onreadystatechange = function(){
-            if(this.readyState == 4) {
-                if(this.status == 200){
-                }
-                else{
-
-                }
-            }
-            else{
-
-            }
-
-        };
-        xhr.send(formData);
-
-    }
     render() {
         if(!this.state.Loaded){
             return (<div></div>);
@@ -394,7 +370,8 @@ class Container extends React.Component {
 					<label>{this.strings.phoneNumber}</label>
 					<input type="text" value={this.state.new_phone == null ? '' : this.state.new_phone} onChange={this.changePhone.bind(this)} placeholder="(###) ###-####"></input>
 					<label>{this.strings.profilePicture}</label>
-					<Dropzone accept="image/*" onDrop={this.uploadFiles.bind(this)}>{this.strings.upload}</Dropzone>
+          <FileUpload View="dropzone" endpoint={'/api/upload/profile-picture'} PostVars={{userId: this.props.UserID}} Strings={this.strings}/>
+
 					<label>{this.strings.avatar}</label>
 					<Dropzone accept="image/*">{this.strings.upload}</Dropzone>
 				</form>

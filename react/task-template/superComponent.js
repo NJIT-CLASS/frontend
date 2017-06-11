@@ -11,7 +11,7 @@ import Rater from 'react-rater';
 import { RadioGroup, Radio } from 'react-radio-group';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-import FileUpload from './fileUpload';
+import FileUpload from '../shared/fileUpload';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
@@ -159,12 +159,12 @@ class SuperComponent extends React.Component {
 
 
         const options = {
-                taskInstanceid: this.props.TaskID,
-                userid: this.props.UserID,
-                taskInstanceData: this.state.TaskResponse,
-            };
+            taskInstanceid: this.props.TaskID,
+            userid: this.props.UserID,
+            taskInstanceData: this.state.TaskResponse,
+        };
 
-        apiCall.post(`/taskInstanceTemplate/create/save`, options, (err, res, body) => {
+        apiCall.post('/taskInstanceTemplate/create/save', options, (err, res, body) => {
             console.log(res, body);
             if (res.statusCode != 200) {
                 showMessage(this.props.Strings.InputErrorMessage);
@@ -199,14 +199,14 @@ class SuperComponent extends React.Component {
         const validData = this.isValidData();
         if (validData) {
             const options = {
-                    taskInstanceid: this.props.TaskID,
-                    userid: this.props.UserID,
-                    taskInstanceData: this.state.TaskResponse,
-                };
+                taskInstanceid: this.props.TaskID,
+                userid: this.props.UserID,
+                taskInstanceData: this.state.TaskResponse,
+            };
             this.setState({
                 LockSubmit: true
             });
-            apiCall.post(`/taskInstanceTemplate/create/submit`, options, (err, res, body) => {
+            apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
                 console.log(body);
                 if (res.statusCode != 200) {
                     this.setState({ InputError: true,
@@ -324,12 +324,12 @@ class SuperComponent extends React.Component {
 
     willNotDispute() {
         const options = {
-                userid: this.props.UserID,
-            };
+            userid: this.props.UserID,
+        };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
             console.log(err, res, body);
-            window.location.href= "/"; //uncomment when finished w/ skipDispute
+            window.location.href= '/'; //uncomment when finished w/ skipDispute
 
         });
 
@@ -413,19 +413,19 @@ class SuperComponent extends React.Component {
 
             </div>);
         }
-
-        if (this.props.FileUpload !== null && this.props.FileUpload.mandatory !== 0) {
+        if (this.props.FileUpload !== null && (this.props.FileUpload.mandatory !== 0 || this.props.FileUpload.optional !== 0)) {
             fileUploadView = (
               <div>
 
                 <FileUpload
+                  View='button'
                   InitialNumberUploaded={this.state.NumberFilesStored}
-                  apiObject={{
+                  PostVars={{
                       userId: this.props.UserID,
-                      taskInstanceId: this.props.TaskID,
-                      apiUrl: `${this.props.apiUrl}/api/upload/files`,
+                      taskInstanceId: this.props.TaskID
                   }}
                   MinUploads={this.props.FileUpload.mandatory}
+                  endpoint={'/api/upload/files'}
                   MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
                   onChange={this.handleFileUploads.bind(this)}
                 />
@@ -559,7 +559,7 @@ class SuperComponent extends React.Component {
                         labels = labels.split(',');
                     }
                     labels = labels.map(label => {
-                      return {value: label, label: label};
+                        return {value: label, label: label};
                     });
                     fieldInput = (<div>
                       <label>{this.props.Strings.LabelDirections}</label>
