@@ -9,11 +9,11 @@ const FileLinksComponent = ({Files, apiUrl}) => {
     if(Files === null){
         return <div></div>;
     }
-    
+
     return <div>
           {
             Files.map((fileID) => {
-                return <div> <a href={downloadLink+fileID}>{fileID}</a><br/></div>;
+                return <div key={`file-${fileID}`}> <a target="_blank" href={downloadLink+fileID}>{fileID}</a><br/></div>;
             })
           }
         </div>;

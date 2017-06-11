@@ -15,7 +15,7 @@ class FileUpload extends React.Component{
         //  PostVars //object containing any POST variables to be sent with the files eg. userId
         //
         this.state = {
-            UploadStatus: 'start', //start,error,pending,success
+            UploadStatus: 'start', //start,error,pending,success, full
             Response: null,
             Files:[],
             NumberUploaded: this.props.InitialNumberUploaded || 0,
@@ -27,7 +27,14 @@ class FileUpload extends React.Component{
         this.selectClick = this.selectClick.bind(this);
     }
 
+
+
     uploadFiles(files){
+
+        if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
+            return;
+        }
+
         this.setState({
             UploadStatus: 'pending'
         });
@@ -116,9 +123,13 @@ class FileUpload extends React.Component{
 
     render(){
         let uploadView = null;
+        let uploadStatus = this.state.UploadStatus;
+        if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
+            uploadStatus = 'full';
+        }
         switch(this.props.View){
         case 'button':
-            uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={this.state.UploadStatus}
+            uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={uploadStatus}
                                       NumberUploaded={this.state.NumberUploaded} MinUploads={this.props.MinUploads}
                                       MaxUploads={this.props.MaxUploads} selectClick={this.selectClick}
                                       uploadRef={el => this.uploadRef = el} HasFiles={this.state.HasFiles}
@@ -148,7 +159,8 @@ FileUpload.defaultProps = {
         Max: 'Max',
         upload: 'Upload',
         UploadComplete: 'Upload Complete',
-        UploadError: 'Upload Error'
+        UploadError: 'Upload Error',
+        fullLabel: 'Limit Reached'
     },
     MinUploads: 0,
     MaxUploads: 1,

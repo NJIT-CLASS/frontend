@@ -50,7 +50,8 @@ class SuperComponent extends React.Component {
             PassFailValue: null,
             DisputeStatus: null,
             FileUploadsSatisfied: false,
-            LockSubmit: false
+            LockSubmit: false,
+            NewFilesUploaded: [],
         };
     }
 
@@ -111,6 +112,14 @@ class SuperComponent extends React.Component {
         });
     }
 
+    fetchNewFileUploads(){
+        return;
+        apiCall.get(`/taskFileReferences/${this.props.TaskID}`, (err, res, body) => {
+            this.setState({
+                NewFilesUploaded: body.Files
+            });
+        });
+    }
 
     isValidData() {
       // go through all of TaskData's fields to check if null. If a field requires_justification,
@@ -181,6 +190,7 @@ class SuperComponent extends React.Component {
         this.setState({
             FileUploadsSatisfied: conditionsMet,
         });
+        this.fetchNewFileUploads();
     }
 
     submitData(e) {
@@ -343,6 +353,7 @@ class SuperComponent extends React.Component {
         let TA_instructions = null;
         let formButtons = null;
         let fileUploadView = null;
+        let fileLinksView = null;
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
           // if invalid data, shows error message
@@ -431,6 +442,13 @@ class SuperComponent extends React.Component {
                 />
               </div>
           );
+        }
+
+        if(this.state.NewFilesUploaded.length !== 0){
+            fileLinksView = (<FileLinksComponent Files={this.state.NewFilesUploaded} apiUrl={this.props.apiUrl} />);
+
+        }else{
+            fileLinksView = (<FileLinksComponent Files={this.props.Files} apiUrl={this.props.apiUrl} />);
         }
 
         if (this.props.Instructions != null && this.props.Instructions != '') {
@@ -624,7 +642,7 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
               {TA_instructions}
               {TA_rubric}
-              <FileLinksComponent Files={this.props.Files} apiUrl={this.props.apiUrl} />
+              {fileLinksView}
               {fileUploadView}
               {fields}
               {formButtons}

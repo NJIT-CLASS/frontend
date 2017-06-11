@@ -25,6 +25,8 @@ class FileUpload extends React.Component{
     render(){
         let uploadView = null;
         let label = this.props.Strings.selectLabel;
+
+        
         if(this.refs.uploadInput !== undefined && this.refs.uploadInput.files.length > 0){
             label = `${this.refs.uploadInput.files.length} ${this.props.Strings.filesLabel}`;
         }

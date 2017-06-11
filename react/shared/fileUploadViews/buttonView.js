@@ -50,7 +50,7 @@ class ButtonView extends React.Component {
               <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
               {inputView}
                 <label  htmlFor="file-upload-input">{Strings.buttonLabel}</label>
-                <div className="inline">{Strings.uploadedLabel} {NumberUploaded}/{MinUploads}</div>
+                <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
                 {buttonView}
 
               </form>
@@ -63,13 +63,22 @@ class ButtonView extends React.Component {
         case 'error':
             uploadView = (<div>{Strings.UploadError}
           <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-          {inputView}
+            {inputView}
             <label  htmlFor="file-upload-input">{Strings.buttonLabel}</label>
-            <div className="inline">{Strings.uploadedLabel} {NumberUploaded}/{MinUploads}</div>
+            <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
             {buttonView}
 
           </form>
         </div>);
+            break;
+        case 'full':
+            uploadView = (<div>
+            <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+              <label  htmlFor="file-upload-input">{Strings.fullLabel}</label>
+              <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+
+            </form>
+          </div>);
             break;
         default:
             uploadView = <div></div>;

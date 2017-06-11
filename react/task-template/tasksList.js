@@ -6,8 +6,15 @@ import SuperComponent from './superComponent';
 import MultiViewComponent from './multiViewComponent';
 import SuperViewComponent from './superViewComponent';
 
-const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues }) => {
-    return <div>
+class TasksList extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        let { TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues } = this.props;
+
+        return <div>
           {
             TasksArray.map(function(task, idx) {
         		// Goes over the array of tasks(starting from first task to this task)
@@ -143,7 +150,8 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskV
             }, this)
           }
         </div>;
+    }
+}
 
-};
 
 export default TasksList;
