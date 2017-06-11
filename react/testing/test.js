@@ -43,7 +43,7 @@ class App extends React.Component {
             <div className="section-content">
               {gray}
               <br/>
-              <div className="textarea"></div>
+              <div className="textarea">ghjgjhgj</div>
             </div>
           </div>
 

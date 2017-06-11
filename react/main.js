@@ -19,6 +19,7 @@ import TaskStatusTable from './assignment-records/TaskStatus';
 import CourseSectionManagement from './course-section-management/container';
 import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
+import BadgeClass from './badge/badge';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -97,6 +98,10 @@ case 'course-section-management':
 
 case 'account':
     ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
+
+case 'badges':
+    ReactDOM.render(<badges UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
 
 }

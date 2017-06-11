@@ -5,6 +5,8 @@ const pages = [
     'dashboard',
     'my-account',
     'course-section-management',
+    'badges',
+    'leaderboard',
     'create-assignment',
     'assignment-editor',
     'administrator',
