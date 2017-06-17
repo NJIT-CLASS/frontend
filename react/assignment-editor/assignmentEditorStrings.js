@@ -181,29 +181,41 @@ const fieldStrings = {
 };
 
 const tooltipMessages = {
+  // I don't think we're using these anymore
     ActivitySemesterMessage: '',
     ActivityCourseMessage: '',
-    AssignmentNumberProblemsMessage: '',
-    AssignmentInstructionsMessage: '',
-    ProblemNameMessage: '',
-    ProblemTypeMessage: '',
-    ProblemDocumentationMessage: '',
-    ProblemDefaultGroupSizeMessage: '',
-    ProblemNumberOfSetsMessage: '',
+// Missing Messages
+    AssigmentNameMessage: 'This name will appear every time this assignment is used in any section.  Please make it descriptive.',
+    AssigmentTypeMessage: 'This is for documentation purposes only, and is not displayed or used otherwise.',
+    TaskInputFieldsHeaderMessage: 'These fields will be displayed to users for entering content as part of this task.  (You can add additional fields.)',
+    TaskFieldRubricMessage: 'Optional rubric and/or guidelines to display for this input field.',
+    // If we display a title "Problem Grade Weights" above the grade weights when they are displayed, and for simple grades:
+    ProblemGradeWeightsTitleMessage: '',
+    AggregatedGradeForOnTimeMessage: '',
+
+// Others...
+    AssignmentNumberProblemsMessage: 'Each problem TYPE will have an independent structure, parameter values and instructions/rubrics. E.g., your assignment may have a "short answer" and a "fill in the blank" problem.  (Specify how many problems of each type elsewhere.)',
+    AssignmentInstructionsMessage: 'This is the global assignment instructions to display.  You may instead wish to only specify instructions with each problem and/or task type elsewhere.',
+    ProblemNameMessage: 'This is the name displayed for this PROBLEM TYPE.',
+    ProblemTypeMessage: 'This is for documentation purposes only, and is not displayed or used otherwise.',
+    ProblemDocumentationMessage: 'This is the global problem description to display.  You may instead wish to only specify separate instructions with each task (such as "create problem" and "solve problem") elsewhere.',
+    ProblemDefaultGroupSizeMessage: 'Not used.  Currently groups are not implemented.',
+    ProblemNumberOfSetsMessage: 'How many independent problems of this type should each user create?  Each will have an identical structure, but be conducted entirely independently from the others.',
     RemoveButtonTip: 'Remove',
-    TaskDisplayName: '',
-    TaskRequiredFilesMessage: '',
-    TaskOptionalFilesMessage: '',
-    TaskInstructionsMessage: '',
-    TaskRubricMessage: '',
-    TaskJustificationInstructionsMessage: '',
-    TaskFieldEvalByLabelsMessage: '',
-    TaskAssessmentTypeMessage: '',
+    TaskDisplayName: 'This is the name displayed for this TASK.',
+    TaskRequiredFilesMessage: 'Number of mandatory files to upload for this task.  Describe these files in your instructions, and perhaps remind users to remove all identifying information to keep the authorship anonymous.',
+    TaskOptionalFilesMessage: 'Maximum number of optional files that may be uploaded for this task.  Describe these files in your instructions, and perhaps remind users to remove all identifying information to keep the authorship anonymous.',
+    TaskInstructionsMessage: 'Instructions and/or guidelines to display for this task.',
+    TaskRubricMessage: 'Optional rubric and/or guidelines to display for this task.',
+// This probably should be called "TaskFIELDJustificationInstructionsMessage"
+    TaskJustificationInstructionsMessage: 'Does this individual input FIELD require its own separate justification?  If so a justification sub-field will be generated.  (If the entire task requires a justification then you may instead wish to devote an entire input field for the justification.)',
+    TaskFieldEvalByLabelsMessage: 'List the evaluation labels, separated by commas.  Users will be required to choose one.  (Spaces are not allowed in label values.)',
+    TaskAssessmentTypeMessage: 'Choose the assessment type collected in this input field.',
     TaskDefaultFieldContentFromOthersMessage: '',
-    TaskDefaultFieldContentMessage: '',
-    TaskShowFieldNameMessage: '',
-    TaskFieldTypeMessage: '',
-    TaskFieldInstructionsMessage: '',
+    TaskDefaultFieldContentMessage: 'If filled in, this will be displayed as the default content within this input field.',
+    TaskShowFieldNameMessage: 'Should this input field\'s name be displayed to the user?',
+    TaskFieldTypeMessage: 'What kind of input will users enter in this field: regular (free text or numeric) or assessment (someone else\'s task or one\'s own).',
+    TaskFieldInstructionsMessage: 'Instructions and/or guidelines to display for this input field.',
     TaskDueTypeMessage: '',
     TaskDelayBeforeStartingMessage: '',
     TaskOneOrSeparateMessage: '',
@@ -236,5 +248,6 @@ const tooltipMessages = {
     TaskConsolidateFunctionMessage: '',
     TaskWhoCanDoMessage:''
 };
+
 
 export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...fieldStrings, ...tooltipMessages};

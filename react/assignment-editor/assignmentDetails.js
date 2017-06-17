@@ -34,34 +34,34 @@ class AssignmentDetailsComponent extends React.Component{
         let courseList = this.props.Courses;
         let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
 
-        semesterView = (
-        <div className="inner">
+      //   semesterView = (
+      //   <div className="inner">
+      //
+      //     <label>strings.RestrictToSemester</label>
+      //     <Tooltip Text={strings.ActivitySemesterMessage} ID={'AA_semester_tooltip'}/>
+      //     <Select options={semesterList}
+      //        value={this.props.AssignmentActivityData.AA_semester}
+      //       onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
+      //       clearable={false}
+      //       searchable={false}
+      //       />
+      //   </div>
+      // );
 
-          <label>strings.RestrictToSemester</label>
-          <Tooltip Text={strings.ActivitySemesterMessage} ID={'AA_semester_tooltip'}/>
-          <Select options={semesterList}
-             value={this.props.AssignmentActivityData.AA_semester}
-            onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
-            clearable={false}
-            searchable={false}
-            />
-        </div>
-      );
-
-        if(this.props.Courses){
-            coursesView = (<div>
-          <label>{strings.Course}</label>
-          <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
-          <Select options={courseList}
-                  value={this.props.AssignmentActivityData.AA_course}
-                  placeholder={strings.SelectACourse}
-                  onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
-                  clearable={false}
-                  searchable={false}
-            />
-
-        </div>);
-        }
+        // if(this.props.Courses){
+        //     coursesView = (<div>
+        //   <label>{strings.Course}</label>
+        //   <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
+        //   <Select options={courseList}
+        //           value={this.props.AssignmentActivityData.AA_course}
+        //           placeholder={strings.SelectACourse}
+        //           onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+        //           clearable={false}
+        //           searchable={false}
+        //     />
+        //
+        // </div>);
+        // }
 
         return (
         <div className="section card-2" >

@@ -6,7 +6,6 @@ const request = require('request');
 const redis = require('redis');
 const _ = require('lodash');
 const multer  = require('multer');
-var FormData = require('form-data');
 var fs = require('fs');
 
 const session = require('./server-middleware/session');
