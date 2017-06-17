@@ -1,0 +1,29 @@
+<!-- flex-container, flex-section, and flex-child are used to nicely align the
+dashboard section view, Current Courses, Pending and Completed Tasks -->
+
+    <form name="assignmentGradeList" role="form" class="section" method="POST" action="#">
+        <h2 class="title">{{__ "Assignment Grades"}}</h2>
+        <div class="section-content">
+
+    		<div class="col-xs-6">
+
+            		<ul>
+
+    				  {{#each assignmentGradeList}}
+              {{#if Comments}}
+      					<li class="list-group-item">
+      					<a href="/course_page/{{CourseID}}">{{__"Grr"}} {{AssignmentGradeID}} {{User.FirstName}} {{Grade}} - {{Comments}}</a>
+                {{else}}
+                <li class="list-group-item">
+      					<a href="/course_page/{{CourseID}}">{{__"Grrr"}} {{AssignmentGradeID}} {{User.FirstName}} {{Grade}}</a>
+              {{/if}}
+    				    </li>
+                {{else}} <!-- this p tag will be visible if courseList is empty-->
+                  <p>{{__ "You currently have no registered courses"}}</p>
+
+                {{/each}}
+
+                    </ul>
+            </div>
+        </div>
+    </form>

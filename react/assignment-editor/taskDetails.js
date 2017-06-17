@@ -108,8 +108,8 @@ class TaskDetailsComponent extends React.Component {
         // TA_display_name
         const displayName = (
           <div className="inner">
-            <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-display-name-tooltip`} />
             <label>{strings.DisplayName}</label>
+            <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-display-name-tooltip`} />
             <br />
             <input type="text" placeholder={strings.DisplayName} value={this.props.TaskActivityData.TA_display_name} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_display_name', this.props.index, this.props.workflowIndex)} /><br />
           </div>
