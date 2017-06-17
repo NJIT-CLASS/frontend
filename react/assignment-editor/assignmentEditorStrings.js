@@ -141,7 +141,8 @@ const workflowStrings = {
     SaveSuccessMessage: 'Assignment Saved',
     CourseIDNull: 'A course needs to be specified',
     DefaultWorkflowName: 'Problem',
-    SimpleGradeWorkflowDistribution: 'Aggregated grade for doing indicated tasks on time'
+    SimpleGradeWorkflowDistribution: 'Aggregated grade for doing indicated tasks on time',
+    GradeWeightsHeader:' Problem Grade Weights'
 };
 
 const fieldStrings = {
@@ -181,10 +182,6 @@ const fieldStrings = {
 };
 
 const tooltipMessages = {
-  // I don't think we're using these anymore
-    ActivitySemesterMessage: '',
-    ActivityCourseMessage: '',
-// Missing Messages
     AssigmentNameMessage: 'This name will appear every time this assignment is used in any section.  Please make it descriptive.',
     AssigmentTypeMessage: 'This is for documentation purposes only, and is not displayed or used otherwise.',
     TaskInputFieldsHeaderMessage: 'These fields will be displayed to users for entering content as part of this task.  (You can add additional fields.)',
@@ -192,8 +189,6 @@ const tooltipMessages = {
     // If we display a title "Problem Grade Weights" above the grade weights when they are displayed, and for simple grades:
     ProblemGradeWeightsTitleMessage: '',
     AggregatedGradeForOnTimeMessage: '',
-
-// Others...
     AssignmentNumberProblemsMessage: 'Each problem TYPE will have an independent structure, parameter values and instructions/rubrics. E.g., your assignment may have a "short answer" and a "fill in the blank" problem.  (Specify how many problems of each type elsewhere.)',
     AssignmentInstructionsMessage: 'This is the global assignment instructions to display.  You may instead wish to only specify instructions with each problem and/or task type elsewhere.',
     ProblemNameMessage: 'This is the name displayed for this PROBLEM TYPE.',
@@ -207,8 +202,7 @@ const tooltipMessages = {
     TaskOptionalFilesMessage: 'Maximum number of optional files that may be uploaded for this task.  Describe these files in your instructions, and perhaps remind users to remove all identifying information to keep the authorship anonymous.',
     TaskInstructionsMessage: 'Instructions and/or guidelines to display for this task.',
     TaskRubricMessage: 'Optional rubric and/or guidelines to display for this task.',
-// This probably should be called "TaskFIELDJustificationInstructionsMessage"
-    TaskJustificationInstructionsMessage: 'Does this individual input FIELD require its own separate justification?  If so a justification sub-field will be generated.  (If the entire task requires a justification then you may instead wish to devote an entire input field for the justification.)',
+    TaskFieldJustificationInstructionsMessage: 'Does this individual input FIELD require its own separate justification?  If so a justification sub-field will be generated.  (If the entire task requires a justification then you may instead wish to devote an entire input field for the justification.)',
     TaskFieldEvalByLabelsMessage: 'List the evaluation labels, separated by commas.  Users will be required to choose one.  (Spaces are not allowed in label values.)',
     TaskAssessmentTypeMessage: 'Choose the assessment type collected in this input field.',
     TaskDefaultFieldContentFromOthersMessage: '',

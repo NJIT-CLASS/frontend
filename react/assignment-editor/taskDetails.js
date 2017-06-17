@@ -108,8 +108,8 @@ class TaskDetailsComponent extends React.Component {
         // TA_display_name
         const displayName = (
           <div className="inner">
-            <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-display-name-tooltip`} />
             <label>{strings.DisplayName}</label>
+            <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-display-name-tooltip`} />
             <br />
             <input type="text" placeholder={strings.DisplayName} value={this.props.TaskActivityData.TA_display_name} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_display_name', this.props.index, this.props.workflowIndex)} /><br />
           </div>
@@ -189,7 +189,7 @@ class TaskDetailsComponent extends React.Component {
                 ? (
                   <div className="inner block" key={index + 200}>
                     <label>{strings.FieldJustificationInstructions}</label>
-                    <Tooltip Text={strings.TaskJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
+                    <Tooltip Text={strings.TaskFieldJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
                     <textarea className="big-text-field" placeholder={`${strings.TypeJustificationInstructions}...`} value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} />
                   </div>
                 )
@@ -344,7 +344,8 @@ class TaskDetailsComponent extends React.Component {
                   this.props.workflowIndex,
                 ` Field ${index}`}
               >
-                <h3 className="subheading">{strings.InputFields} {removeButtonView}
+                <h3 className="subheading">{strings.InputFields}
+                  <Tooltip Text={strings.TaskInputFieldsHeaderMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-task-input-fields-header-tooltip`} /> {removeButtonView}
                 </h3>
 
                 <div className="inner">
