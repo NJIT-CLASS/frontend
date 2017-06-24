@@ -68,7 +68,7 @@ class AssignmentEditorContainer extends React.Component {
             numeric_min: 0,
             numeric_max: 40,
             rating_max: 5,
-            list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
+            list_of_labels: [strings.Easy,strings.Medium, strings.Difficult],
             field_type: 'text',
             requires_justification: false,
             instructions: '',
@@ -528,9 +528,9 @@ class AssignmentEditorContainer extends React.Component {
         //Load partially made assignment from the database
             if(this.props.PartialAssignmentID !== ''){
                 const assignmentOptions = {
-                        userId: this.props.UserID,
-                        courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
-                    };
+                    userId: this.props.UserID,
+                    courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
+                };
 
                 console.log(assignmentOptions);
 
@@ -717,11 +717,11 @@ class AssignmentEditorContainer extends React.Component {
         console.log(sendData);
 
         const options = {
-                assignment: sendData,
-                userId: this.props.UserID,
-                partialAssignmentId: this.state.PartialAssignmentID,
-                courseId: this.state.AssignmentActivityData.AA_course
-            };
+            assignment: sendData,
+            userId: this.props.UserID,
+            partialAssignmentId: this.state.PartialAssignmentID,
+            courseId: this.state.AssignmentActivityData.AA_course
+        };
 
         apiCall.post('/assignment/save', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
@@ -897,10 +897,10 @@ class AssignmentEditorContainer extends React.Component {
 
 
         const options = {
-                assignment: sendData,
-                userId: this.props.UserID,
-                partialAssignmentId: this.state.PartialAssignmentID
-            };
+            assignment: sendData,
+            userId: this.props.UserID,
+            partialAssignmentId: this.state.PartialAssignmentID
+        };
 
         apiCall.post('/assignment/create', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
@@ -1010,7 +1010,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     addConsolidation(stateData, parentIndex, workflowIndex) {
-        console.log(stateData, parentIndex, workflowIndex)
+        console.log(stateData, parentIndex, workflowIndex);
         if(this.hasConsolidate(parentIndex, workflowIndex)){
             return;
         }
@@ -1715,7 +1715,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, stateData) {
-      console.log(stateField, taskIndex, workflowIndex, stateData)
+        console.log(stateField, taskIndex, workflowIndex, stateData);
         let newData = stateData || this.state.WorkflowDetails;
         switch (stateField) {
         case 'TA_allow_reflection':
@@ -1894,7 +1894,7 @@ class AssignmentEditorContainer extends React.Component {
                 if (this.hasConsolidate(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex)) {
                     this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 } else {
-                    console.log('Assess consol index', this.getAssessIndex(taskIndex, workflowIndex, newData))
+                    console.log('Assess consol index', this.getAssessIndex(taskIndex, workflowIndex, newData));
                     newData = this.addConsolidation(newData, this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 }
             }
@@ -1948,6 +1948,11 @@ class AssignmentEditorContainer extends React.Component {
                 newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
                 this.changeReflection(taskIndex, workflowIndex, e.value);
                 this.propogateNameChangeDownTree(taskIndex, workflowIndex);
+            }
+            break;
+        case 'TA_allow_reflection_wait':
+            {
+                newData[workflowIndex].Workflow[taskIndex].TA_allow_reflection[1] = e.value;
             }
             break;
         case 'TA_allow_assessment':
@@ -2075,6 +2080,11 @@ class AssignmentEditorContainer extends React.Component {
             case 'numeric':
                 newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = 0;
                 break;
+            case 'assessment':
+            case 'self assessment':
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = 0;
+                newData[workflowIndex].Workflow[taskIndex].TA_fields[field].assessment_type = 'grade';
+                break;
             default:
                 break;
             }
@@ -2110,19 +2120,26 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeInputData(stateField, taskIndex, workflowIndex, e) {
-        e.preventDefault();
+        let newVal = null;
+        if(e.preventDefault !== undefined){
+            e.preventDefault();
+            newVal = e.target.value;
+        } else{
+            newVal = e;
+        }
 
-        if (e.target.value.length > 45000) {
+
+        if (newVal > 45000) {
             return;
         }
         if (stateField == 'TA_display_name') {
-            if (e.target.value.length > 254) {
+            if (newVal > 254) {
                 return;
             }
             //propogate name change down tree and save new val
             let newData = this.state.WorkflowDetails;
             const oldName = newData[workflowIndex].Workflow[taskIndex].TA_display_name;
-            newData[workflowIndex].Workflow[taskIndex].TA_display_name = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].TA_display_name = newVal;
             newData[workflowIndex].Workflow[taskIndex].CustomNameSet = true;
             this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
             this.propogateNameChangeDownTree(taskIndex, workflowIndex);
@@ -2136,16 +2153,22 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeInputFieldData(stateField, taskIndex, field, workflowIndex, e) {
-        e.preventDefault();
+        let newVal = null;
+        if(e.preventDefault !== undefined){
+            e.preventDefault();
+            newVal = e.target.value;
+        } else{
+            newVal = e;
+        }
 
-        if (e.target.value.length > 45000) {
+        if (newVal > 45000) {
             return;
         }
         let newData = this.state.WorkflowDetails;
         if (stateField == 'default_content') {
-            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField][0] = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField][0] = newVal;
         } else {
-            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.target.value;
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = newVal;
         }
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
@@ -2442,39 +2465,39 @@ class AssignmentEditorContainer extends React.Component {
             let difference = this.state.AssignmentActivityData.NumberofWorkflows - value;
             if (difference > 0) {
                 while (difference > 0) {
-                  let removeIndex = newWorkflowData.length-1;
+                    let removeIndex = newWorkflowData.length-1;
                     newWorkflowData.pop();
                     difference -= 1;
                 }
                 newData[fieldName] = value;
-                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length)
+                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length);
                 this.setState({AssignmentActivityData: newData, WorkflowDetails: newWorkflowData});
             }
             else if (difference < 0) {
                 while (difference < 0) {
                     newWorkflowData.push(cloneDeep(this.blankWorkflow));
-                    this.setState({WorkflowDetails: newWorkflowData})
+                    this.setState({WorkflowDetails: newWorkflowData});
                     this.makeDefaultWorkflowStructure(newWorkflowData.length-1);
                     difference += 1;
                 }
                 newData[fieldName] = value;
-                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length)
+                newData.AA_grade_distribution = this.makeNewAssignmentGradeDist(newWorkflowData.length);
                 this.setState({AssignmentActivityData: newData});
             }
         }
     }
 
     makeNewAssignmentGradeDist(workflowLength){
-      console.log('new length', workflowLength);
-      let newGradeDist = {};
-      let fairSharePoints = Math.floor(100/workflowLength);
-      let leftOverPoints = 100 % workflowLength;
-      for(let i = 0; i < workflowLength; i++){
-        newGradeDist[i] = fairSharePoints;
-      }
-      newGradeDist[0] += leftOverPoints;
+        console.log('new length', workflowLength);
+        let newGradeDist = {};
+        let fairSharePoints = Math.floor(100/workflowLength);
+        let leftOverPoints = 100 % workflowLength;
+        for(let i = 0; i < workflowLength; i++){
+            newGradeDist[i] = fairSharePoints;
+        }
+        newGradeDist[0] += leftOverPoints;
 
-      return newGradeDist;
+        return newGradeDist;
     }
 
 

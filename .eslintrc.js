@@ -22,10 +22,6 @@ module.exports = {
             1,
             4
         ],
-        "linebreak-style": [
-            1,
-            "unix"
-        ],
         "quotes": [
             1,
             "single"

@@ -56,16 +56,16 @@ class TemplateContainer extends React.Component {
 
         const options = {
 				// query strings
-                courseID: this.props.CourseID,
-                userID: this.props.UserID,
-                sectionID: this.props.SectionID,
-            };
+            courseID: this.props.CourseID,
+            userID: this.props.UserID,
+            sectionID: this.props.SectionID,
+        };
 
 		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
 		// for rendering
         const options2 = {
-                userID: this.props.UserID,
-            };
+            userID: this.props.UserID,
+        };
 
         apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
             if (res.statusCode != 200) {
@@ -164,7 +164,8 @@ class TemplateContainer extends React.Component {
                         TaskActivityType: body.taskActivityType,
                         SemesterID: body.semesterID,
                         SemesterName: body.semesterName,
-                        TaskActivityVisualID: body.taskActivityVisualID,
+                        SectionName: body.sectionName,
+                        SectionID: body.sectionID,
                         Data: taskList,
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
@@ -253,7 +254,9 @@ class TemplateContainer extends React.Component {
                   Assignment={this.state.Assignment}
                   TaskActivityType={this.state.TaskActivityType}
                   SemesterName={this.state.SemesterName}
+                  SectionName={this.state.SectionName}
                   Strings={this.state.Strings}
+                  
                 />
 
                 {renderView}
