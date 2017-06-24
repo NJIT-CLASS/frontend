@@ -386,22 +386,7 @@ class SuperComponent extends React.Component {
             </div>);
         }
 
-        if (this.state.DisputeStatus === false) {
-            return (
-              <div className="">
-                {infoMessage}
-                <div className="section card-1">
-                  <div className="placeholder" />
-                  <div onClick={this.toggleContent.bind(this)}>
-                    <h2 className="title">{this.props.ComponentTitle} </h2>
-                  </div>
-                  <div className="section-content">
-                    <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
-                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
-                  </div>
-                </div>
-              </div>);
-        }
+        
 
 
         if (this.props.Rubric != '' && this.props.Rubric != null) { // if no Rubric
@@ -458,6 +443,26 @@ class SuperComponent extends React.Component {
                 <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Instructions} />
               </div>);
         }
+
+        if (this.state.DisputeStatus === false) {
+            return (
+              <div className="">
+                {infoMessage}
+                <div className="section card-1">
+                  <div className="placeholder" />
+                  <div onClick={this.toggleContent.bind(this)}>
+                    <h2 className="title">{this.props.ComponentTitle} </h2>
+                  </div>
+                  <div className="section-content">
+                    {TA_instructions}
+                    {fileLinksView}
+                    <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
+                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
+                  </div>
+                </div>
+              </div>);
+        }
+
           // creating all input fields here
         const fields = this.state.TaskActivityFields.field_titles.map(function (title, idx) {
             let rubricView = null;

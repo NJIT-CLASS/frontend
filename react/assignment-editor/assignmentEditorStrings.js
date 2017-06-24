@@ -104,6 +104,9 @@ const taskStrings = {
     BothInstructorStudents: 'Both Instructor and Students independently',
     Average: 'Average',
     Other: 'Other',
+    Pass: 'Pass',
+    Fail: 'Fail',
+    ShouldReflectBlock: 'Should tasks wait for the reflection to be complete'
 };
 const assignmentStrings = {
     Essay: 'Essay', //AssignmentDetails Strings
@@ -149,7 +152,7 @@ const fieldStrings = {
     Field: 'Field',
     Easy: 'Easy',
     Medium: 'Medium',
-    Hard: 'Hard',
+    Difficult: 'Hard',
     CreateProblemName: TASK_TYPES_TEXT.CREATE_PROBLEM,
     CreateOverallInstructions: 'Create a new problem for another student to solve.',
     CreateDefaultFieldTitle: 'Problem 1',
@@ -240,7 +243,8 @@ const tooltipMessages = {
     TaskGetFieldContentMessage: '',
     TaskGroupTaskMessage:'',
     TaskConsolidateFunctionMessage: '',
-    TaskWhoCanDoMessage:''
+    TaskWhoCanDoMessage:'',
+    TaskShouldReflectBlockMessage:'Specify whether the following tasks should wait for this reflection to be finished.',
 };
 
 
