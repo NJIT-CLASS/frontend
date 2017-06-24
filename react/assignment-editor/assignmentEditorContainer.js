@@ -942,72 +942,7 @@ class AssignmentEditorContainer extends React.Component {
         return node;
     }
 
-    addTask(stateData, type, index, workflowIndex) {
-        let newTask = null;
-        switch (type) {
-        case this.ASSESS_IDX:
-            newTask = this.createNewTask(stateData, this.gradeSolutionTask, index, workflowIndex, 'Grade');
-            break;
-        case this.REFLECT_IDX:
-            newTask = this.createNewTask(stateData, this.editProblemTask, index, workflowIndex, 'Edit');
-            break;
-        case this.CREATE_IDX:
-            newTask = this.createNewTask(stateData, this.createProblemTask, index, workflowIndex, 'Create');
-            break;
-        case this.SOLVE_IDX:
-            newTask = this.createNewTask(stateData, this.solveProblemTask, index, workflowIndex, 'Solve');
-            break;
-        }
-        let newTaskIndex = stateData[workflowIndex].Workflow.length;
-        stateData[workflowIndex].Workflow.push(newTask);
-
-        var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
-            return node.model.id == index;
-        });
-
-        let newNode = this.tree.parse({
-            id: newTaskIndex
-        });
-
-        if (selectedNode.children[type] === undefined) {
-            selectedNode = this.fillGaps(selectedNode, type);
-            selectedNode.addChildAtIndex(newNode, type);
-        } else {
-            let dropped = selectedNode.children[type].drop();
-            selectedNode.addChildAtIndex(newNode, type);
-        }
-
-        //swtich to add follow-on tasks
-        switch(type){
-        case this.ASSESS_IDX:
-            stateData = this.changeDataCheck('Assess_Consolidate', index, workflowIndex, stateData);
-            stateData = this.changeDataCheck('Assess_Dispute', index, workflowIndex, stateData);
-            break;
-        case this.REFLECT_IDX:
-            break;
-        case this.CREATE_IDX:
-            stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
-            stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
-            break;
-        case this.SOLVE_IDX:
-            stateData = this.changeDataCheck('TA_allow_assessment', newTaskIndex, workflowIndex, stateData);
-            break;
-        }
-        return stateData;
-    }
-
-    taskChildren(taskIndex, workflowIndex){
-        let childrenNames = [];
-        let selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first((node) => {
-            return node.model.id == taskIndex;
-        });
-        selectedNode.walk((node) => {
-            if(node.model.id != -1){
-                childrenNames.push(this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_display_name);
-            }
-        });
-        return childrenNames;
-    }
+    
 
     addConsolidation(stateData, parentIndex, workflowIndex) {
         console.log(stateData, parentIndex, workflowIndex);
@@ -1171,8 +1106,65 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
+    /*** Adding task functions */
+    addTask(stateData, type, index, workflowIndex) {
+        let newTask = null;
+        switch (type) {
+        case this.ASSESS_IDX:
+            newTask = this.createNewTask(stateData, this.gradeSolutionTask, index, workflowIndex, 'Grade');
+            break;
+        case this.REFLECT_IDX:
+            newTask = this.createNewTask(stateData, this.editProblemTask, index, workflowIndex, 'Edit');
+            break;
+        case this.CREATE_IDX:
+            newTask = this.createNewTask(stateData, this.createProblemTask, index, workflowIndex, 'Create');
+            break;
+        case this.SOLVE_IDX:
+            newTask = this.createNewTask(stateData, this.solveProblemTask, index, workflowIndex, 'Solve');
+            break;
+        }
+        let newTaskIndex = stateData[workflowIndex].Workflow.length;
+        stateData[workflowIndex].Workflow.push(newTask);
+        
+
+        var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id == index;
+        });
+
+        let newNode = this.tree.parse({
+            id: newTaskIndex
+        });
+
+        if (selectedNode.children[type] === undefined) {
+            selectedNode = this.fillGaps(selectedNode, type);
+            selectedNode.addChildAtIndex(newNode, type);
+        } else {
+            let dropped = selectedNode.children[type].drop();
+            selectedNode.addChildAtIndex(newNode, type);
+        }
+
+        stateData[workflowIndex].Workflow[newTaskIndex].TA_display_name = this.computeNewName(stateData,newTaskIndex, workflowIndex);
+
+        //swtich to add follow-on tasks
+        switch(type){
+        case this.ASSESS_IDX:
+            stateData = this.changeDataCheck('Assess_Consolidate', index, workflowIndex, stateData);
+            stateData = this.changeDataCheck('Assess_Dispute', index, workflowIndex, stateData);
+            break;
+        case this.REFLECT_IDX:
+            break;
+        case this.CREATE_IDX:
+            stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
+            stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
+            break;
+        case this.SOLVE_IDX:
+            stateData = this.changeDataCheck('TA_allow_assessment', newTaskIndex, workflowIndex, stateData);
+            break;
+        }
+        return stateData;
+    }
+   
     createNewTask(stateData, taskType, index, workflowIndex, string) {
-        console.log(stateData, taskType, index, workflowIndex, string);
         let prevTaskName = stateData[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
         let newText = string + ' ' + prevTaskName;
@@ -1206,11 +1198,62 @@ class AssignmentEditorContainer extends React.Component {
                 newText = string;
                 break;
             }
-
         }
         newTask.TA_name = string + ' ' + prevTaskName;
         newTask.TA_display_name = newText;
         return newTask;
+    }
+
+    /**
+     * [computeNewName Returns a string of the task type concatenated with the previous task's name]
+     * @param  {[type]} stateData     [passed down this.state.WorkflowDetails (may be ahead of actual state)]
+     * @param  {[type]} taskIndex
+     * @param  {[type]} workflowIndex
+     * @return {[string]}            [new name string]
+     */
+    computeNewName(stateData, taskIndex, workflowIndex){
+        let newName = '';
+        let taskType = stateData[workflowIndex].Workflow[taskIndex].TA_type;
+        let prefixString = '';
+        switch(taskType){
+        case TASK_TYPES.CREATE_PROBLEM:
+            prefixString = 'Create';
+            break;
+        case TASK_TYPES.EDIT:
+            prefixString = 'Edit';
+            break;
+        case TASK_TYPES.COMMENT:
+            prefixString = 'Comment on';
+            break;
+        case TASK_TYPES.SOLVE_PROBLEM:
+            prefixString = 'Solve';
+            break;
+        case TASK_TYPES.GRADE_PROBLEM:
+            prefixString = 'Grade';
+            break;
+        case TASK_TYPES.CRITIQUE:
+            prefixString = 'Critique';
+            break;
+        case TASK_TYPES.CONSOLIDATION:
+            prefixString = 'Consolidate';
+            break;
+        case TASK_TYPES.DISPUTE:
+            prefixString = 'Dispute of';
+            break;
+        case TASK_TYPES.RESOLVE_DISPUTE:
+            prefixString = 'Resolve';
+            break;
+        }
+        newName = prefixString;
+        let previousTaskIndex = stateData[workflowIndex].WorkflowStructure
+        .first((node) => {
+            console.log(node.model.id);
+            return node.model.id === taskIndex;
+        }).parent.model.id;
+
+        newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
+
+        return newName;
     }
 
     getAssessIndex(parentIndex, workflowIndex, stateData) {
@@ -1324,6 +1367,19 @@ class AssignmentEditorContainer extends React.Component {
         }else{
             return selectedNode.children[this.SOLVE_IDX].model.id;
         }
+    }
+
+    taskChildren(taskIndex, workflowIndex){
+        let childrenNames = [];
+        let selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first((node) => {
+            return node.model.id == taskIndex;
+        });
+        selectedNode.walk((node) => {
+            if(node.model.id != -1){
+                childrenNames.push(this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_display_name);
+            }
+        });
+        return childrenNames;
     }
 
     getReflectNumberofParticipants(index, workflowIndex) {
@@ -1511,57 +1567,9 @@ class AssignmentEditorContainer extends React.Component {
         });
     }
 
-    /**
-     * [computeNewName Returns a string of the task type concatenated with the previous task's name]
-     * @param  {[type]} stateData     [passed down this.state.WorkflowDetails (may be ahead of actual state)]
-     * @param  {[type]} taskIndex
-     * @param  {[type]} workflowIndex
-     * @return {[string]}            [new name string]
-     */
-    computeNewName(stateData, taskIndex, workflowIndex){
-        let newName = '';
-        let taskType = stateData[workflowIndex].Workflow[taskIndex].TA_type;
-        let prefixString = '';
-        switch(taskType){
-        case TASK_TYPES.CREATE_PROBLEM:
-            prefixString = 'Create';
-            break;
-        case TASK_TYPES.EDIT:
-            prefixString = 'Edit';
-            break;
-        case TASK_TYPES.COMMENT:
-            prefixString = 'Comment on';
-            break;
-        case TASK_TYPES.SOLVE_PROBLEM:
-            prefixString = 'Solve';
-            break;
-        case TASK_TYPES.GRADE_PROBLEM:
-            prefixString = 'Grade';
-            break;
-        case TASK_TYPES.CRITIQUE:
-            prefixString = 'Critique';
-            break;
-        case TASK_TYPES.CONSOLIDATION:
-            prefixString = 'Consolidate';
-            break;
-        case TASK_TYPES.DISPUTE:
-            prefixString = 'Dispute of';
-            break;
-        case TASK_TYPES.RESOLVE_DISPUTE:
-            prefixString = 'Resolve';
-            break;
-        }
-        newName = prefixString;
+    
 
-        let previousTaskIndex = stateData[workflowIndex].WorkflowStructure
-        .first((node) => {
-            return node.model.id === taskIndex;
-        }).parent.model.id;
-
-        newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
-
-        return newName;
-    }
+  
 
     /**
      * setReflectNumberofParticipants
@@ -2488,9 +2496,8 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     makeNewAssignmentGradeDist(workflowLength){
-        console.log('new length', workflowLength);
         let newGradeDist = {};
-        let fairSharePoints = Math.floor(100/workflowLength);
+        let fairSharePoints = Math.floor(100 / workflowLength);
         let leftOverPoints = 100 % workflowLength;
         for(let i = 0; i < workflowLength; i++){
             newGradeDist[i] = fairSharePoints;
@@ -2500,6 +2507,39 @@ class AssignmentEditorContainer extends React.Component {
         return newGradeDist;
     }
 
+	/**
+	 * Handler to change the Assignment's Grade Distribution of Workflows
+	 * @param {number} workflowIndex 	Index of workflow that will be updated 
+	 * @param {number} value 	New value for the weight
+	 */
+    changeAssignmentGradeDist(workflowIndex, value){
+        let newData = this.state.AssignmentActivityData;
+        let lastIndex = Object.keys(newData.AA_grade_distribution).length - 1;
+        newData.AA_grade_distribution[workflowIndex] = value;
+
+        let sum = Object.values(newData.AA_grade_distribution).reduce((cur, acc) => cur + acc, 0);
+
+        if(sum > 100){
+            let excess = sum - 100;
+            if(workflowIndex === lastIndex){
+                newData.AA_grade_distribution[lastIndex - 1] -= excess;
+            }else{
+                newData.AA_grade_distribution[lastIndex] -= excess;
+            }
+        } else if(sum < 100){
+            let deficit = 100 - sum;
+            if(workflowIndex === lastIndex){
+                newData.AA_grade_distribution[lastIndex - 1] += deficit;
+            }else{
+                newData.AA_grade_distribution[lastIndex] += deficit;
+            }
+        }
+
+        this.setState({
+            AssignmentActivityData: newData
+        });
+	   
+    }
 
 
 
@@ -2891,22 +2931,30 @@ class AssignmentEditorContainer extends React.Component {
                 </Tabs>
             );
 
+
             return (
                 <div className="editor-container">
-
+                     <div className="section-button-area add-margin-for-button">
+                      {submitButtonView}
+                    </div>
                   <div>
                     <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
                       Courses={this.state.Courses} Semesters={this.state.Semesters}
+					  WorkflowData={this.state.WorkflowDetails}
                       changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
                       changeAssignmentInput={this.changeAssignmentInput.bind(this)}
                       changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
                       Strings={this.state.Strings}
                     />
-                    <br/> {workflowsView}
+                    <br />
+                   
+                     {workflowsView}
                     <br/>
                     {infoMessage}
                     <div className="section-button-area add-margin-for-button">
-                      {submitButtonView}
+                      <div className="faded-message-text">
+                        {this.state.Strings.SubmitReminderMessage}
+                      </div>
                       {saveButtonView}
                     </div>
                   </div>

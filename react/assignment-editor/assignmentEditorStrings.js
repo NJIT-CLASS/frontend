@@ -27,8 +27,9 @@ const taskStrings = {
     FieldRubric: 'Field Rubric (optional)',
     AddAnotherField : 'Add another field',
     ShowAdvancedOptions : 'Show Advanced Options',
+    DefaultTaskDuration: 'Default duration for task',
     ShouldTaskEndAtCertainTime: 'Should this task end at a certain time',
-    ExpireAfter: 'Expire After',
+    ExpireAfter: 'Expire after default duration',
     EndAtThisTime: 'End at a specific time',
     DelayBeforeStartingTask: 'Delay before starting task',
     StartWhenPriorTaskIsComplete : 'Start when prior task is complete',
@@ -125,6 +126,7 @@ const assignmentStrings = {
     HowManyDifferentTypesOfProblems: 'How Many Different Types of Problems',
     Instructions: 'Instructions',
     DefaultAssignmentName: 'Assignment',
+    SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page'
 };
 
 const workflowStrings = {

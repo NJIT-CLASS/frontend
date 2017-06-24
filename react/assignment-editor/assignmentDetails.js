@@ -16,6 +16,7 @@ class AssignmentDetailsComponent extends React.Component{
       Props:
             -AssignmentActivityData
             -Courses
+            -WorkflowData
             - Assignment functions
       */
         this.state = {
@@ -23,6 +24,12 @@ class AssignmentDetailsComponent extends React.Component{
             ShowAdvanced: false,
             NumberofWorkflows: 1
         };
+    }
+
+    mapTasksToOptions(){
+        return Object.keys(this.props.AssignmentActivityData.AA_grade_distribution).map(function(workflow, index){
+            return {id: workflow, name: this.props.WorkflowData[workflow].WA_name, weight: this.props.AssignmentActivityData.AA_grade_distribution[workflow]};
+        },this);
     }
 
     render(){
@@ -33,36 +40,7 @@ class AssignmentDetailsComponent extends React.Component{
         let semesterList = this.props.Semesters;
         let courseList = this.props.Courses;
         let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
-
-      //   semesterView = (
-      //   <div className="inner">
-      //
-      //     <label>strings.RestrictToSemester</label>
-      //     <Tooltip Text={strings.ActivitySemesterMessage} ID={'AA_semester_tooltip'}/>
-      //     <Select options={semesterList}
-      //        value={this.props.AssignmentActivityData.AA_semester}
-      //       onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
-      //       clearable={false}
-      //       searchable={false}
-      //       />
-      //   </div>
-      // );
-
-        // if(this.props.Courses){
-        //     coursesView = (<div>
-        //   <label>{strings.Course}</label>
-        //   <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
-        //   <Select options={courseList}
-        //           value={this.props.AssignmentActivityData.AA_course}
-        //           placeholder={strings.SelectACourse}
-        //           onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
-        //           clearable={false}
-        //           searchable={false}
-        //     />
-        //
-        // </div>);
-        // }
-
+        
         return (
         <div className="section card-2" >
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} {strings.Parameters}</h2>
