@@ -2518,17 +2518,16 @@ class AssignmentEditorContainer extends React.Component {
         newData.AA_grade_distribution[workflowIndex] = value;
 
         let sum = Object.values(newData.AA_grade_distribution).reduce((cur, acc) => cur + acc, 0);
-
         if(sum > 100){
             let excess = sum - 100;
-            if(workflowIndex === lastIndex){
+            if(workflowIndex == lastIndex){
                 newData.AA_grade_distribution[lastIndex - 1] -= excess;
             }else{
                 newData.AA_grade_distribution[lastIndex] -= excess;
             }
         } else if(sum < 100){
             let deficit = 100 - sum;
-            if(workflowIndex === lastIndex){
+            if(workflowIndex == lastIndex){
                 newData.AA_grade_distribution[lastIndex - 1] += deficit;
             }else{
                 newData.AA_grade_distribution[lastIndex] += deficit;
@@ -2944,6 +2943,7 @@ class AssignmentEditorContainer extends React.Component {
                       changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
                       changeAssignmentInput={this.changeAssignmentInput.bind(this)}
                       changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
+                      changeAssignmentGradeDist={this.changeAssignmentGradeDist.bind(this)}
                       Strings={this.state.Strings}
                     />
                     <br />

@@ -36,11 +36,43 @@ class AssignmentDetailsComponent extends React.Component{
         let strings = this.props.Strings;
         let coursesView = null;
         let semesterView = null;
-
+        let workflowDistView = null;
         let semesterList = this.props.Semesters;
         let courseList = this.props.Courses;
         let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
         
+        let workflowDistWeights = this.mapTasksToOptions();
+        if(workflowDistWeights.length > 1){
+            workflowDistView = <ul>
+            {
+              workflowDistWeights.map((workflowObj) => {
+                  return <li className="thin-number-field" key={'workflowWeight' + workflowObj.id}>
+                      <label>{workflowObj.name}</label>
+                      <NumberField  key = {'probDet-NumF '+workflowObj.id} allowDecimals={false}
+                                    min={0} max={100}
+                                    onChange={this.props.changeAssignmentGradeDist.bind(this, workflowObj.id)}
+                                    value={workflowObj.weight} />
+                    </li>;
+              })
+            }
+          </ul>;
+        }
+
+        if(this.props.Courses){
+            coursesView = (<div>
+          <label>{strings.Course}</label>
+          <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
+          <Select options={courseList}
+                  value={this.props.AssignmentActivityData.AA_course}
+                  placeholder={strings.SelectACourse}
+                  onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+                  clearable={false}
+                  searchable={false}
+            />
+        
+        </div>);
+        }
+
         return (
         <div className="section card-2" >
           <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} {strings.Parameters}</h2>
@@ -90,6 +122,9 @@ class AssignmentDetailsComponent extends React.Component{
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
               </div>
 
+              <div className="inner block">
+                {workflowDistView}                
+              </div>
               <br />
               {/*
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
@@ -110,14 +145,7 @@ class AssignmentDetailsComponent extends React.Component{
                 }} />
               <br />
               */}
-              <div className={this.state.ShowAdvanced ? 'section-divider' : 'task-hiding'}>
-                {semesterView}
-                <br />
-                <br />
-                <br />
-
-
-              </div>
+              
             </div>
 
           </div>
