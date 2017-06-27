@@ -11,6 +11,7 @@
     </head>
     <body class="logged-out">
         <div class="main-container center">
+            <div id="message-view" class="closed"></div>
                 <div class="loggedout-container">
                     {{{body}}}
 
@@ -28,7 +29,9 @@
                     </div>
                 </div>
         </div>
-
+        {{#each scripts}}
+            <script src="{{this}}" type="text/javascript" charset="utf-8"></script>
+        {{/each}}
         <script src="/static/shared.js" type="text/javascript" charset="utf-8"></script>
     </body>
 </html>

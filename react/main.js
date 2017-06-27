@@ -19,6 +19,8 @@ import TaskStatusTable from './assignment-records/TaskStatus';
 import CourseSectionManagement from './course-section-management/container';
 import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
+import AboutContainer from './about/about-container';
+import ForgotPasswordContainer from './forgot-password/forgot-password-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -98,5 +100,10 @@ case 'course-section-management':
 case 'account':
     ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
-
+case 'about':
+    ReactDOM.render(<AboutContainer />, reactElem);
+    break;
+case 'forgot-password':
+    ReactDOM.render(<ForgotPasswordContainer />, reactElem);
+    break;
 }
