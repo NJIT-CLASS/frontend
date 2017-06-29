@@ -52,6 +52,8 @@ class SuperComponent extends React.Component {
             FileUploadsSatisfied: false,
             LockSubmit: false,
             NewFilesUploaded: [],
+            IsRevision: false,
+            RevisionStatus: false
         };
     }
 
@@ -338,22 +340,48 @@ class SuperComponent extends React.Component {
         };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
-            console.log(err, res, body);
-            window.location.href= '/'; //uncomment when finished w/ skipDispute
+            //console.log(err, res, body);
+            window.location.href= '/';
 
         });
 
+    }
+
+    rejectRevision(){
+        this.setState({
+            RevisionStatus: false
+        });
+        let opts = {};
+        apiCall.get('', opts, (err, res, body) => {
+            //window.location.href= '/';
+
+        });
+    }
+
+    approveRevision(){
+        this.setState({
+            RevisionStatus: true
+        });
+
+        let opts = {};
+        apiCall.get('', opts, (err, res, body) => {
+            //window.location.href= '/';
+
+        });
     }
 
     render() {
         let content = null;
         let infoMessage = null;
         let TA_rubric = null;
-        const disputeButton = null;
+        let disputeButton = null;
         let TA_instructions = null;
         let formButtons = null;
         let fileUploadView = null;
         let fileLinksView = null;
+        let revisionRejectView = null;
+        let revisionApproveView = null;
+
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
           // if invalid data, shows error message
@@ -462,6 +490,23 @@ class SuperComponent extends React.Component {
                 </div>
               </div>);
         }
+
+        if(this.state.IsRevision){
+            revisionRejectView =  <button className="revision-buttons" 
+                                        onClick={this.rejectRevision.bind(this)}>
+                                        {this.props.Strings.RejectRevision}
+                                        </button>;
+            revisionApproveView = <button className="revision-buttons" 
+                                        onClick={this.approveRevision.bind(this)}>
+                                        {this.props.Strings.ApproveRevision}
+                                </button>;
+            formButtons = (
+                <div>
+                    <br />
+                    {revisionRejectView}
+                    {revisionApproveView}
+                </div>);
+        } 
 
           // creating all input fields here
         const fields = this.state.TaskActivityFields.field_titles.map(function (title, idx) {
