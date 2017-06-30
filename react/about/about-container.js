@@ -62,7 +62,7 @@ class AboutContainer extends Component { //create a class for the component
             <div className="developers-section">
               <h2>{strings.SectionTitle}</h2>
               <div className="section">
-                  <h2 className="title">{strings.SubTitle1}</h2>
+                  <h2 className="title" style={{width: '80%'}}>{strings.SubTitle1}</h2>
                   <div className="section-content">
                           <ul>
                             <li>Stephen Morrison</li>
@@ -74,7 +74,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
 
               <div className="section">
-                  <h2 className="title">{strings.SubTitle2}</h2>
+                  <h2 className="title" style={{width: '80%'}}>{strings.SubTitle2}</h2>
                   <div className="section-content">
                           <ul>
                               <li>Jimmy Lu</li>
@@ -87,7 +87,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
 
               <div className="section">
-                  <h2 className="title">{strings.SubTitle3}</h2>
+                  <h2 className="title" style={{width: '80%'}}>{strings.SubTitle3}</h2>
                   <div className="section-content">
                           <ul>
                             <li>Jonathan Vidal</li>
@@ -97,7 +97,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
 
               <div className="section">
-                  <h2 className="title">{strings.SubTitle4}</h2>
+                  <h2 className="title" style={{width: '80%'}}>{strings.SubTitle4}</h2>
                   <div className="section-content">
                           <ul>
                             <li>Mohit Nakrani</li>
@@ -109,7 +109,7 @@ class AboutContainer extends Component { //create a class for the component
                 </div>
 
                   <div className="section">
-                      <h2 className="title">{strings.SubTitle5}</h2>
+                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle5}</h2>
                       <div className="section-content">
                               <ul>
                                 <li>Names Placeholder</li>
@@ -118,7 +118,7 @@ class AboutContainer extends Component { //create a class for the component
                   </div>
 
                   <div className="section">
-                      <h2 className="title">{strings.SubTitle6}</h2>
+                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle6}</h2>
                       <div className="section-content">
                               <ul>
                                 <li>Sean Fisher</li>
@@ -128,7 +128,7 @@ class AboutContainer extends Component { //create a class for the component
                   </div>
 
                   <div className="section">
-                      <h2 className="title">{strings.SubTitle7}</h2>
+                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle7}</h2>
                       <div className="section-content">
 
                       <OrganizationSelector
@@ -142,7 +142,7 @@ class AboutContainer extends Component { //create a class for the component
                   </div>
 
                   <div className="section">
-                      <h2 className="title">{strings.SubTitle8}</h2>
+                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle8}</h2>
                       <div className="section-content">
                               <ul>
                                 <li>Michael Bieber</li>
