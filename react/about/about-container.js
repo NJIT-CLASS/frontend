@@ -60,7 +60,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
             </div>
             <div className="developers-section">
-              <h2>{stings.SectionTitle}</h2>
+              <h2>{strings.SectionTitle}</h2>
               <div className="section">
                   <h2 className="title">{strings.SubTitle1}</h2>
                   <div className="section-content">
@@ -130,7 +130,7 @@ class AboutContainer extends Component { //create a class for the component
                   <div className="section">
                       <h2 className="title">{strings.SubTitle7}</h2>
                       <div className="section-content">
-                              <ul style="list-style-type:none">
+                              <ul style={{listStyleType:'none'}}>
                                 <li>Michael Bieber</li>
                                 <li>New Jersey Institute of Technology</li>
                                 <li><a href="mailto:bieber@njit.edu">bieber@njit.edu</a></li>
