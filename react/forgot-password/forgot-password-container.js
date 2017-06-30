@@ -1,4 +1,5 @@
 import React, { Component } from 'react'; //import the React library and the Component class from the react package
+import apiCall from '../shared/apiCall';
 
 class ForgotPasswordContainer extends Component { //create a class for the component
                                                   //it will be called in the main.js file under /react
@@ -8,10 +9,44 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
 
         this.state = {
 
-            passwordReset: false,
+            value: '',
+            success: false,
             error: false
 
         }; //initial state, only manually assigned here, elsewhere it's this.setState()
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.submitEmail();
+    }
+
+    submitEmail() {
+        apiCall.post('/password/reset', {email: this.state.value}, (err, res, body) => {
+            if(res.statusCode == 401) {
+                console.log('User does not exist.');
+                this.setState({
+                    error: true,
+                    success: false
+                });
+            } else if (res.statusCode == 200) {
+                console.log('Email sent.');
+                this.setState({
+                    error: false,
+                    success: true
+                });
+            } else {
+                console.log('An error occurred.');
+                this.setState({
+                    error: true,
+                    success: false
+                });
+            }
+        });
     }
 
     render(){
@@ -26,25 +61,6 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
 
         };
 
-        let Display;
-
-        //reset password success
-        this.setState({passwordReset: true});
-        //reset password error
-        this.setState({error: true});
-        let passwordResetSuccess = new Promise(function(resolve, rject) {
-            if (this.state.passwordReset) {
-                resolve(SuccessMessage);
-            }
-            if (this.state.error) {
-                reject(ErrorMessage);
-            }
-        });
-
-        passwordResetSuccess.then(function(fromResolve) {
-          //not yet implemented
-        });
-
         return (
           <div className="main-container center">
               <div className="loggedout-container">
@@ -54,28 +70,28 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                           <span>Participatory Learning</span>
                       </h2>
 
-                      <form role="form" className="section" method="POST">
-                        <h2 className="title">{strings.ActionText}</h2>
+                    <form role="form" className="section" onSubmit={this.handleSubmit.bind(this)}>
+                        <h2 className="title" style={{marginBottom: 0}}>{strings.ActionText}</h2>
                         <div className="section-content">
+
                                 {
-                            this.state.passwordReset && <div className="success form-success">
+                            this.state.success && (<div className="success form-success">
                           <span>{strings.SuccessMessage}</span>
-                          </div>
+                          </div>)
                             }
 
                                 {
-                            this.state.error && <div className="error form-error">
+                            this.state.error && (<div className="error form-error">
                           <i className="fa fa-exclamation-circle"></i>
                           <span>{strings.ErrorMessage}</span>
-                          </div>
+                          </div>)
                             }
 
-                          <div>
-                            <input placeholder={strings.PlaceHolderText} name="email" type="email" autofocus />
-                          </div>
-                          <button type="submit">{strings.ButtonText}</button>
-                      </div>
-                  </form>
+                            <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
+                            <button type='button' onClick={this.submitEmail.bind(this)}>{strings.ButtonText}</button>
+                        </div>
+                    </form>
+
                 </div>
               </div>
             </div>
