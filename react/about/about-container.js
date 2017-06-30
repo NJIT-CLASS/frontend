@@ -1,6 +1,5 @@
 import React, { Component } from 'react'; //import the React library and the Component class from the react package
-
-
+import OrganizationSelector from './organization-selector';
 
 class AboutContainer extends Component { //create a class for the component
                                          //it will be called in the main.js file under /react
@@ -32,7 +31,8 @@ class AboutContainer extends Component { //create a class for the component
             SubTitle4: 'Spring Capstone 2017',
             SubTitle5: 'Summer 2017',
             SubTitle6: 'Version 1 - 2014 (CLASS System)',
-            SubTitle7: 'For information about Participatory Learning Research or using this for your own courses, please contact:'
+            SubTitle7: 'For technical assistance please contact:',
+            SubTitle8: 'For information about Participatory Learning Research or using this for your own courses, please contact:'
 
         };
 
@@ -60,7 +60,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
             </div>
             <div className="developers-section">
-              <h2>{stings.SectionTitle}</h2>
+              <h2>{strings.SectionTitle}</h2>
               <div className="section">
                   <h2 className="title">{strings.SubTitle1}</h2>
                   <div className="section-content">
@@ -106,13 +106,13 @@ class AboutContainer extends Component { //create a class for the component
                             <li>Ashish Mirji</li>
                           </ul>
                   </div>
+                </div>
 
                   <div className="section">
                       <h2 className="title">{strings.SubTitle5}</h2>
                       <div className="section-content">
                               <ul>
-                                <li>Names</li>
-                                //add names once available
+                                <li>Names Placeholder</li>
                               </ul>
                       </div>
                   </div>
@@ -130,19 +130,31 @@ class AboutContainer extends Component { //create a class for the component
                   <div className="section">
                       <h2 className="title">{strings.SubTitle7}</h2>
                       <div className="section-content">
-                              <ul style="list-style-type:none">
+
+                      <OrganizationSelector
+                				key={1}
+                				apiUrl={this.props.apiUrl}
+                				strings={this.strings}
+                				userID={this.props.UserID}
+                			/>
+
+                      </div>
+                  </div>
+
+                  <div className="section">
+                      <h2 className="title">{strings.SubTitle8}</h2>
+                      <div className="section-content">
+                              <ul>
                                 <li>Michael Bieber</li>
-                                <li>New Jersey Institute of Technology</li>
+                                <li style={{textAlign: 'left'}}>New Jersey Institute of Technology</li>
                                 <li><a href="mailto:bieber@njit.edu">bieber@njit.edu</a></li>
-                                <br />
-                                <li><a href="http://web.njit.edu/~bieber/pubs.html#p">http://web.njit.edu/~bieber/pubs.html#p</a></li>
+                                <li style={{textAlign: 'left'}}><a href="http://web.njit.edu/~bieber/pubs.html#p" target="_blank">http://web.njit.edu/~bieber/pubs.html#p</a></li>
                               </ul>
                       </div>
                   </div>
 
               </div>
             </div>
-          </div>
 
         );
     }
