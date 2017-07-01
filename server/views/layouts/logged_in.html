@@ -26,10 +26,18 @@
                               class="selected"
                               {{/if}}
                               >
-                              <a href="{{ route }}">
+                              {{#if sidebarLink }}
+                                <a href="{{ sidebarLink }}">
                                   <i class="fa fa-{{ icon }} fa-fw"></i>
                                   <span>{{ title }}</span>
-                              </a>
+                                </a>
+                              {{else}}
+                                <a href="{{ route }}">
+                                  <i class="fa fa-{{ icon }} fa-fw"></i>
+                                  <span>{{ title }}</span>
+                                </a>
+                              {{/if}}
+                              
                           </li>
                       {{/each}}
                       <!--<li
