@@ -43,7 +43,7 @@ exports.post = (req, res) => {
                 return res.redirect(req.body.url || '/');
             }
         case 401:
-            if(!body){
+            if(body !== undefined){
                 if(body.Timeout){
                     return res.render('home',{
                         credentialsError: true,
