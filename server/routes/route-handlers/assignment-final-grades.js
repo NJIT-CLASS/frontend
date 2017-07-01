@@ -5,7 +5,7 @@ exports.get = (req, res) => {
 
     }
 
-    req.App.api.get('/getAssignmentFinalGrades/' + req.params.Id, (err, statusCode, body) => {
+    req.App.api.get('/getAssignmentGrades/' + req.params.Id, (err, statusCode, body) => {
         var userList = [];
         var ai = '';
         var userTaskList = [];
