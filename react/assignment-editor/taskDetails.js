@@ -795,7 +795,9 @@ class TaskDetailsComponent extends React.Component {
                     <label>{strings.WhoCanReflect}</label>                    
                     <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                     <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
-                    
+                     <label>{strings.AllowRevision}</label>
+                    <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                    <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
                      
                    
                     <br /> {showDispute}
@@ -803,15 +805,16 @@ class TaskDetailsComponent extends React.Component {
                 );
             }
 
+          
             // TA_allow_revisions
-            const allowRevision = (
-              <div>
+            const allowRevision = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
+              <div className="inner">
                 <label>{strings.AllowRevision}</label>
                 <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
                 <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
               </div>
-            );
-
+            ) : null;
+            
             const allowReflection = (
               <div className="inner">
                 <label>{strings.AllowReflection}</label>
@@ -819,7 +822,6 @@ class TaskDetailsComponent extends React.Component {
                 <Tooltip Text={strings.TaskAllowReflectionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-reflection-tooltip`} />
 
                 {allowReflectionOptions}
-                {allowRevision}
                 
               </div>
             );
@@ -1044,6 +1046,7 @@ class TaskDetailsComponent extends React.Component {
                   {simpleGrade}
                   {allowAssessment}
                   {allowReflection}
+                  {allowRevision}
                   {versionEvaluation}
                   {seeSibblings}
                   {leadsToNewProblem}

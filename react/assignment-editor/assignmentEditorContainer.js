@@ -1932,7 +1932,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
             }
             break;
-        case 'TA_allow_revisions':
+        case 'TA_allow_revisions-child':
             {
                 let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex, newData);
                 let newVal  = !newData[workflowIndex].Workflow[reflectIndex].TA_allow_revisions;
@@ -2016,6 +2016,12 @@ class AssignmentEditorContainer extends React.Component {
     getAssigneeInChild(reflect, taskIndex, workflowIndex) {
         let targetIndex = (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
         return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
+    }
+
+    getTaskRevisioninChild(taskIndex, workflowIndex){
+        let targetIndex = this.getReflectIndex(taskIndex, workflowIndex);
+
+        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].TA_allow_revisions;
     }
 
     cleanAssigneeConstraints(stateData, deleteTaskIndex, workflowIndex) {
