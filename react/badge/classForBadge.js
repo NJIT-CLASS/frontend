@@ -3,7 +3,7 @@
  */
 import React from 'react';
 
-class BadgeClass extends React.Component {
+class ClassForBadge extends React.Component {
     constructor(props){
         super(props);
 
@@ -30,5 +30,4 @@ class BadgeClass extends React.Component {
     }
 }
 
-
-export default BadgeClass;
+export default ClassForBadge;

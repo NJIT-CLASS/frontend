@@ -1,7 +1,17 @@
-#badgeCategory{
+#badgeClassAndCategoryDiv{
   float: left;
+}
+
+#ClassForBadge{
+  float: left;
+}
+
+#badgeCategory{
+  float: right;
 }
 
 #badge{
   float: right;
+  padding-top: 41px;
+  padding-bottom: 41px;
 }

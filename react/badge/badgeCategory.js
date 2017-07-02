@@ -1,9 +1,9 @@
 /**
- * Created by Sohail on 6/9/2017.
+ * Created by Sohail and Immaunel on 6/9/2017.
  */
 import React from 'react';
 
-class NewThing extends React.Component {
+class BadgeCategory extends React.Component {
     constructor(props){
         super(props);
 
@@ -13,14 +13,21 @@ class NewThing extends React.Component {
     render(){
         return (
             <div className="card">
-                <h2 className="title">Hi</h2>
+                <h2 className="title">Category</h2>
                 <form className="card-content" >
+
+                    <ul>
+                        <li>OverAll</li>
+                        <li>Question</li>
+                        <li>Answer</li>
+                        <li>Solution</li>
+                        <li>Grades</li>
+                        <li>Time Taken</li>
+                    </ul>
 
                 </form>
             </div>
         );
     }
 }
-
-
-export default NewThing;
+export default BadgeCategory;

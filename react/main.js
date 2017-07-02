@@ -101,7 +101,7 @@ case 'account':
     break;
 
 case 'badges':
-    ReactDOM.render(<badges UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<BadgeClass UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
 
 }

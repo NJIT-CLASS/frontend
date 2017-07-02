@@ -1,5 +1,5 @@
 /**
- * Created by Sohail on 6/6/2017.
+ * Created by Sohail and Immanuel on 6/6/2017.
  */
 const handler = require('../route-handlers/badges');
 
