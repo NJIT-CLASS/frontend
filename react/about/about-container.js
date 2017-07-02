@@ -13,26 +13,26 @@ class AboutContainer extends Component { //create a class for the component
     render(){
         let strings = {      // define all your strings in an object like this one (the name of the keys can be anything)
                              // we use this for translation
-            TitleString: 'About Participatory Learning',
-            SentenceOne: 'Traditionally, students only solve problems. In the Participatory Learning system, students learn so much more by engaging with more stages of an assignment.',
-            SentenceTwo: 'Here\'s the default process you\'ll follow, though this may vary among assignments. Everything shows as anonymous:',
-            Step1: 'Each student creates a problem according to the instructions',
-            Step2: 'The instructor optionally edits the problem to ensure quality',
-            Step3: 'Another student solves the problem',
-            Step4: 'Two students grade the solution, including the problem creator',
-            Step5: 'If the graders disagree, another student resolves the grade',
-            Step6: 'Optionally, the problem solver can dispute the grade',
-            Step7: 'The instructor resolves any disputes',
-            Step8: 'Students can see everything their peers have done anonymously',
+            TitleString: 'Participatory Learning',
+            Sentence0: 'Traditionally, students only solve problems. In the Participatory Learning system, students learn so much more by engaging with more stages of an assignment.',
+            Sentence1: 'Here\'s the default process you\'ll follow, though this may vary among assignments. Everything shows as anonymous:',
+            Step0: 'Each student creates a problem according to the instructions',
+            Step1: 'The instructor optionally edits the problem to ensure quality',
+            Step2: 'Another student solves the problem',
+            Step3: 'Two students grade the solution, including the problem creator',
+            Step4: 'If the graders disagree, another student resolves the grade',
+            Step5: 'Optionally, the problem solver can dispute the grade',
+            Step6: 'The instructor resolves any disputes',
+            Step7: 'Students can see everything their peers have done anonymously',
             SectionTitle: 'Developers',
+            SubTitle0: 'Version 1 - 2014 (CLASS System)',
             SubTitle1: 'Spring Capstone 2016',
             SubTitle2: 'Summer 2016',
             SubTitle3: 'Fall Capstone 2016',
             SubTitle4: 'Spring Capstone 2017',
             SubTitle5: 'Summer 2017',
-            SubTitle6: 'Version 1 - 2014 (CLASS System)',
-            SubTitle7: 'For technical assistance please contact:',
-            SubTitle8: 'For information about Participatory Learning Research or using this for your own courses, please contact:'
+            SubTitle6: 'For technical assistance please contact:',
+            SubTitle7: 'For information about Participatory Learning Research or using this for your own courses, please contact:'
 
         };
 
@@ -42,25 +42,36 @@ class AboutContainer extends Component { //create a class for the component
               <div className="section">
                   <h2 className="title">{strings.TitleString}</h2>
                   <div className="section-content">
-                          <p>{strings.SentenceOne}</p>
+                          <p>{strings.Sentence0}</p>
                       <br />
-                  <p>{strings.SentenceTwo}</p>
+                  <p>{strings.Sentence1}</p>
 
                     <ul>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step1}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step2}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step3}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step4}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step5}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step6}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step7}</p></li>
-                          <li><i className="fa fa-check icon"></i><p>{strings.Step8}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step0}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step1}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step2}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step3}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step4}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step5}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step6}</p></li>
+                          <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step7}</p></li>
                     </ul>
+                    {/*<img src={require('./process-figure.png')} /> */}
                   </div>
               </div>
             </div>
             <div className="developers-section">
               <h2>{strings.SectionTitle}</h2>
+              <div className="section">
+                  <h2 className="title" style={{width: '80%'}}>{strings.SubTitle0}</h2>
+                  <div className="section-content">
+                          <ul>
+                            <li>Sean Fisher</li>
+                            <li>Joshua Ortega</li>
+                          </ul>
+                  </div>
+              </div>
+
               <div className="section">
                   <h2 className="title" style={{width: '80%'}}>{strings.SubTitle1}</h2>
                   <div className="section-content">
@@ -120,29 +131,16 @@ class AboutContainer extends Component { //create a class for the component
                   <div className="section">
                       <h2 className="title" style={{width: '80%'}}>{strings.SubTitle6}</h2>
                       <div className="section-content">
-                              <ul>
-                                <li>Sean Fisher</li>
-                                <li>Joshua Ortega</li>
-                              </ul>
-                      </div>
-                  </div>
-
-                  <div className="section">
-                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle7}</h2>
-                      <div className="section-content">
 
                       <OrganizationSelector
                 				key={1}
-                				apiUrl={this.props.apiUrl}
-                				strings={this.strings}
-                				userID={this.props.UserID}
                 			/>
 
                       </div>
                   </div>
 
                   <div className="section">
-                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle8}</h2>
+                      <h2 className="title" style={{width: '80%'}}>{strings.SubTitle7}</h2>
                       <div className="section-content">
                               <ul>
                                 <li>Michael Bieber</li>

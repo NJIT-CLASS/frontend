@@ -1,6 +1,7 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import Tooltip from '../shared/tooltip';
 
 class OrganizationSelector extends React.Component {
   constructor(props){
@@ -43,17 +44,23 @@ class OrganizationSelector extends React.Component {
 
     render() {
         let strings = {
-            TitleString: 'Organization'
+            TitleString: 'Organization',
+            Tooltip: 'Select your organization to find the technical support contact.'
         };
-
         let select = (
-          <form className='card-content' onSubmit={this.onSubmit.bind(this)}>
-            <Select style={{width: '250px'}} options={this.state.list} value={this.state.id} onChange={this.changeID.bind(this)} resetValue={''} clearable={true} searchable={true}/>
-          </form>
+          <div>
+            <label>{strings.TitleString}</label>
+            <Tooltip Text={strings.Tooltip}/>
+            <form className='card-content' onSubmit={this.onSubmit.bind(this)}>
+              <Select style={{width: '250px'}} options={this.state.list} value={this.state.id} onChange={this.changeID.bind(this)} resetValue={''} clearable={true} searchable={true}/>
+            </form>
+          </div>
 		      );
 
         let info = (
           <div>
+              <label>{strings.TitleString}</label>
+              <Tooltip Text={strings.Tooltip}/>
               <form className='card-content' onSubmit={this.onSubmit.bind(this)}>
                 <Select style={{width: '250px'}} options={this.state.list} value={this.state.id} onChange={this.changeID.bind(this)} resetValue={''} clearable={true} searchable={true}/>
               </form>
