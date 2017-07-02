@@ -70,7 +70,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                           <span>Participatory Learning</span>
                       </h2>
 
-                    <form role="form" className="section" onSubmit={this.handleSubmit.bind(this)}>
+                    <form role="form" className="section" style={{margin: '0 auto', width: 313.91}} onSubmit={this.handleSubmit.bind(this)}>
                         <h2 className="title" style={{marginBottom: 0}}>{strings.ActionText}</h2>
                         <div className="section-content">
 
