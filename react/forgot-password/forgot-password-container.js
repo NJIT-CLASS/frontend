@@ -10,8 +10,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
         this.state = {
 
             value: '',
-            success: false,
-            error: false
+            result: ''
 
         }; //initial state, only manually assigned here, elsewhere it's this.setState()
     }
@@ -26,20 +25,17 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
             if(res.statusCode == 401) {
                 console.log('User does not exist.');
                 this.setState({
-                    error: true,
-                    success: false
+                    result: 'wrong-email'
                 });
             } else if (res.statusCode == 200) {
                 console.log('Email sent.');
                 this.setState({
-                    error: false,
-                    success: true
+                    result: 'success'
                 });
             } else {
                 console.log('An error occurred.');
                 this.setState({
-                    error: true,
-                    success: false
+                    result: 'error'
                 });
             }
         });
@@ -51,7 +47,8 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
             HeaderText: 'Participatory Learning',
             ActionText: 'Forgot Your Password?',
             SuccessMessage: 'Your password has been reset. An email has been sent to your login email address.',
-            ErrorMessage: 'The email entered was not recognized.',
+            ErrorMessage0: 'The email entered was not recognized.',
+            ErrorMessage1: 'The website is experiencing some internal errors. Please try again later.',
             ButtonText: 'Change Password',
             PlaceHolderText: 'Email',
 
@@ -71,15 +68,22 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                         <div className="section-content">
 
                                 {
-                            this.state.success && (<div className="success form-success" style={{marginBottom: 0}}>
+                            (this.state.result == 'success') && (<div className="success form-success" style={{marginBottom: 0}}>
                           <span>{strings.SuccessMessage}</span>
                           </div>)
                             }
 
                                 {
-                            this.state.error && (<div className="error form-error">
+                            (this.state.result == 'wrong-email') && (<div className="error form-error">
                           <i className="fa fa-exclamation-circle"></i>
-                          <span>{strings.ErrorMessage}</span>
+                          <span>{strings.ErrorMessage0}</span>
+                          </div>)
+                            }
+
+                                {
+                            (this.state.result == 'error') && (<div className="error form-error">
+                          <i className="fa fa-exclamation-circle"></i>
+                          <span>{strings.ErrorMessage1}</span>
                           </div>)
                             }
 
