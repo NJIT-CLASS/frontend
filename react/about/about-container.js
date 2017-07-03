@@ -56,7 +56,7 @@ class AboutContainer extends Component { //create a class for the component
                           <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step6}</p></li>
                           <li><i className="fa fa-check icon" style={{paddingRight: 5}}></i><p>{strings.Step7}</p></li>
                     </ul>
-                    {/*<img src={require('./process-figure.png')} /> */}
+                    <img src={'../../static/images/process-figure.png'} style={{width: '100%'}} />
                   </div>
               </div>
             </div>
