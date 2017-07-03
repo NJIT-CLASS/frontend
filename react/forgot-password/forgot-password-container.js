@@ -22,10 +22,6 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
 
     handleSubmit(event) {
         event.preventDefault();
-        this.submitEmail();
-    }
-
-    submitEmail() {
         apiCall.post('/password/reset', {email: this.state.value}, (err, res, body) => {
             if(res.statusCode == 401) {
                 console.log('User does not exist.');
@@ -75,7 +71,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                         <div className="section-content">
 
                                 {
-                            this.state.success && (<div className="success form-success">
+                            this.state.success && (<div className="success form-success" style={{marginBottom: 0}}>
                           <span>{strings.SuccessMessage}</span>
                           </div>)
                             }
@@ -88,7 +84,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                             }
 
                             <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
-                            <button type='button' onClick={this.submitEmail.bind(this)}>{strings.ButtonText}</button>
+                            <button type="submit">{strings.ButtonText}</button>
                         </div>
                     </form>
 
