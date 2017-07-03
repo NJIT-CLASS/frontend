@@ -19,7 +19,7 @@ import TaskStatusTable from './assignment-records/TaskStatus';
 import CourseSectionManagement from './course-section-management/container';
 import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
-import BadgeClass from './badge/badge';
+import MainBadge from './badge/mainBadge';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -101,7 +101,7 @@ case 'account':
     break;
 
 case 'badges':
-    ReactDOM.render(<BadgeClass UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<MainBadge UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
 
 }

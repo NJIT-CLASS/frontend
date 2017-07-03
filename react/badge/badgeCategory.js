@@ -12,9 +12,9 @@ class BadgeCategory extends React.Component {
 
     render(){
         return (
-            <div className="card">
+            <div className="section card-2">
                 <h2 className="title">Category</h2>
-                <form className="card-content" >
+                <form className="section-content" >
 
                     <ul>
                         <li>OverAll</li>

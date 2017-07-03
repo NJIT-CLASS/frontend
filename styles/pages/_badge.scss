@@ -1,17 +1,21 @@
-#badgeClassAndCategoryDiv{
-  float: left;
+.badges{
+  width: 100%;
 }
 
-#ClassForBadge{
-  float: left;
+#left-half-badge{
+  width: 15%;
+}
+
+#right-half-badge{
+  width: 85%;
 }
 
 #badgeCategory{
-  float: right;
+  float: left;
+  width: 30%;
 }
 
 #badge{
   float: right;
-  padding-top: 41px;
-  padding-bottom: 41px;
+  width: 70%;
 }

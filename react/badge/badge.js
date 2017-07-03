@@ -3,7 +3,7 @@
  */
 import React from 'react';
 
-class BadgeClass extends React.Component {
+class Badge extends React.Component {
     constructor(props){
         super(props);
 
@@ -12,17 +12,14 @@ class BadgeClass extends React.Component {
 
     render(){
         return (
-            <div className="card">
-                <h2 className="title">Class</h2>
-                <form className="card-content" >
-                    
-                    <ul>
-                        <li>CS100</li>
-                        <li>CS113</li>
-                        <li>CS252</li>
-                        <li>CS332</li>
-                        <li>CS490</li>
-                    </ul>
+
+            <div className="section card-2">
+                <h2 className="title">Badge Earned</h2>
+                <form className="section-content" >
+                    <div className = "col-xs-6">
+
+                        Badges Here
+                    </div>
 
                 </form>
             </div>
@@ -31,4 +28,4 @@ class BadgeClass extends React.Component {
 }
 
 
-export default BadgeClass;
+export default Badge;
