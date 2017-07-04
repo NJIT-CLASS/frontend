@@ -899,7 +899,8 @@ class AssignmentEditorContainer extends React.Component {
         const options = {
             assignment: sendData,
             userId: this.props.UserID,
-            partialAssignmentId: this.state.PartialAssignmentID
+            partialAssignmentId: this.state.PartialAssignmentID,
+            courseId: sendData.AA_course
         };
 
         apiCall.post('/assignment/create', options, (err, res, body) => {

@@ -5,6 +5,19 @@
       <div class="description">{{courseDescription}}</div>
   </div>
 
+<div class="block-container">
+    <div class="course-page assignment-button">
+      {{#if instructor}}
+        <div class="section-button-area">
+          <div>
+            <a href="/asa/{{courseID}}">
+                <button type="button" >{{__ "Add an Assignment"}}</button>
+            </a>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </div>
 
   <div class="block-container">
     <div class="flex-container">
@@ -13,7 +26,7 @@
         <h2 class="title">{{Name}} - {{Semester.Name}}</h2>
         <div class="section-content">
               {{#if Description}}
-                <div class="list-subheader" name="course_page_description">
+                <div class="section-description" >
                 {{Description}}
                 </div>
                 <br>
@@ -39,7 +52,7 @@
 
               {{#if students}}
               <div class="list-faded-subheader">{{__ "Students"}}</div>
-              <div class="overflow-list">
+              <div >
                 <ul>
                   {{#each students}}
                     <li class="list-group-item">
@@ -90,6 +103,7 @@
     {{/each}}
 
     {{#if instructorOrAdmin}}
+    <div class="flex-container">
         {{#if assignmentsList}}
         <div class="section">
             <h2 class="title">{{__ "Course Assignments"}}</h2>
@@ -152,26 +166,11 @@
             </div>
         </div>
     </div>
-
+</div>
     {{/if}}
 
     </div>
   </div>
 
-
-  <div class="block-container">
-    <div class="course-page assignment-button">
-      {{#if instructor}}
-        <div class="section-button-area">
-          <div>
-            <a href="/asa/{{courseID}}">
-                <button type="button" >{{__ "Add an Assignment"}}</button>
-            </a>
-          </div>
-        </div>
-      {{/if}}
-    </div>
-
-  </div>
 
 </div>

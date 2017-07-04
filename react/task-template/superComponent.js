@@ -351,11 +351,36 @@ class SuperComponent extends React.Component {
         this.setState({
             RevisionStatus: false
         });
-        let opts = {};
-        apiCall.get('', opts, (err, res, body) => {
-            //window.location.href= '/';
 
-        });
+        if(this.state.LockSubmit){
+            return;
+        }
+
+      // check if input is valid
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.get('/revise', options, (err, res, body) => {
+            //window.location.href= '/';
+                console.log(body);
+            });
+            
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
+
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+        
+        
     }
 
     approveRevision(){
@@ -363,11 +388,30 @@ class SuperComponent extends React.Component {
             RevisionStatus: true
         });
 
-        let opts = {};
-        apiCall.get('', opts, (err, res, body) => {
-            //window.location.href= '/';
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.get('/approved', options, (err, res, body) => {
+                //window.location.href= '/';
+                console.log(body);
+                
+            });
+            
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
 
-        });
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+        
     }
 
     render() {
