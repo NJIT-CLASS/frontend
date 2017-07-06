@@ -39,8 +39,8 @@ class Container extends React.Component {
             avatar: 'Avatar',
             yes: 'Yes',
             no: 'No',
-            admin: 'Administrator',
-            instructor: 'Instructor',
+            admin: 'System-wide Role: Administrator',
+            instructor: 'System-wide Role: Instructor',
             Bad: 'Bad',
             NotGood: 'Not good',
             Decent: 'Decent',
@@ -320,7 +320,7 @@ class Container extends React.Component {
 			<div className="card">
 				<h2 className="title">{name == '' ? this.strings.account : name}</h2>
 				<button type="button" onClick={this.editAccount.bind(this)}>{this.strings.edit}</button>
-				<button type="button" onClick={this.changePassword.bind(this)}>{this.strings.password}</button>
+				<button type="button" onClick={this.changePassword.bind(this)}>{this.strings.changePassword}</button>
 				<div className="card-content">
 					<table><tbody>
 						{ email }
