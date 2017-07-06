@@ -52,7 +52,6 @@ class SuperComponent extends React.Component {
             FileUploadsSatisfied: false,
             LockSubmit: false,
             NewFilesUploaded: [],
-            IsRevision: false,
             RevisionStatus: false
         };
     }
@@ -535,7 +534,7 @@ class SuperComponent extends React.Component {
               </div>);
         }
 
-        if(this.state.IsRevision){
+        if(this.props.IsRevision){
             revisionRejectView =  <button className="revision-buttons" 
                                         onClick={this.rejectRevision.bind(this)}>
                                         {this.props.Strings.RejectRevision}

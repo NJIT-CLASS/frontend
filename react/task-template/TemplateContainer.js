@@ -23,6 +23,10 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
+
+var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
+let FlatToNested = require('flat-to-nested');
+
 /*      PROPS:
             - TaskID
             - SectionID
@@ -31,8 +35,12 @@ const TabPanel = ReactTabs.TabPanel;
 */
 
 class TemplateContainer extends React.Component {
+    
+    
     constructor(props) {
         super(props);
+
+        this.tree = new TreeModel();
         this.state = {
             Loaded: false, // this variable is set to true when the page succesfully fetches data from the backend
             CourseID: null,
@@ -48,7 +56,16 @@ class TemplateContainer extends React.Component {
             TabSelected: 0,
             Strings: strings,
             NotAllowed: false,
+            IsRevision: false,
         };
+    }
+
+    unflattenTreeStructure(flatTreeString){
+        let flatToNested = new FlatToNested();
+        let flatTreeArray = JSON.parse(flatTreeString);
+        let nestedTreeObj = flatToNested.convert(flatTreeArray);
+        let treeRoot = this.tree.parse(nestedTreeObj);
+        return treeRoot;
     }
 
     getTaskData() {
@@ -127,6 +144,7 @@ class TemplateContainer extends React.Component {
 
                             return newTask;
                         });
+
                         const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
@@ -151,8 +169,113 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
+                        /** Working HERE
+                         *  Must scan through workflow for consolidation task of edit
+                         * 
+                         * 
+                         */
+                        if([TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)){
+                        /** Check if the current task is a revision task
+                         *      If not, it's a regular edit and show regular buttons
+                         *      Else, check if it has a consolidation task
+                         *          If it does, show regular buttons
+                         *          Else, show revision buttons
+                         */
+                            if(currentTask.TaskActivity.AllowRevision === true){
+
+                                apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                    reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                                    //console.log(reviseBod);
+                                    let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                        return node.model.id === parseInt(this.props.TaskID);
+                                    });
+
+                                    console.log(currentTaskNode);
+                                    if(currentTaskNode.children && currentTaskNode.children[2]){
+                                        if(currentTaskNode.children[2].children && currentTaskNode.children[2].children[2]){
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        }
+                                    } else{
+                                        this.setState({
+                                            IsRevision: true
+                                        });
+                                    }
+                                });
+                            
+                            }else {
+                                this.setState({
+                                    IsRevision: false
+                                });
+                            }
+                        }else if([TASK_TYPES.CONSOLIDATION].includes(currentTask.TaskActivity.Type)){
+                        /** Check if current consolidation is acting on an Revision edit task
+                         *  If it is, show revision buttons
+                         *  Else, show normal buttons
+                         * 
+                         * 
+                         */
+
+                            apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                            //console.log(reviseBod);
+                                let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                    return node.model.id === parseInt(this.props.TaskID);
+                                });
+                                let possibleEditTask = currentTaskNode;
+                                let editIndex = null;
+                                if(currentTaskNode.parent){
+                                    possibleEditTask = currentTaskNode.parent; //possible needs consolidation
+                                    if(possibleEditTask.parent){
+                                        possibleEditTask = possibleEditTask.parent; //possible edit task
+                                        editIndex= possibleEditTask.model.id;
+                                    } else {
+                                        possibleEditTask = null;
+                                    }
+                                } else {
+                                    possibleEditTask = null;
+                                }
+                                if(possibleEditTask === null) {
+                                    this.setState({
+                                        IsRevision: false
+                                    });
+                                } else {
+                                    let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
+                                    if([TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(possibleEditData.Type)){
+                                        if(possibleEditData.AllowRevision === true){
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        } else {
+                                            this.setState({
+                                                IsRevision: false
+                                            });
+                                        }
+
+                                    } else {
+                                        this.setState({
+                                            IsRevision: false
+                                        });
+                                    }
+                                }
+                                console.log(currentTaskNode);
+                        
+                            });
+                        }
+                    // apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                    //     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                    //         //console.log(reviseBod);
+                    //     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                    //         return node.model.id === parseInt(this.props.TaskID);
+                    //     });
+
+                    //     console.log(currentTaskNode);
+                        
+                    // });
                     }
 
+                    
                     console.log('tasklist', taskList);
 
 
@@ -229,6 +352,7 @@ class TemplateContainer extends React.Component {
               UserID={this.props.UserID}
               Strings={this.state.Strings}
               apiUrl={this.props.apiUrl}
+              IsRevision={this.state.IsRevision}
             />);
         }
 

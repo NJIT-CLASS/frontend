@@ -71,11 +71,11 @@ class TasksList extends React.Component{
                         return (
         					<SuperComponent
         						key={idx + 2000}
-                    index={idx}
+                                index={idx}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -86,6 +86,7 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
+                                IsRevision={this.props.IsRevision}
         					/>
                         );
                     }
