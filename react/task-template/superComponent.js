@@ -366,7 +366,7 @@ class SuperComponent extends React.Component {
             this.setState({
                 LockSubmit: true
             });
-            apiCall.get('/revise', options, (err, res, body) => {
+            apiCall.post('/revise', options, (err, res, body) => {
             //window.location.href= '/';
                 console.log(body);
             });
@@ -397,7 +397,7 @@ class SuperComponent extends React.Component {
             this.setState({
                 LockSubmit: true
             });
-            apiCall.get('/approved', options, (err, res, body) => {
+            apiCall.post('/approved', options, (err, res, body) => {
                 //window.location.href= '/';
                 console.log(body);
                 

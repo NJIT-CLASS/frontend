@@ -4,7 +4,6 @@ import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 import FileUpload from '../shared/fileUpload';
 
-
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -282,6 +281,9 @@ class Container extends React.Component {
         if(!this.state.Loaded){
             return (<div></div>);
         }
+
+       
+        
 		// create name for display in card header
 		// prefer user-provided names over official names where possible
         let first_name = this.state.preferred_first_name ? this.state.preferred_first_name : this.state.official_first_name;
