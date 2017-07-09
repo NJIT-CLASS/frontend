@@ -40,7 +40,9 @@ let strings = {
     uploadedLabel: 'Uploaded',
     Max: 'Max',
     Justification: 'Justification',
-    JustificationInstructions: 'Justification Instructions'
+    JustificationInstructions: 'Justification Instructions',
+    RejectRevision: 'Reject',
+    ApproveRevision: 'Approve',
 
 };
 

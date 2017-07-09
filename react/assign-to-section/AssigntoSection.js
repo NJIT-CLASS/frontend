@@ -54,9 +54,9 @@ class AssignToSectionContainer extends React.Component
         });
 
         const getAssignQueryStrings = {
-                courseid: this.props.CourseID,
-                assignmentid: this.props.AssignmentID
-            };
+            courseid: this.props.CourseID,
+            assignmentid: this.props.AssignmentID
+        };
 
         apiCall.get('/getAssignToSection',getAssignQueryStrings, (err, res, body) => {
             apiCall.get('/semester', (err2, res2, bod2) => {
@@ -66,17 +66,17 @@ class AssignToSectionContainer extends React.Component
                     let taskDaysPast = 0;
                     let tasks = body.taskActivityCollection[key].map(function(task){
                         let dueTypeArray = JSON.parse(task.defaults);
-                        console.log('duettype for ', task.taskActivityID, dueTypeArray)
+                        console.log('duettype for ', task.taskActivityID, dueTypeArray);
                         if(dueTypeArray[0] === 'specific time'){
-                          if(!isNaN(dueTypeArray[1])){
-                            taskDaysPast += dueTypeArray[1];
-                            dueTypeArray = ['specific time', moment().add(Math.floor((taskDaysPast + dueTypeArray[1])/1440), 'days').format('YYYY-MM-DD')+(' 23:59')];
-                          }
+                            if(!isNaN(dueTypeArray[1])){
+                                taskDaysPast += dueTypeArray[1];
+                                dueTypeArray = ['specific time', moment().add(Math.floor((taskDaysPast + dueTypeArray[1])/1440), 'days').format('YYYY-MM-DD')+(' 23:59')];
+                            }
 
 
                         }
                         else{
-                          taskDaysPast += dueTypeArray[1];
+                            taskDaysPast += dueTypeArray[1];
                         }
 
                         return {
@@ -94,6 +94,7 @@ class AssignToSectionContainer extends React.Component
                         id: key,
                         StartNow:true,
                         StartLater:false,
+                        Name: body.workflowNames[key],
                         Time:moment().format('YYYY-MM-DD HH:mm:ss'),
                         Tasks: tasks
                     };
@@ -120,9 +121,9 @@ class AssignToSectionContainer extends React.Component
 
     fetchSectionsForSemester()  {
         const options = {
-                userID: this.props.UserID,
-                semesterID: this.state.Assignment.Semester
-            };
+            userID: this.props.UserID,
+            semesterID: this.state.Assignment.Semester
+        };
 
         apiCall.get(`/getCourseSections/${this.props.CourseID}`, options, (err, res, body) => {
             let sectionsList = body.Sections.map((section) => {
@@ -137,14 +138,14 @@ class AssignToSectionContainer extends React.Component
 
     onSubmit(){
     //saves the state data to the database
-      if(this.state.Assignment.Section.length === 0){
-        showMessage(this.state.Strings.NoSectionsSelected);
-        this.setState({
-          InfoMessage: this.state.Strings.NoSectionsSelected,
-          InfoMessageType: 'error'
-        });
-        return;
-      }
+        if(this.state.Assignment.Section.length === 0){
+            showMessage(this.state.Strings.NoSectionsSelected);
+            this.setState({
+                InfoMessage: this.state.Strings.NoSectionsSelected,
+                InfoMessageType: 'error'
+            });
+            return;
+        }
 
         let timingArray = this.state.WorkFlow.map(function(Workflow){
 
@@ -299,16 +300,16 @@ class AssignToSectionContainer extends React.Component
 
 
     getAddedTime(index, workflowIndex){
-      let count = 3*1440;
-      for(let i = index-1; i >= 0 ; i--){
-        if(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[0] === 'specific time'){
-          return moment(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1], 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
-        } else {
-          count += this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1];
+        let count = 3*1440;
+        for(let i = index-1; i >= 0 ; i--){
+            if(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[0] === 'specific time'){
+                return moment(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1], 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+            } else {
+                count += this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1];
+            }
         }
-      }
 
-      return moment(this.state.WorkFlow[workflowIndex].Time, 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+        return moment(this.state.WorkFlow[workflowIndex].Time, 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
     }
 //-----------------------------------------------------------------------------
 

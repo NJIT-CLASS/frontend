@@ -50,7 +50,7 @@ class WorkFlow extends React.Component {
 
         return (
     <div className = "section">
-    <h1 className = "title">{strings.EntireProblemStartTime}</h1>
+    <h1 className = "title">{this.props.WorkFlow.Name}</h1>
 
       <div className = "section-content">
         <table table border="0" cellPadding="0" cellSpacing="0" className="tab">

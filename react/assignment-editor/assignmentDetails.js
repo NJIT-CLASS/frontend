@@ -16,6 +16,7 @@ class AssignmentDetailsComponent extends React.Component{
       Props:
             -AssignmentActivityData
             -Courses
+            -WorkflowData
             - Assignment functions
       */
         this.state = {
@@ -25,43 +26,52 @@ class AssignmentDetailsComponent extends React.Component{
         };
     }
 
+    mapTasksToOptions(){
+        return Object.keys(this.props.AssignmentActivityData.AA_grade_distribution).map(function(workflow, index){
+            return {id: workflow, name: this.props.WorkflowData[workflow].WA_name, weight: this.props.AssignmentActivityData.AA_grade_distribution[workflow]};
+        },this);
+    }
+
     render(){
         let strings = this.props.Strings;
         let coursesView = null;
         let semesterView = null;
-
+        let workflowDistView = null;
         let semesterList = this.props.Semesters;
         let courseList = this.props.Courses;
         let problemTypeList = [{value: 'essay',label:strings.Essay},{value:'homework',label:strings.Homework},{value:'quiz',label:strings.Quiz},{value:'lab',label:strings.Lab},{value:'other',label:strings.Other}];
+        
+        let workflowDistWeights = this.mapTasksToOptions();
+        if(workflowDistWeights.length > 1){
+            workflowDistView = <ul>
+            {
+              workflowDistWeights.map((workflowObj) => {
+                  return <li className="thin-number-field" key={'workflowWeight' + workflowObj.id}>
+                      <label>{workflowObj.name}</label>
+                      <NumberField  key = {'probDet-NumF '+workflowObj.id} allowDecimals={false}
+                                    min={0} max={100}
+                                    onChange={this.props.changeAssignmentGradeDist.bind(this, workflowObj.id)}
+                                    value={workflowObj.weight} />
+                    </li>;
+              })
+            }
+          </ul>;
+        }
 
-      //   semesterView = (
-      //   <div className="inner">
-      //
-      //     <label>strings.RestrictToSemester</label>
-      //     <Tooltip Text={strings.ActivitySemesterMessage} ID={'AA_semester_tooltip'}/>
-      //     <Select options={semesterList}
-      //        value={this.props.AssignmentActivityData.AA_semester}
-      //       onChange={this.props.changeAssignmentDropdown.bind(this,'AA_semester')}
-      //       clearable={false}
-      //       searchable={false}
-      //       />
-      //   </div>
-      // );
-
-        // if(this.props.Courses){
-        //     coursesView = (<div>
-        //   <label>{strings.Course}</label>
-        //   <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
-        //   <Select options={courseList}
-        //           value={this.props.AssignmentActivityData.AA_course}
-        //           placeholder={strings.SelectACourse}
-        //           onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
-        //           clearable={false}
-        //           searchable={false}
-        //     />
-        //
-        // </div>);
-        // }
+        if(this.props.Courses){
+            coursesView = (<div>
+          <label>{strings.Course}</label>
+          <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
+          <Select options={courseList}
+                  value={this.props.AssignmentActivityData.AA_course}
+                  placeholder={strings.SelectACourse}
+                  onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+                  clearable={false}
+                  searchable={false}
+            />
+        
+        </div>);
+        }
 
         return (
         <div className="section card-2" >
@@ -70,6 +80,8 @@ class AssignmentDetailsComponent extends React.Component{
             <div className="section-divider">
               <div className="inner">
                 <label>{strings.AssignmentName}</label>
+                <Tooltip Text={strings.AssigmentNameMessage} ID={'AA_name_tooltip'}/>
+
                 <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
                   ></input>
@@ -81,7 +93,7 @@ class AssignmentDetailsComponent extends React.Component{
 
               <div className="inner">
                 <label>{strings.AssignmentType}</label>
-                <Tooltip Text={strings.SpecifyType} ID={'AA_type_tooltip'}/>
+                <Tooltip Text={strings.AssigmentTypeMessage} ID={'AA_type_tooltip'}/>
                 <Select options={problemTypeList}
                   value={this.props.AssignmentActivityData.AA_type}
                   onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
@@ -110,6 +122,9 @@ class AssignmentDetailsComponent extends React.Component{
                   onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
               </div>
 
+              <div className="inner block">
+                {workflowDistView}                
+              </div>
               <br />
               {/*
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
@@ -130,14 +145,7 @@ class AssignmentDetailsComponent extends React.Component{
                 }} />
               <br />
               */}
-              <div className={this.state.ShowAdvanced ? 'section-divider' : 'task-hiding'}>
-                {semesterView}
-                <br />
-                <br />
-                <br />
-
-
-              </div>
+              
             </div>
 
           </div>

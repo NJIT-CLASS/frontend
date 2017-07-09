@@ -4,7 +4,6 @@ import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 import FileUpload from '../shared/fileUpload';
 
-
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -39,8 +38,8 @@ class Container extends React.Component {
             avatar: 'Avatar',
             yes: 'Yes',
             no: 'No',
-            admin: 'Administrator',
-            instructor: 'Instructor',
+            admin: 'System-wide Role: Administrator',
+            instructor: 'System-wide Role: Instructor',
             Bad: 'Bad',
             NotGood: 'Not good',
             Decent: 'Decent',
@@ -282,6 +281,9 @@ class Container extends React.Component {
         if(!this.state.Loaded){
             return (<div></div>);
         }
+
+       
+        
 		// create name for display in card header
 		// prefer user-provided names over official names where possible
         let first_name = this.state.preferred_first_name ? this.state.preferred_first_name : this.state.official_first_name;
@@ -309,8 +311,10 @@ class Container extends React.Component {
 		// show official names in table if preferred name is being used in header
         let alias = this.state.alias != null ? (<tr><td>{this.strings.alias}</td><td>{this.state.alias}</td></tr>) : null;
         let phone = this.state.phone != null ? (<tr><td>{this.strings.phoneNumber}</td><td>{this.state.phone}</td></tr>) : null;
-        let official_first_name = (this.state.preferred_first_name != null && this.state.official_first_name != null) ? (<tr><td>{this.strings.officialFirstName}</td><td>{this.state.official_first_name}</td></tr>) : null;
-        let official_last_name = (this.state.preferred_last_name != null && this.state.official_last_name != null) ? (<tr><td>{this.strings.officialLastName}</td><td>{this.state.official_last_name}</td></tr>) : null;
+        let official_first_name = (this.state.official_first_name != null && this.state.official_first_name != null) ? (<tr><td>{this.strings.officialFirstName}</td><td>{this.state.official_first_name}</td></tr>) : null;
+        let official_last_name = (this.state.official_last_name != null && this.state.official_last_name != null) ? (<tr><td>{this.strings.officialLastName}</td><td>{this.state.official_last_name}</td></tr>) : null;
+        let preferred_first_name = (this.state.preferred_first_name != null && this.state.preferred_first_name != null) ? (<tr><td>{this.strings.firstName}</td><td>{this.state.preferred_first_name}</td></tr>) : null;
+        let preferred_last_name = (this.state.preferred_last_name != null && this.state.preferred_last_name != null) ? (<tr><td>{this.strings.lastName}</td><td>{this.state.preferred_last_name}</td></tr>) : null;
         let instructor = (<tr><td>{this.strings.instructor}</td><td>{this.state.instructor ? this.strings.yes : this.strings.no }</td></tr>);
         let admin = (<tr><td>{this.strings.admin}</td><td>{this.state.admin ? this.strings.yes : this.strings.no }</td></tr>);
 
@@ -320,12 +324,14 @@ class Container extends React.Component {
 			<div className="card">
 				<h2 className="title">{name == '' ? this.strings.account : name}</h2>
 				<button type="button" onClick={this.editAccount.bind(this)}>{this.strings.edit}</button>
-				<button type="button" onClick={this.changePassword.bind(this)}>{this.strings.password}</button>
+				<button type="button" onClick={this.changePassword.bind(this)}>{this.strings.changePassword}</button>
 				<div className="card-content">
 					<table><tbody>
 						{ email }
 						{ official_first_name }
 						{ official_last_name }
+                        { preferred_first_name }
+                        { preferred_last_name }
 						{ alias }
 						{ phone }
 						{ instructor }

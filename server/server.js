@@ -355,7 +355,7 @@ app.use((req, res, next) => {
                 continue;
             }
 
-            if (currentRoute.route === options.route) {
+            if (currentRoute.route.includes(options.route)) {
                 currentRoute.selected = true;
             } else {
                 currentRoute.selected = false;

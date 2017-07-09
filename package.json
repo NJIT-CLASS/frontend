@@ -14,6 +14,7 @@
   "author": "",
   "dependencies": {
     "async": "^2.4.0",
+    "axios": "^0.16.2",
     "bleach": "^0.3.0",
     "body-parser": "^1.17.1",
     "connect-redis": "^3.3.0",
@@ -43,6 +44,7 @@
     "react-dropzone": "^3.13.1",
     "react-highlight-words": "^0.8.0",
     "react-numeric-input": "^2.0.7",
+    "react-progressbar.js": "^0.2.0",
     "react-quill": "^1.0.0-rc.2",
     "react-radio-group": "^3.0.1",
     "react-rater": "^0.4.2",

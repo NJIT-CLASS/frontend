@@ -52,6 +52,7 @@ class SuperComponent extends React.Component {
             FileUploadsSatisfied: false,
             LockSubmit: false,
             NewFilesUploaded: [],
+            RevisionStatus: false
         };
     }
 
@@ -338,22 +339,92 @@ class SuperComponent extends React.Component {
         };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
-            console.log(err, res, body);
-            window.location.href= '/'; //uncomment when finished w/ skipDispute
+            //console.log(err, res, body);
+            window.location.href= '/';
 
         });
 
+    }
+
+    rejectRevision(){
+        this.setState({
+            RevisionStatus: false
+        });
+
+        if(this.state.LockSubmit){
+            return;
+        }
+
+      // check if input is valid
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.post('/revise', options, (err, res, body) => {
+            //window.location.href= '/';
+                console.log(body);
+            });
+            
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
+
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+        
+        
+    }
+
+    approveRevision(){
+        this.setState({
+            RevisionStatus: true
+        });
+
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.post('/approved', options, (err, res, body) => {
+                //window.location.href= '/';
+                console.log(body);
+                
+            });
+            
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
+
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+        
     }
 
     render() {
         let content = null;
         let infoMessage = null;
         let TA_rubric = null;
-        const disputeButton = null;
+        let disputeButton = null;
         let TA_instructions = null;
         let formButtons = null;
         let fileUploadView = null;
         let fileLinksView = null;
+        let revisionRejectView = null;
+        let revisionApproveView = null;
+
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
           // if invalid data, shows error message
@@ -386,22 +457,7 @@ class SuperComponent extends React.Component {
             </div>);
         }
 
-        if (this.state.DisputeStatus === false) {
-            return (
-              <div className="">
-                {infoMessage}
-                <div className="section card-1">
-                  <div className="placeholder" />
-                  <div onClick={this.toggleContent.bind(this)}>
-                    <h2 className="title">{this.props.ComponentTitle} </h2>
-                  </div>
-                  <div className="section-content">
-                    <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
-                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
-                  </div>
-                </div>
-              </div>);
-        }
+        
 
 
         if (this.props.Rubric != '' && this.props.Rubric != null) { // if no Rubric
@@ -458,6 +514,43 @@ class SuperComponent extends React.Component {
                 <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Instructions} />
               </div>);
         }
+
+        if (this.state.DisputeStatus === false) {
+            return (
+              <div className="">
+                {infoMessage}
+                <div className="section card-1">
+                  <div className="placeholder" />
+                  <div onClick={this.toggleContent.bind(this)}>
+                    <h2 className="title">{this.props.ComponentTitle} </h2>
+                  </div>
+                  <div className="section-content">
+                    {TA_instructions}
+                    {fileLinksView}
+                    <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
+                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
+                  </div>
+                </div>
+              </div>);
+        }
+
+        if(this.props.IsRevision){
+            revisionRejectView =  <button className="revision-buttons" 
+                                        onClick={this.rejectRevision.bind(this)}>
+                                        {this.props.Strings.RejectRevision}
+                                        </button>;
+            revisionApproveView = <button className="revision-buttons" 
+                                        onClick={this.approveRevision.bind(this)}>
+                                        {this.props.Strings.ApproveRevision}
+                                </button>;
+            formButtons = (
+                <div>
+                    <br />
+                    {revisionRejectView}
+                    {revisionApproveView}
+                </div>);
+        } 
+
           // creating all input fields here
         const fields = this.state.TaskActivityFields.field_titles.map(function (title, idx) {
             let rubricView = null;

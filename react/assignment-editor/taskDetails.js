@@ -9,7 +9,7 @@ import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'
 import { RadioGroup, Radio } from 'react-radio-group';
 import ReactTooltip from 'react-tooltip';
 import Tooltip from '../shared/tooltip';
-
+import Rater from 'react-rater';
 
 class TaskDetailsComponent extends React.Component {
 
@@ -83,7 +83,7 @@ class TaskDetailsComponent extends React.Component {
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
         const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
-
+        const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
         const title = this.props.TaskActivityData.TA_display_name;
 
@@ -189,7 +189,7 @@ class TaskDetailsComponent extends React.Component {
                 ? (
                   <div className="inner block" key={index + 200}>
                     <label>{strings.FieldJustificationInstructions}</label>
-                    <Tooltip Text={strings.TaskJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
+                    <Tooltip Text={strings.TaskFieldJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
                     <textarea className="big-text-field" placeholder={`${strings.TypeJustificationInstructions}...`} value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} />
                   </div>
                 )
@@ -248,58 +248,60 @@ class TaskDetailsComponent extends React.Component {
             if (showDefaultFromOthers) {
 
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
-                  <label>
-                    {field.label}
-                    <Radio value={field.value} />
-                  </label>
-                    ));
+                      <label>
+                        {field.label}
+                        <Radio value={field.value} />
+                      </label>
+                        ));
                 const fieldSelection = (
-                  <RadioGroup
-                    selectedValue={this.state.CurrentFieldSelection} key={`taskFieldDefault${1}`} onChange={(value) => {
-                        this.setState({ CurrentFieldSelection: value });
-                        this.props.callTaskFunction('setDefaultField', 1, index, this.props.index, this.props.workflowIndex, value);
-                    }}
-                  >
-                    {fieldSelectionList}
-                  </RadioGroup>
-                );
+                      <RadioGroup
+                        selectedValue={this.state.CurrentFieldSelection} key={`taskFieldDefault${1}`} onChange={(value) => {
+                            this.setState({ CurrentFieldSelection: value });
+                            this.props.callTaskFunction('setDefaultField', 1, index, this.props.index, this.props.workflowIndex, value);
+                        }}
+                      >
+                        {fieldSelectionList}
+                      </RadioGroup>
+                    );
 
                 const defaultContentWrapper = (
-                  <div>
-                    <RadioGroup
-                      key={`taskFieldDefault${2}`} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value) => {
-                          this.setState({ CurrentTaskFieldSelection: value });
-                          //this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
-                      }}
-                    >
-                      {taskCreatedList.map(task => (
-                        <label>
-                          {task.label}<Radio value={task.value} /></label>
-                                ), this)
-                            }
-                    </RadioGroup>
-                  </div>
-                );
+                        <div>
+                          <RadioGroup
+                            key={`taskFieldDefault${2}`} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value) => {
+                                this.setState({ CurrentTaskFieldSelection: value });
+                                //this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
+                            }}
+                          >
+                            {taskCreatedList.map(task => (
+                              <label>
+                                {task.label}<Radio value={task.value} /></label>
+                                      ), this)
+                                  }
+                          </RadioGroup>
+                        </div>
+                      );
                 if (this.state.DefaultFieldForeign[index]) {
                     defaultContentView = (
-                      <div className="inner block">
-                        <label>{strings.DefaultContentFromOtherTasks}</label>
-                        <Tooltip Text={strings.TaskDefaultFieldContentFromOthersMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-from-others-tooltip`} />
+                          <div className="inner block">
+                            <label>{strings.DefaultContentFromOtherTasks}</label>
+                            <Tooltip Text={strings.TaskDefaultFieldContentFromOthersMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-from-others-tooltip`} />
 
-                        {defaultContentWrapper}
-                        {fieldSelection}
-                      </div>
-                    );
-                } else {
-                    defaultContentView = (
-                      <div className="inner block">
-                        <label>{strings.DefaultContentForField}</label>
-                        <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-
-                        <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
-                      </div>
-                    );
+                            {defaultContentWrapper}
+                            {fieldSelection}
+                          </div>
+                        );
                 }
+                else{
+                    defaultContentView = (
+                        <div className="inner block">
+                          <label>{strings.DefaultContentForField}</label>
+                          <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+
+                          <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                        </div>
+                              );
+                }
+
                 defaultContentButton = (
                   <div
                     style={{
@@ -320,15 +322,94 @@ class TaskDetailsComponent extends React.Component {
                   </div>
                 );
             } else {
-                defaultContentView = (
-                  <div className="inner block">
-                    <label>{strings.DefaultContentForField}</label>
-                    <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                  //change default content view by assessment type
+                if(this.props.TaskActivityData.TA_fields[index].field_type === 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type === 'self assessment' ){
+                    switch(this.props.TaskActivityData.TA_fields[index].assessment_type){
 
-                    <textarea className="big-text-field" placeholder={`${strings.DefaultContentForField}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
-                  </div>
-                );
-            }
+                    case 'grade':
+                        defaultContentView = (
+                                    <div className="inner block">
+                                      <label>{strings.DefaultContentForField}</label>
+                                      <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                                      <input type="number" className="number-input" placeholder="" onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                                    </div>
+                                    );
+                        break;
+                    case 'rating':
+                        defaultContentView = (
+                              <div className="inner block">
+                                <label>{strings.DefaultContentForField}</label>
+                                <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+
+                                <Rater total={this.props.TaskActivityData.TA_fields[index].rating_max} rating={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                onRate={(val) => {
+                                    this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.rating);
+                                }}/>
+                              </div>
+                              );
+                        break;
+                    case 'evaluation':
+                        let labels = this.props.TaskActivityData.TA_fields[index].list_of_labels;
+                        if (typeof labels === 'string') {
+                            labels = labels.split(',');
+                        }
+                        labels = labels.map(label => {
+                            return {value: label, label: label};
+                        });
+
+                        defaultContentView = (
+                                    <div className="inner block">
+                                      <label>{strings.DefaultContentForField}</label>
+                                      <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                                      <Select
+                                        key={idx + 1000}
+                                        options={labels}
+                                        selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                        value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                        onChange={(val) => {
+                                            this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.value);
+                                        }}
+                                        clearable={false}
+                                        searchable={false}
+                                      />
+                                    </div>
+                                    );
+                        break;
+                    case 'pass':
+                        defaultContentView = (<div className="true-checkbox">
+                      <RadioGroup
+                        selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]} 
+                        onChange={(val) => {
+                            this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val);
+                        }}
+                      >
+                        <label>{strings.Pass} <Radio value={'pass'} /> </label>
+                        <label>{strings.Fail} <Radio value={'fail'} /> </label>
+
+                      </RadioGroup>
+                    </div>);
+                        break;
+                    default:
+                        defaultContentView = (
+                            <div className="inner block">
+                              <label>{strings.DefaultContentForField}</label>
+                              <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                              <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            </div>
+                                  );
+                        break;
+                    }
+                } else {
+                    defaultContentView = (
+                            <div className="inner block">
+                              <label>{strings.DefaultContentForField}</label>
+                              <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+
+                              <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            </div>
+                                  );
+                }
+				  }
 
             let removeButtonView = null;
             if (index != 0) {
@@ -340,11 +421,11 @@ class TaskDetailsComponent extends React.Component {
 
             return (
               <div
-                className="section-divider" key={`Task ${this.props.index} of Workflow `,
-                  this.props.workflowIndex,
-                ` Field ${index}`}
+                className="section-divider" key={`Task ${this.props.index} of Workflow
+                  ${this.props.workflowIndex} Field ${index}`}
               >
-                <h3 className="subheading">{strings.InputFields} {removeButtonView}
+                <h3 className="subheading">{strings.InputFields}
+                  <Tooltip Text={strings.TaskInputFieldsHeaderMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-task-input-fields-header-tooltip`} /> {removeButtonView}
                 </h3>
 
                 <div className="inner">
@@ -441,6 +522,10 @@ class TaskDetailsComponent extends React.Component {
         if (this.state.ShowAdvanced) {
             const dueType = (
               <div className="inner">
+
+                <label>{strings.DefaultTaskDuration}</label>
+                <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
+                               
                 <label>{strings.ShouldTaskEndAtCertainTime}</label>
                 <Tooltip Text={strings.TaskDueTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-due-type-tooltip`} />
 
@@ -453,8 +538,6 @@ class TaskDetailsComponent extends React.Component {
                   <label><Radio value="specific time" />{strings.EndAtThisTime}</label>
 
                 </RadioGroup>
-                <br />
-                <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
               </div>
             );
 
@@ -700,14 +783,38 @@ class TaskDetailsComponent extends React.Component {
                 allowReflectionOptions = (
                   <div>
                     <Select options={reflectionValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_reflection[0]} clearable={false} searchable={false} />
-                    <label>{strings.WhoCanReflect}</label><br />
+                    <br />
+                    <label>{strings.ShouldReflectBlock}</label><br />
+                    <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
+                    <Select options={reflectWaitValues} 
+                            value={this.props.TaskActivityData.TA_allow_reflection[1]}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection_wait', this.props.index, this.props.workflowIndex)}
+                            clearable={false} 
+                            searchable={false} />
+                    <br />
+                    <label>{strings.WhoCanReflect}</label>                    
                     <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
-
                     <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
+                     <label>{strings.AllowRevision}</label>
+                    <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                    <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
+                     
+                   
                     <br /> {showDispute}
                   </div>
                 );
             }
+
+          
+            // TA_allow_revisions
+            const allowRevision = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
+              <div className="inner">
+                <label>{strings.AllowRevision}</label>
+                <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
+              </div>
+            ) : null;
+            
             const allowReflection = (
               <div className="inner">
                 <label>{strings.AllowReflection}</label>
@@ -715,17 +822,11 @@ class TaskDetailsComponent extends React.Component {
                 <Tooltip Text={strings.TaskAllowReflectionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-reflection-tooltip`} />
 
                 {allowReflectionOptions}
+                
               </div>
             );
 
-            // TA_allow_revisions
-            const allowRevision = (
-              <div className="inner">
-                <label>{strings.AllowRevision}</label>
-                <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
-                <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
-              </div>
-            );
+            
 
             const versionEvaluation = this.props.TaskActivityData.TA_allow_revisions === true ? (
               <div className="inner">

@@ -37,23 +37,46 @@ class ProblemDetailsComponent extends React.Component{
             ...this.props.WorkflowDetails.CustomProblemTypes];
         let gradingTasks = this.mapTasksToOptions();
 
-        let gradeDistView = null;
+        let gradeDistListView = null;
+        let gradeDistSectionView = null;
         let multipleWorkflowsView = null;
 
         if(gradingTasks.length > 1){
-            gradeDistView = gradingTasks.map(function(task, index){
+            gradeDistListView = gradingTasks.map(function(task, index){
+                let labelView = (
+                  <div>
+                    <label style={{marginRight: '8px'}} key={'probDet-' + index}> {task.name} </label>
+                  </div>
+                );
+                if(task.id === 'simple'){
+                    labelView = (
+                    <div>
+                      <label style={{marginRight: '8px'}} key={'probDet-' + index}> {task.name} </label>
+                      <Tooltip Text={strings.AggregatedGradeForOnTimeMessage} ID={`WA_aggregate-grade-${this.props.workflowIndex}-tooltip`}/>
+                    </div>
+
+                  );
+                }
                 return(
-              <li className="thin-number-field" key={'probDet' + index}>
-                <label style={{marginRight: '8px'}} key={'probDet-' + index}> {task.name} </label>
-                <NumberField  key = {'probDet-NumF '+index} allowDecimals={false}
-                              min={0} max={100}
-                              onChange={this.props.changeWorkflowGradeDist.bind(this, this.props.workflowIndex, task.id, index)}
-                              value={task.weight} />
-              </li>
+                  <li className="thin-number-field" key={'probDet' + index}>
+                    {labelView}
+                    <NumberField  key = {'probDet-NumF '+index} allowDecimals={false}
+                                  min={0} max={100}
+                                  onChange={this.props.changeWorkflowGradeDist.bind(this, this.props.workflowIndex, task.id, index)}
+                                  value={task.weight} />
+                  </li>
                 );
             }, this);
         }
-
+        if(gradingTasks.length > 1){
+            gradeDistSectionView = (
+            <div className='inner block'>
+                <label>{strings.GradeWeightsHeader}</label>
+                <Tooltip Text={strings.ProblemGradeWeightsTitleMessage} ID={`WA_grade-weights-header-${this.props.workflowIndex}-tooltip`}/>
+                {gradeDistListView}
+            </div>
+          );
+        }
 
         if(this.props.NumberofWorkflows > 1){
             multipleWorkflowsView = (<div>
@@ -116,8 +139,9 @@ class ProblemDetailsComponent extends React.Component{
                                 value={this.props.WorkflowDetails.WA_number_of_sets}
                                 onChange={this.props.changeWorkflowData.bind(this,'WA_number_of_sets',this.props.workflowIndex)}/>
               </div>
+              <br />
+              {gradeDistSectionView}
 
-              {gradeDistView}
 
             </div>
           </div>

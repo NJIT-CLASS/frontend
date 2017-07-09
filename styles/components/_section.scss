@@ -1,7 +1,7 @@
 .section {
     background-color: #FFFFFF;
     box-sizing: border-box;
-    overflow: visible;
+    overflow: auto;
     margin: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
@@ -53,7 +53,7 @@
     }
 
     .list-subheader{
-      padding: 5px 5px;
+      padding: 0;
       font-size: 20px;
     }
     .list-subheader:not(:first-child) {

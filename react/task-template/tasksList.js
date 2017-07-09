@@ -71,11 +71,11 @@ class TasksList extends React.Component{
                         return (
         					<SuperComponent
         						key={idx + 2000}
-                    index={idx}
+                                index={idx}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -86,6 +86,7 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
+                                IsRevision={this.props.IsRevision}
         					/>
                         );
                     }
@@ -100,37 +101,7 @@ class TasksList extends React.Component{
         					/>
                         );
                     } else {
-                        switch (task.TaskActivity.Type) {
-                        case TASK_TYPES.CREATE_PROBLEM:
-                            compString = Strings.CreateProblemTitle;
-                            break;
-                        case TASK_TYPES.EDIT:
-                            compString = Strings.EditProblemTitle;
-                            break;
-                        case TASK_TYPES.COMMENT:
-                            compString = Strings.CommentTitle;
-                        case TASK_TYPES.SOLVE_PROBLEM:
-                            compString = Strings.SolveProblemTitle;
-                            break;
-                        case TASK_TYPES.GRADE_PROBLEM:
-                            compString = Strings.GradeProblemTitle;
-                            break;
-                        case TASK_TYPES.CRITIQUE:
-                            compString = Strings.CritiqueTitle;
-                        case TASK_TYPES.CONSOLIDATION:
-                            compString = Strings.ConsolidateProblemTitle;
-                            break;
-                        case TASK_TYPES.DISPUTE:
-                            compString = Strings.DisputeGradeTitle;
-                            break;
-                        case TASK_TYPES.RESOLVE_DISPUTE:
-                            compString = Strings.ResolveDisputeTitle;
-                            break;
-                        default:
-                            compString = '';
-                            break;
-                        }
-
+                        
                         return (
         					<SuperViewComponent
         						key={idx + 2000}
