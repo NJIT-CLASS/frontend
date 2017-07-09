@@ -1,32 +1,4 @@
-<!-- flex-container, flex-section, and flex-child are used to nicely align the
-dashboard section view, Current Courses, Pending and Completed Tasks -->
 
-<!--    <form name="assignmentGradeList" role="form" class="section" method="POST" action="#">
-        <h2 class="title">{{__ "Assignment Grades"}}</h2>
-        <div class="section-content">
-
-    		<div class="col-xs-6">
-
-            		<ul>
-
-    				  {{#each assignmentGradeList}}
-              {{#if Comments}}
-      					<li class="list-group-item">
-      					<a href="/course_page/{{CourseID}}">{{User.FirstName}} {{Grade}} - {{Comments}}</a>
-                {{else}}
-                <li class="list-group-item">
-      					<a href="/course_page/{{CourseID}}">{{User.LastName}}, {{User.FirstName}} | {{Grade}}</a>
-              {{/if}}
-    				    </li>
-                {{else}} --><!-- this p tag will be visible if courseList is empty--><!--
-                  <p>{{__ "You currently have no registered courses"}}</p>
-
-                {{/each}}
-
-                    </ul>
-            </div>
-        </div>
-    </form> -->
     <form name="assignmentGradeList" role="form" class="section sectionTable" method="POST" action="#">
         <h2 class="title">{{__ "Assignment Grades"}}</h2>
         <div class="section-content">
@@ -47,7 +19,7 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
     		<tbody>
           {{#each userList}}
           <tr>
-            <td data-label={{__ 'Email'}}>{{User.Email}}</td>
+            <td data-label={{__ 'Email'}}>{{User.UserContact.Email}}</td>
             <td data-label={{__ 'Last Name'}}>{{User.LastName}}</td>
             <td data-label={{__ 'First Name'}}>{{User.FirstName}}</td>
             <td data-label={{__ 'Completeness Grade'}}>{{assignmentGrade.SimpleGrade}}%</td>
@@ -89,11 +61,10 @@ dashboard section view, Current Courses, Pending and Completed Tasks -->
           <tr>
             <td data-label={{__ 'UserName'}}>
               <a href="">{{User.LastName}}, {{User.FirstName}}<br>{{User.UserContact.Email}}</a>
-            </td><td colspan="6"/>
-          </tr>
+            </td>
           {{#each assignmentGrade.WorkflowActivityGrades}}
           {{#each WorkflowActivity.users_WA_Tasks}}
-          <tr><td/>
+          <td/>
             <td data-label={{__ 'Task'}}>{{taskActivity.Name}}</td>
             <td data-label={{__ 'Completness Grade'}}>{{taskSimpleGrade.Grade}}%</td>
             <td data-label={{__ 'Quality Grade'}}>{{FinalGrade}}%</td>

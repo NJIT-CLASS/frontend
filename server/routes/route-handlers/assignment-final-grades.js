@@ -5,7 +5,7 @@ exports.get = (req, res) => {
 
     }
 
-    req.App.api.get('/getAssignmentGrades/' + req.params.Id, (err, statusCode, body) => {
+    req.App.api.post('/getAssignmentGrades/' + req.params.ai_id, (err, statusCode, body) => {
         var userList = [];
         var ai = '';
         var userTaskList = [];
@@ -29,16 +29,16 @@ exports.get = (req, res) => {
         }
 
 //instructor loop
-        for(var i=0; i<body.AssignmentInstance.SectionUsers.length; i++){
-            userList.push(body.AssignmentInstance.SectionUsers[i]);
+        for(var i=0; i<body.SectionUsers.length; i++){
+            userList.push(body.SectionUsers[i]);
         }
 /**/
 //student loop
-        for(var i=0; i<body.AssignmentInstance.SectionUsers.length; i++){
-            if(body.AssignmentInstance.SectionUsers[i] == req.App.user.userId)
-                for(var w=0; w<body.AssignmentInstance.SectionUsers[i].assignmentGrade.WorkflowActivityGrades.length; w++){
-                    for(var t=0; t<body.AssignmentInstance.SectionUsers[i].assignmentGrade.WorkflowActivityGrades[w].WorkflowActivity.users_WA_Tasks.length; t++){
-                        userTaskList.push(body.AssignmentInstance.SectionUsers[i].assignmentGrade.WorkflowActivityGrades[w].WorkflowActivity.users_WA_Tasks[t]);
+        for(var i=0; i<body.SectionUsers.length; i++){
+            if(body.SectionUsers[i] == req.App.user.userId)
+                for(var w=0; w<body.SectionUsers[i].assignmentGrade.WorkflowActivityGrades.length; w++){
+                    for(var t=0; t<body.SectionUsers[i].assignmentGrade.WorkflowActivityGrades[w].WorkflowActivity.users_WA_Tasks.length; t++){
+                        userTaskList.push(body.SectionUsers[i].assignmentGrade.WorkflowActivityGrades[w].WorkflowActivity.users_WA_Tasks[t]);
                     }
                 }
 
