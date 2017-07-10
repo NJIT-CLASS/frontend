@@ -20,6 +20,7 @@ import CourseSectionManagement from './course-section-management/container';
 import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
 import MainBadge from './badge/mainBadge';
+import MainLeaderboard from './leaderboard/mainLeaderboard';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -102,6 +103,10 @@ case 'account':
 
 case 'badges':
     ReactDOM.render(<MainBadge UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
+
+case 'leaderboard':
+    ReactDOM.render(<MainLeaderboard UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
 
 }

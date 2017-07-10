@@ -40,6 +40,7 @@
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.1",
     "react-numeric-input": "^2.0.7",
+    "react-progressbar.js": "^0.2.0",
     "react-quill": "^1.0.0-rc.2",
     "react-radio-group": "^3.0.1",
     "react-rater": "^0.4.2",

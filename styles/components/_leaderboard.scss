@@ -1,0 +1,85 @@
+.leaderboard{
+  width:100%;
+}
+
+.container{
+  width: 98%;
+}
+
+
+
+.title{
+  width: 100%;
+}
+
+#left-half-leaderboard{
+  width: 32%;
+}
+
+#right-half-leaderboard{
+  width: 66%;
+}
+
+#classRanking{
+  clear: both;
+  width:31%;
+}
+
+#topMovers{
+  float: left;
+  width:31%;
+}
+
+#vsSections{
+  float:right;
+  width:31%;
+}
+
+#classRankingTitle, #topMoverTitle, #vsSectionsTitle{
+  background-color: rgba(153, 102, 204, 1);
+  color: #FFF;
+  font-family: "Lucida Handwriting";
+  border: 0px solid rgba(121, 121, 121, 1);
+  padding-right: 0px;
+  padding-left: 0px;
+  text-align: center;
+}
+
+.leaderBoardRanks{
+  clear: both;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+.leaderBoardStudentNames{
+  float: left;
+}
+
+.leaderBoardAvatars{
+  float: right;
+  width: 25px;
+  border: 2px solid rebeccapurple;
+  border-radius: 100%;
+}
+
+.leaderboardPointsContainer{
+  clear: both;
+  margin-top: 10px;
+}
+
+.leaderBoardPoints{
+  float: left;
+  color: green;
+}
+
+.leaderBoardPointsAdded{
+  float: right;
+}
+
+#leaderBoardTop1, #leaderBoardTop2, #leaderBoardTop3{
+  background-color: #FFFF66;
+}
+
+.leaderBoardMiddleClearingDiv, .leaderBoardClearingDiv{
+  clear:both;
+}

@@ -4,18 +4,46 @@
 
 #left-half-badge{
   width: 15%;
+  float: left;
 }
 
 #right-half-badge{
-  width: 85%;
+  width: 83%;
+  float: right;
+}
+
+.Select-control{
+  width: 100%;
 }
 
 #badgeCategory{
-  float: left;
-  width: 30%;
 }
 
 #badge{
   float: right;
   width: 70%;
+}
+
+.badgesImages{
+  width: 75%;
+  margin: 10px;
+}
+
+#everythingBadge{
+  width: 100%;
+}
+
+.displayingBadgesWithProgress{
+  width:30%;
+  margin: 1%;
+  display: inline-block;
+}
+
+/*
+#mainBadgeSelectDiv{
+  display: block;
+}*/
+
+.progressbar-text{
+  text-align: center;
 }
