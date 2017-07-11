@@ -6,19 +6,28 @@
 import React from 'react';
 
 class CommentComponent extends React.Component{
-  constructor(props){
-    super(props);
+    constructor(props){
+        super(props);
 
-    this.state={};
-  }
+        this.state={};
+    }
 
-  render(){
-    return (  <div className="comment animate-fast fadeInUp">
-        <div className="title">{this.props.Comment.Author}    <div className="timestamp">{this.props.Comment.Timestamp}</div> </div>
-
-        <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
+    render(){
+        let strings = {
+            RatingLabel: 'Rating:'
+        };
+        let flagColor = 'black';
+        if (this.props.Comment.Flag == 1) {
+            flagColor = 'red';
+        }
+        return (
+          <div className="comment animate-fast fadeInUp">
+            <div className="title">{this.props.Comment.Author} <div className="timestamp">{this.props.Comment.Timestamp}</div> </div>
+            <label style={{padding: 10}}>{strings.RatingLabel}</label>{this.props.Comment.Rating} / 5
+            <i className="fa fa-flag" style={{color:flagColor, padding: 10}}></i>
+            <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
       </div>);
-  }
+    }
 
 
 
