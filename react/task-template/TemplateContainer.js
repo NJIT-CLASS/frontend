@@ -13,6 +13,7 @@ import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'
 import HeaderComponent from './headerComponent';
 import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
+import CommentEditorComponent from './commentEditorComponent' ;
 
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
@@ -47,12 +48,7 @@ class TemplateContainer extends React.Component {
             Error: false,
             TabSelected: 0,
             Strings: strings,
-            NotAllowed: false,
-            NewCommentValue: '',
-            CommentResult: '',
-            NewCommentRating: '',
-            NewCommentFlagValue: 0,
-            NewCommentFlagColor: 'black'
+            NotAllowed: false
         };
     }
 
@@ -226,65 +222,6 @@ class TemplateContainer extends React.Component {
         });
         return returningValues;
     }
-
-    handleChangeText(event) {
-        this.setState({NewCommentValue: event.target.value});
-    }
-
-    handleChangeRating(event) {
-        this.setState({NewCommentRating: event.target.value});
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        const commentParameters = { //this data is hardcoded for testing purposes
-            UserID: this.props.UserID,
-            AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
-            TaskInstanceID: this.props.TaskID,
-            Type: 1, //placeholder for API, this will be implemented in the future
-            Flag: this.state.NewCommentFlagValue,
-            CommentText: this.state.NewCommentValue,
-            Rating: this.state.NewCommentRating,
-            ReplyLevel: 0, //placeholder for API, this will be implemented in the future
-            Parents: 0 //placeholder for API, this will be implemented in the future
-        };
-        apiCall.post('/comments/add', commentParameters, (err, res, body) => {
-            if(res.statusCode == 200) {
-                console.log('Successfully added comment.');
-                this.setState({CommentResult: 'success'});
-            } else if (res.statusCode == 400) {
-                console.log('Error submitting comments.');
-                this.setState({CommentResult: 'error'});
-            } else {
-                console.log('An error occurred.');
-                this.setState({CommentResult: 'unknown-error'});
-            }
-            this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
-            this.getCommentData();
-        });
-    }
-
-    handleFlagClick() {
-        if (this.state.NewCommentFlagValue == 0) {
-            this.setState({NewCommentFlagColor: 'red', NewCommentFlagValue: 1});
-        }
-        else {
-            this.setState({NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
-        }
-    }
-
-    handleMouseEnterFlag() {
-        if (this.state.NewCommentFlagColor == 'black') {
-            this.setState({NewCommentFlagColor: 'red'});
-        }
-    }
-
-    handleMouseLeaveFlag() {
-        if (this.state.NewCommentFlagColor == 'red' && this.state.NewCommentFlagValue == 0) {
-            this.setState({NewCommentFlagColor: 'black'});
-        }
-    }
-
     render() {
         let strings = {
             ActionText: 'Add a new comment',
@@ -354,18 +291,11 @@ class TemplateContainer extends React.Component {
                     );
                 }))}
 
-                <div className="comment animate-fast fadeInUp">
-                <form role="form" onSubmit={this.handleSubmit.bind(this)}>
-                    <div className="title">{strings.ActionText}</div>
-                    <label style={{padding: 10}}>{strings.RatingLabel}</label>
-                    <input style={{width: 50, textAlign: 'center'}} type="number" min="0" max="5" value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} required/>
-                    <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)} ></i>
-                    <div className="regular-text comtext">
-                        <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)} required/>
-                        <button type="submit">{strings.ButtonText}</button>
-                    </div>
-                </form>
-                </div>
+                <CommentEditorComponent
+                  UserID={this.props.UserID}
+                  TaskID={this.props.TaskID}
+                  Update={this.getCommentData.bind(this)}
+                />
 
               </TabPanel>
 
