@@ -48,6 +48,10 @@ class TemplateContainer extends React.Component {
             TabSelected: 0,
             Strings: strings,
             NotAllowed: false,
+            NewCommentValue: '',
+            CommentResult: '',
+            NewCommentRating: '',
+            NewCommentFlag: ''
         };
     }
 
@@ -175,9 +179,23 @@ class TemplateContainer extends React.Component {
         });
     }
 
+    getCommentData() {
+        apiCall.get(`/comments/ti/${this.props.TaskID}`, (err, res, body) => {
+            let list = [];
+            if (body.Comments.length > 0 ) {
+                for (let com of body.Comments) {
+                    list.push(com);
+                }
+            }
+            this.setState({
+                commentList: list
+            });
+        });
+    }
     componentWillMount() {
 		// this function is called before the component renders, so that the page renders with the appropriate state data
         this.getTaskData();
+        this.getCommentData();
     }
 
     /**
@@ -208,7 +226,63 @@ class TemplateContainer extends React.Component {
         return returningValues;
     }
 
+    handleChangeText(event) {
+        this.setState({NewCommentValue: event.target.value});
+    }
+
+    handleChangeRating(event) {
+        this.setState({NewCommentRating: event.target.value});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        let flagStatus = 0;
+        if (this.state.NewCommentFlag == 'red') {
+            flagStatus = 1;
+        }
+        const commentParameters = { //this data is hardcoded for testing purposes
+            UserID: this.props.UserID,
+            AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
+            TaskInstanceID: this.props.TaskID,
+            Type: 1, //placeholder for API, this will be implemented in the future
+            Flag: flagStatus,
+            CommentText: this.state.NewCommentValue,
+            Rating: this.state.NewCommentRating,
+            ReplyLevel: 0, //placeholder for API, this will be implemented in the future
+            Parents: 0 //placeholder for API, this will be implemented in the future
+        };
+        apiCall.post('/comments/add', commentParameters, (err, res, body) => {
+            if(res.statusCode == 200) {
+                console.log('Successfully added comment.');
+                this.setState({CommentResult: 'success'});
+            } else if (res.statusCode == 400) {
+                console.log('Error submitting comments.');
+                this.setState({CommentResult: 'error'});
+            } else {
+                console.log('An error occurred.');
+                this.setState({CommentResult: 'unknown-error'});
+            }
+            this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlag: ''});
+            this.getCommentData();
+        });
+    }
+
+    handleOnFlagClick() {
+        if (this.state.NewCommentFlag == '') {
+            this.setState({NewCommentFlag: 'red'});
+        }
+        else {
+            this.setState({NewCommentFlag: ''});
+        }
+    }
+
     render() {
+        let strings = {
+            ActionText: 'Add a new comment',
+            ButtonText: 'Post',
+            PlaceHolderText: 'Comment text',
+            RatingLabel: 'Rating:'
+        };
         let renderView = null;
         if (this.state.Error) {
 			// if there was an error in the data fetching calls, show the Error Component
@@ -230,8 +304,8 @@ class TemplateContainer extends React.Component {
               Strings={this.state.Strings}
               apiUrl={this.props.apiUrl}
             />);
-        }
 
+        }
 
         return (
           <div>
@@ -256,7 +330,7 @@ class TemplateContainer extends React.Component {
                   SemesterName={this.state.SemesterName}
                   SectionName={this.state.SectionName}
                   Strings={this.state.Strings}
-                  
+
                 />
 
                 {renderView}
@@ -265,28 +339,25 @@ class TemplateContainer extends React.Component {
               <TabPanel>
                 <div className="placeholder" />
                 {/*  Future work to support comments*/}
+                {(this.state.commentList.length > 0) && (this.state.commentList.map(comment => {
+                    return (
+                              <CommentComponent key = {comment.CommentsID} Comment = {comment} />
+                    );
+                }))}
 
-                <CommentComponent
-                  Comment={{
-                      Author: 'User1',
-                      Timestamp: 'May 6, 2013 9:43am',
-                      Content: 'I really liked your problem. It was very intriguing.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'User2',
-                      Timestamp: 'May 6, 2013 11:09am',
-                      Content: 'I agree. I would have never thought of this.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'Instructor',
-                      Timestamp: 'May 6, 2013 3:32pm',
-                      Content: 'Your approach of the problem is very unique. Well done.',
-                  }}
-                />
+                <div className="comment animate-fast fadeInUp">
+                <form role="form" onSubmit={this.handleSubmit.bind(this)}>
+                    <div className="title">{strings.ActionText}</div>
+                    <label style={{padding: 10}}>{strings.RatingLabel}</label>
+                    <input style={{width: 50, textAlign: 'center'}} type="number" min="0" max="5" value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} required/>
+                    <i className="fa fa-flag" style={{color:this.state.NewCommentFlag, padding: 10}} onClick={this.handleOnFlagClick.bind(this)}></i>
+                    <div className="regular-text comtext">
+                        <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)} required/>
+                        <button type="submit">{strings.ButtonText}</button>
+                    </div>
+                </form>
+                </div>
+
               </TabPanel>
 
             </Tabs>
