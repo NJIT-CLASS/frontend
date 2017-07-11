@@ -51,7 +51,8 @@ class TemplateContainer extends React.Component {
             NewCommentValue: '',
             CommentResult: '',
             NewCommentRating: '',
-            NewCommentFlag: ''
+            NewCommentFlagValue: 0,
+            NewCommentFlagColor: 'black'
         };
     }
 
@@ -236,16 +237,12 @@ class TemplateContainer extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        let flagStatus = 0;
-        if (this.state.NewCommentFlag == 'red') {
-            flagStatus = 1;
-        }
         const commentParameters = { //this data is hardcoded for testing purposes
             UserID: this.props.UserID,
             AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
             TaskInstanceID: this.props.TaskID,
             Type: 1, //placeholder for API, this will be implemented in the future
-            Flag: flagStatus,
+            Flag: this.state.NewCommentFlagValue,
             CommentText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
             ReplyLevel: 0, //placeholder for API, this will be implemented in the future
@@ -262,17 +259,29 @@ class TemplateContainer extends React.Component {
                 console.log('An error occurred.');
                 this.setState({CommentResult: 'unknown-error'});
             }
-            this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlag: ''});
+            this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
             this.getCommentData();
         });
     }
 
-    handleOnFlagClick() {
-        if (this.state.NewCommentFlag == '') {
-            this.setState({NewCommentFlag: 'red'});
+    handleFlagClick() {
+        if (this.state.NewCommentFlagValue == 0) {
+            this.setState({NewCommentFlagColor: 'red', NewCommentFlagValue: 1});
         }
         else {
-            this.setState({NewCommentFlag: ''});
+            this.setState({NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
+        }
+    }
+
+    handleMouseEnterFlag() {
+        if (this.state.NewCommentFlagColor == 'black') {
+            this.setState({NewCommentFlagColor: 'red'});
+        }
+    }
+
+    handleMouseLeaveFlag() {
+        if (this.state.NewCommentFlagColor == 'red' && this.state.NewCommentFlagValue == 0) {
+            this.setState({NewCommentFlagColor: 'black'});
         }
     }
 
@@ -350,7 +359,7 @@ class TemplateContainer extends React.Component {
                     <div className="title">{strings.ActionText}</div>
                     <label style={{padding: 10}}>{strings.RatingLabel}</label>
                     <input style={{width: 50, textAlign: 'center'}} type="number" min="0" max="5" value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} required/>
-                    <i className="fa fa-flag" style={{color:this.state.NewCommentFlag, padding: 10}} onClick={this.handleOnFlagClick.bind(this)}></i>
+                    <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)} ></i>
                     <div className="regular-text comtext">
                         <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)} required/>
                         <button type="submit">{strings.ButtonText}</button>
