@@ -9,7 +9,7 @@
     #language-picker {
       @media screen and (max-width: $mobile-brk){
         
-        top: 0;
+      
         right: 0;
 
       }
@@ -17,7 +17,7 @@
         position: absolute;
         min-height:120px;
         overflow:hidden;
-        top:95%;
+        top:0;
         right: 0;
 
         &.hidden {
