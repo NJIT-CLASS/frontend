@@ -13,7 +13,7 @@ import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'
 import HeaderComponent from './headerComponent';
 import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
-import CommentEditorComponent from './commentEditorComponent' ;
+import CommentEditorComponent from './commentEditorComponent';
 
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
@@ -284,10 +284,9 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
-                {/*  Future work to support comments*/}
                 {(this.state.commentList.length > 0) && (this.state.commentList.map(comment => {
                     return (
-                              <CommentComponent key = {comment.CommentsID} Comment = {comment} />
+                              <CommentComponent key={comment.CommentsID} Comment={comment} Update={this.getCommentData.bind(this)} CurrentUser={this.props.UserID}/>
                     );
                 }))}
 
@@ -295,6 +294,8 @@ class TemplateContainer extends React.Component {
                   UserID={this.props.UserID}
                   TaskID={this.props.TaskID}
                   Update={this.getCommentData.bind(this)}
+                  ReplyLevel={0}
+                  Parents={null}
                 />
 
               </TabPanel>

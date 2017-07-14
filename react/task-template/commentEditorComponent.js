@@ -14,28 +14,27 @@ class CommentEditorComponent extends React.Component {
         this.state = {
             NewCommentValue: '',
             CommentResult: '',
-            NewCommentRating: '',
+            CommentEditResult: '',
             NewCommentFlagValue: 0,
             NewCommentFlagColor: 'black'
         };
     }
-    /* getCommentData() {
-        apiCall.get(`/comments/ti/${this.props.TaskID}`, (err, res, body) => {
-            let list = [];
-            if (body.Comments.length > 0 ) {
-                for (let com of body.Comments) {
-                    list.push(com);
-                }
-            }
-            this.setState({
-                commentList: list
-            });
-        });
+    getEditData() {
+      this.setState({
+        NewCommentValue: this.props.CommentsText,
+        NewCommentRating: this.props.Rating,
+        NewCommentFlagValue: this.props.Flag
+      })
+      if (this.props.Flag == 1) {
+        this.setState({NewFlagColor: 'red'});
+      }
     }
+
     componentWillMount() {
-		// this function is called before the component renders, so that the page renders with the appropriate state data
-        this.getCommentData();
-    } */
+      if (this.props.Edit) {
+        this.getEditData();
+      }
+    }
 
     handleChangeText(event) {
         this.setState({NewCommentValue: event.target.value});
@@ -47,7 +46,7 @@ class CommentEditorComponent extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const commentParameters = { //this data is hardcoded for testing purposes
+        const commentParameters = {
             UserID: this.props.UserID,
             AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
             TaskInstanceID: this.props.TaskID,
@@ -55,23 +54,43 @@ class CommentEditorComponent extends React.Component {
             Flag: this.state.NewCommentFlagValue,
             CommentText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
-            ReplyLevel: 0, //placeholder for API, this will be implemented in the future
-            Parents: 0 //placeholder for API, this will be implemented in the future
+            ReplyLevel: this.props.ReplyLevel,
+            Parents: this.props.Parents
         };
-        apiCall.post('/comments/add', commentParameters, (err, res, body) => {
-            if(res.statusCode == 200) {
-                console.log('Successfully added comment.');
-                this.setState({CommentResult: 'success'});
-            } else if (res.statusCode == 400) {
-                console.log('Error submitting comments.');
-                this.setState({CommentResult: 'error'});
-            } else {
-                console.log('An error occurred.');
-                this.setState({CommentResult: 'unknown-error'});
-            }
-            this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
-            this.props.Update();
-        });
+        const editCommentParameters = {
+            CommentsID: this.props.CommentsID,
+            //Flag: this.state.NewCommentFlagValue,
+            CommentsText: this.state.NewCommentValue,
+            //Rating: this.state.NewCommentRating,
+        };
+        if (this.props.Edit) {
+            apiCall.post('/comments/edit', editCommentParameters, (err, res, body) => {
+                if(body.CommentsUpdated == 'CommentsUpdated') {
+                    console.log('Successfully edited comment.');
+                    this.setState({CommentEditResult: 'success'});
+                    this.props.Update();
+                }
+                else {
+                    console.log('Error editing comment.');
+                }
+            });
+        }
+        else {
+            apiCall.post('/comments/add', commentParameters, (err, res, body) => {
+                if(res.statusCode == 200) {
+                    console.log('Successfully added comment.');
+                    this.setState({CommentResult: 'success'});
+                    this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
+                    this.props.Update();
+                } else if (res.statusCode == 400) {
+                    console.log('Error submitting comments.');
+                    this.setState({CommentResult: 'error'});
+                } else {
+                    console.log('An error occurred.');
+                    this.setState({CommentResult: 'unknown-error'});
+                }
+            });
+        }
     }
 
     handleFlagClick() {
@@ -98,15 +117,20 @@ class CommentEditorComponent extends React.Component {
     render() {
         let strings = {
             ActionText: 'Add a new comment',
+            EditText: 'Edit comment',
             ButtonText: 'Post',
             PlaceHolderText: 'Comment text',
             RatingLabel: 'Rating:'
         };
+        let IntroText = strings.ActionText;
+        if (this.props.Edit) {
+            IntroText = strings.EditText;
+        }
         let ratingList = [{value: 0, label: '0'}, {value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}, {value: 5, label: '5'}];
         return (
-          <div className="comment animate-fast fadeInUp">
+          <div className="comment">
           <form role="form" onSubmit={this.handleSubmit.bind(this)}>
-              <div className="title">{strings.ActionText}</div>
+              <div className="title">{IntroText}</div>
               <label style={{padding: 10}}>{strings.RatingLabel}</label>
               <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={''} clearable={true} searchable={true} required/></div>
               <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>
