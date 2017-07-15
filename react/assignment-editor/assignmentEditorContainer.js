@@ -2873,13 +2873,12 @@ class AssignmentEditorContainer extends React.Component {
                 submitButtonView = null;
                 saveButtonView = null;
             }
-
             this.state.WorkflowDetails.forEach(function(workflow, index) {
 
                 let tV = new Array();
                 workflow.WorkflowStructure.walk({strategy: 'pre'}, function(node) {
-                    if (node.model.id != -1) {
-                        if (workflow.Workflow[node.model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || workflow.Workflow[node.model.id].TA_type == TASK_TYPES.COMPLETED) {
+                    if (node.model.id !== -1) {
+                        if ([TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPES.COMPLETED].includes(workflow.Workflow[node.model.id].TA_type)) {
                             return null;
                         }
                         if (Object.keys(workflow.Workflow[node.model.id]).length !== 0) {
