@@ -31,7 +31,7 @@ class Container extends React.Component {
             cancel: 'Cancel',
             save: 'Save',
             submit: 'Submit',
-            editAccount: 'Edit Account',
+            editAccount: 'Edit My Profile',
             loginEmail: 'Login Email',
             notificationEmail: 'Notification Email',
             phoneNumber: 'Text Number',
