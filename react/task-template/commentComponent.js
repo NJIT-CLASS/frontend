@@ -62,7 +62,7 @@ class CommentComponent extends React.Component{
               <i className="fa fa-flag" style={{color:flagColor, padding: 10}}></i>
               <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
               <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
-              <div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>
+              {(this.props.Comment.UserID == this.props.CurrentUser) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
             </div>)
           }
 
@@ -87,13 +87,13 @@ class CommentComponent extends React.Component{
             {this.state.showEditor &&
               (<div style={{marginLeft: (this.props.Comment.ReplyLevel + 1)*30}} className="comment animate-fast fadeInUp fadeOutDown">
                   <CommentEditorComponent
-                    UserID={this.props.Comment.UserID}
+                    UserID={this.props.CurrentUser}
                     TaskID={this.props.Comment.TaskInstanceID}
                     Update={this.endReply.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel + 1}
                     Parents={this.props.Comment.CommentsID}
                   />
-                  <div className="title"><a onClick={this.displayEditor.bind(this)}>{strings.CancelLabel}</a></div>
+                  <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.CancelLabel}</a></div>
                 </div>)
             }
           </div>

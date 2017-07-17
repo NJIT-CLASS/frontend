@@ -64,8 +64,8 @@ class CommentEditorComponent extends React.Component {
             //Rating: this.state.NewCommentRating,
         };
         if (this.props.Edit) {
-            apiCall.post('/comments/edit', editCommentParameters, (err, res, body) => {
-                if(body.CommentsUpdated == 'CommentsUpdated') {
+            apiCall.post('/comments/edit/', editCommentParameters, (err, res, body) => {
+                if(body.Message == 'Success') {
                     console.log('Successfully edited comment.');
                     this.setState({CommentEditResult: 'success'});
                     this.props.Update();
