@@ -4,6 +4,7 @@ import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 import FileUpload from '../shared/fileUpload';
 
+
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -44,7 +45,9 @@ class Container extends React.Component {
             NotGood: 'Not good',
             Decent: 'Decent',
             Strong: 'Strong',
-            Great: 'Great'
+            Great: 'Great',
+            accountEmailTooltip: 'Test tooltip for email',
+            timezone: 'Time Zone'
         };
     }
 
@@ -281,9 +284,6 @@ class Container extends React.Component {
         if(!this.state.Loaded){
             return (<div></div>);
         }
-
-       
-        
 		// create name for display in card header
 		// prefer user-provided names over official names where possible
         let first_name = this.state.preferred_first_name ? this.state.preferred_first_name : this.state.official_first_name;
@@ -303,20 +303,21 @@ class Container extends React.Component {
             ];
         } else {
             email = (
-				<tr><td>{this.strings.email}</td><td>{this.state.login_email}</td></tr>
+				<tr><td>{this.strings.email} <Tooltip Text={strings.accountEmailTooltip} ID={'acoount_email_tooltip'} /></td><td>{this.state.login_email}</td></tr>
 			);
         }
 
 		// conditionally render optional fields from the UserLogin table
 		// show official names in table if preferred name is being used in header
-        let alias = this.state.alias != null ? (<tr><td>{this.strings.alias}</td><td>{this.state.alias}</td></tr>) : null;
-        let phone = this.state.phone != null ? (<tr><td>{this.strings.phoneNumber}</td><td>{this.state.phone}</td></tr>) : null;
-        let official_first_name = (this.state.official_first_name != null && this.state.official_first_name != null) ? (<tr><td>{this.strings.officialFirstName}</td><td>{this.state.official_first_name}</td></tr>) : null;
-        let official_last_name = (this.state.official_last_name != null && this.state.official_last_name != null) ? (<tr><td>{this.strings.officialLastName}</td><td>{this.state.official_last_name}</td></tr>) : null;
-        let preferred_first_name = (this.state.preferred_first_name != null && this.state.preferred_first_name != null) ? (<tr><td>{this.strings.firstName}</td><td>{this.state.preferred_first_name}</td></tr>) : null;
-        let preferred_last_name = (this.state.preferred_last_name != null && this.state.preferred_last_name != null) ? (<tr><td>{this.strings.lastName}</td><td>{this.state.preferred_last_name}</td></tr>) : null;
-        let instructor = (<tr><td>{this.strings.instructor}</td><td>{this.state.instructor ? this.strings.yes : this.strings.no }</td></tr>);
-        let admin = (<tr><td>{this.strings.admin}</td><td>{this.state.admin ? this.strings.yes : this.strings.no }</td></tr>);
+        let alias = this.state.alias != null ? (<tr><td>{this.strings.alias} <Tooltip Text={strings.aliasTooltip} ID={'aliasTooltip'} /></td><td>{this.state.alias}</td></tr>) : null;
+        let phone = this.state.phone != null ? (<tr><td>{this.strings.phoneNumber} <Tooltip Text={strings.phoneNumberTooltip} ID={'phoneNumberTooltip'}</td><td>{this.state.phone}</td></tr>) : null;
+        let official_first_name = (this.state.official_first_name != null && this.state.official_first_name != null) ? (<tr><td>{this.strings.officialFirstName} <Tooltip Text={strings.officialFirstNameTooltip} ID={'officialFirstNameTooltip'}</td><td>{this.state.official_first_name}</td></tr>) : null;
+        let official_last_name = (this.state.official_last_name != null && this.state.official_last_name != null) ? (<tr><td>{this.strings.officialLastName} <Tooltip Text={strings.officialLastNameTooltip} ID={'officialLastNameTooltip'}</td><td>{this.state.official_last_name}</td></tr>) : null;
+        let preferred_first_name = (this.state.preferred_first_name != null && this.state.preferred_first_name != null) ? (<tr><td>{this.strings.firstName} <Tooltip Text={strings.firstNameTooltip} ID={'firstNameTooltip'}</td><td>{this.state.preferred_first_name}</td></tr>) : null;
+        let preferred_last_name = (this.state.preferred_last_name != null && this.state.preferred_last_name != null) ? (<tr><td>{this.strings.lastName} <Tooltip Text={strings.lastNameTooltip} ID={'lastNameTooltip'}</td><td>{this.state.preferred_last_name}</td></tr>) : null;
+        let instructor = (<tr><td>{this.strings.instructor} <Tooltip Text={strings.instructorTooltip} ID={'instructorTooltip'}</td><td>{this.state.instructor ? this.strings.yes : this.strings.no }</td></tr>);
+        let admin = (<tr><td>{this.strings.admin} <Tooltip Text={strings.adminTooltip} ID={'adminTooltip'}</td><td>{this.state.admin ? this.strings.yes : this.strings.no }</td></tr>);
+        let time = this.state.timezone != null ? (<tr><td>{this.strings.timezone} <Tooltip Text={strings.timeTooltip} ID={'timeTooltip'}</td><td>{this.state.timezone}</td></tr>) : null;
 
 		// account view, buttons to change password or edit account info
 		// display fields in table
@@ -336,6 +337,7 @@ class Container extends React.Component {
 						{ phone }
 						{ instructor }
 						{ admin }
+                        { time }
 
 					</tbody></table>
 				</div>
