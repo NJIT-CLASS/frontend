@@ -130,7 +130,7 @@ class CommentEditorComponent extends React.Component {
         return (
           <div className="comment">
           <form role="form" onSubmit={this.handleSubmit.bind(this)}>
-              <div className="title">{IntroText}</div>
+              <div className="title-no-hover">{IntroText}</div>
               <label style={{padding: 10}}>{strings.RatingLabel}</label>
               <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={''} clearable={true} searchable={true} required/></div>
               <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>
