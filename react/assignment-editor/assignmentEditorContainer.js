@@ -71,6 +71,7 @@ class AssignmentEditorContainer extends React.Component {
             list_of_labels: [strings.Easy,strings.Medium, strings.Difficult],
             field_type: 'text',
             requires_justification: false,
+            revise_and_resubmit: false,
             instructions: '',
             rubric: '',
             justification_instructions: '',
@@ -166,6 +167,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
+                    revise_and_resubmit: false,
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -202,6 +204,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
+                    revise_and_resubmit: false,
                     instructions: strings.EditFieldInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -257,6 +260,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
+                    revise_and_resubmit: false,
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -291,6 +295,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
+                    revise_and_resubmit: false,
                     instructions: strings.GradeCorrectnessInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -309,6 +314,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
+                    revise_and_resubmit: false,                    
                     instructions: strings.GradeCompletenessInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -344,6 +350,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: false,
+                    revise_and_resubmit: false,
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -410,6 +417,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
+                    revise_and_resubmit: false,
                     instructions: strings.DisputeFieldInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -2873,12 +2881,13 @@ class AssignmentEditorContainer extends React.Component {
                 submitButtonView = null;
                 saveButtonView = null;
             }
+
             this.state.WorkflowDetails.forEach(function(workflow, index) {
 
                 let tV = new Array();
                 workflow.WorkflowStructure.walk({strategy: 'pre'}, function(node) {
-                    if (node.model.id !== -1) {
-                        if ([TASK_TYPES.NEEDS_CONSOLIDATION, TASK_TYPES.COMPLETED].includes(workflow.Workflow[node.model.id].TA_type)) {
+                    if (node.model.id != -1) {
+                        if (workflow.Workflow[node.model.id].TA_type == TASK_TYPES.NEEDS_CONSOLIDATION || workflow.Workflow[node.model.id].TA_type == TASK_TYPES.COMPLETED) {
                             return null;
                         }
                         if (Object.keys(workflow.Workflow[node.model.id]).length !== 0) {
