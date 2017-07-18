@@ -1,7 +1,11 @@
+/**
+ * Created by Sohail and Immanuel on 7/16/2017.
+ */
+
 import React from 'react';
 var ProgressBar = require('progressbar.js');
 
-class BadgeDisplay extends React.Component {
+class ExperienceBarBar extends React.Component {
     constructor(props) {
         super(props);
 
@@ -11,7 +15,7 @@ class BadgeDisplay extends React.Component {
     componentDidMount() {
         var progressBarContainer = document.querySelector(`#container${this.props.badgeKey}`);
         var progressNumber = this.props.Progress;
-        if (progressNumber == 100){
+        if (progressNumber == 100) {
             progressNumber = "Completed";
         }
         var bar = new ProgressBar.Line(progressBarContainer, {
@@ -21,7 +25,7 @@ class BadgeDisplay extends React.Component {
             color: 'green',
             trailColor: '#eee',
             trailWidth: 1,
-            svgStyle: {width: this.props.Progress+"%", height: '10px'},
+            svgStyle: {width: this.props.Progress + "%", height: '10px'},
             text: {
                 style: {
                     // Text color.
@@ -39,9 +43,9 @@ class BadgeDisplay extends React.Component {
             from: {color: '#FFEA82'},
             to: {color: '#ED6A5A'},
             step: (state, bar) => {
-                if(progressNumber != "Completed") {
+                if (progressNumber != "Completed") {
                     bar.setText(Math.round(bar.value() * progressNumber) + ' %');
-                }else{
+                } else {
                     bar.setText(progressNumber);
                 }
             }
@@ -49,35 +53,19 @@ class BadgeDisplay extends React.Component {
 
         bar.animate(1.0);  // Number from 0.0 to 1.0
 
-//CIRCLE
-/*        var bar = new ProgressBar.Circle(container, {
-            strokeWidth: 6,
-            easing: 'easeInOut',
-            duration: 1400,
-            color: '#FFEA82',
-            trailColor: '#eee',
-            trailWidth: 1,
-            svgStyle: null
-        });
+        render()
+        {
+            return (
+                <div className="displayingExperienceBarBar">
 
-        bar.animate(1.0);*/
+                    <div className="displayProgress" id={`container${this.props.badgeKey}`}></div>
 
-    };
+                </div>
 
+            );
 
-    //We will decided over here how it's supposed to look
-    render() {
-        return (
-            <div className="displayingBadgesWithProgress">
-
-                <img src={"/static/images/"+this.props.urlForBadge} alt="g" className="badgesImages"/>
-                <div className="displayProgress" id={`container${this.props.badgeKey}`}></div>
-
-            </div>
-
-        );
-
+        }
     }
 }
 
-export default BadgeDisplay;
+export default ExperienceBarBar;

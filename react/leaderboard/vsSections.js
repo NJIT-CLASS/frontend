@@ -36,8 +36,8 @@ class VsSections extends React.Component {
 
     render(){
 
-        let vsSectionsArray = [{Name: "Alan the One", Points:1231, Avatar:"favicon.ico", PointsAdded:"-2", key: 1}, {Name: "The Alan", Points:453, PointsAdded:"+7", Avatar:"favicon.ico",key: 2},
-            {Name: "Great Alan", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Only Alan", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4}];
+        let vsSectionsArray = [{Name: "Micheal", Points:1231, Avatar:"favicon.ico", PointsAdded:"-2", key: 1}, {Name: "Alan", Points:453, PointsAdded:"+7", Avatar:"favicon.ico",key: 2},
+            {Name: "Jimmy", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Erick", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4}];
         let vsSections = vsSectionsArray.map(klassRank => {
             return <div className="leaderBoardRanks" id={`leaderBoardTop${klassRank.key}`}>
                 <div>

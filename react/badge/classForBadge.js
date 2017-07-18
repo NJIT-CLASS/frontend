@@ -18,7 +18,7 @@ class ClassForBadge extends React.Component {
         const fetchOptions = {
             method: 'GET',
             //'/api/{add the string or name that amoudo has made}
-            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID+ '/' +nextProps.SemesterID,
+            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID + '/' + nextProps.SemesterID,
             //qs: {SemesterID: this.props.SemesterID},
             json: true
         };
@@ -61,10 +61,12 @@ class ClassForBadge extends React.Component {
         //key is the ID from Database
         //let classListArray = [{classNumber: "CS100",key: 1}, {classNumber: "CS310",key: 2}, {classNumber: "CS400",key: 3}, {classNumber: "CS490",key: 4}];
 
-        let classList = this.state.studentClasses.map(klass => {
+        let classList = this.state.studentClasses.filter(klass => klass.Section !== null).map(klass => {
+
          return {
              value: klass.CourseID,
              label: klass.Number,
+             sectionId: klass.SectionID,
          }
 
 

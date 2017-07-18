@@ -17,11 +17,13 @@ class MainBadge extends React.Component {
         this.state = {
             SemesterID: null,
             CourseID: null,
-            BadgeCategory: null
+            BadgeCategory: null,
+            SectionID: null
         };
         this.onSemesterChange= this.onSemesterChange.bind(this);
         this.onClassChange = this.onClassChange.bind(this);
         this.onBadgeCategoryChange = this.onBadgeCategoryChange.bind(this);
+        // this.onSectionIDChange= this.onSectionIDChange.bind(this);
     }
 
     componentWillMount() {
@@ -52,9 +54,10 @@ class MainBadge extends React.Component {
     }
 
     onClassChange(value){
-        console.log(value);
+        console.log("Class value", value);
         this.setState({
-            CourseID: value.value
+            CourseID: value.value,
+            SectionID: value.sectionId
         });
     }
 
@@ -64,6 +67,13 @@ class MainBadge extends React.Component {
             BadgeCategory: value.value
         });
     }
+
+    /*onSectionIDChange(value){
+     console.log(value);
+     this.setState({
+     sectionID: value.value
+     });
+     }*/
 
     render(){
         var apiContentHolder = null;
@@ -86,7 +96,9 @@ class MainBadge extends React.Component {
                         <BadgeCategory apiUrl={this.props.apiUrl}
                                        selectedBadgeCategory={this.state.BadgeCategory}
                                        onBadgeCategoryChange={this.onBadgeCategoryChange}
-                        />
+                                       CourseID={this.state.CourseID}
+                                       SemesterID={this.state.SemesterID}
+                                       SectionID={this.state.SectionID}                        />
                     </div>
                 </div>
             );

@@ -15,11 +15,11 @@ class BadgeCategory extends React.Component {
         this.onBadgeCategoryChange = this.props.onBadgeCategoryChange.bind(this);
     }
 
-    componentWillMount() {
+    fetchCategories(nextProps) {
         const fetchOptions = {
             method: 'GET',
             //'/api/{add the string or name that amoudo has made}
-            uri: this.props.apiUrl + '/api/badgeCategories/',
+            uri: nextProps.apiUrl + '/api/badgeCategories/' + nextProps.CourseID+ '/' + nextProps.SectionID+ '/' + nextProps.SemesterID,
             //qs: {SemesterID: this.props.SemesterID},
             json: true
         };
@@ -28,15 +28,23 @@ class BadgeCategory extends React.Component {
         //err will say if there is any error
         //response will be status
         request(fetchOptions,(err, response, body) => {
+            console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             console.log(body);
             this.setState({
-                badgeCategory: body.categories
+                badgeCategory: body.categories,
                 //stuff we need from api
                 //badges: body.badges//body.whatever we need from api
             })
         });
 
     }
+
+    componentWillMount(){
+        this.fetchCategories(this.props);
+    };
+    componentWillReceiveProps(nextProps){
+        this.fetchCategories(nextProps);
+    };
 
     /*
     *  {"Error":false,"categories":[{"CategoryID":1,"Name":"Questions","Description":" Given to students who successfully submit a question through PLA"
@@ -48,7 +56,7 @@ class BadgeCategory extends React.Component {
 
         let badgeCategoryMap = this.state.badgeCategory.map(badgeKatKey => {
             return{
-                value: badgeKatKey.CategoryID,
+                value: badgeKatKey.BadgeCategoryID,
                 label: badgeKatKey.Name
             }
 
