@@ -284,10 +284,27 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
-                {(this.state.commentList.length > 0) && (this.state.commentList.map(comment => {
-                    return (
-                              <CommentComponent key={comment.CommentsID} Comment={comment} Update={this.getCommentData.bind(this)} CurrentUser={this.props.UserID}/>
-                    );
+                {(this.state.commentList.length > 0) && (this.state.commentList.map((comment, index, array) => {
+                    if ((index + 1) < array.length) {
+                        return (
+                              <CommentComponent
+                                key={comment.CommentsID}
+                                Comment={comment}
+                                Update={this.getCommentData.bind(this)}
+                                CurrentUser={this.props.UserID}
+                                NextParent={array[index + 1].Parents}
+                                />
+                        );}
+                    else {
+                        return (
+                            <CommentComponent
+                              key={comment.CommentsID}
+                              Comment={comment}
+                              Update={this.getCommentData.bind(this)}
+                              CurrentUser={this.props.UserID}
+                              NextParent={null}
+                              />
+                        );}
                 }))}
 
                 <CommentEditorComponent

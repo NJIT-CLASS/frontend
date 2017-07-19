@@ -64,8 +64,9 @@ class CommentEditorComponent extends React.Component {
             //Rating: this.state.NewCommentRating,
         };
         if (this.props.Edit) {
+          if ((this.props.UserID == this.props.CurrentUser) && (this.props.CommentsID != this.props.NextParent)) {
             apiCall.post('/comments/edit/', editCommentParameters, (err, res, body) => {
-                if(body.Message == 'Success') {
+                if(!body.Error) {
                     console.log('Successfully edited comment.');
                     this.setState({CommentEditResult: 'success'});
                     this.props.Update();
@@ -74,6 +75,10 @@ class CommentEditorComponent extends React.Component {
                     console.log('Error editing comment.');
                 }
             });
+          }
+          else{
+            console.log('Editing access denied / The comment cannot be edited because there is already a reply.')
+          }
         }
         else {
             apiCall.post('/comments/add', commentParameters, (err, res, body) => {
