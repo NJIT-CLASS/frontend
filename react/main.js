@@ -44,12 +44,12 @@ const userId = reactElem.dataset.userId;
 const apiUrl = reactElem.dataset.apiUrl;
 const courseId = reactElem.dataset.courseId;
 const assignmentId = reactElem.dataset.assignmentId;
+const userType = reactElem.dataset.userType;
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
 switch (currentPage) {
 case 'add-user-container':
-    const userType = reactElem.dataset.userType;
     ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,reactElem);
     break;
 
@@ -65,6 +65,7 @@ case 'translation-container':
 case 'template-container':
     const taskId = reactElem.dataset.taskId;
     const sectionId = reactElem.dataset.sectionId;
+    const isAdmin = reactElem.dataset.isAdmin;
     ReactDOM.render(
       <TemplateContainer
         SectionID={sectionId}
@@ -72,6 +73,8 @@ case 'template-container':
         UserID={userId}
         apiUrl={apiUrl}
         TaskID={taskId}
+        UserType={userType}
+        Admin={isAdmin}
         __={translationFunction}
       />, reactElem);
     break;

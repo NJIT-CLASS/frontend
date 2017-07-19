@@ -50,6 +50,8 @@ class TemplateContainer extends React.Component {
             Strings: strings,
             NotAllowed: false
         };
+
+        console.log(props.UserType, props.Admin);
     }
 
     getTaskData() {

@@ -11,6 +11,8 @@ exports.get = (req, res) => {
         taskId: req.params.taskId,
         courseId: req.query.courseId,
         sectionId: req.query.sectionId,
+        userType: req.App.user.type,
+        isAdmin: req.App.user.admin,
         apiUrl: API_URL
     });
 };
