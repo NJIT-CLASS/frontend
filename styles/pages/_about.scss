@@ -27,6 +27,28 @@
     }
   }
 
+  .contact-section{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    h2{
+      margin: 10px;
+      padding-left: 10px;
+      display: block;
+      width: 100%;
+    }
+
+    div{
+      flex: 0 0 320px;
+
+      li{
+        text-align: center;
+      }
+    }
+  }
+
   @media screen and (max-width: $mobile-brk){
     display: flex;
     flex-direction: column;

@@ -24,7 +24,8 @@ class AboutContainer extends Component { //create a class for the component
             Step5: 'Optionally, the problem solver can dispute the grade',
             Step6: 'The instructor resolves any disputes',
             Step7: 'Students can see everything their peers have done anonymously',
-            SectionTitle: 'Developers',
+            SectionTitle0: 'Developers',
+            SectionTitle1: 'Contact',
             SubTitle0: 'Version 1 - 2014 (CLASS System)',
             SubTitle1: 'Spring Capstone 2016',
             SubTitle2: 'Summer 2016',
@@ -61,7 +62,7 @@ class AboutContainer extends Component { //create a class for the component
               </div>
             </div>
             <div className="developers-section">
-              <h2>{strings.SectionTitle}</h2>
+              <h2>{strings.SectionTitle0}</h2>
               <div className="section">
                   <h2 className="title" style={{width: '80%'}}>{strings.SubTitle0}</h2>
                   <div className="section-content">
@@ -127,7 +128,10 @@ class AboutContainer extends Component { //create a class for the component
                               </ul>
                       </div>
                   </div>
+                </div>
 
+                <div className="contact-section">
+                  <h2>{strings.SectionTitle1}</h2>
                   <div className="section">
                       <h2 className="title" style={{width: '80%'}}>{strings.SubTitle6}</h2>
                       <div className="section-content">
