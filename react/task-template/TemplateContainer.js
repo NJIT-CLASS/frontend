@@ -13,6 +13,7 @@ import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'
 import HeaderComponent from './headerComponent';
 import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
+import CommentEditorComponent from './commentEditorComponent';
 
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
@@ -47,7 +48,7 @@ class TemplateContainer extends React.Component {
             Error: false,
             TabSelected: 0,
             Strings: strings,
-            NotAllowed: false,
+            NotAllowed: false
         };
     }
 
@@ -175,9 +176,23 @@ class TemplateContainer extends React.Component {
         });
     }
 
+    getCommentData() {
+        apiCall.get(`/comments/ti/${this.props.TaskID}`, (err, res, body) => {
+            let list = [];
+            if (body.Comments.length > 0 ) {
+                for (let com of body.Comments) {
+                    list.push(com);
+                }
+            }
+            this.setState({
+                commentList: list
+            });
+        });
+    }
     componentWillMount() {
 		// this function is called before the component renders, so that the page renders with the appropriate state data
         this.getTaskData();
+        this.getCommentData();
     }
 
     /**
@@ -207,8 +222,13 @@ class TemplateContainer extends React.Component {
         });
         return returningValues;
     }
-
     render() {
+        let strings = {
+            ActionText: 'Add a new comment',
+            ButtonText: 'Post',
+            PlaceHolderText: 'Comment text',
+            RatingLabel: 'Rating:'
+        };
         let renderView = null;
         if (this.state.Error) {
 			// if there was an error in the data fetching calls, show the Error Component
@@ -230,8 +250,8 @@ class TemplateContainer extends React.Component {
               Strings={this.state.Strings}
               apiUrl={this.props.apiUrl}
             />);
-        }
 
+        }
 
         return (
           <div>
@@ -256,7 +276,7 @@ class TemplateContainer extends React.Component {
                   SemesterName={this.state.SemesterName}
                   SectionName={this.state.SectionName}
                   Strings={this.state.Strings}
-                  
+
                 />
 
                 {renderView}
@@ -264,29 +284,37 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
-                {/*  Future work to support comments*/}
+                {(this.state.commentList.length > 0) && (this.state.commentList.map((comment, index, array) => {
+                    if ((index + 1) < array.length) {
+                        return (
+                              <CommentComponent
+                                key={comment.CommentsID}
+                                Comment={comment}
+                                Update={this.getCommentData.bind(this)}
+                                CurrentUser={this.props.UserID}
+                                NextParent={array[index + 1].Parents}
+                                />
+                        );}
+                    else {
+                        return (
+                            <CommentComponent
+                              key={comment.CommentsID}
+                              Comment={comment}
+                              Update={this.getCommentData.bind(this)}
+                              CurrentUser={this.props.UserID}
+                              NextParent={null}
+                              />
+                        );}
+                }))}
 
-                <CommentComponent
-                  Comment={{
-                      Author: 'User1',
-                      Timestamp: 'May 6, 2013 9:43am',
-                      Content: 'I really liked your problem. It was very intriguing.',
-                  }}
+                <CommentEditorComponent
+                  UserID={this.props.UserID}
+                  TaskID={this.props.TaskID}
+                  Update={this.getCommentData.bind(this)}
+                  ReplyLevel={0}
+                  Parents={null}
                 />
-                <CommentComponent
-                  Comment={{
-                      Author: 'User2',
-                      Timestamp: 'May 6, 2013 11:09am',
-                      Content: 'I agree. I would have never thought of this.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'Instructor',
-                      Timestamp: 'May 6, 2013 3:32pm',
-                      Content: 'Your approach of the problem is very unique. Well done.',
-                  }}
-                />
+
               </TabPanel>
 
             </Tabs>

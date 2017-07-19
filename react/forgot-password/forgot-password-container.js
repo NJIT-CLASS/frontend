@@ -1,4 +1,5 @@
 import React, { Component } from 'react'; //import the React library and the Component class from the react package
+import apiCall from '../shared/apiCall';
 
 class ForgotPasswordContainer extends Component { //create a class for the component
                                                   //it will be called in the main.js file under /react
@@ -8,10 +9,36 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
 
         this.state = {
 
-            passwordReset: false,
-            error: false
+            value: '',
+            result: ''
 
         }; //initial state, only manually assigned here, elsewhere it's this.setState()
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        apiCall.post('/password/reset', {email: this.state.value}, (err, res, body) => {
+            if(res.statusCode == 401) {
+                console.log('User does not exist.');
+                this.setState({
+                    result: 'wrong-email'
+                });
+            } else if (res.statusCode == 200) {
+                console.log('Email sent.');
+                this.setState({
+                    result: 'success'
+                });
+            } else {
+                console.log('An error occurred.');
+                this.setState({
+                    result: 'error'
+                });
+            }
+        });
     }
 
     render(){
@@ -20,30 +47,12 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
             HeaderText: 'Participatory Learning',
             ActionText: 'Forgot Your Password?',
             SuccessMessage: 'Your password has been reset. An email has been sent to your login email address.',
-            ErrorMessage: 'The email entered was not recognized.',
+            ErrorMessage0: 'The email entered was not recognized.',
+            ErrorMessage1: 'The website is experiencing some internal errors. Please try again later.',
             ButtonText: 'Change Password',
             PlaceHolderText: 'Email',
 
         };
-
-        let Display;
-
-        //reset password success
-        this.setState({passwordReset: true});
-        //reset password error
-        this.setState({error: true});
-        let passwordResetSuccess = new Promise(function(resolve, rject) {
-            if (this.state.passwordReset) {
-                resolve(SuccessMessage);
-            }
-            if (this.state.error) {
-                reject(ErrorMessage);
-            }
-        });
-
-        passwordResetSuccess.then(function(fromResolve) {
-          //not yet implemented
-        });
 
         return (
           <div className="main-container center">
@@ -54,28 +63,35 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                           <span>Participatory Learning</span>
                       </h2>
 
-                      <form role="form" className="section" method="POST">
-                        <h2 className="title">{strings.ActionText}</h2>
+                    <form role="form" className="section" style={{margin: '0 auto', width: 313.91}} onSubmit={this.handleSubmit.bind(this)}>
+                        <h2 className="title" style={{marginBottom: 0}}>{strings.ActionText}</h2>
                         <div className="section-content">
+
                                 {
-                            this.state.passwordReset && <div className="success form-success">
+                            (this.state.result == 'success') && (<div className="success form-success" style={{marginBottom: 0}}>
                           <span>{strings.SuccessMessage}</span>
-                          </div>
+                          </div>)
                             }
 
                                 {
-                            this.state.error && <div className="error form-error">
+                            (this.state.result == 'wrong-email') && (<div className="error form-error">
                           <i className="fa fa-exclamation-circle"></i>
-                          <span>{strings.ErrorMessage}</span>
-                          </div>
+                          <span>{strings.ErrorMessage0}</span>
+                          </div>)
                             }
 
-                          <div>
-                            <input placeholder={strings.PlaceHolderText} name="email" type="email" autofocus />
-                          </div>
-                          <button type="submit">{strings.ButtonText}</button>
-                      </div>
-                  </form>
+                                {
+                            (this.state.result == 'error') && (<div className="error form-error">
+                          <i className="fa fa-exclamation-circle"></i>
+                          <span>{strings.ErrorMessage1}</span>
+                          </div>)
+                            }
+
+                            <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
+                            <button type="submit">{strings.ButtonText}</button>
+                        </div>
+                    </form>
+
                 </div>
               </div>
             </div>

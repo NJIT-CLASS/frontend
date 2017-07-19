@@ -2,7 +2,7 @@ const handler = require('../route-handlers/about');
 
 module.exports = {
     route: '/about',
-    title: 'About',
+    title: 'About Participatory Learning',
     routeHandler: handler,
     access: {
         admins: true,

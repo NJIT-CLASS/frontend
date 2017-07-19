@@ -1919,6 +1919,7 @@ class AssignmentEditorContainer extends React.Component {
                     newData[workflowIndex].Workflow[assessIndex].TA_allow_dispute = true;
                     newData = this.addDispute(newData, assessIndex, workflowIndex);
                 }
+                assessIndex = null;
             }
             break;
 
@@ -1931,7 +1932,14 @@ class AssignmentEditorContainer extends React.Component {
                 }
             }
             break;
-
+        case 'TA_allow_revisions':
+            {
+                let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex, newData);
+                let newVal  = !newData[workflowIndex].Workflow[reflectIndex].TA_allow_revisions;
+                newData[workflowIndex].Workflow[reflectIndex].TA_allow_revisions = newVal;
+                newVal = null;
+            }
+            break;
         default:
             newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
                     ? false

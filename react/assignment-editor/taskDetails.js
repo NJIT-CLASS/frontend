@@ -802,6 +802,16 @@ class TaskDetailsComponent extends React.Component {
                   </div>
                 );
             }
+
+            // TA_allow_revisions
+            const allowRevision = (
+              <div>
+                <label>{strings.AllowRevision}</label>
+                <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
+              </div>
+            );
+
             const allowReflection = (
               <div className="inner">
                 <label>{strings.AllowReflection}</label>
@@ -809,17 +819,12 @@ class TaskDetailsComponent extends React.Component {
                 <Tooltip Text={strings.TaskAllowReflectionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-reflection-tooltip`} />
 
                 {allowReflectionOptions}
+                {allowRevision}
+                
               </div>
             );
 
-            // TA_allow_revisions
-            const allowRevision = (
-              <div className="inner">
-                <label>{strings.AllowRevision}</label>
-                <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
-                <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
-              </div>
-            );
+            
 
             const versionEvaluation = this.props.TaskActivityData.TA_allow_revisions === true ? (
               <div className="inner">
@@ -1039,7 +1044,6 @@ class TaskDetailsComponent extends React.Component {
                   {simpleGrade}
                   {allowAssessment}
                   {allowReflection}
-                  {allowRevision}
                   {versionEvaluation}
                   {seeSibblings}
                   {leadsToNewProblem}
