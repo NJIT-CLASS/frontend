@@ -123,13 +123,13 @@ class CommentComponent extends React.Component{
         }
         let changeMessage;
         let repliesMessage = <span>{strings.RepliesMessage}</span>;
-        let enhancedDeleteRepliesMessage = <div>
+        let enhancedDeleteRepliesMessage = <div style={{display: 'inline'}}>
                                               <span>{strings.EnhancedDeleteRepliesMessage}</span><br />
                                               <button onClick={this.deleteExistingComment.bind(this)}>{strings.EnhancedDeleteText0}</button>
                                               <button onClick={this.deleteExistingCommentOnly.bind(this)}>{strings.EnhancedDeleteText1}</button>
                                               <button onClick={this.closeChangeMessage.bind(this)}>{strings.CancelText}</button>
                                             </div>;
-        let deleteSureCheckMessage = <div>
+        let deleteSureCheckMessage = <div style={{display: 'inline'}}>
                                       <span>{strings.DeleteConfirmMessage}</span><br />
                                       <button onClick={this.deleteExistingComment.bind(this)}>{strings.YesText}</button>
                                       <button onClick={this.closeChangeMessage.bind(this)}>{strings.NoText}</button>
@@ -187,6 +187,8 @@ class CommentComponent extends React.Component{
                     Rating={this.props.Comment.Rating}
                     Flag={this.props.Comment.Flag}
                     CommentsID={this.props.Comment.CommentsID}
+                    UserType={this.props.UserType}
+                    Admin={this.props.Admin}
                     Edit={true}
                   />
                   <div className="title"><a onClick={this.endEdit.bind(this)}>{strings.DiscardEditsLabel}</a></div>

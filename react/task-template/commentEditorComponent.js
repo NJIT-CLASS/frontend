@@ -16,7 +16,7 @@ class CommentEditorComponent extends React.Component {
             CommentResult: '',
             CommentEditResult: '',
             NewCommentFlagValue: 0,
-            NewCommentFlagColor: 'black'
+            NewCommentFlagColor: 'black',
         };
     }
     getEditData() {
@@ -73,7 +73,7 @@ class CommentEditorComponent extends React.Component {
             console.log('Edit comment: Text and rating cannot both be blank.');
             this.setState({CommentBlank: true});
           }
-          else if ((this.props.UserID == this.props.CurrentUser) && (this.props.CommentsID != this.props.NextParent)) {
+          else if ((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent) || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
             apiCall.post('/comments/edit/', editCommentParameters, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully edited comment.');
@@ -140,6 +140,7 @@ class CommentEditorComponent extends React.Component {
             EditText: 'Edit comment',
             ButtonText: 'Post',
             PlaceHolderText: 'Comment text',
+            ExplainFlagText: 'Explain why you flagged this comment',
             RatingLabel: 'Rating:',
             BlankMessage: 'The comment cannot be blank.'
         };
@@ -148,6 +149,15 @@ class CommentEditorComponent extends React.Component {
             IntroText = strings.EditText;
         }
         let ratingList = [{value: 0, label: '0'}, {value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}, {value: 5, label: '5'}];
+
+        let inputPlaceholderText;
+        if (this.state.NewCommentFlagValue == 1) {
+            inputPlaceholderText = strings.ExplainFlagText;
+        }
+        else {
+            inputPlaceholderText = strings.PlaceHolderText;
+        }
+
         return (
           <div className="comment">
           {
@@ -161,7 +171,7 @@ class CommentEditorComponent extends React.Component {
               <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>
               <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>
               <div className="regular-text comtext">
-                  <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
+                  <input placeholder={inputPlaceholderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
                   <button type="submit">{strings.ButtonText}</button>
               </div>
           </form>
