@@ -295,6 +295,8 @@ class TemplateContainer extends React.Component {
                                 Update={this.getCommentData.bind(this)}
                                 CurrentUser={this.props.UserID}
                                 NextParent={array[index + 1].Parents}
+                                UserType={this.props.UserType}
+                                Admin={this.props.Admin}
                                 />
                         );}
                     else {
@@ -305,6 +307,8 @@ class TemplateContainer extends React.Component {
                               Update={this.getCommentData.bind(this)}
                               CurrentUser={this.props.UserID}
                               NextParent={null}
+                              UserType={this.props.UserType}
+                              Admin={this.props.Admin}
                               />
                         );}
                 }))}

@@ -13,7 +13,8 @@ class CommentComponent extends React.Component{
 
         this.state={
           showEditor: false,
-          editExistingComment: false
+          editExistingComment: false,
+          CommentChangeMessage: ''
         };
     }
     displayNewEditor() {
@@ -26,7 +27,11 @@ class CommentComponent extends React.Component{
     }
 
     editExistingComment() {
-      if (this.props.Comment.UserID == this.props.CurrentUser) {
+      if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.UserType == 'student')) {
+        console.log('Cannot edit comment if it has replies.')
+        this.setState({CommentChangeMessage: 'replies'});
+      }
+      else if (this.props.Comment.UserID == this.props.CurrentUser) {
         this.setState({editExistingComment: true});
       }
       this.props.Update();
@@ -44,10 +49,15 @@ class CommentComponent extends React.Component{
 
     showChangeMessage() {
       if (this.props.NextParent == this.props.Comment.CommentsID) {
-        console.log('Cannot delete comment if it has replies.')
-        this.setState({CommentChangeMessage: 'delete-replies'});
+        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+          this.setState({CommentChangeMessage: 'enhanced-delete-replies'});
+        }
+        else {
+          console.log('Cannot delete comment if it has replies.')
+          this.setState({CommentChangeMessage: 'replies'});
+        }
       }
-      else if (this.props.Comment.UserID == this.props.CurrentUser) {
+      else if ((this.props.Comment.UserID == this.props.CurrentUser) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) {
         this.setState({CommentChangeMessage: 'sure-check'});
       }
     }
@@ -57,7 +67,7 @@ class CommentComponent extends React.Component{
     }
 
     deleteExistingComment() {
-      if ((this.props.Comment.UserID == this.props.CurrentUser) && (this.props.Comment.CommentsID != this.props.NextParent)) {
+      if (((this.props.Comment.UserID == this.props.CurrentUser) && (this.props.NextParent != this.props.Comment.CommentsID)) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) {
         apiCall.post('/comments/delete/', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
             if(body.Message == 'Success') {
                 console.log('Successfully deleted comment.');
@@ -72,6 +82,21 @@ class CommentComponent extends React.Component{
       }
     }
 
+    deleteExistingCommentOnly() {
+      if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        apiCall.post('/comments/hide', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
+          if(!body.Error) {
+            console.log('Successfully deleted comment and kept replies.')
+            this.setState({CommentDeleteResult: 'success'});
+            this.props.Update();
+          }
+          else {
+            console.log('Error deleting comment and keeping replies.');
+          }
+        });
+      }
+    }
+
     render(){
         let strings = {
             RatingLabel: 'Rating:',
@@ -80,38 +105,72 @@ class CommentComponent extends React.Component{
             EditLabel: 'Edit Comment',
             DeleteLabel: 'Delete Comment',
             DiscardEditsLabel: 'Discard Edits',
-            DeleteRepliesMessage: 'Sorry, you cannot delete a comment if it has a reply.',
-            DeleteConfirmMessage: 'Are you sure you want to delete this comment?'
+            RepliesMessage: 'Sorry, you cannot edit or delete a comment if it has a reply.',
+            EnhancedDeleteRepliesMessage: 'What would you like to delete?',
+            DeleteConfirmMessage: 'Are you sure you want to delete this comment?',
+            DeleteConfirmMessageReplies: 'Are you sure you want to delete this comment and all of its replies?',
+            YesText: 'Yes',
+            NoText: 'No',
+            CancelText: 'Cancel',
+            EnhancedDeleteText0: 'Comment & Replies',
+            EnhancedDeleteText1: 'Comment Only',
+            CommentHiddenText: 'This comment has been deleted.',
+            HiddenCommentDeleteText: 'Delete Comment & Replies'
         };
         let flagColor = 'black';
         if (this.props.Comment.Flag == 1) {
             flagColor = 'red';
         }
+        let changeMessage;
+        let repliesMessage = <span>{strings.RepliesMessage}</span>;
+        let enhancedDeleteRepliesMessage = <div>
+                                              <span>{strings.EnhancedDeleteRepliesMessage}</span><br />
+                                              <button onClick={this.deleteExistingComment.bind(this)}>{strings.EnhancedDeleteText0}</button>
+                                              <button onClick={this.deleteExistingCommentOnly.bind(this)}>{strings.EnhancedDeleteText1}</button>
+                                              <button onClick={this.closeChangeMessage.bind(this)}>{strings.CancelText}</button>
+                                            </div>;
+        let deleteSureCheckMessage = <div>
+                                      <span>{strings.DeleteConfirmMessage}</span><br />
+                                      <button onClick={this.deleteExistingComment.bind(this)}>{strings.YesText}</button>
+                                      <button onClick={this.closeChangeMessage.bind(this)}>{strings.NoText}</button>
+                                    </div>;
+
+        if (this.state.CommentChangeMessage == 'replies') {
+            changeMessage = repliesMessage;
+        }
+        if (this.state.CommentChangeMessage == 'enhanced-delete-replies') {
+            changeMessage = enhancedDeleteRepliesMessage;
+        }
+        if (this.state.CommentChangeMessage == 'sure-check') {
+            changeMessage = deleteSureCheckMessage;
+        }
+
         return (
             <div style={{margin: '0 auto'}}>
 
-            {!(this.state.editExistingComment) &&
+            {(!this.state.editExistingComment && (this.props.Comment.Hide != 1)) &&
             (<div style={{marginLeft: this.props.Comment.ReplyLevel*30}} className="comment animate-fast fadeInUp">
+
               {
-                (this.state.CommentChangeMessage == 'delete-replies') && (<div className="error form-error">
-                <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.DeleteRepliesMessage}</span>
+                (this.state.CommentChangeMessage != '') && (<div className="error form-error">
+                <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>{changeMessage}
                 </div>)
               }
-              {
-                (this.state.CommentChangeMessage == 'sure-check') && (<div className="error form-error">
-                <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.DeleteConfirmMessage}</span><br />
-                <button onClick={this.deleteExistingComment.bind(this)}>Yes</button>
-                <button onClick={this.closeChangeMessage.bind(this)}>No</button>
-                </div>)
-              }
+
               <div className="title"><div className="timestamp">{this.props.Comment.Timestamp}</div> </div>
-              <label style={{padding: 10}}>{strings.RatingLabel}</label>{this.props.Comment.Rating} / 5
+              {(this.props.Comment.Rating != null) && (<div style={{display: 'inline'}}><label style={{padding: 10}}>{strings.RatingLabel}</label>{this.props.Comment.Rating} / 5</div>)}
               <i className="fa fa-flag" style={{color:flagColor, padding: 10}}></i>
               <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
               <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
               {(this.props.Comment.UserID == this.props.CurrentUser) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
-              {(this.props.Comment.UserID == this.props.CurrentUser) && (<div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel}</a></div>)}
+              {((this.props.Comment.UserID == this.props.CurrentUser) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel}</a></div>)}
             </div>)
+          }
+
+            {(this.props.Comment.Hide == 1) &&
+              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: 'silver'}} className="comment animate-fast fadeInUp">
+                <div className="regular-text comtext">{strings.CommentHiddenText}</div>
+              </div>)
           }
 
             {this.state.editExistingComment &&

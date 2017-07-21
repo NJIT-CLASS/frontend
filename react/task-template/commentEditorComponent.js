@@ -41,7 +41,12 @@ class CommentEditorComponent extends React.Component {
     }
 
     handleChangeRating(event) {
-        this.setState({NewCommentRating: event.value});
+        if (event == null){
+            this.setState({NewCommentRating: null});
+        }
+        else {
+            this.setState({NewCommentRating: event.value});
+        }
     }
 
     handleSubmit(event) {
@@ -59,16 +64,20 @@ class CommentEditorComponent extends React.Component {
         };
         const editCommentParameters = {
             CommentsID: this.props.CommentsID,
-            //Flag: this.state.NewCommentFlagValue,
+            Flag: this.state.NewCommentFlagValue,
             CommentsText: this.state.NewCommentValue,
-            //Rating: this.state.NewCommentRating,
+            Rating: this.state.NewCommentRating,
         };
         if (this.props.Edit) {
-          if ((this.props.UserID == this.props.CurrentUser) && (this.props.CommentsID != this.props.NextParent)) {
+          if ((editCommentParameters.CommentsText == '') && (editCommentParameters.Rating == null)) {
+            console.log('Edit comment: Text and rating cannot both be blank.');
+            this.setState({CommentBlank: true});
+          }
+          else if ((this.props.UserID == this.props.CurrentUser) && (this.props.CommentsID != this.props.NextParent)) {
             apiCall.post('/comments/edit/', editCommentParameters, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully edited comment.');
-                    this.setState({CommentEditResult: 'success'});
+                    this.setState({CommentEditResult: 'success', CommentBlank: false});
                     this.props.Update();
                 }
                 else {
@@ -81,11 +90,16 @@ class CommentEditorComponent extends React.Component {
           }
         }
         else {
+          if ((commentParameters.CommentText == '') && (commentParameters.Rating == null)) {
+            console.log('Add comment: Text and rating cannot both be blank.');
+            this.setState({CommentBlank: true});
+          }
+          else {
             apiCall.post('/comments/add', commentParameters, (err, res, body) => {
                 if(res.statusCode == 200) {
                     console.log('Successfully added comment.');
                     this.setState({CommentResult: 'success'});
-                    this.setState({NewCommentValue: '', NewCommentRating: '', NewCommentFlagColor: 'black', NewCommentFlagValue: 0});
+                    this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false});
                     this.props.Update();
                 } else if (res.statusCode == 400) {
                     console.log('Error submitting comments.');
@@ -95,6 +109,7 @@ class CommentEditorComponent extends React.Component {
                     this.setState({CommentResult: 'unknown-error'});
                 }
             });
+          }
         }
     }
 
@@ -125,7 +140,8 @@ class CommentEditorComponent extends React.Component {
             EditText: 'Edit comment',
             ButtonText: 'Post',
             PlaceHolderText: 'Comment text',
-            RatingLabel: 'Rating:'
+            RatingLabel: 'Rating:',
+            BlankMessage: 'The comment cannot be blank.'
         };
         let IntroText = strings.ActionText;
         if (this.props.Edit) {
@@ -134,13 +150,18 @@ class CommentEditorComponent extends React.Component {
         let ratingList = [{value: 0, label: '0'}, {value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}, {value: 5, label: '5'}];
         return (
           <div className="comment">
+          {
+            (this.state.CommentBlank) && (<div className="error form-error">
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.BlankMessage}</span>
+            </div>)
+          }
           <form role="form" onSubmit={this.handleSubmit.bind(this)}>
               <div className="title-no-hover">{IntroText}</div>
               <label style={{padding: 10}}>{strings.RatingLabel}</label>
-              <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={''} clearable={true} searchable={true} required/></div>
+              <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>
               <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>
               <div className="regular-text comtext">
-                  <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)} required/>
+                  <input placeholder={strings.PlaceHolderText} type="text" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
                   <button type="submit">{strings.ButtonText}</button>
               </div>
           </form>
