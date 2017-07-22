@@ -849,6 +849,8 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.SameAs}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>
@@ -868,6 +870,8 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.InSameGroupAs}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>
@@ -888,6 +892,8 @@ class TaskDetailsComponent extends React.Component {
                                 alignContent: 'right',
                             }}
                           >
+                            <label className="faded-message-text">{strings.NotIn}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div className="assignee-contraint-section">
@@ -907,6 +913,7 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.ChooseFrom}</label>
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>

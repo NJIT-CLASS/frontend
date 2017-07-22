@@ -339,7 +339,7 @@ class SuperComponent extends React.Component {
         };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
-            //console.log(err, res, body);
+            console.log(err, res, body);
             window.location.href= '/';
 
         });
