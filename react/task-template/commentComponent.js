@@ -6,6 +6,7 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import CommentEditorComponent from './commentEditorComponent';
+var moment = require('moment');
 
 class CommentComponent extends React.Component{
     constructor(props){
@@ -16,6 +17,22 @@ class CommentComponent extends React.Component{
           editExistingComment: false,
           CommentChangeMessage: ''
         };
+    }
+    componentWillMount() {
+      if (this.props.Comment.Status == 'saved') {
+        this.setState({editExistingComment: true});
+      }
+      else {
+        apiCall.post('/comments/viewed/', {CommentsID: this.props.Comment.CommentsID, UserID: this.props.CurrentUser, Time: moment().format('YYYY-MM-DD HH:mm:ss')}, (err, res, body) => {
+            if(res.statusCode == 200) {
+                console.log('Successfully logged view.');
+            } else if (res.statusCode == 400) {
+                console.log('Error logging view.');
+            } else {
+                console.log('/comments/viewed: An error occurred.');
+            }
+        });
+      }
     }
     displayNewEditor() {
       if (!this.state.showEditor) {
@@ -42,9 +59,11 @@ class CommentComponent extends React.Component{
       this.props.Update();
     }
 
-    endEdit() {
-      this.setState({editExistingComment: false});
+    endEdit(response) {
       this.props.Update();
+      if (response != 'saved') {
+        this.setState({editExistingComment: false});
+      }
     }
 
     showChangeMessage() {
@@ -67,7 +86,7 @@ class CommentComponent extends React.Component{
     }
 
     deleteExistingComment() {
-      if (((this.props.Comment.UserID == this.props.CurrentUser) && (this.props.NextParent != this.props.Comment.CommentsID)) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+      if (((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID)) || (this.props.UserType == 'teacher') || (this.props.Admin == true) || (this.props.Comment.Status == 'saved'))) {
         apiCall.post('/comments/delete/', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
             if(body.Message == 'Success') {
                 console.log('Successfully deleted comment.');
@@ -105,6 +124,7 @@ class CommentComponent extends React.Component{
             EditLabel: 'Edit Comment',
             DeleteLabel: 'Delete Comment',
             DiscardEditsLabel: 'Discard Edits',
+            DiscardSavedLabel: 'Discard Saved Comment',
             RepliesMessage: 'Sorry, you cannot edit or delete a comment if it has a reply.',
             EnhancedDeleteRepliesMessage: 'What would you like to delete?',
             DeleteConfirmMessage: 'Are you sure you want to delete this comment?',
@@ -157,9 +177,10 @@ class CommentComponent extends React.Component{
                 </div>)
               }
 
-              <div className="title"><div className="timestamp">{this.props.Comment.Timestamp}</div> </div>
+              <div className="title"></div>
               {(this.props.Comment.Rating != null) && (<div style={{display: 'inline'}}><label style={{padding: 10}}>{strings.RatingLabel}</label>{this.props.Comment.Rating} / 5</div>)}
               <i className="fa fa-flag" style={{color:flagColor, padding: 10}}></i>
+              <div className="timestamp" style={{display: 'inline'}}>{moment(this.props.Comment.Time).format('dddd, MMMM Do YYYY, h:mm:ss a')}</div>
               <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
               <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
               {(this.props.Comment.UserID == this.props.CurrentUser) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
@@ -189,9 +210,12 @@ class CommentComponent extends React.Component{
                     CommentsID={this.props.Comment.CommentsID}
                     UserType={this.props.UserType}
                     Admin={this.props.Admin}
+                    Status={this.props.Comment.Status}
                     Edit={true}
                   />
-                  <div className="title"><a onClick={this.endEdit.bind(this)}>{strings.DiscardEditsLabel}</a></div>
+                  {(this.props.Comment.Status != 'saved') && (<div className="title"><a onClick={this.endEdit.bind(this)}>{strings.DiscardEditsLabel}</a></div>)}
+                  {(this.props.Comment.Status == 'saved') && (<div className="title"><a onClick={this.deleteExistingComment.bind(this)}>{strings.DiscardSavedLabel}</a></div>)}
+
                 </div>)
           }
 

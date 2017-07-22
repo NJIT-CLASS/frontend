@@ -24,6 +24,8 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
+var moment = require('moment');
+
 /*      PROPS:
             - TaskID
             - SectionID
@@ -287,30 +289,32 @@ class TemplateContainer extends React.Component {
               <TabPanel>
                 <div className="placeholder" />
                 {(this.state.commentList.length > 0) && (this.state.commentList.map((comment, index, array) => {
-                    if ((index + 1) < array.length) {
-                        return (
-                              <CommentComponent
-                                key={comment.CommentsID}
-                                Comment={comment}
-                                Update={this.getCommentData.bind(this)}
-                                CurrentUser={this.props.UserID}
-                                NextParent={array[index + 1].Parents}
-                                UserType={this.props.UserType}
-                                Admin={this.props.Admin}
-                                />
-                        );}
-                    else {
-                        return (
-                            <CommentComponent
-                              key={comment.CommentsID}
-                              Comment={comment}
-                              Update={this.getCommentData.bind(this)}
-                              CurrentUser={this.props.UserID}
-                              NextParent={null}
-                              UserType={this.props.UserType}
-                              Admin={this.props.Admin}
-                              />
-                        );}
+                    if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
+                        if ((index + 1) < array.length) {
+                            return (
+                                  <CommentComponent
+                                    key={comment.CommentsID}
+                                    Comment={comment}
+                                    Update={this.getCommentData.bind(this)}
+                                    CurrentUser={this.props.UserID}
+                                    NextParent={array[index + 1].Parents}
+                                    UserType={this.props.UserType}
+                                    Admin={this.props.Admin}
+                                    />
+                            );}
+                        else {
+                            return (
+                                <CommentComponent
+                                  key={comment.CommentsID}
+                                  Comment={comment}
+                                  Update={this.getCommentData.bind(this)}
+                                  CurrentUser={this.props.UserID}
+                                  NextParent={null}
+                                  UserType={this.props.UserType}
+                                  Admin={this.props.Admin}
+                                  />
+                            );}
+                    }
                 }))}
 
                 <CommentEditorComponent
