@@ -228,6 +228,8 @@ class SuperComponent extends React.Component {
                     });
 
                     showMessage(this.props.Strings.SubmitSuccessMessage);
+                    window.location.href= '/';
+                    
                 }
             });
         } else {
@@ -535,10 +537,25 @@ class SuperComponent extends React.Component {
         }
 
         if(this.props.IsRevision){
-            revisionRejectView =  <button className="revision-buttons" 
+            if([TASK_TYPES.COMMENT].includes(this.props.Type)){
+                revisionRejectView =  <button className="revision-buttons" 
                                         onClick={this.rejectRevision.bind(this)}>
                                         {this.props.Strings.RejectRevision}
                                         </button>;
+                revisionApproveView = <button className="revision-buttons" 
+                                        onClick={this.approveRevision.bind(this)}>
+                                        {this.props.Strings.ApproveRevision}
+                                </button>;
+                formButtons = (
+                <div>
+                    <br />
+                    {revisionRejectView}
+                    {revisionApproveView}
+                </div>);
+            }
+            
+        } 
+        if([TASK_TYPES.EDIT].includes(this.props.Type)){
             revisionApproveView = <button className="revision-buttons" 
                                         onClick={this.approveRevision.bind(this)}>
                                         {this.props.Strings.ApproveRevision}
@@ -546,7 +563,6 @@ class SuperComponent extends React.Component {
             formButtons = (
                 <div>
                     <br />
-                    {revisionRejectView}
                     {revisionApproveView}
                 </div>);
         } 

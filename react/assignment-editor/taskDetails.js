@@ -767,6 +767,14 @@ class TaskDetailsComponent extends React.Component {
                     )
                     : null;
                 const reflectConstr = this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex);
+                const allowRevisionOption = this.props.TaskActivityData.TA_allow_reflection[0] === 'comment' ? (
+                    <div>
+                      <label>{strings.AllowRevision}</label>
+                      <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                      <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
+                    </div> 
+                    ) : null;
+                
                 const numberOfReflectorsView = (reflectConstr == 'student' || reflectConstr == 'both')
                     ? (
                       <div>
@@ -782,7 +790,11 @@ class TaskDetailsComponent extends React.Component {
                     : null;
                 allowReflectionOptions = (
                   <div>
-                    <Select options={reflectionValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_reflection[0]} clearable={false} searchable={false} />
+                    <Select options={reflectionValues} 
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)}
+                            value={this.props.TaskActivityData.TA_allow_reflection[0]} 
+                            clearable={false} 
+                            searchable={false} />
                     <br />
                     <label>{strings.ShouldReflectBlock}</label><br />
                     <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
@@ -795,10 +807,7 @@ class TaskDetailsComponent extends React.Component {
                     <label>{strings.WhoCanReflect}</label>                    
                     <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                     <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
-                     <label>{strings.AllowRevision}</label>
-                    <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
-                    <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
-                     
+                     {allowRevisionOption}
                    
                     <br /> {showDispute}
                   </div>
@@ -807,7 +816,7 @@ class TaskDetailsComponent extends React.Component {
 
           
             // TA_allow_revisions
-            const allowRevision = [TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
+            const allowRevision = [/*TASK_TYPES.EDIT,*/ TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
               <div className="inner">
                 <label>{strings.AllowRevision}</label>
                 <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />

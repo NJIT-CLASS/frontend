@@ -169,12 +169,8 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
-                        /** Working HERE
-                         *  Must scan through workflow for consolidation task of edit
-                         * 
-                         * 
-                         */
-                        if([TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)){
+                        
+                        if([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)){
                         /** Check if the current task is a revision task
                          *      If not, it's a regular edit and show regular buttons
                          *      Else, check if it has a consolidation task
@@ -242,7 +238,7 @@ class TemplateContainer extends React.Component {
                                     });
                                 } else {
                                     let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
-                                    if([TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(possibleEditData.Type)){
+                                    if([TASK_TYPES.COMMENT].includes(possibleEditData.Type)){
                                         if(possibleEditData.AllowRevision === true){
                                             this.setState({
                                                 IsRevision: true
