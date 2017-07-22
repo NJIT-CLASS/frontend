@@ -367,7 +367,7 @@ class SuperComponent extends React.Component {
                 LockSubmit: true
             });
             apiCall.post('/revise', options, (err, res, body) => {
-            //window.location.href= '/';
+                window.location.href= '/';
                 console.log(body);
             });
             
@@ -398,7 +398,7 @@ class SuperComponent extends React.Component {
                 LockSubmit: true
             });
             apiCall.post('/approved', options, (err, res, body) => {
-                //window.location.href= '/';
+                window.location.href= '/';
                 console.log(body);
                 
             });
@@ -521,7 +521,7 @@ class SuperComponent extends React.Component {
                 {infoMessage}
                 <div className="section card-1">
                   <div className="placeholder" />
-                  <div onClick={this.toggleContent.bind(this)}>
+                  <div >
                     <h2 className="title">{this.props.ComponentTitle} </h2>
                   </div>
                   <div className="section-content">

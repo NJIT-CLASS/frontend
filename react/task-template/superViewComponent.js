@@ -14,7 +14,7 @@ class SuperViewComponent extends React.Component {
         super(props);
 
         this.state = {
-            ShowContent: true,
+            ShowContent: false,
             TaskData: {},
             ShowRubric: false,
             FieldRubrics: [],

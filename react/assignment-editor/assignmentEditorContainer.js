@@ -971,12 +971,17 @@ class AssignmentEditorContainer extends React.Component {
         stateData[workflowIndex].Workflow.push(needsConsolData);
         stateData[workflowIndex].Workflow.push(consolData);
 
+        let newNeedsConsolIndex = stateData[workflowIndex].Workflow.length - 2;
+        let newConsolIndex = stateData[workflowIndex].Workflow.length - 1;
+
+       
+        
         let needsConsolidateNode = this.tree.parse({
-            id: stateData[workflowIndex].Workflow.length - 2
+            id: newNeedsConsolIndex
         });
 
         let consolidateNode = this.tree.parse({
-            id: stateData[workflowIndex].Workflow.length - 1
+            id: newConsolIndex
         });
         needsConsolidateNode = this.fillGaps(needsConsolidateNode, this.CONSOL_DISP_IDX);
         needsConsolidateNode.addChildAtIndex(consolidateNode, this.CONSOL_DISP_IDX);
@@ -996,6 +1001,9 @@ class AssignmentEditorContainer extends React.Component {
             needsConsolidateNode.children[this.CONSOL_DISP_IDX].addChildAtIndex(temp, this.CONSOL_DISP_IDX);
             selectedNode.addChildAtIndex(needsConsolidateNode, this.CONSOL_DISP_IDX);
         }
+
+        stateData[workflowIndex].Workflow[newNeedsConsolIndex].TA_display_name = this.computeNewName(stateData,newNeedsConsolIndex, workflowIndex);
+        stateData[workflowIndex].Workflow[newConsolIndex].TA_display_name = this.computeNewName(stateData,newConsolIndex, workflowIndex);
 
         return stateData;
     }
@@ -1045,11 +1053,14 @@ class AssignmentEditorContainer extends React.Component {
         stateData[workflowIndex].Workflow.push(this.createNewTask(stateData, this.disputeTask, parentIndex, workflowIndex, 'Dispute of '));
         stateData[workflowIndex].Workflow.push(this.createNewTask(stateData, this.resolveDisputeTask, parentIndex, workflowIndex, 'Resolve Dispute of'));
 
+        let newDisputeIndex = stateData[workflowIndex].Workflow.length - 2;
+        let newResolveDisputeIndex = stateData[workflowIndex].Workflow.length - 1;
+
         let disputeNode = this.tree.parse({
-            id: stateData[workflowIndex].Workflow.length - 2
+            id: newDisputeIndex
         });
         let resolveNode = this.tree.parse({
-            id: stateData[workflowIndex].Workflow.length - 1
+            id: newResolveDisputeIndex
         });
 
         disputeNode = this.fillGaps(disputeNode, this.CONSOL_DISP_IDX);
@@ -1073,6 +1084,9 @@ class AssignmentEditorContainer extends React.Component {
             temp.children[this.CONSOL_DISP_IDX].addChildAtIndex(disputeNode, this.CONSOL_DISP_IDX);
             selectedNode.addChildAtIndex(temp, this.CONSOL_DISP_IDX);
         }
+
+        stateData[workflowIndex].Workflow[newDisputeIndex].TA_display_name = this.computeNewName(stateData,newDisputeIndex, workflowIndex);
+        stateData[workflowIndex].Workflow[newResolveDisputeIndex].TA_display_name = this.computeNewName(stateData,newResolveDisputeIndex, workflowIndex);
         return stateData;
     }
 
@@ -1261,8 +1275,38 @@ class AssignmentEditorContainer extends React.Component {
         }).parent.model.id;
 
         newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
-
+        console.log('NewName',newName, taskIndex);
         return newName;
+    }
+/**
+     * [propogateNameChangeDownTree sends name change in task down to other tasks]
+     * @param  {[number]} startIndex    [index to begin searching the tree]
+     * @param  {[number]} workflowIndex [workflow's array index]
+     * @return {[void]}
+     */
+    propogateNameChangeDownTree(startIndex, workflowIndex){
+
+        let newData = this.state.WorkflowDetails;
+        let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id === startIndex;
+        });
+
+        selectedNode.walk(function(node){
+            if(node.model.id === -1 || node.model.id === startIndex){
+                return;
+            }
+
+            if(newData[workflowIndex].Workflow[node.model.id].CustomNameSet){
+                return;
+            }
+
+            newData[workflowIndex].Workflow[node.model.id].TA_display_name = this.computeNewName(newData, node.model.id, workflowIndex);
+
+        }, this);
+
+        this.setState({
+            WorkflowDetails: newData
+        });
     }
 
     getAssessIndex(parentIndex, workflowIndex, stateData) {
@@ -1545,36 +1589,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    /**
-     * [propogateNameChangeDownTree sends name change in task down to other tasks]
-     * @param  {[number]} startIndex    [index to begin searching the tree]
-     * @param  {[number]} workflowIndex [workflow's array index]
-     * @return {[void]}
-     */
-    propogateNameChangeDownTree(startIndex, workflowIndex){
-
-        let newData = this.state.WorkflowDetails;
-        let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
-            return node.model.id === startIndex;
-        });
-
-        selectedNode.walk(function(node){
-            if(node.model.id === -1 || node.model.id === startIndex){
-                return;
-            }
-
-            if(newData[workflowIndex].Workflow[node.model.id].CustomNameSet){
-                return;
-            }
-
-            newData[workflowIndex].Workflow[node.model.id].TA_display_name = this.computeNewName(newData, node.model.id, workflowIndex);
-
-        }, this);
-
-        this.setState({
-            WorkflowDetails: newData
-        });
-    }
+    
 
     
 
