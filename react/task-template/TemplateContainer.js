@@ -24,8 +24,6 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
-var moment = require('moment');
-
 /*      PROPS:
             - TaskID
             - SectionID
@@ -298,6 +296,7 @@ class TemplateContainer extends React.Component {
                                     Update={this.getCommentData.bind(this)}
                                     CurrentUser={this.props.UserID}
                                     NextParent={array[index + 1].Parents}
+                                    NextStatus={array[index + 1].Status}
                                     UserType={this.props.UserType}
                                     Admin={this.props.Admin}
                                     />

@@ -52,9 +52,8 @@ class CommentEditorComponent extends React.Component {
         event.preventDefault();
         const commentParameters = {
             UserID: this.props.UserID,
-            AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
+            AssignmentInstanceID: 1, //placeholder for API
             TaskInstanceID: this.props.TaskID,
-            Type: 1, //placeholder for API, this will be implemented in the future
             Flag: this.state.NewCommentFlagValue,
             CommentsText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
@@ -72,7 +71,7 @@ class CommentEditorComponent extends React.Component {
             this.setState({CommentBlank: true});
           }
 
-          else if ((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent) || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
+          else if ((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
             apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully edited comment.');
@@ -117,9 +116,8 @@ class CommentEditorComponent extends React.Component {
       event.preventDefault();
       const commentParameters = {
           UserID: this.props.UserID,
-          AssignmentInstanceID: 1, //placeholder for API; this will ultimately be removed
+          AssignmentInstanceID: 1, //placeholder for API
           TaskInstanceID: this.props.TaskID,
-          Type: 1, //placeholder for API, this will be implemented in the future
           Flag: this.state.NewCommentFlagValue,
           CommentsText: this.state.NewCommentValue,
           Rating: this.state.NewCommentRating,
@@ -143,8 +141,10 @@ class CommentEditorComponent extends React.Component {
                   this.props.Update();
               } else if (res.statusCode == 400) {
                   console.log('Error saving comments.');
+                  this.setState({SaveSuccess: false});
               } else {
                   console.log('/comments/add: An error occurred.');
+                  this.setState({SaveSuccess: false});
               }
           });
         }
@@ -158,6 +158,7 @@ class CommentEditorComponent extends React.Component {
               }
               else {
                   console.log('Error editing comment.');
+                  this.setState({SaveSuccess: false});
               }
           });
         }

@@ -44,7 +44,7 @@ class CommentComponent extends React.Component{
     }
 
     editExistingComment() {
-      if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.UserType == 'student')) {
+      if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.NextStatus != 'saved') && (this.props.UserType == 'student')) {
         console.log('Cannot edit comment if it has replies.')
         this.setState({CommentChangeMessage: 'replies'});
       }
@@ -67,7 +67,7 @@ class CommentComponent extends React.Component{
     }
 
     showChangeMessage() {
-      if (this.props.NextParent == this.props.Comment.CommentsID) {
+      if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.NextStatus != 'saved')) {
         if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
           this.setState({CommentChangeMessage: 'enhanced-delete-replies'});
         }
@@ -86,16 +86,14 @@ class CommentComponent extends React.Component{
     }
 
     deleteExistingComment() {
-      if (((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID)) || (this.props.UserType == 'teacher') || (this.props.Admin == true) || (this.props.Comment.Status == 'saved'))) {
+      if (((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID)) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true) || (this.props.Comment.Status == 'saved'))) {
         apiCall.post('/comments/delete/', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
             if(body.Message == 'Success') {
                 console.log('Successfully deleted comment.');
-                this.setState({CommentDeleteResult: 'success'});
                 this.props.Update();
             }
             else {
                 console.log('Error deleting comment.');
-                this.setState({CommentDeleteResult: 'error-other'});
             }
         });
       }
@@ -106,7 +104,7 @@ class CommentComponent extends React.Component{
         apiCall.post('/comments/hide', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
           if(!body.Error) {
             console.log('Successfully deleted comment and kept replies.')
-            this.setState({CommentDeleteResult: 'success'});
+            this.setState({CommentChangeMessage: ''})
             this.props.Update();
           }
           else {
@@ -135,7 +133,8 @@ class CommentComponent extends React.Component{
             EnhancedDeleteText0: 'Comment & Replies',
             EnhancedDeleteText1: 'Comment Only',
             CommentHiddenText: 'This comment has been deleted.',
-            HiddenCommentDeleteText: 'Delete Comment & Replies'
+            HiddenCommentDeleteText: 'Delete Comment & Replies',
+            HiddenOptionsLabel: 'More Deletion Options'
         };
         let flagColor = 'black';
         if (this.props.Comment.Flag == 1) {
@@ -146,7 +145,7 @@ class CommentComponent extends React.Component{
         let enhancedDeleteRepliesMessage = <div style={{display: 'inline'}}>
                                               <span>{strings.EnhancedDeleteRepliesMessage}</span><br />
                                               <button onClick={this.deleteExistingComment.bind(this)}>{strings.EnhancedDeleteText0}</button>
-                                              <button onClick={this.deleteExistingCommentOnly.bind(this)}>{strings.EnhancedDeleteText1}</button>
+                                              {(this.props.Comment.Hide != 1) && (<button onClick={this.deleteExistingCommentOnly.bind(this)}>{strings.EnhancedDeleteText1}</button>)}
                                               <button onClick={this.closeChangeMessage.bind(this)}>{strings.CancelText}</button>
                                             </div>;
         let deleteSureCheckMessage = <div style={{display: 'inline'}}>
@@ -189,13 +188,21 @@ class CommentComponent extends React.Component{
           }
 
             {(this.props.Comment.Hide == 1) &&
-              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: 'silver'}} className="comment animate-fast fadeInUp">
+              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: '#dbdbdb'}} className="comment animate-fast fadeInUp">
+
+                {
+                  (this.state.CommentChangeMessage != '') && (<div className="error form-error">
+                  <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>{changeMessage}
+                  </div>)
+                }
+
                 <div className="regular-text comtext">{strings.CommentHiddenText}</div>
+                {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.HiddenOptionsLabel}</a></div>)}
               </div>)
           }
 
             {this.state.editExistingComment &&
-              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30}} className="comment animate-fast fadeIn fadeOut">
+              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30}} className="comment">
                   <CommentEditorComponent
                     UserID={this.props.Comment.UserID}
                     CurrentUser={this.props.CurrentUser}
@@ -204,6 +211,7 @@ class CommentComponent extends React.Component{
                     ReplyLevel={this.props.Comment.ReplyLevel}
                     Parents={this.props.Comment.Parents}
                     NextParent={this.props.NextParent}
+                    NextStatus={this.props.NextStatus}
                     CommentsText={this.props.Comment.CommentsText}
                     Rating={this.props.Comment.Rating}
                     Flag={this.props.Comment.Flag}
@@ -220,7 +228,7 @@ class CommentComponent extends React.Component{
           }
 
             {this.state.showEditor &&
-              (<div style={{marginLeft: (this.props.Comment.ReplyLevel + 1)*30}} className="comment animate-fast fadeInUp fadeOutDown">
+              (<div style={{marginLeft: (this.props.Comment.ReplyLevel + 1)*30}} className="comment">
                   <CommentEditorComponent
                     UserID={this.props.CurrentUser}
                     TaskID={this.props.Comment.TaskInstanceID}
