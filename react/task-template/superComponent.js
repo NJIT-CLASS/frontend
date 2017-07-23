@@ -9,7 +9,7 @@ import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Rater from 'react-rater';
 import { RadioGroup, Radio } from 'react-radio-group';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 import FileUpload from '../shared/fileUpload';
 import MarkupText from '../shared/markupTextView';
@@ -127,24 +127,31 @@ class SuperComponent extends React.Component {
       // also check the justification field
       // returns false if any field is null and true if all fields are filled
         for (let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++) {
+            //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
                 if ((this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')) {
                     return false;
                 }
             }
+
+            //checks for blank response
             if (this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') {
                 return false;
             }
 
+            //validate numeric input, check for valid int and boundaries
             if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment')) {
                 if (isNaN(this.state.TaskResponse[i][0])) {
+                    console.log('isNan error');
                     return false;
                 }
                 if (this.state.TaskResponse[i][0] < parseInt(this.state.TaskActivityFields[i].numeric_min) || this.state.TaskResponse[i][0] > parseInt(this.state.TaskActivityFields[i].numeric_max)) {
+                    console.log('min max error');
                     return false;
                 }
             }
-            if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0] > 45000) { // checks to see if the input is a reasonable length
+            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+                console.log('strin length error');
                 return false;
             }
 
@@ -476,9 +483,16 @@ class SuperComponent extends React.Component {
 
             TA_rubric = (<div key={'rub'}>
               <button type="button" className="float-button in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
-                {TA_rubric_content}
-              </CSSTransitionGroup>
+              <TransitionGroup>
+                <CSSTransition 
+                  timeout={{enter: 500, exit: 300}}
+                  classNames="example" 
+                  appear
+                  enter 
+                  exit>
+                    {TA_rubric_content}
+                    </CSSTransition>
+                </TransitionGroup>
 
             </div>);
         }
@@ -615,16 +629,16 @@ class SuperComponent extends React.Component {
                   >
                     {rubricButtonText}
                   </button>
-                  <CSSTransitionGroup
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}
-                    transitionAppearTimeout={500}
-                    transitionName="example"
-                    transitionAppear={false}
-                    transitionEnter transitionLeave
-                  >
+                  <TransitionGroup>
+                    <CSSTransition 
+                    timeout={{enter: 500, exit: 300}}
+                    classNames="example" 
+                    appear
+                    enter 
+                    exit>
                     {rubric_content}
-                  </CSSTransitionGroup>
+                    </CSSTransition>
+                  </TransitionGroup>
                 </div>
               );
             }

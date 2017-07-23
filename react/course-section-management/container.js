@@ -7,7 +7,6 @@ import CourseManager from './course-manager';
 import SemesterManager from './semester-manager';
 import SectionManager from './section-manager';
 import UserManager from './user-manager';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 // this container tracks the selected ID of each component card and makes them
 // available to the others for condtional rendering and API calls

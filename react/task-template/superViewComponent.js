@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -85,10 +85,17 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
+              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
+              <TransitionGroup>
+                <CSSTransition 
+                  timeout={{enter: 500, exit: 300}}
+                  classNames="example" 
+                  appear
+                  enter 
+                  exit>
                 {TA_rubric_content}
-              </CSSTransitionGroup>
+                </CSSTransition>
+              </TransitionGroup>
             </div>);
         }
 
@@ -141,16 +148,16 @@ class SuperViewComponent extends React.Component {
                   >
                     {rubricButtonText}
                   </button>
-                  <CSSTransitionGroup
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}
-                    transitionAppearTimeout={500}
-                    transitionName="example"
-                    transitionAppear={false}
-                    transitionEnter transitionLeave
-                  >
+                  <TransitionGroup>
+                    <CSSTransition 
+                      timeout={{enter: 500, exit: 300}}
+                      classNames="example" 
+                      appear
+                      enter 
+                      exit>
                     {rubric_content}
-                  </CSSTransitionGroup>
+                    </CSSTransition>
+                  </TransitionGroup>
                 </div>
               );
             }
