@@ -103,7 +103,7 @@ class TemplateContainer extends React.Component {
 
                     if (bod.error === true) {
                         console.log('Error message', bod.message);
-                        this.setState({
+                        return this.setState({
                             NotAllowed: true,
                             Loaded: true,
                         });
@@ -337,9 +337,10 @@ class TemplateContainer extends React.Component {
 			// while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return <div />;
         }
+        
 
         if (this.state.NotAllowed === true) {
-            renderView = (<div>{this.state.Strings.NotAllowed}</div>);
+            renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
               TasksArray={this.state.Data}

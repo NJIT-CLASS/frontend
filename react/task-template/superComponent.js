@@ -778,7 +778,7 @@ class SuperComponent extends React.Component {
           <div>
             {infoMessage}
             <div className="section card-2">
-              <div onClick={this.toggleContent.bind(this)}>
+              <div /*{onClick={this.toggleContent.bind(this)}*/>
                 <h2 className="title">{this.props.ComponentTitle} </h2>
               </div>
               {content}

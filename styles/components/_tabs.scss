@@ -34,14 +34,15 @@ $break-large: 1200px;
 }
 
 .react-tabs{
-  width: 100%;
+	width: 100%;
+	
 }
 .react-tabs [role=tab]{
-  width:25%;
+	width:25%;
+	cursor:pointer;
 	height: 30px;
   border-bottom: none;
-	-webkit-border-radius: 0px !important;
-	-moz-border-radius: 0px !important ;
+	border-radius: 0px !important;
   border-color: #E7EAEC;
   background-color: rgba(201, 201, 207,0.4);
   padding-top: 5px;
