@@ -113,9 +113,13 @@ class MainBadge extends React.Component {
                            SemesterID={this.state.SemesterID}
                            UserID={this.props.UserID}
                            CourseID={this.state.CourseID}
+                           SectionID={this.state.SectionID}
                            BadgeCategory={this.state.BadgeCategory}
                     />
                 </div>
+        }else{
+            apiContentHolder =
+                <div id="badge"><h1 id="noBadgeh1">No Badge To Display 😭</h1></div>
         }
 
 

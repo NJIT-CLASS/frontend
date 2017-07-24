@@ -45,41 +45,94 @@
   text-align: center;
 }
 
-.leaderBoardRanks{
+.classRankingRanks, .vsSectionRanks, .topMoversRanks{
   clear: both;
   border: 1px solid grey;
   padding: 10px;
 }
 
-.leaderBoardStudentNames{
+.classRankingStudentNames, .vsSectionStudentNames, .topMoversStudentNames{
   float: left;
 }
 
-.leaderBoardAvatars{
+
+.classRankingImageContainer ,.vsSectionImageContainer, .topMoversImageContainer{
+  display: none;
+}
+
+#classRankingImage1, #classRankingImage2, #classRankingImage3, #classRankingImage4, #classRankingImage5, #topMoversImage1, #topMoversImage2, #topMoversImage3,
+#topMoversImage4, #topMoversImage5, #vsSectionsImage1, #vsSectionsImage2, #vsSectionsImage3, #vsSectionsImage4, #vsSectionsImage5{
+  display: block;
+}
+
+.classRankingAvatars, .vsSectionAvatars, .topMoversAvatars{
   float: right;
-  width: 25px;
+  width: 50px;
   border: 2px solid rebeccapurple;
   border-radius: 100%;
 }
 
-.leaderboardPointsContainer{
+#classRankingNameAndPointContainer, #topMoversNameAndPointContainer, #vsSectionsNameAndPointContainer{
+  float: left;
+}
+
+#topMoversNameAndPointContainer, #vsSectionsNameAndPointContainer{
+  width: 80%;
+}
+
+.classRankingPointsContainer, .vsSectionPointsContainer, .topMoversPointsContainer{
   clear: both;
   margin-top: 10px;
 }
 
-.leaderBoardPoints{
+.classRankingPoints, .vsSectionPoints, .topMoversPoints{
   float: left;
-  color: green;
+  clear:both;
+  margin-top: 10px;
+  color: #339900;
+  font-family: Arial;
+  font-weight: bold;
 }
 
-.leaderBoardPointsAdded{
+.vsSectionPointsAdded, .topMoversPointsAdded{
   float: right;
+  font-family: Arial;
+  color: #00CCFF;
+  font-weight: bold;
 }
 
-#leaderBoardTop1, #leaderBoardTop2, #leaderBoardTop3{
+#classRankingTop1, #classRankingTop2, #classRankingTop3, #vsSectionTop1, #vsSectionTop2, #vsSectionTop3, #topMoversTop1, #topMoversTop2, #topMoversTop3{
   background-color: #FFFF66;
 }
 
-.leaderBoardMiddleClearingDiv, .leaderBoardClearingDiv{
+.vsSectionMiddleClearingDiv, .topMoversMiddleClearingDiv, .classRankingClearingDiv, .vsSectionClearingDiv, .topMoversClearingDiv{
   clear:both;
+}
+
+#vsSectionToolTip, #TopMoversToolTip, #ClassRankingToolTip{
+  float:right;
+  font-family: sans-serif;
+}
+
+#classRankingStudentPointArea, #topMoversStudentPointArea, #vsSectionsStudentPointArea{
+  font-size: 1.2em;
+  padding: 25px;
+  text-align: center;
+}
+
+#vsSectionStudentClassRank{
+  font-family: Arial;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#classRankingLastUpdated, #topMoversLastUpdated, #vsSectionsLastUpdated{
+  padding: 10px;
+  text-align: center;
+}
+
+#classRankingStudentList, #vsSectionsStudentList, #topMoversStudentList{
+  max-height: 380px;
+  overflow-y:auto;
 }

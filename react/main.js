@@ -21,6 +21,7 @@ import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
 import MainBadge from './badge/mainBadge';
 import MainLeaderboard from './leaderboard/mainLeaderboard';
+import AchievementUnlock from './achievementUnlock/achievementUnlock';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -109,4 +110,7 @@ case 'leaderboard':
     ReactDOM.render(<MainLeaderboard UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
     break;
 
+case 'achievementUnlock':
+    ReactDOM.render(<AchievementUnlock UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    break;
 }

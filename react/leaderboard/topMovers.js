@@ -3,6 +3,8 @@
  */
 import React from 'react';
 import request from 'request';
+import Tooltip from '../shared/tooltip';
+
 
 class TopMovers extends React.Component {
     constructor(props){
@@ -37,29 +39,37 @@ class TopMovers extends React.Component {
     render(){
 
         let topMoversArray = [{Name: "Jimmy", Points:1231, Avatar:"favicon.ico", PointsAdded:"-2", key: 1}, {Name: "Erick", Points:453, PointsAdded:"+7", Avatar:"favicon.ico",key: 2},
-            {Name: "Alan", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Micheal", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4}];
+            {Name: "Alan", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Micheal", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4},
+            {Name: "Romeo", Points:123, Avatar:"favicon.ico", PointsAdded:"2", key: 5}, {Name: "Juilet", Points:111, PointsAdded:"+7", Avatar:"favicon.ico",key: 6},
+            {Name: "Poland", Points:101, PointsAdded:"+2", Avatar:"favicon.ico",key: 7}, {Name: "Spring", Points:100, PointsAdded:"-12", Avatar:"favicon.ico",key: 8}];
         let topMovers = topMoversArray.map(klassRank => {
-            return <div className="leaderBoardRanks" id={`leaderBoardTop${klassRank.key}`}>
-                <div>
-                    <h2 className="leaderBoardStudentNames">{klassRank.Name}</h2>
-                    <img className="leaderBoardAvatars" src={`static/${klassRank.Avatar}`} />
+            return <div className="topMoversRanks" id={`topMoversTop${klassRank.key}`}>
+                <div id="topMoversNameAndPointContainer">
+                    <h2 className="topMoversStudentNames">{klassRank.key}. {klassRank.Name}</h2>
+                    <div className="topMoversPoints">{klassRank.Points} points</div>
+                    <p className="topMoversPointsAdded">({klassRank.PointsAdded})</p>
                 </div>
-                <div className="leaderBoardMiddleClearingDiv"></div>
-                <div className="leaderboardPointsContainer">
-                    <div className="leaderBoardPoints">{klassRank.Points} points</div>
-                    <p className="leaderBoardPointsAdded">({klassRank.PointsAdded})</p>
+                <div className="topMoversImageContainer" id={`topMoversImage${klassRank.key}`}>
+                    <img className="topMoversAvatars" src={`static/${klassRank.Avatar}`} />
                 </div>
-                <div className="leaderBoardClearingDiv"></div>
+                <div className="topMoversClearingDiv"></div>
             </div>
         });
 
         return (
 
             <div className="section card-2">
-                <h2 id="topMoverTitle" className="title">Top Movers</h2>
-                <div>
+                <h2 id="topMoverTitle" className="title">Weekly Top Movers
+                    <div id="TopMoversToolTip"><Tooltip Text="This section display the ranking movement differences for the week." ID="TopMoversToolTip" /></div>
+                </h2>
+                <div id="topMoversStudentPointArea"><p>Your Rank Movement: {this.props.Points}</p></div>
+                <div id="topMoversStudentList">
                   {topMovers}
+
+
                 </div>
+                <p id="topMoversLastUpdated">Last Updated: </p>
+
             </div>
 
         );

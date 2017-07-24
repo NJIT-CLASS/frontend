@@ -1,11 +1,11 @@
 /**
  * Created by Sohail on 7/16/2017.
  */
-const handler = require('../route-handlers/experience-bar');
+const handler = require('../route-handlers/achievementUnlock');
 
 module.exports = {
-    route: '/experience-bar',
-    title: 'Experience Bar',
+    route: '/achievementUnlock',
+    title: 'Achievement Unlock',
     routeHandler: handler,
     access: {
         admins: true,
@@ -13,6 +13,6 @@ module.exports = {
         students: true,
         loggedOut: false
     },
-    icon: 'window-minimize',
+    icon: 'unlock-alt',
     sidebar: true
 };

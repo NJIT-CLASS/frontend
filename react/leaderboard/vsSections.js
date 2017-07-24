@@ -3,6 +3,8 @@
  */
 import React from 'react';
 import request from 'request';
+import Tooltip from '../shared/tooltip';
+
 
 class VsSections extends React.Component {
     constructor(props){
@@ -37,28 +39,36 @@ class VsSections extends React.Component {
     render(){
 
         let vsSectionsArray = [{Name: "Micheal", Points:1231, Avatar:"favicon.ico", PointsAdded:"-2", key: 1}, {Name: "Alan", Points:453, PointsAdded:"+7", Avatar:"favicon.ico",key: 2},
-            {Name: "Jimmy", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Erick", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4}];
+            {Name: "Jimmy", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Erick", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4},
+            {Name: "Romeo", Points:123, Avatar:"favicon.ico", PointsAdded:"2", key: 5}, {Name: "Juilet", Points:111, PointsAdded:"+7", Avatar:"favicon.ico",key: 6},
+            {Name: "Poland", Points:101, PointsAdded:"+2", Avatar:"favicon.ico",key: 7}, {Name: "Spring", Points:100, PointsAdded:"-12", Avatar:"favicon.ico",key: 8}];
         let vsSections = vsSectionsArray.map(klassRank => {
-            return <div className="leaderBoardRanks" id={`leaderBoardTop${klassRank.key}`}>
-                <div>
-                    <h2 className="leaderBoardStudentNames">{klassRank.key}. {klassRank.Name}</h2>
-                    <img className="leaderBoardAvatars" src={`static/${klassRank.Avatar}`} />
+            return <div className="vsSectionRanks" id={`vsSectionTop${klassRank.key}`}>
+                <div id="vsSectionsNameAndPointContainer">
+                    <h2 className="vsSectionStudentNames">{klassRank.key}. {klassRank.Name}</h2>
+                    <div className="vsSectionPoints">{klassRank.Points} points</div>
+                    <p className="vsSectionPointsAdded">({klassRank.PointsAdded})</p>
                 </div>
-                <div className="leaderBoardMiddleClearingDiv"></div>
-                <div className="leaderboardPointsContainer">
-                    <div className="leaderBoardPoints">{klassRank.Points} points</div>
-                    <p className="leaderBoardPointsAdded">({klassRank.PointsAdded})</p>
+                <div className="vsSectionImageContainer" id={`vsSectionsImage${klassRank.key}`}>
+                    <img className="vsSectionAvatars" src={`static/${klassRank.Avatar}`} />
                 </div>
-                <div className="leaderBoardClearingDiv"></div>
+                <div className="vsSectionClearingDiv"></div>
             </div>
         });
 
         return (
 
             <div className="section card-2">
-                <h2 id="vsSectionsTitle" className="title">vs Sections</h2>
+                <h2 id="vsSectionsTitle" className="title">vs Sections
+                    <div id="vsSectionToolTip"><Tooltip Text="This section displays how your class compares about others class in terms of points earned per class member." ID="csSectionToolTip" /></div>
+                </h2>
+                <div id="vsSectionsStudentPointArea"><p>Your Class Points: {this.props.Points}</p>
+                    <p id="vsSectionStudentClassRank">Class Rank:  {this.state.Points}</p></div>
 
-                {vsSections}
+                <div id="vsSectionsStudentList">
+                    {vsSections}
+                </div>
+                <p id="vsSectionsLastUpdated">Last Updated: </p>
 
             </div>
 

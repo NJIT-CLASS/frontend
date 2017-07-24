@@ -7,7 +7,7 @@ const pages = [
     'course-section-management',
     'badges',
     'leaderboard',
-    'experience-bar',
+    'achievementUnlock',
     'create-assignment',
     'assignment-editor',
     'administrator',

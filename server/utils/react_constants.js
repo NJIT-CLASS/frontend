@@ -1,6 +1,6 @@
 const path = require('path');
 
-exports.API_URL = process.env.API_URL || 'http://localhost:4002' ;
+exports.API_URL = process.env.API_URL || 'http://localhost:4000' ;
 
 //Language Options
 exports.LANGUAGES = [{

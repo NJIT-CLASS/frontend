@@ -6,7 +6,7 @@ exports.get = (req, res) => {
     if(req.App.user === undefined){
         res.redirect('/');
     }
-    res.render('badges', {
+    res.render('achievementUnlock', {
         scripts: ['/static/react_apps.js'],
         userId: req.App.user.userId,
         apiUrl: API_URL

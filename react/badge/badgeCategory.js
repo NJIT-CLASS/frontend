@@ -28,7 +28,6 @@ class BadgeCategory extends React.Component {
         //err will say if there is any error
         //response will be status
         request(fetchOptions,(err, response, body) => {
-            console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             console.log(body);
             this.setState({
                 badgeCategory: body.categories,
@@ -56,7 +55,7 @@ class BadgeCategory extends React.Component {
 
         let badgeCategoryMap = this.state.badgeCategory.map(badgeKatKey => {
             return{
-                value: badgeKatKey.BadgeCategoryID,
+                value: badgeKatKey.CategoryID,
                 label: badgeKatKey.Name
             }
 

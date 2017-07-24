@@ -1,4 +1,5 @@
 import React from 'react';
+import BadgeProgressBar from './badgeProgressBar';
 var ProgressBar = require('progressbar.js');
 
 class BadgeDisplay extends React.Component {
@@ -8,70 +9,39 @@ class BadgeDisplay extends React.Component {
         this.state = {};
     }
 
-    componentDidMount() {
-        var progressBarContainer = document.querySelector(`#container${this.props.badgeKey}`);
-        var progressNumber = this.props.Progress;
-        if (progressNumber == 100){
-            progressNumber = "Completed";
-        }
-        var bar = new ProgressBar.Line(progressBarContainer, {
-            strokeWidth: 3,
-            easing: 'easeInOut',
-            duration: 2000,
-            color: 'green',
-            trailColor: '#eee',
-            trailWidth: 1,
-            svgStyle: {width: this.props.Progress+"%", height: '10px'},
-            text: {
-                style: {
-                    // Text color.
-                    // Default: same as stroke color (options.color)
-                    color: '#999',
-                    // position: 'absolute',
-                    // right: '0',
-                    // top: '30px',
-                    padding: 0,
-                    margin: 0,
-                    transform: null
-                },
-                autoStyleContainer: false
-            },
-            from: {color: '#FFEA82'},
-            to: {color: '#ED6A5A'},
-            step: (state, bar) => {
-                if(progressNumber != "Completed") {
-                    bar.setText(Math.round(bar.value() * progressNumber) + ' %');
-                }else{
-                    bar.setText(progressNumber);
-                }
-            }
-        });
 
-        bar.animate(1.0);  // Number from 0.0 to 1.0
-
-//CIRCLE
-/*        var bar = new ProgressBar.Circle(container, {
-            strokeWidth: 6,
-            easing: 'easeInOut',
-            duration: 1400,
-            color: '#FFEA82',
-            trailColor: '#eee',
-            trailWidth: 1,
-            svgStyle: null
-        });
-
-        bar.animate(1.0);*/
-
-    };
 
 
     //We will decided over here how it's supposed to look
     render() {
+        var bronzeProgress = this.props.userPoints/this.props.requirement1;
+        var silverProgress = this.props.userPoints/this.props.requirement2;
+        var goldProgress = this.props.userPoints/this.props.requirement3;
         return (
-            <div className="displayingBadgesWithProgress">
+            <div className="displayingBadgesWithProgressContainer">
 
-                <img src={"/static/images/"+this.props.urlForBadge} alt="g" className="badgesImages"/>
-                <div className="displayProgress" id={`container${this.props.badgeKey}`}></div>
+                <div className="displayingBadgesWithProgress">
+                    <img src={"/static/images/badgeImages/"+this.props.urlForBronzeBadge} alt={this.props.bronzeBadgeDescription} className="badgesImages"/>
+                    <BadgeProgressBar UserPoints={this.props.userPoints}
+                                      requirement={this.props.requirement1}
+                                      badgeProgressBarID="bronzeBadge"/>
+                </div>
+
+                <div className="displayingBadgesWithProgress">
+                    <img src={"/static/images/badgeImages/"+this.props.urlForSilverBadge} alt={this.props.silverBadgeDescription} className="badgesImages"/>
+                    <BadgeProgressBar
+                        UserPoints={this.props.userPoints}
+                        requirement={this.props.requirement2}
+                         badgeProgressBarID="silverBadge"/>
+                </div>
+
+                <div className="displayingBadgesWithProgress">
+                    <img src={"/static/images/badgeImages/"+this.props.urlForGoldBadge} alt={this.props.goldBadgeDescription} className="badgesImages"/>
+                    <BadgeProgressBar
+                        UserPoints={this.props.userPoints}
+                        requirement={this.props.requirement3}
+                        badgeProgressBarID="goldBadge"/>
+                </div>
 
             </div>
 
