@@ -669,6 +669,7 @@ class SuperComponent extends React.Component {
                         value={latestVersion[idx][1]}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                         placeholder={this.props.Strings.JustificationPlaceholder}
+                        disabled={this.state.TaskStatus === 'Complete'}
                     />
                 </div>);
             }
@@ -680,14 +681,21 @@ class SuperComponent extends React.Component {
                 switch (this.state.TaskActivityFields[idx].assessment_type) {
                 case 'grade':
                     fieldInput = (<div>
-                        <input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />
+                        <input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]}
+                            onChange={this.handleContentChange.bind(this, idx)} placeholder="..."
+                            disabled={this.state.TaskStatus === 'Complete'}
+                        />
                         <div>{this.props.Strings.Min}: {this.state.TaskActivityFields[idx].numeric_min}</div>
                         <div>{this.props.Strings.Max}: {this.state.TaskActivityFields[idx].numeric_max}</div>
                         <br/>
                     </div>);
                     break;
                 case 'rating':
-                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={latestVersion[idx][0]} onRate={this.handleStarChange.bind(this, idx)} />);
+                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} 
+                        rating={latestVersion[idx][0]} 
+                        onRate={this.handleStarChange.bind(this, idx)}
+                        interactive={this.state.TaskStatus === 'Complete'}
+                    />);
                     break;
                 case 'pass':
                     fieldInput = (<div className="true-checkbox">
@@ -718,6 +726,8 @@ class SuperComponent extends React.Component {
                             onChange={this.handleSelectChange.bind(this, idx)}
                             clearable={false}
                             searchable={false}
+                            disabled={this.state.TaskStatus === 'Complete'}
+                            
                         />
                     </div>
                     );
@@ -728,12 +738,17 @@ class SuperComponent extends React.Component {
                 }
                 break;
             case 'text':
-                fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder} />);
+                fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder} 
+                    disabled={this.state.TaskStatus === 'Complete'}
+                />);
 
                 break;
             case 'numeric':
 
-                fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />);
+                fieldInput = (<input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} 
+                    onChange={this.handleContentChange.bind(this, idx)} placeholder="..."
+                    disabled={this.state.TaskStatus === 'Complete'}
+                />);
 
 
                 break;
