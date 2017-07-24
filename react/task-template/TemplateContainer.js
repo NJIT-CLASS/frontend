@@ -69,17 +69,17 @@ class TemplateContainer extends React.Component {
     }
 
     getTaskData() {
-		// this function makes an API call and saves the data into appropriate state variables
+        // this function makes an API call and saves the data into appropriate state variables
 
         const options = {
-				// query strings
+            // query strings
             courseID: this.props.CourseID,
             userID: this.props.UserID,
             sectionID: this.props.SectionID,
         };
 
-		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
-		// for rendering
+        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+        // for rendering
         const options2 = {
             userID: this.props.UserID,
         };
@@ -181,14 +181,16 @@ class TemplateContainer extends React.Component {
 
                                 apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
                                     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                                    //console.log(reviseBod);
+                                    console.log(reviseBod);
                                     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
-                                        return node.model.id === parseInt(this.props.TaskID);
+                                        return node.model.id === currentTask.TaskActivity.TaskActivityID;
                                     });
 
-                                    console.log(currentTaskNode);
-                                    if(currentTaskNode.children && currentTaskNode.children[2]){
-                                        if(currentTaskNode.children[2].children && currentTaskNode.children[2].children[2]){
+                                    console.log('Revision: currentTask', currentTaskNode);
+                                    if(currentTaskNode.children !== undefined && currentTaskNode.children[2]  !== undefined){
+                                        console.log('Revision: first child', currentTaskNode.children[2]  !== undefined);
+                                        if(currentTaskNode.children[2].children  !== undefined && currentTaskNode.children[2].children[2]){
+                                            console.log('Revision: second child: ', currentTaskNode.children[2].children[2]);
                                             this.setState({
                                                 IsRevision: true
                                             });
@@ -215,9 +217,9 @@ class TemplateContainer extends React.Component {
 
                             apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
                                 reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                            //console.log(reviseBod);
+                                //console.log(reviseBod);
                                 let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
-                                    return node.model.id === parseInt(this.props.TaskID);
+                                    return node.model.id === currentTask.TaskActivity.TaskActivityID;
                                 });
                                 let possibleEditTask = currentTaskNode;
                                 let editIndex = null;
@@ -295,7 +297,7 @@ class TemplateContainer extends React.Component {
     }
 
     componentWillMount() {
-		// this function is called before the component renders, so that the page renders with the appropriate state data
+        // this function is called before the component renders, so that the page renders with the appropriate state data
         this.getTaskData();
     }
 
@@ -309,7 +311,7 @@ class TemplateContainer extends React.Component {
         let returningValues = ['', ''];
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
-              /// If multiple participants, assume that whichever is first in the array is desired
+                /// If multiple participants, assume that whichever is first in the array is desired
                 task.forEach((miniTask) => {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
@@ -318,7 +320,7 @@ class TemplateContainer extends React.Component {
                 });
             } else {
                 if(task.TaskActivity.TaskActivityID === taskActivityID){
-                  //if multiple versions, assume that the lastest version is desired
+                    //if multiple versions, assume that the lastest version is desired
 
                     returningValues = task.Data[task.Data.length - 1][fieldIndex];
                 }
@@ -330,11 +332,11 @@ class TemplateContainer extends React.Component {
     render() {
         let renderView = null;
         if (this.state.Error) {
-			// if there was an error in the data fetching calls, show the Error Component
+            // if there was an error in the data fetching calls, show the Error Component
             return <ErrorComponent />;
         }
         if (!this.state.Loaded) {
-			// while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
+            // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return <div />;
         }
         
@@ -343,76 +345,77 @@ class TemplateContainer extends React.Component {
             renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
-              TasksArray={this.state.Data}
-              getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-              TaskID={this.props.TaskID}
-              UserID={this.props.UserID}
-              Strings={this.state.Strings}
-              apiUrl={this.props.apiUrl}
-              IsRevision={this.state.IsRevision}
+                TasksArray={this.state.Data}
+                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                TaskID={this.props.TaskID}
+                UserID={this.props.UserID}
+                Strings={this.state.Strings}
+                apiUrl={this.props.apiUrl}
+                TaskStatus={this.state.TaskStatus}
+                IsRevision={this.state.IsRevision}
             />);
         }
 
 
         return (
-          <div>
-            <Tabs
-              onSelect={(tab) => {
-                  this.setState({ TabSelected: tab });
-              }}
-              selectedIndex={this.state.TabSelected}
-            >
-              <TabList className="big-text">
-                <Tab>{this.state.Strings.Task}</Tab>
-                <Tab>{this.state.Strings.Comments}</Tab>
-              </TabList>
-              <TabPanel>
-                <HeaderComponent
-                  TaskID={this.props.TaskID}
-                  CourseName={this.state.CourseName}
-                  CourseName={this.state.CourseName}
-                  CourseNumber={this.state.CourseNumber}
-                  Assignment={this.state.Assignment}
-                  TaskActivityType={this.state.TaskActivityType}
-                  SemesterName={this.state.SemesterName}
-                  SectionName={this.state.SectionName}
-                  Strings={this.state.Strings}
+            <div>
+                <Tabs
+                    onSelect={(tab) => {
+                        this.setState({ TabSelected: tab });
+                    }}
+                    selectedIndex={this.state.TabSelected}
+                >
+                    <TabList className="big-text">
+                        <Tab>{this.state.Strings.Task}</Tab>
+                        <Tab>{this.state.Strings.Comments}</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <HeaderComponent
+                            TaskID={this.props.TaskID}
+                            CourseName={this.state.CourseName}
+                            CourseName={this.state.CourseName}
+                            CourseNumber={this.state.CourseNumber}
+                            Assignment={this.state.Assignment}
+                            TaskActivityType={this.state.TaskActivityType}
+                            SemesterName={this.state.SemesterName}
+                            SectionName={this.state.SectionName}
+                            Strings={this.state.Strings}
                   
-                />
+                        />
 
-                {renderView}
+                        {renderView}
 
-              </TabPanel>
-              <TabPanel>
-                <div className="placeholder" />
-                {/*  Future work to support comments*/}
+                    </TabPanel>
+                    <TabPanel>
+                        <div className="placeholder" />
+                        {/*  Future work to support comments*/}
 
-                <CommentComponent
-                  Comment={{
-                      Author: 'User1',
-                      Timestamp: 'May 6, 2013 9:43am',
-                      Content: 'I really liked your problem. It was very intriguing.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'User2',
-                      Timestamp: 'May 6, 2013 11:09am',
-                      Content: 'I agree. I would have never thought of this.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'Instructor',
-                      Timestamp: 'May 6, 2013 3:32pm',
-                      Content: 'Your approach of the problem is very unique. Well done.',
-                  }}
-                />
-              </TabPanel>
+                        <CommentComponent
+                            Comment={{
+                                Author: 'User1',
+                                Timestamp: 'May 6, 2013 9:43am',
+                                Content: 'I really liked your problem. It was very intriguing.',
+                            }}
+                        />
+                        <CommentComponent
+                            Comment={{
+                                Author: 'User2',
+                                Timestamp: 'May 6, 2013 11:09am',
+                                Content: 'I agree. I would have never thought of this.',
+                            }}
+                        />
+                        <CommentComponent
+                            Comment={{
+                                Author: 'Instructor',
+                                Timestamp: 'May 6, 2013 3:32pm',
+                                Content: 'Your approach of the problem is very unique. Well done.',
+                            }}
+                        />
+                    </TabPanel>
 
-            </Tabs>
+                </Tabs>
 
-          </div>
+            </div>
         );
     }
 }

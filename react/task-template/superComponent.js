@@ -22,7 +22,7 @@ import { TASK_TYPES } from '../../server/utils/react_constants'; // contains con
 class SuperComponent extends React.Component {
     constructor(props) {
         super(props);
-    /*
+        /*
     PROPS:  -TaskData
             -TaskActivityFields (TaskAcitivtyData)
             -ComponentTitle
@@ -123,9 +123,9 @@ class SuperComponent extends React.Component {
     }
 
     isValidData() {
-      // go through all of TaskData's fields to check if null. If a field requires_justification,
-      // also check the justification field
-      // returns false if any field is null and true if all fields are filled
+        // go through all of TaskData's fields to check if null. If a field requires_justification,
+        // also check the justification field
+        // returns false if any field is null and true if all fields are filled
         for (let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++) {
             //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
@@ -167,9 +167,9 @@ class SuperComponent extends React.Component {
     }
 
     saveData(e) { //NEEDS TO BE UPDATED TO SUPPORT VERSIONING
-      // function makes a POST call and sends in the state variables which hold the user's input
+        // function makes a POST call and sends in the state variables which hold the user's input
         e.preventDefault(); // standard JavaScript behavior
-      // if task is complete, don't allow saving new data
+        // if task is complete, don't allow saving new data
         if (this.props.TaskStatus.includes('complete')) {
             return;
         }
@@ -203,17 +203,17 @@ class SuperComponent extends React.Component {
 
     submitData(e) {
         e.preventDefault();
-      // don't allow submit if task is complete
+        // don't allow submit if task is complete
         if (this.props.TaskStatus.includes('complete')) {
             return;
         }
 
-      //check if submit is in progress
+        //check if submit is in progress
         if(this.state.LockSubmit){
             return;
         }
 
-      // check if input is valid
+        // check if input is valid
         const validData = this.isValidData();
         if (validData) {
             const options = {
@@ -255,7 +255,7 @@ class SuperComponent extends React.Component {
     // }
 
     toggleRubric() {
-      // shows or hides the task activity rubric
+        // shows or hides the task activity rubric
         const bool = !this.state.ShowRubric;
 
         this.setState({
@@ -264,7 +264,7 @@ class SuperComponent extends React.Component {
     }
 
     toggleContent() {
-      // shows or hides the component's section-content for accordian view
+        // shows or hides the component's section-content for accordian view
         const bool = !this.state.ShowContent;
 
         this.setState({
@@ -273,7 +273,7 @@ class SuperComponent extends React.Component {
     }
 
     handleContentChange(index, event) {
-      // updates task data with new user input in grading fields
+        // updates task data with new user input in grading fields
 
         const newTaskResponse = this.state.TaskResponse;
         newTaskResponse[index][0] = event.target.value;
@@ -309,7 +309,7 @@ class SuperComponent extends React.Component {
     }
 
     handleStarChange(index, value) {
-      // updates rating grade in taskdata
+        // updates rating grade in taskdata
         let newResponse = this.state.TaskResponse;
         newResponse[index][0] = value.rating;
 
@@ -319,7 +319,7 @@ class SuperComponent extends React.Component {
     }
 
     toggleFieldRubric(index) {
-      // shows or hides the indivual fields' rubrics
+        // shows or hides the indivual fields' rubrics
         if (this.state.FieldRubrics[index] === []) {
             const newFieldRubrics = this.state.FieldRubrics;
             newFieldRubrics[index] = true;
@@ -364,7 +364,7 @@ class SuperComponent extends React.Component {
             return;
         }
 
-      // check if input is valid
+        // check if input is valid
         const validData = this.isValidData();
         if (validData) {
             const options = {
@@ -436,7 +436,7 @@ class SuperComponent extends React.Component {
 
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
-          // if invalid data, shows error message
+        // if invalid data, shows error message
 
         if (this.state.Error) {
             return (<ErrorComponent />);
@@ -445,7 +445,7 @@ class SuperComponent extends React.Component {
         if (this.state.InputError) {
             infoMessage = (
                 <span className="message-view" onClick={() => { this.setState({ InputError: false }); }}>{this.props.Strings.InputErrorMessage}</span>
-);
+            );
             // old Modal style:
             // infoMessage = (<Modal title="Submit Error"  close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
         }
@@ -460,9 +460,9 @@ class SuperComponent extends React.Component {
 
         if (!this.props.TaskStatus.includes('complete')) {
             formButtons = (<div>
-              <br />
-              <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
-              {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
+                <br />
+                <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
+                {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
             </div>);
         }
 
@@ -473,24 +473,24 @@ class SuperComponent extends React.Component {
             let TA_rubric_content = null;
             if (this.state.ShowRubric) {
                 TA_rubric_content = (
-                  <div>
-                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
-                    <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Rubric} />
+                    <div>
+                        <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
+                        <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Rubric} />
 
-                  </div>
-                  );
+                    </div>
+                );
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="float-button in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <TransitionGroup>
-                <CSSTransition 
-                  timeout={{enter: 500, exit: 300}}
-                  classNames="example" 
-                  appear
-                  enter 
-                  exit>
-                    {TA_rubric_content}
+                <button type="button" className="float-button in-line" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+                <TransitionGroup>
+                    <CSSTransition 
+                        timeout={{enter: 500, exit: 300}}
+                        classNames="example" 
+                        appear
+                        enter 
+                        exit>
+                        {TA_rubric_content}
                     </CSSTransition>
                 </TransitionGroup>
 
@@ -498,22 +498,22 @@ class SuperComponent extends React.Component {
         }
         if (this.props.FileUpload !== null && (this.props.FileUpload.mandatory !== 0 || this.props.FileUpload.optional !== 0)) {
             fileUploadView = (
-              <div>
+                <div>
 
-                <FileUpload
-                  View='button'
-                  InitialNumberUploaded={this.state.NumberFilesStored}
-                  PostVars={{
-                      userId: this.props.UserID,
-                      taskInstanceId: this.props.TaskID
-                  }}
-                  MinUploads={this.props.FileUpload.mandatory}
-                  endpoint={'/api/upload/files'}
-                  MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
-                  onChange={this.handleFileUploads.bind(this)}
-                />
-              </div>
-          );
+                    <FileUpload
+                        View='button'
+                        InitialNumberUploaded={this.state.NumberFilesStored}
+                        PostVars={{
+                            userId: this.props.UserID,
+                            taskInstanceId: this.props.TaskID
+                        }}
+                        MinUploads={this.props.FileUpload.mandatory}
+                        endpoint={'/api/upload/files'}
+                        MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
+                        onChange={this.handleFileUploads.bind(this)}
+                    />
+                </div>
+            );
         }
 
         if(this.state.NewFilesUploaded.length !== 0){
@@ -525,55 +525,55 @@ class SuperComponent extends React.Component {
 
         if (this.props.Instructions != null && this.props.Instructions != '') {
             TA_instructions = (
-              <div >
-                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
-                <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Instructions} />
-              </div>);
+                <div >
+                    <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
+                    <MarkupText classNames="regular-text" key={'rubric'} content={this.props.Instructions} />
+                </div>);
         }
 
         if (this.state.DisputeStatus === false) {
             return (
-              <div className="">
-                {infoMessage}
-                <div className="section card-1">
-                  <div className="placeholder" />
-                  <div >
-                    <h2 className="title">{this.props.ComponentTitle} </h2>
-                  </div>
-                  <div className="section-content">
-                    {TA_instructions}
-                    {fileLinksView}
-                    <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
-                    <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
-                  </div>
-                </div>
-              </div>);
+                <div className="">
+                    {infoMessage}
+                    <div className="section card-1">
+                        <div className="placeholder" />
+                        <div >
+                            <h2 className="title">{this.props.ComponentTitle} </h2>
+                        </div>
+                        <div className="section-content">
+                            {TA_instructions}
+                            {fileLinksView}
+                            <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
+                            <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
+                        </div>
+                    </div>
+                </div>);
         }
 
         if(this.props.IsRevision){
             if([TASK_TYPES.COMMENT].includes(this.props.Type)){
                 revisionRejectView =  <button className="revision-buttons" 
-                                        onClick={this.rejectRevision.bind(this)}>
-                                        {this.props.Strings.RejectRevision}
-                                        </button>;
+                    onClick={this.rejectRevision.bind(this)}>
+                    {this.props.Strings.RejectRevision}
+                </button>;
                 revisionApproveView = <button className="revision-buttons" 
-                                        onClick={this.approveRevision.bind(this)}>
-                                        {this.props.Strings.ApproveRevision}
-                                </button>;
+                    onClick={this.approveRevision.bind(this)}>
+                    {this.props.Strings.ApproveRevision}
+                </button>;
                 formButtons = (
-                <div>
-                    <br />
-                    {revisionRejectView}
-                    {revisionApproveView}
-                </div>);
+                    <div>
+                        <br />
+                        {revisionRejectView}
+                        {revisionApproveView}
+                    </div>);
             }
             
         } 
         if([TASK_TYPES.EDIT].includes(this.props.Type)){
             revisionApproveView = <button className="revision-buttons" 
-                                        onClick={this.approveRevision.bind(this)}>
-                                        {this.props.Strings.ApproveRevision}
-                                </button>;
+                onClick={this.approveRevision.bind(this)}>
+                {this.props.Strings.ApproveRevision}
+            </button>;
             formButtons = (
                 <div>
                     <br />
@@ -581,7 +581,13 @@ class SuperComponent extends React.Component {
                 </div>);
         } 
 
-          // creating all input fields here
+
+        if (this.props.TaskStatus.includes('complete')) {
+            formButtons = (<div></div>);
+        }
+
+
+        // creating all input fields here
         const fields = this.state.TaskActivityFields.field_titles.map(function (title, idx) {
             let rubricView = null;
             let justification = null;
@@ -602,7 +608,7 @@ class SuperComponent extends React.Component {
                 }
 
                 fieldTitle = (<div>
-                  <div key={idx + 600}>{fieldTitleText}</div>
+                    <div key={idx + 600}>{fieldTitleText}</div>
                 </div>);
             }
 
@@ -613,57 +619,57 @@ class SuperComponent extends React.Component {
 
                 if (this.state.FieldRubrics[idx]) {
                     rubric_content = (
-                      <div key={this.state.TaskActivityFields[idx].title}>
-                        <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                        <div className="regular-text rubric">
-                          {this.state.TaskActivityFields[idx].rubric}
-                        </div>
-                      </div>);
+                        <div key={this.state.TaskActivityFields[idx].title}>
+                            <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
+                            <div className="regular-text rubric">
+                                {this.state.TaskActivityFields[idx].rubric}
+                            </div>
+                        </div>);
                 }
 
                 rubricView = (<div key={1200}>
-                  <button
-                    type="button"
-                    className=" float-button in-line"
-                    onClick={this.toggleFieldRubric.bind(this, idx)}
-                  >
-                    {rubricButtonText}
-                  </button>
-                  <TransitionGroup>
-                    <CSSTransition 
-                    timeout={{enter: 500, exit: 300}}
-                    classNames="example" 
-                    appear
-                    enter 
-                    exit>
-                    {rubric_content}
-                    </CSSTransition>
-                  </TransitionGroup>
+                    <button
+                        type="button"
+                        className=" float-button in-line"
+                        onClick={this.toggleFieldRubric.bind(this, idx)}
+                    >
+                        {rubricButtonText}
+                    </button>
+                    <TransitionGroup>
+                        <CSSTransition 
+                            timeout={{enter: 500, exit: 300}}
+                            classNames="example" 
+                            appear
+                            enter 
+                            exit>
+                            {rubric_content}
+                        </CSSTransition>
+                    </TransitionGroup>
                 </div>
-              );
+                );
             }
 
             if (this.state.TaskActivityFields[idx].instructions !== '') { // if instructions are empty, don't display anything
                 instructions = (
-                  <div key={1100}>
-                    <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
-                    <div className="regular-text instructions">
-                      {this.state.TaskActivityFields[idx].instructions}
+                    <div key={1100}>
+                        <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                        <div className="regular-text instructions">
+                            {this.state.TaskActivityFields[idx].instructions}
+                        </div>
                     </div>
-                  </div>
-              );
+                );
             }
 
             if (this.state.TaskActivityFields[idx].requires_justification) {
                 justification = (<div>
-                  <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
-                  <textarea
-                    key={idx + 100}
-                    className="big-text-field"
-                    value={latestVersion[idx][1]}
-                    onChange={this.handleJustificationChange.bind(this, idx)}
-                    placeholder={this.props.Strings.JustificationPlaceholder}
-                  />
+                    <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                    <textarea
+                        key={idx + 100}
+                        className="big-text-field"
+                        value={latestVersion[idx][1]}
+                        onChange={this.handleJustificationChange.bind(this, idx)}
+                        placeholder={this.props.Strings.JustificationPlaceholder}
+                    />
                 </div>);
             }
 
@@ -674,10 +680,10 @@ class SuperComponent extends React.Component {
                 switch (this.state.TaskActivityFields[idx].assessment_type) {
                 case 'grade':
                     fieldInput = (<div>
-                      <input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />
-                      <div>{this.props.Strings.Min}: {this.state.TaskActivityFields[idx].numeric_min}</div>
-                      <div>{this.props.Strings.Max}: {this.state.TaskActivityFields[idx].numeric_max}</div>
-                      <br/>
+                        <input type="number" min={this.state.TaskActivityFields[idx].numeric_min} max={this.state.TaskActivityFields[idx].numeric_max} key={idx} className="number-input" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder="..." />
+                        <div>{this.props.Strings.Min}: {this.state.TaskActivityFields[idx].numeric_min}</div>
+                        <div>{this.props.Strings.Max}: {this.state.TaskActivityFields[idx].numeric_max}</div>
+                        <br/>
                     </div>);
                     break;
                 case 'rating':
@@ -685,13 +691,13 @@ class SuperComponent extends React.Component {
                     break;
                 case 'pass':
                     fieldInput = (<div className="true-checkbox">
-                      <RadioGroup
-                        selectedValue={latestVersion[idx][0]} onChange={this.handleRadioChange.bind(this, idx)}
-                      >
-                        <label>{this.props.Strings.Pass} <Radio value={'pass'} /> </label>
-                        <label>{this.props.Strings.Fail} <Radio value={'fail'} /> </label>
+                        <RadioGroup
+                            selectedValue={latestVersion[idx][0]} onChange={this.handleRadioChange.bind(this, idx)}
+                        >
+                            <label>{this.props.Strings.Pass} <Radio value={'pass'} /> </label>
+                            <label>{this.props.Strings.Fail} <Radio value={'fail'} /> </label>
 
-                      </RadioGroup>
+                        </RadioGroup>
                     </div>);
                     break;
                 case 'evaluation':
@@ -703,16 +709,16 @@ class SuperComponent extends React.Component {
                         return {value: label, label: label};
                     });
                     fieldInput = (<div>
-                      <label>{this.props.Strings.LabelDirections}</label>
-                      <Select
-                        key={idx + 1000}
-                        options={labels}
-                        selectedValue={latestVersion[idx][0]}
-                        value={latestVersion[idx][0]}
-                        onChange={this.handleSelectChange.bind(this, idx)}
-                        clearable={false}
-                        searchable={false}
-                      />
+                        <label>{this.props.Strings.LabelDirections}</label>
+                        <Select
+                            key={idx + 1000}
+                            options={labels}
+                            selectedValue={latestVersion[idx][0]}
+                            value={latestVersion[idx][0]}
+                            onChange={this.handleSelectChange.bind(this, idx)}
+                            clearable={false}
+                            searchable={false}
+                        />
                     </div>
                     );
                     break;
@@ -737,22 +743,22 @@ class SuperComponent extends React.Component {
 
             }
             const fieldContentBlock = (
-              <div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
+                <div className="field-content" key={idx + 600}><b>{fieldTitleText}</b> {fieldInput}</div>
             );
             const latestVersionFieldView = (<div>
-              {fieldInput}
-              {justification}
+                {fieldInput}
+                {justification}
             </div>);
             completeFieldView = (
-              <div key={idx + 200}>
-                <div className="template-field-title">{fieldTitle}</div>
-                {instructions}
-                {rubricView}
-                <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length - 1)} Field={this.state.TaskActivityFields[idx]} FieldIndex={idx} Strings={this.props.Strings} />
+                <div key={idx + 200}>
+                    <div className="template-field-title">{fieldTitle}</div>
+                    {instructions}
+                    {rubricView}
+                    <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length - 1)} Field={this.state.TaskActivityFields[idx]} FieldIndex={idx} Strings={this.props.Strings} />
 
-                {latestVersionFieldView}
-              </div>
-              );
+                    {latestVersionFieldView}
+                </div>
+            );
 
             return completeFieldView;
         }, this);
@@ -763,28 +769,28 @@ class SuperComponent extends React.Component {
 
         if (this.state.ShowContent) {
             content = (<div className="section-content">
-              {TA_instructions}
-              {TA_rubric}
-              {fileLinksView}
-              {fileUploadView}
-              {fields}
-              {formButtons}
+                {TA_instructions}
+                {TA_rubric}
+                {fileLinksView}
+                {fileUploadView}
+                {fields}
+                {formButtons}
             </div>);
         } else {
             content = (<div />);
         }
 
         return ( // main render return()
-          <div>
-            {infoMessage}
-            <div className="section card-2">
-              <div /*{onClick={this.toggleContent.bind(this)}*/>
-                <h2 className="title">{this.props.ComponentTitle} </h2>
-              </div>
-              {content}
+            <div>
+                {infoMessage}
+                <div className="section card-2">
+                    <div /*{onClick={this.toggleContent.bind(this)}*/>
+                        <h2 className="title">{this.props.ComponentTitle} </h2>
+                    </div>
+                    {content}
+                </div>
             </div>
-          </div>
-          );
+        );
     }
 
 }
