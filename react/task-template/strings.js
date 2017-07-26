@@ -43,6 +43,7 @@ let strings = {
     JustificationInstructions: 'Justification Instructions',
     RejectRevision: 'Reject',
     ApproveRevision: 'Approve',
+    InsufficientFileErrorMessage: 'Missing some files. Please try again'
 
 };
 

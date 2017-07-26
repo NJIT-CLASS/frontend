@@ -244,7 +244,11 @@ class SuperComponent extends React.Component {
                 LockSubmit: false
             });
 
-            showMessage(this.props.Strings.InputErrorMessage);
+            if (!this.state.FileUploadsSatisfied) {
+                showMessage(this.props.Strings.InsufficientFileErrorMessage);
+            }else {
+                showMessage(this.props.Strings.InputErrorMessage);
+            }
         }
     }
 
@@ -470,7 +474,7 @@ class SuperComponent extends React.Component {
 
 
         if (this.props.Rubric != '' && this.props.Rubric != null) { // if no Rubric
-            let TA_rubric_content = null;
+            let TA_rubric_content = <div></div>;
             if (this.state.ShowRubric) {
                 TA_rubric_content = (
                     <div>
@@ -613,7 +617,7 @@ class SuperComponent extends React.Component {
             }
 
             if (this.state.TaskActivityFields[idx].rubric != '') { // if Rubric is empty, don't show anything
-                let rubric_content = null;
+                let rubric_content = <div></div>;
                 const buttonTextHelper = this.state.TaskActivityFields[idx].show_title ? title : '';
                 const rubricButtonText = this.state.FieldRubrics[idx] ? this.props.Strings.HideRubric : this.props.Strings.ShowRubric;
 
