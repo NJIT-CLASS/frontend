@@ -7,7 +7,9 @@ import Datetime from 'react-datetime';
 class SemesterManager extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            DeleteChangeMessage: ''
+        };
     }
 	// fetch all semesters when card is loaded
     componentWillMount() {
@@ -58,15 +60,30 @@ class SemesterManager extends React.Component {
     edit() {
         this.fetch();
     }
+
+//two level warning check
+    deleteChange(num) {
+        if (num == 1) {
+            this.setState({DeleteChangeMessage: 'check-1'});
+        }
+        if (num == 2) {
+            this.setState({DeleteChangeMessage: 'check-2'});
+        }
+    }
 	// delete semester
 	// additional confirmation should be presented to user to prevent data loss
     delete() {
+        this.setState({DeleteChangeMessage: ''});
         apiCall.get(`/semester/delete/${this.state.id}`,(err, res, body) => {
             this.changeID({
                 value: null
             });
             this.fetchAll();
         });
+    }
+
+    closeDeleteMessage() {
+        this.setState({DeleteChangeMessage: ''});
     }
 	// update name, start date, and end date of semester
 	// exit edit or create mode, reload semester list with updated semester
@@ -99,6 +116,7 @@ class SemesterManager extends React.Component {
             creating: false,
             editing: false
         });
+        this.setState({DeleteChangeMessage: ''});
     }
 	// propagate new semesterID to parent for rendering
     changeID(option) {
@@ -210,10 +228,29 @@ class SemesterManager extends React.Component {
 		// again, update date fields with better date entry interface
         let edit = (
 			<div className='card'>
-				<h2 className='title'>{this.props.strings.editSemester}</h2>
+				<h2 className='title'>{this.props.strings.editSemester}</h2><br /><br />
+
+        {(this.state.DeleteChangeMessage == 'check-1') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteSemester}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.deleteChange.bind(this, 2)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
+        {(this.state.DeleteChangeMessage == 'check-2') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteSemDoubleCheck}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.delete.bind(this)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
 
         <button type='button' onClick={this.cancel.bind(this)}>{this.props.strings.cancel}</button>
-        <button type='button' onClick={this.delete.bind(this)}>{this.props.strings.delete}</button>
+        <button type='button' onClick={this.deleteChange.bind(this, 1)}>{this.props.strings.delete}</button>
         <button type='button' onClick={this.update.bind(this)}>{this.props.strings.save}</button>
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>

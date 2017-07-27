@@ -5,7 +5,9 @@ import apiCall from '../shared/apiCall';
 class CourseManager extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            DeleteChangeMessage: ''
+        };
     }
 	// load all courses when selected organization changes
     componentWillMount() {
@@ -56,15 +58,30 @@ class CourseManager extends React.Component {
     edit() {
         this.fetch();
     }
+
+    //two level warning check
+    deleteChange(num) {
+        if (num == 1) {
+            this.setState({DeleteChangeMessage: 'check-1'});
+        }
+        if (num == 2) {
+            this.setState({DeleteChangeMessage: 'check-2'});
+        }
+    }
+
 	// delete course, cascade deletes
     delete() {
-
+        this.setState({DeleteChangeMessage: ''});
         apiCall.get(`/course/delete/${this.state.id}`, (err, res, body) => {
             this.changeID({
                 value: null
             });
             this.fetchAll();
         });
+    }
+
+    closeDeleteMessage() {
+        this.setState({DeleteChangeMessage: ''});
     }
 	// update number and name of course, reload course list, exit edit mode
     update() {
@@ -95,6 +112,7 @@ class CourseManager extends React.Component {
             creating: false,
             editing: false
         });
+        this.setState({DeleteChangeMessage: ''});
     }
 	// on successful creation of course, new ID is passed to parent
     changeID(option) {
@@ -189,11 +207,29 @@ class CourseManager extends React.Component {
 		// display form to edit existing course, prepopulated with existing data
         let edit = (
 			<div className='card'>
-				<h2 className='title'>{this.props.strings.editCourse}</h2>
+				<h2 className='title'>{this.props.strings.editCourse}</h2><br /><br />
 
+        {(this.state.DeleteChangeMessage == 'check-1') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteCourse}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.deleteChange.bind(this, 2)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
+        {(this.state.DeleteChangeMessage == 'check-2') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteCourseDoubleCheck}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.delete.bind(this)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
 
         <button type='button' onClick={this.cancel.bind(this)}>{this.props.strings.cancel}</button>
-        <button type='button' onClick={this.delete.bind(this)}>{this.props.strings.delete}</button>
+        <button type='button' onClick={this.deleteChange.bind(this, 1)}>{this.props.strings.delete}</button>
         <button type='button' onClick={this.update.bind(this)}>{this.props.strings.save}</button>
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>
