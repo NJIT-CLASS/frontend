@@ -181,14 +181,17 @@ class TemplateContainer extends React.Component {
     getCommentData() {
         apiCall.get(`/comments/ti/${this.props.TaskID}`, (err, res, body) => {
             let list = [];
-            if (body.Comments.length > 0 ) {
+            if (body != undefined ) {
                 for (let com of body.Comments) {
                     list.push(com);
                 }
+                this.setState({
+                    commentList: list
+                });
             }
-            this.setState({
-                commentList: list
-            });
+            else {
+              console.log('No comment data received.')
+            }
         });
     }
     componentWillMount() {
@@ -286,7 +289,7 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
-                {(this.state.commentList.length > 0) && (this.state.commentList.map((comment, index, array) => {
+                {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
                     if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
                         if ((index + 1) < array.length) {
                             return (
