@@ -1,0 +1,50 @@
+
+
+@media screen and (max-width: 700px)
+{
+
+    h2.title {
+        text-align: -webkit-center;
+    }
+
+    h2.title {
+        margin: 11px;
+    }
+
+    .card button {
+        float: none;
+        margin-top: 18px;
+        padding: 13px;
+        font-family: inherit;
+        outline: none;
+    }
+
+
+    .card .Select-control, .card form > input {
+        width: 90%;
+        min-width: 100px !important;
+    }
+
+    .card .Select-menu-outer {
+        min-width: 100% !important;
+        width: 190% !important;
+         }
+    div.Select-menu-outer{
+      max-width:90%;
+      width:90%;
+      min-width:120px; 
+    }
+
+    form{
+      text-align:left;
+    }
+
+
+     .card {
+            margin: 4px;
+            margin-left: 13px;
+            margin-top: 16px;
+            width: calc(100vw - 30px);
+            text-align: -webkit-center;
+      }
+}
