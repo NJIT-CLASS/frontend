@@ -56,16 +56,16 @@ class CommentComponent extends React.Component{
       else if ((this.props.Comment.UserID == this.props.CurrentUser) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) {
         this.setState({editExistingComment: true});
       }
-      this.props.Update();
+      this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
     }
 
     endReply() {
       this.setState({showEditor: false});
-      this.props.Update();
+      this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
     }
 
     endEdit(response) {
-      this.props.Update();
+      this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
       if (response != 'saved') {
         this.setState({editExistingComment: false});
       }
@@ -94,7 +94,7 @@ class CommentComponent extends React.Component{
         apiCall.post('/comments/delete/', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
             if(body.Message == 'Success') {
                 console.log('Successfully deleted comment.');
-                this.props.Update();
+                this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
             }
             else {
                 console.log('Error deleting comment.');
@@ -119,17 +119,18 @@ class CommentComponent extends React.Component{
     }
 
     handleChangeHideReason(event) {
-        this.setState({HideReasonValue: event.target.value});
+      this.setState({HideReasonValue: event.target.value});
     }
 
     hideExistingComment(event) {
+      console.log(this.state.HideReasonValue)
       event.preventDefault();
       if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
         apiCall.post('/comments/hide', {CommentsID: this.props.Comment.CommentsID, HideReason: this.state.HideReasonValue, HideType: this.state.CommentHideMessage}, (err, res, body) => {
           if(!body.Error) {
             console.log('Successfully hid comment.')
             this.setState({CommentChangeMessage: '', CommentHideMessage: '', HideReasonValue: ''})
-            this.props.Update();
+            this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
           }
           else {
             console.log('Error hiding comment.');
@@ -145,7 +146,7 @@ class CommentComponent extends React.Component{
           if(!body.Error) {
             console.log('Successfully unhid comment.')
             this.setState({CommentChangeMessage: ''})
-            this.props.Update();
+            this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
           }
           else {
             console.log('Error unhiding comment.');
@@ -267,7 +268,7 @@ class CommentComponent extends React.Component{
               <div className="timestamp" style={{display: 'inline'}}>{(this.props.Comment.Edited == 1) && (<span>{strings.EditedLabel}</span>)} {moment(this.props.Comment.Time).format('dddd, MMMM Do YYYY, h:mm:ss a')}</div>
               <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
               <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
-              {(((this.props.Comment.UserID == this.props.CurrentUser)|| (this.props.UserType == 'teacher') || (this.props.Admin == true)) && !this.state.showEditor) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
+              {((((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID) || (this.props.NextStatus == 'saved'))) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) && !this.state.showEditor) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
               {(!this.state.showEditor && (this.props.UserType == 'teacher') || (this.props.Admin == true)) && (
                 <div style={{display: 'inline'}}>
                   <div className="title"><a onClick={this.showHideMessage.bind(this, 'comment')}>{strings.HideLabel}</a></div>
@@ -312,7 +313,7 @@ class CommentComponent extends React.Component{
                   <CommentEditorComponent
                     UserID={this.props.Comment.UserID}
                     CurrentUser={this.props.CurrentUser}
-                    TaskID={this.props.Comment.TaskInstanceID}
+                    TargetID={this.props.Comment.TargetID}
                     Update={this.endEdit.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel}
                     Parents={this.props.Comment.Parents}
@@ -325,6 +326,8 @@ class CommentComponent extends React.Component{
                     UserType={this.props.UserType}
                     Admin={this.props.Admin}
                     Status={this.props.Comment.Status}
+                    CommentTarget={this.props.Comment.CommentTarget}
+                    AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                     Edit={true}
                   />
                   {(this.props.Comment.Status != 'saved') && (<div className="title"><a onClick={this.endEdit.bind(this)}>{strings.DiscardEditsLabel}</a></div>)}
@@ -337,11 +340,14 @@ class CommentComponent extends React.Component{
               (<div style={{marginLeft: (this.props.Comment.ReplyLevel + 1)*30}} className="comment">
                   <CommentEditorComponent
                     UserID={this.props.CurrentUser}
-                    TaskID={this.props.Comment.TaskInstanceID}
+                    TargetID={this.props.Comment.TargetID}
                     Update={this.endReply.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel + 1}
                     Parents={this.props.Comment.CommentsID}
+                    CommentTarget={this.props.Comment.CommentTarget}
+                    AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                   />
+
                   <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.CancelLabel}</a></div>
                 </div>)
             }

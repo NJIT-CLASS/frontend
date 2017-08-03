@@ -6,6 +6,7 @@ future stuff.
 */
 import React from 'react';
 import apiCall from '../shared/apiCall';
+import Select from 'react-select';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
 
 // Display Components: These only display data retrived from the database. Not interactive.
@@ -48,7 +49,8 @@ class TemplateContainer extends React.Component {
             Error: false,
             TabSelected: 0,
             Strings: strings,
-            NotAllowed: false
+            NotAllowed: false,
+            CommentTargetList: []
         };
 
         console.log(props.UserType, props.Admin);
@@ -158,7 +160,6 @@ class TemplateContainer extends React.Component {
 
                     console.log('tasklist', taskList);
 
-
                     this.setState({
                         Loaded: true,
                         CourseName: body.courseName,
@@ -178,8 +179,19 @@ class TemplateContainer extends React.Component {
         });
     }
 
-    getCommentData() {
-        apiCall.get(`/comments/ti/${this.props.TaskID}`, (err, res, body) => {
+    getIDData() {
+      apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
+          if (!body.Error) {
+            this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID})
+          }
+          else {
+            console.log('No comment ID data received.')
+          }
+      });
+    }
+
+    getCommentData(target, ID) {
+        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
             let list = [];
             if (body != undefined ) {
                 for (let com of body.Comments) {
@@ -194,9 +206,11 @@ class TemplateContainer extends React.Component {
             }
         });
     }
+
     componentWillMount() {
 		// this function is called before the component renders, so that the page renders with the appropriate state data
         this.getTaskData();
+        this.getIDData();
         this.getCommentData();
     }
 
@@ -227,13 +241,40 @@ class TemplateContainer extends React.Component {
         });
         return returningValues;
     }
+
+    handleChangeTarget(event) {
+        this.setState({CommentTarget: event.value});
+        this.getCommentData(event.Target, event.ID);
+    }
+
+    addCommentListItem(target, id, title) {
+        let commentTargetList = this.state.CommentTargetList;
+        let found = false;
+        for (let i of commentTargetList) {
+          if ((i.Target == target) && (i.ID == id)) {
+            found = true;
+          }
+        }
+        if (!found) {
+          commentTargetList.push({Target: target, ID: id, value: commentTargetList.length, label: title});
+          this.setState({CommentTargetList: commentTargetList});
+        }
+    }
+
+    showComments(target, id) {
+      let show;
+      for (let i of this.state.CommentTargetList) {
+        if ((i.Target == target) && (i.ID == id)) {
+          show = i.value;
+        }
+      }
+      console.log('show', show);
+      this.setState({CommentTarget: show, TabSelected: 1});
+      this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
+    }
+
+
     render() {
-        let strings = {
-            ActionText: 'Add a new comment',
-            ButtonText: 'Post',
-            PlaceHolderText: 'Comment text',
-            RatingLabel: 'Rating:'
-        };
         let renderView = null;
         if (this.state.Error) {
 			// if there was an error in the data fetching calls, show the Error Component
@@ -254,8 +295,9 @@ class TemplateContainer extends React.Component {
               UserID={this.props.UserID}
               Strings={this.state.Strings}
               apiUrl={this.props.apiUrl}
+              showComments={this.showComments.bind(this)}
+              addCommentListItem={this.addCommentListItem.bind(this)}
             />);
-
         }
 
         return (
@@ -281,6 +323,11 @@ class TemplateContainer extends React.Component {
                   SemesterName={this.state.SemesterName}
                   SectionName={this.state.SectionName}
                   Strings={this.state.Strings}
+                  AssignmentInstanceID={this.state.AssignmentInstanceID}
+                  WorkflowInstanceID={this.state.WorkflowInstanceID}
+                  addCommentListItem={this.addCommentListItem.bind(this)}
+                  ProblemThreadLabel={this.state.Strings.ProblemThreadLabel}
+                  showComments={this.showComments.bind(this)}
 
                 />
 
@@ -289,6 +336,8 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
+                <div className="regular-text">{this.state.Strings.CommentTargetLabel}</div>
+                <div style={{width: 280}}><Select options={this.state.CommentTargetList} value={this.state.CommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true}/></div>
                 {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
                     if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
                         if ((index + 1) < array.length) {
@@ -319,13 +368,17 @@ class TemplateContainer extends React.Component {
                     }
                 }))}
 
-                <CommentEditorComponent
-                  UserID={this.props.UserID}
-                  TaskID={this.props.TaskID}
-                  Update={this.getCommentData.bind(this)}
-                  ReplyLevel={0}
-                  Parents={null}
-                />
+                {this.state.CommentTarget != undefined &&
+                  (<CommentEditorComponent
+                    UserID={this.props.UserID}
+                    Update={this.getCommentData.bind(this)}
+                    ReplyLevel={0}
+                    Parents={null}
+                    CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
+                    TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
+                    AssignmentInstanceID={this.state.AssignmentInstanceID}
+                  />)
+                }
 
               </TabPanel>
 

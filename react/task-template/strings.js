@@ -43,6 +43,8 @@ let strings = {
     JustificationInstructions: 'Justification Instructions',
     RejectRevision: 'Reject',
     ApproveRevision: 'Approve',
+    ProblemThreadLabel: 'Problem Thread',
+    CommentTargetLabel: 'View comments on...'
 
 };
 

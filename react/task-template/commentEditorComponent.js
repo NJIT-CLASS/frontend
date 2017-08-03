@@ -52,8 +52,8 @@ class CommentEditorComponent extends React.Component {
         event.preventDefault();
         const commentParameters = {
             UserID: this.props.UserID,
-            AssignmentInstanceID: 1, //placeholder for API
-            TaskInstanceID: this.props.TaskID,
+            AssignmentInstanceID: this.props.AssignmentInstanceID,
+            TargetID: this.props.TargetID,
             Flag: this.state.NewCommentFlagValue,
             CommentsText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
@@ -62,7 +62,7 @@ class CommentEditorComponent extends React.Component {
             Time: moment().format('YYYY-MM-DD HH:mm:ss'),
             Status: 'submitted',
             CommentsID: this.props.CommentsID,
-
+            CommentTarget: this.props.CommentTarget
         };
 
         if (this.props.Edit) {
@@ -101,7 +101,7 @@ class CommentEditorComponent extends React.Component {
                 if(res.statusCode == 200) {
                     console.log('Successfully added comment.');
                     this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false});
-                    this.props.Update();
+                    this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
                 } else if (res.statusCode == 400) {
                     console.log('Error submitting comments.');
                 } else {
@@ -116,8 +116,8 @@ class CommentEditorComponent extends React.Component {
       event.preventDefault();
       const commentParameters = {
           UserID: this.props.UserID,
-          AssignmentInstanceID: 1, //placeholder for API
-          TaskInstanceID: this.props.TaskID,
+          AssignmentInstanceID: this.props.AssignmentInstanceID,
+          TargetID: this.props.TargetID,
           Flag: this.state.NewCommentFlagValue,
           CommentsText: this.state.NewCommentValue,
           Rating: this.state.NewCommentRating,
@@ -125,7 +125,8 @@ class CommentEditorComponent extends React.Component {
           Parents: this.props.Parents,
           Time: moment().format('YYYY-MM-DD HH:mm:ss'),
           Status: 'saved',
-          CommentsID: this.props.CommentsID
+          CommentsID: this.props.CommentsID,
+          CommentTarget: this.props.CommentTarget
       };
 
         if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
@@ -133,12 +134,12 @@ class CommentEditorComponent extends React.Component {
           this.setState({CommentBlank: true});
         }
 
-        if (commentParameters.CommentsID == null) {
+        else if (commentParameters.CommentsID == null) {
           apiCall.post('/comments/add/', commentParameters, (err, res, body) => {
               if(res.statusCode == 200) {
                   console.log('Successfully saved comment.');
                   this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false, SaveSuccess: true});
-                  this.props.Update();
+                  this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
               } else if (res.statusCode == 400) {
                   console.log('Error saving comments.');
                   this.setState({SaveSuccess: false});
@@ -234,7 +235,7 @@ class CommentEditorComponent extends React.Component {
               <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>
               <i className="fa fa-flag" style={{color:this.state.NewCommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>
               <div className="regular-text comtext">
-                  <input placeholder={inputPlaceholderText} type="text" maxlength="255" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
+                  <input placeholder={inputPlaceholderText} type="text" maxLength="255" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
                   <button onClick={this.handleSubmit.bind(this)}>{strings.ButtonText0}</button>
                   {(this.props.Status != 'submitted') && (<button onClick={this.handleSave.bind(this)}>{strings.ButtonText1}</button>)}
               </div>

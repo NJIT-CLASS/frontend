@@ -8,6 +8,7 @@ import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import apiCall from '../shared/apiCall';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -21,6 +22,20 @@ class SuperViewComponent extends React.Component {
             Ready: false,
             Error: false,
         };
+    }
+
+    componentWillMount() {
+      this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
+      apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
+          let list = [];
+          if (!body.Error) {
+              let numComments = body.NumberComments;
+              this.setState({NumberComments: numComments})
+          }
+          else {
+            console.log('No comment count received.');
+          }
+      });
     }
 
     toggleContent() {
@@ -56,6 +71,10 @@ class SuperViewComponent extends React.Component {
                 FieldRubrics: newFieldRubrics,
             });
         }
+    }
+
+    handleCommentClick() {
+      this.props.showComments('TaskInstance', this.props.TaskID);
     }
 
     render() {
@@ -196,6 +215,12 @@ class SuperViewComponent extends React.Component {
         return (
           <div key={this.props.index + 2001}className="section card-2" >
             <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+            <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+              <i className="fa fa-comment-o fa-stack-1x"></i>
+              <span className="fa fa-stack-1x">
+                <span className = "comment-number">{this.state.NumberComments}</span>
+              </span>
+            </span>
             {content}
           </div>
         );

@@ -104,6 +104,20 @@ class SuperComponent extends React.Component {
 
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
         const filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
+
+        this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
+
+        apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
+            let list = [];
+            if (!body.Error) {
+                let numComments = body.NumberComments;
+                this.setState({NumberComments: numComments})
+            }
+            else {
+              console.log('No comment count received.');
+            }
+        });
+
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
@@ -370,6 +384,10 @@ class SuperComponent extends React.Component {
         });
     }
 
+    handleCommentClick() {
+      this.props.showComments('TaskInstance', this.props.TaskID);
+    }
+
     render() {
         let content = null;
         let infoMessage = null;
@@ -414,7 +432,7 @@ class SuperComponent extends React.Component {
             </div>);
         }
 
-        
+
 
 
         if (this.props.Rubric != '' && this.props.Rubric != null) { // if no Rubric
@@ -492,11 +510,11 @@ class SuperComponent extends React.Component {
         }
 
         if(this.state.IsRevision){
-            revisionRejectView =  <button className="revision-buttons" 
+            revisionRejectView =  <button className="revision-buttons"
                                         onClick={this.rejectRevision.bind(this)}>
                                         {this.props.Strings.RejectRevision}
                                         </button>;
-            revisionApproveView = <button className="revision-buttons" 
+            revisionApproveView = <button className="revision-buttons"
                                         onClick={this.approveRevision.bind(this)}>
                                         {this.props.Strings.ApproveRevision}
                                 </button>;
@@ -506,7 +524,7 @@ class SuperComponent extends React.Component {
                     {revisionRejectView}
                     {revisionApproveView}
                 </div>);
-        } 
+        }
 
           // creating all input fields here
         const fields = this.state.TaskActivityFields.field_titles.map(function (title, idx) {
@@ -706,8 +724,14 @@ class SuperComponent extends React.Component {
             {infoMessage}
             <div className="section card-2">
               <div onClick={this.toggleContent.bind(this)}>
-                <h2 className="title">{this.props.ComponentTitle} </h2>
+                <h2 className="title">{this.props.ComponentTitle}</h2>
               </div>
+              <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                <i className="fa fa-comment-o fa-stack-1x"></i>
+                <span className="fa fa-stack-1x">
+                  <span className = "comment-number">{this.state.NumberComments}</span>
+                </span>
+              </span>
               {content}
             </div>
           </div>
