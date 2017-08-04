@@ -1,13 +1,12 @@
 /**
- * Created by Sohail on 7/7/2017.
- * This file will have a dropdown for the user to select the class
+ * Created by Sohail on 7/28/2017.
+ * This file will display the courses that student can choose from.
  */
 import React from 'react';
 import request from 'request';
-import Tooltip from '../shared/tooltip';
 import Select from 'react-select';
 
-class ClassForBadge extends React.Component {
+class CourseForLeaderBoard extends React.Component {
     constructor(props){
         super(props);
 
@@ -18,8 +17,8 @@ class ClassForBadge extends React.Component {
     fetchClassData(nextProps) {
         const fetchOptions = {
             method: 'GET',
-            //API to get Class For Badge Data
-            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID + '/' + nextProps.SemesterID,
+            //API to get course list for leaderboard
+            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID + '/'  + nextProps.SemesterID,
             json: true
         };
 
@@ -29,9 +28,10 @@ class ClassForBadge extends React.Component {
         request(fetchOptions,(err, response, body) => {
             console.log(body);
             this.setState({
-                studentClasses: body.courses//List of Courses for the current student from backend (based on semester)
+                studentClasses: body.courses//List of courses from database
             })
         });
+
     }
 
     //Will render the data
@@ -43,17 +43,20 @@ class ClassForBadge extends React.Component {
         this.fetchClassData(nextProps);
     };
 
+
     render(){
-        //get data of class for badge to pass it in the select
+        //Things needed for course dropdown. All coming from Backend
         let classList = this.state.studentClasses.filter(klass => klass.Section !== null).map(klass => {
 
-         return {
-             value: klass.CourseID,
-             label: klass.Number,
-             sectionId: klass.SectionID,
-         }
+            return {
+                value: klass.CourseID,
+                label: klass.Number,
+                sectionId: klass.SectionID,
+            }
+
         });
-        //Select menu for Class for badge
+
+        //Dropdown for course
         return (
 
             <Select
@@ -68,4 +71,4 @@ class ClassForBadge extends React.Component {
     }
 }
 
-export default ClassForBadge;
+export default CourseForLeaderBoard;

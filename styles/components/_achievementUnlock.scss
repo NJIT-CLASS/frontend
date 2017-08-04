@@ -1,0 +1,60 @@
+.achievementUnlock{
+  width: 85%;
+  margin: auto;
+}
+
+#achievementUnlock{
+  width: 100%;
+  clear: both;
+}
+
+#achievementUnlockLevelName{
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 20px;
+  font-size: 30px;
+}
+
+#achievementUnlockLevelAndProgressBar{
+  font-size:2em;
+}
+
+#achievementUnlockLevelFrom{
+  float: left;
+  padding-right: 20px;
+}
+
+#achievementUnlockLevelTo{
+  float: right;
+  padding-left: 25px;
+}
+
+.goalImageAndDescriptionWithPoints{
+  margin-left: 50px;
+  display: inline-block;
+  width: 275px;
+  margin-right: 50px;
+}
+
+#achievementUnlockClassGoals{
+  margin-top: 25px;
+}
+
+#ClassGoalHeader{
+  text-align: center;
+}
+
+#imagesForAchievementUnlock{
+  width: 200px;
+  margin: auto;
+}
+
+#descriptionOfGoal{
+  text-align: center;
+}
+
+#goalPoints{
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}

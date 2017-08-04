@@ -1,5 +1,6 @@
 /**
- * Created by Sohail and Immanuel on 7/7/2017.
+ * Created by Sohail on 7/28/2017.
+ * This file will have data of students ranking among a class.
  */
 import React from 'react';
 import request from 'request';
@@ -11,74 +12,41 @@ class ClassRanking extends React.Component {
         this.state = {classRanking: []};
     }
 
-    fetchClassRankingData() {
+    //Fetch Class Ranking Data From Backend
+    fetchClassRankingData(nextProps) {
         const fetchOptionsForClassRanking = {
             method: 'GET',
-            //'/api/{add the string or name that amoudo has made}
-            //uri: this.props.apiUrl + '/api/sectionUsers/'  +this.props.SemesterID + "/" + this.props.CourseID + "/" + this.props.SectionID +"/"+ this.props.UserID,
-            uri: this.props.apiUrl + '/api/getSectionRanking/1/1/1/1',
+            //API to get Class Rank Data
+            uri: nextProps.apiUrl + '/api/getSectionRanking/'  +nextProps.SemesterID + "/" + nextProps.CourseID + "/" + nextProps.SectionID +"/"+ nextProps.UserID,
             json: true
         };
-
 
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
         request(fetchOptionsForClassRanking,(err, response, body) => {
-            console.log("Testing Again Bro "+ body);
             this.setState({
                 classRanking: body.students,//body.whatever we need from api
-                studentRank: body.currentStudent
+                studentPoints: body.currentStudent.TotalPoints, // Total points of the student
+                lastUpdated: body.currentStudent.UpdateDate //Ranking Last Updated
             })
         });
     }
 
+
+    //Will render the data
     componentWillMount(){
         this.fetchClassRankingData(this.props);
-    }
+    };
+    //If the data is changed without reloading the page then this function will take place
+    componentWillReceiveProps(nextProps){
+        this.fetchClassRankingData(nextProps);
+    };
 
-
-    /*componentWillMount() {
-     const fetchOptions = {
-     method: 'GET',
-     //'/api/{add the string or name that amoudo has made}
-     uri: this.props.apiUrl + '/api/studentCourses/' + this.props.UserID+ '/' +this.props.SemesterID,
-     //qs: {SemesterID: this.props.SemesterID},
-     json: true
-     };
-
-     //body will contain the information which will be passes and it is json
-     //err will say if there is any error
-     //response will be status
-     request(fetchOptions,(err, response, body) => {
-     console.log(body);
-     this.setState({
-     classRanking: body.courses
-     //stuff we need from api
-     //badges: body.badges//body.whatever we need from api
-     })
-     });
-
-     }*/
-
+    //Student ranking coming from backend
     render(){
-        /*let classListArray = [{Name: "Alan", Points:1231, Avatar:"favicon.ico", PointsAdded:"-2", key: 1}, {Name: "Erick", Points:453, PointsAdded:"+7", Avatar:"favicon.ico",key: 2},
-         {Name: "Micheal", Points:1121, PointsAdded:"+2", Avatar:"favicon.ico",key: 3}, {Name: "Jimmy", Points:234, PointsAdded:"-12", Avatar:"favicon.ico",key: 4},
-         {Name: "Romeo", Points:123, Avatar:"favicon.ico", PointsAdded:"2", key: 5}, {Name: "Juilet", Points:111, PointsAdded:"+7", Avatar:"favicon.ico",key: 6},
-         {Name: "Poland", Points:101, PointsAdded:"+2", Avatar:"favicon.ico",key: 7}, {Name: "Spring", Points:100, PointsAdded:"-12", Avatar:"favicon.ico",key: 8}];
-         let classRankingList = classListArray.map(klassRank => {
-         return <div className="classRankingRanks" id={`classRankingTop${klassRank.key}`}>
-         <div id="classRankingNameAndPointContainer">
-         <h2 className="classRankingStudentNames">{klassRank.key}. {klassRank.Name}</h2>
-         <div className="classRankingPoints">{klassRank.Points} points</div>
-         </div>
-         <div className="classRankingImageContainer"  id={`classRankingImage${klassRank.key}`}>
-         <img className="classRankingAvatars" src={`static/${klassRank.Avatar}`} />
-         </div>
-         <div className="classRankingClearingDiv"></div>
-         </div>
-         });*/
-
+        //Class Ranking List
+        //Organizing Data received from backend and placing it to where it needs to go
         let classRankingList = this.state.classRanking.map(klassRank => {
             return <div className="classRankingRanks" id={`classRankingTop${klassRank.Rank}`}>
                 <div id="classRankingNameAndPointContainer">
@@ -92,19 +60,20 @@ class ClassRanking extends React.Component {
             </div>
         });
 
+//Here we have students points, updated date, and other students rankings.
         return (
 
             <div className="section card-2">
                 <h2 id="classRankingTitle" className="title" >Class Ranking
                     <div id="ClassRankingToolTip"><Tooltip Text="This section displays your class ranking based on the total number of points earned to date. Updated hourly or daily" ID="ClassRankingToolTip" /></div>
                 </h2>
-                <div id="classRankingStudentPointArea"><p>Your Points: 90</p></div>
+                <div id="classRankingStudentPointArea"><p>Your Points: {this.state.studentPoints}</p></div>
                 <div id="classRankingStudentList">
                     {classRankingList}
                 </div>
 
 
-                <p id="classRankingLastUpdated">Last Updated: </p>
+                <p id="classRankingLastUpdated">Last Updated:{this.state.lastUpdated} </p>
             </div>
 
         );

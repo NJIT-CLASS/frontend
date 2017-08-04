@@ -21,18 +21,18 @@
 }
 
 #classRanking{
-  clear: both;
-  width:31%;
+  float:left;
+  width:32%;
 }
 
 #topMovers{
   float: left;
-  width:31%;
+  width:32%;
 }
 
 #vsSections{
-  float:right;
-  width:31%;
+  float:left;
+  width:32%;
 }
 
 #classRankingTitle, #topMoverTitle, #vsSectionsTitle{
@@ -68,8 +68,8 @@
 .classRankingAvatars, .vsSectionAvatars, .topMoversAvatars{
   float: right;
   width: 50px;
-  border: 2px solid rebeccapurple;
-  border-radius: 100%;
+  /*border: 2px solid rebeccapurple;
+  border-radius: 100%;*/
 }
 
 #classRankingNameAndPointContainer, #topMoversNameAndPointContainer, #vsSectionsNameAndPointContainer{
@@ -133,6 +133,17 @@
 }
 
 #classRankingStudentList, #vsSectionsStudentList, #topMoversStudentList{
-  max-height: 380px;
+  max-height: 340px;
   overflow-y:auto;
+}
+
+#courseForLeaderBoard, #mainAchievementUnlockSemesterSelectDiv{
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#noRankh1{
+  text-align: center;
+  font-size: 5em;
+  font-family: cursive;
 }

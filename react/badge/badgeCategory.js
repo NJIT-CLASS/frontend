@@ -1,9 +1,9 @@
 /**
- * Created by Sohail and Immaunel on 6/9/2017.
+ * Created by Sohail on 6/9/2017.
+ * This file will allow the user to choose the category of the badge
  */
 import React from 'react';
 import request from 'request';
-import Tooltip from '../shared/tooltip';
 import Select from 'react-select';
 
 class BadgeCategory extends React.Component {
@@ -12,15 +12,14 @@ class BadgeCategory extends React.Component {
 
         this.state = {badgeCategory: []};
 
-        this.onBadgeCategoryChange = this.props.onBadgeCategoryChange.bind(this);
+        this.onBadgeCategoryChange = this.props.onBadgeCategoryChange.bind(this);//Coming from main badge File
     }
 
     fetchCategories(nextProps) {
         const fetchOptions = {
             method: 'GET',
-            //'/api/{add the string or name that amoudo has made}
+            //Badge Category API to get all the categories of the badge based on course ID, Section ID, and Semester ID.
             uri: nextProps.apiUrl + '/api/badgeCategories/' + nextProps.CourseID+ '/' + nextProps.SectionID+ '/' + nextProps.SemesterID,
-            //qs: {SemesterID: this.props.SemesterID},
             json: true
         };
 
@@ -28,42 +27,35 @@ class BadgeCategory extends React.Component {
         //err will say if there is any error
         //response will be status
         request(fetchOptions,(err, response, body) => {
-            console.log(body);
             this.setState({
-                badgeCategory: body.categories,
-                //stuff we need from api
+                badgeCategory: body.categories,//List of Badge Categories
                 //badges: body.badges//body.whatever we need from api
             })
         });
 
     }
 
+    //Will render the data
     componentWillMount(){
         this.fetchCategories(this.props);
     };
+    //If the data is changed without reloading the page then this function will take place
     componentWillReceiveProps(nextProps){
         this.fetchCategories(nextProps);
     };
 
-    /*
-    *  {"Error":false,"categories":[{"CategoryID":1,"Name":"Questions","Description":" Given to students who successfully submit a question through PLA"
-    *  ,"Tier1Points":100,"Tier2Points":200,"Tier3Points":300}]}*/
 
     render(){
 
-        //let classListArray = [{classNumber: "CS110",key: 1}, {classNumber: "CS210",key: 2}, {classNumber: "CS400",key: 3}, {classNumber: "CS490",key: 4}];
-
+        //get data of badge Category to pass it in the select
         let badgeCategoryMap = this.state.badgeCategory.map(badgeKatKey => {
             return{
                 value: badgeKatKey.CategoryID,
                 label: badgeKatKey.Name
             }
-
-            /*return <li key={badgeKatKey.CategoryID}>
-                <Tooltip Text={badgeKatKey.Description} ID={`tooltip${badgeKatKey.CategoryID}`} />
-                {badgeKatKey.Name}</li>*/
         });
 
+        //Select menu for badge Category
         return (
 
             <Select
@@ -74,17 +66,6 @@ class BadgeCategory extends React.Component {
                 searchable={false}
                 placeholder="Category"
             />
-
-            /*<div className="section card-2">
-                <h2 className="title">Category</h2>
-                <form className="section-content" >
-
-                    <ul>
-                        {classList}
-                    </ul>
-
-                </form>
-            </div>*/
         );
     }
 }

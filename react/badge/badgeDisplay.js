@@ -1,3 +1,7 @@
+/* Created by Sohail on 6/29/2017.
+* This file will Display the badge Images and will send data to badgeProgressBar file to calculate the progress bar and percentahe
+*/
+
 import React from 'react';
 import BadgeProgressBar from './badgeProgressBar';
 var ProgressBar = require('progressbar.js');
@@ -9,15 +13,12 @@ class BadgeDisplay extends React.Component {
         this.state = {};
     }
 
-
-
-
-    //We will decided over here how it's supposed to look
+    //Send Data to Badge Progress Bar to create a progress bar along with the numbers underneath
+    //Display Badge Images Received from Backend
+    //Look at badgeProgressBarID to see which div contains which badge Info.
     render() {
-        var bronzeProgress = this.props.userPoints/this.props.requirement1;
-        var silverProgress = this.props.userPoints/this.props.requirement2;
-        var goldProgress = this.props.userPoints/this.props.requirement3;
         return (
+            //Contains all the Badges with Progress bar and number
             <div className="displayingBadgesWithProgressContainer">
 
                 <div className="displayingBadgesWithProgress">

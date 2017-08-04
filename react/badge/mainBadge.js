@@ -1,5 +1,6 @@
 /*
- * Created by Sohail and Immanuel on 7/2/2017.
+ * Created by Sohail on 7/2/2017.
+ * This file will render all the other badge components and will display it to screen
  */
 
 import React from 'react';
@@ -26,6 +27,7 @@ class MainBadge extends React.Component {
         // this.onSectionIDChange= this.onSectionIDChange.bind(this);
     }
 
+    //Will render the data
     componentWillMount() {
         const semOptions = {
             method: 'GET',
@@ -46,34 +48,27 @@ class MainBadge extends React.Component {
     }
 
 
+    //On changing Semester
     onSemesterChange(value){
-        console.log(value);
         this.setState({
             SemesterID: value.value
         });
     }
 
+    //On Changining Class
     onClassChange(value){
-        console.log("Class value", value);
         this.setState({
             CourseID: value.value,
             SectionID: value.sectionId
         });
     }
 
+    //On Changing Badge Category
     onBadgeCategoryChange(value){
-        console.log(value);
         this.setState({
             BadgeCategory: value.value
         });
     }
-
-    /*onSectionIDChange(value){
-     console.log(value);
-     this.setState({
-     sectionID: value.value
-     });
-     }*/
 
     render(){
         var apiContentHolder = null;
@@ -82,6 +77,7 @@ class MainBadge extends React.Component {
 
 
 
+        //If semester is selected then it will allow user to select Class and Badge Category
         if(this.state.SemesterID != null){
 
             classAndCategory =  (
@@ -105,6 +101,8 @@ class MainBadge extends React.Component {
 
         }
 
+        //If course and badge category are selected (Which can only be done if Semester is selected) then it will pass the selected information to badge file so that
+        //badge image and progress bar can be rendered.
         if(this.state.CourseID != null && this.state.BadgeCategory != null){
 
             apiContentHolder =
@@ -118,11 +116,13 @@ class MainBadge extends React.Component {
                     />
                 </div>
         }else{
+            //If Course and Category is not selected then it will say no badge to display with a crying emoji
             apiContentHolder =
                 <div id="badge"><h1 id="noBadgeh1">No Badge To Display 😭</h1></div>
         }
 
 
+        //Select menu for semester for Badge Page
         return (
 
             <div className="container">
