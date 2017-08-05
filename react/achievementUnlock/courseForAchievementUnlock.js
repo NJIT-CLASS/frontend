@@ -6,7 +6,7 @@ import React from 'react';
 import request from 'request';
 import Select from 'react-select';
 
-class CourseForLeaderBoard extends React.Component {
+class CourseForAchievementUnlock extends React.Component {
     constructor(props){
         super(props);
 
@@ -71,4 +71,4 @@ class CourseForLeaderBoard extends React.Component {
     }
 }
 
-export default CourseForLeaderBoard;
+export default CourseForAchievementUnlock;
