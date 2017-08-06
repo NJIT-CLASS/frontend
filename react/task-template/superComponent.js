@@ -231,7 +231,8 @@ class SuperComponent extends React.Component {
                         LockSubmit: false });
                 } else {
                     this.setState({
-                        TaskStatus: 'Complete'
+                        TaskStatus: 'Complete',
+                        SubmitSuccess: true
                     });
 
                     showMessage(this.props.Strings.SubmitSuccessMessage);
@@ -347,12 +348,18 @@ class SuperComponent extends React.Component {
     }
 
     willNotDispute() {
+        this.setState({
+            DisputeStatus: false,
+        });
         const options = {
             userid: this.props.UserID,
         };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
             console.log(err, res, body);
+            this.setState({
+                SubmitSuccess: true
+            });
             window.location.href= '/';
 
         });
@@ -380,8 +387,11 @@ class SuperComponent extends React.Component {
                 LockSubmit: true
             });
             apiCall.post('/revise', options, (err, res, body) => {
+                this.setState({
+                    SubmitSuccess: true
+                });
                 window.location.href= '/';
-                console.log(body);
+
             });
             
         } else {
@@ -411,8 +421,11 @@ class SuperComponent extends React.Component {
                 LockSubmit: true
             });
             apiCall.post('/approved', options, (err, res, body) => {
+                this.setState({
+                    SubmitSuccess: true
+                });
                 window.location.href= '/';
-                console.log(body);
+                
                 
             });
             
@@ -463,9 +476,10 @@ class SuperComponent extends React.Component {
 
 
         if (!this.props.TaskStatus.includes('complete')) {
+            let submitButtonText = this.state.SubmitSuccess ? this.props.Strings.SubmitButtonSuccess : this.props.Strings.Submit;
             formButtons = (<div>
                 <br />
-                <button type="submit" action="#" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
+                <button type="button" className="divider" onClick={this.submitData.bind(this)}><i className="fa fa-check" />{submitButtonText}</button>
                 {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
             </div>);
         }
@@ -536,6 +550,8 @@ class SuperComponent extends React.Component {
         }
 
         if (this.state.DisputeStatus === false) {
+            let disputeButtonText = this.state.SubmitSuccess? this.props.Strings.DisputeButtonSuccess : this.props.Strings.WillDispute;
+            let doNotDisputeButtonText = this.state.SubmitSuccess? this.props.Strings.DidNotDisputeButtonSuccess : this.props.Strings.WillNotDispute;
             return (
                 <div className="">
                     {infoMessage}
@@ -547,22 +563,24 @@ class SuperComponent extends React.Component {
                         <div className="section-content">
                             {TA_instructions}
                             {fileLinksView}
-                            <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
-                            <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
+                            <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{doNotDisputeButtonText}</button>
+                            <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{disputeButtonText}</button>
                         </div>
                     </div>
                 </div>);
         }
 
         if(this.props.IsRevision){
+            let rejectButtonText = this.state.SubmitSuccess ? this.props.Strings.RejectButtonSuccess: this.props.Strings.RejectRevision;
+            let approveButtonText = this.state.SubmitSuccess ? this.props.Strings.ApproveButtonSuccess : this.props.Strings.ApproveRevision;
             if([TASK_TYPES.COMMENT].includes(this.props.Type)){
                 revisionRejectView =  <button className="revision-buttons" 
                     onClick={this.rejectRevision.bind(this)}>
-                    {this.props.Strings.RejectRevision}
+                    {rejectButtonText}
                 </button>;
                 revisionApproveView = <button className="revision-buttons" 
                     onClick={this.approveRevision.bind(this)}>
-                    {this.props.Strings.ApproveRevision}
+                    {approveButtonText}
                 </button>;
                 formButtons = (
                     <div>
@@ -574,9 +592,11 @@ class SuperComponent extends React.Component {
             
         } 
         if([TASK_TYPES.EDIT].includes(this.props.Type)){
+            let approveButtonText = this.state.SubmitSuccess ? this.props.Strings.ApproveButtonSuccess : this.props.Strings.ApproveRevision;
+            
             revisionApproveView = <button className="revision-buttons" 
                 onClick={this.approveRevision.bind(this)}>
-                {this.props.Strings.ApproveRevision}
+                {approveButtonText}
             </button>;
             formButtons = (
                 <div>

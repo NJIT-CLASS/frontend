@@ -41,8 +41,13 @@ let strings = {
     Max: 'Max',
     Justification: 'Justification',
     JustificationInstructions: 'Justification Instructions',
-    RejectRevision: 'Reject',
+    RejectRevision: 'Send Back for Revising',
     ApproveRevision: 'Approve',
+    RejectButtonSuccess:'Sent for Revision',
+    ApproveButtonSuces: 'Approved',
+    DisputeButtonSuccess: 'Disputed',
+    DidNotDisputeButtonSuccess: 'Did not Dispute',
+    SubmitButtonSuccess:'Submitted',
     InsufficientFileErrorMessage: 'Missing some files. Please try again'
 
 };
