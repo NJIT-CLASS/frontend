@@ -342,12 +342,14 @@ class SuperComponent extends React.Component {
     }
 
     willDispute() {
+        
         this.setState({
             DisputeStatus: true,
         });
     }
 
     willNotDispute() {
+        showMessage(this.props.Strings.DidNotDisputeMessage);
         this.setState({
             DisputeStatus: false,
         });
@@ -367,6 +369,7 @@ class SuperComponent extends React.Component {
     }
 
     rejectRevision(){
+        showMessage(this.props.Strings.RejectRevisionMessage);
         this.setState({
             RevisionStatus: false
         });
@@ -406,6 +409,7 @@ class SuperComponent extends React.Component {
     }
 
     approveRevision(){
+        showMessage(this.props.Strings.ApproveRevisionMessage);
         this.setState({
             RevisionStatus: true
         });

@@ -48,6 +48,10 @@ let strings = {
     DisputeButtonSuccess: 'Disputed',
     DidNotDisputeButtonSuccess: 'Did not Dispute',
     SubmitButtonSuccess:'Submitted',
+    RejectRevisionMessage: 'This task has been submitted for revision',
+    ApproveRevisionMessage: 'This task has been approved',
+    DisputeMessage: '',
+    DidNotDisputeMessage: 'This task will not be disputed',
     InsufficientFileErrorMessage: 'Missing some files. Please try again'
 
 };
