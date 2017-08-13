@@ -23,36 +23,7 @@ class TasksList extends React.Component{
 
                 let compString = null;
                 if (idx == TasksArray.length - 1) {
-                    switch (task.TaskActivity.Type) {
-                    case TASK_TYPES.CREATE_PROBLEM:
-                        compString = Strings.CreateProblemTitle;
-                        break;
-                    case TASK_TYPES.EDIT:
-                        compString = Strings.EditProblemTitle;
-                        break;
-                    case TASK_TYPES.COMMENT:
-                        compString = Strings.CommentTitle;
-                    case TASK_TYPES.SOLVE_PROBLEM:
-                        compString = Strings.SolveProblemTitle;
-                        break;
-                    case TASK_TYPES.GRADE_PROBLEM:
-                        compString = Strings.GradeProblemTitle;
-                        break;
-                    case TASK_TYPES.CRITIQUE:
-                        compString = Strings.CritiqueTitle;
-                    case TASK_TYPES.CONSOLIDATION:
-                        compString = Strings.ConsolidateProblemTitle;
-                        break;
-                    case TASK_TYPES.DISPUTE:
-                        compString = Strings.DisputeGradeTitle;
-                        break;
-                    case TASK_TYPES.RESOLVE_DISPUTE:
-                        compString = Strings.ResolveDisputeTitle;
-                        break;
-                    default:
-                        compString = '';
-                        break;
-                    }
+                    
                     if (task.Status == 'Complete' || task.Status == 'complete') {
                         return (
         					<SuperViewComponent
@@ -70,15 +41,32 @@ class TasksList extends React.Component{
                     showComments={this.props.showComments.bind(this)}
         					/>
                         );
-                    } else {
+                    } 
+                    
+                    if(this.props.TaskStatus.includes('complete')){
+                        return (
+        					<SuperViewComponent
+        						key={idx + 2000}
+        						index={idx}
+        						ComponentTitle={task.TaskActivity.DisplayName}
+        						TaskData={task.Data}
+        						Files={task.Files}
+        						Instructions={task.TaskActivity.Instructions}
+        						Rubric={task.TaskActivity.Rubric}
+        						TaskActivityFields={task.TaskActivity.Fields}
+        						Strings={Strings}
+        					/>
+                        );
+                    }
+                    else {
                         return (
         					<SuperComponent
         						key={idx + 2000}
-                    index={idx}
+                                index={idx}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -89,8 +77,9 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
-                    showComments={this.props.showComments.bind(this)}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+								showComments={this.props.showComments.bind(this)}
+								addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                IsRevision={this.props.IsRevision}
         					/>
                         );
                     }
@@ -107,37 +96,7 @@ class TasksList extends React.Component{
         					/>
                         );
                     } else {
-                        switch (task.TaskActivity.Type) {
-                        case TASK_TYPES.CREATE_PROBLEM:
-                            compString = Strings.CreateProblemTitle;
-                            break;
-                        case TASK_TYPES.EDIT:
-                            compString = Strings.EditProblemTitle;
-                            break;
-                        case TASK_TYPES.COMMENT:
-                            compString = Strings.CommentTitle;
-                        case TASK_TYPES.SOLVE_PROBLEM:
-                            compString = Strings.SolveProblemTitle;
-                            break;
-                        case TASK_TYPES.GRADE_PROBLEM:
-                            compString = Strings.GradeProblemTitle;
-                            break;
-                        case TASK_TYPES.CRITIQUE:
-                            compString = Strings.CritiqueTitle;
-                        case TASK_TYPES.CONSOLIDATION:
-                            compString = Strings.ConsolidateProblemTitle;
-                            break;
-                        case TASK_TYPES.DISPUTE:
-                            compString = Strings.DisputeGradeTitle;
-                            break;
-                        case TASK_TYPES.RESOLVE_DISPUTE:
-                            compString = Strings.ResolveDisputeTitle;
-                            break;
-                        default:
-                            compString = '';
-                            break;
-                        }
-
+                        
                         return (
         					<SuperViewComponent
         						key={idx + 2000}
@@ -146,7 +105,7 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
-                    Status={task.Status}
+                                Status={task.Status}
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}

@@ -24,6 +24,10 @@ const pages = [
     'task-status-table',
     'onboarding',
     'initial-password-change',
+    'assignment-final-grades',
+    'volunteer-pool',
+    'section',
+    'user-management',
 ];
 
 var pageConfigs = [];

@@ -94,6 +94,7 @@ class FileUpload extends React.Component{
                         conditionsMet: (x.state.NumberUploaded >= x.props.MinUploads) && (x.state.NumberUploaded <= x.props.MaxUploads),
                         numberOfUploads: newNum
                     };
+                    console.log(changedConditions)
                     x.props.onChange(changedConditions);
                 }
                 else{
@@ -124,9 +125,11 @@ class FileUpload extends React.Component{
     render(){
         let uploadView = null;
         let uploadStatus = this.state.UploadStatus;
+        
         if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
             uploadStatus = 'full';
         }
+
         switch(this.props.View){
         case 'button':
             uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={uploadStatus}
