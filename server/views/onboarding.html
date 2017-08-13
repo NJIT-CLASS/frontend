@@ -38,8 +38,8 @@
               <input class="form-control" type="text" placeholder="{{__ 'First Name'}}" name="firstname" autofocus required/>
               <input class="form-control" type="text" placeholder="{{__ 'Last Name'}}" name="lastname" required/>
               <input class="form-control" type="email" placeholder="{{__ 'Email'}}" name="email" required/>
-              <input class="form-control" type="password" placeholder="{{__ 'Password'}}" name="password" required >
-              <input class="form-control" type="password" placeholder="{{__ 'Confirm Password'}}" name="confirmpassword" required>
+              <input pattern=".{6,}" class="form-control" type="password" placeholder="{{__ 'Password'}}" name="password" required >
+              <input pattern=".{6,}" class="form-control" type="password" placeholder="{{__ 'Confirm Password'}}" name="confirmpassword" required>
 
             </div>
             <button type="submit" class="float-button">{{ __ "Make Account" }}</button>

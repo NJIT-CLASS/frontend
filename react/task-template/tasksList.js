@@ -55,6 +55,7 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
+								
         					/>
                         );
                     }
@@ -91,8 +92,8 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
-                    showComments={this.props.showComments.bind(this)}
+								addCommentListItem={this.props.addCommentListItem.bind(this)}
+								showComments={this.props.showComments.bind(this)}
         					/>
                         );
                     } else {
@@ -109,9 +110,9 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                    TaskID={task.TaskInstanceID}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
-                    showComments={this.props.showComments.bind(this)}
+								TaskID={task.TaskInstanceID}
+								addCommentListItem={this.props.addCommentListItem.bind(this)}
+								showComments={this.props.showComments.bind(this)}
         					/>
                         );
                     }
