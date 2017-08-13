@@ -26,7 +26,7 @@ If you've never used github before [set your ssh key](#github-setup)
 - [React.js](https://facebook.github.io/react/index.html): frontend framework
 - [Handlebars.js](http://handlebarsjs.com/expressions.html): templating engine
 - [SCSS](http://sass-lang.com/guide): CSS preprocessor
-- [FontAwesome](http://fontawesome.io/): Icon pack
+- [Font Awesome](http://fontawesome.io/): Icon pack
 - [Redis](http://redis.io/): Redis database server
 
 ## Github Setup
