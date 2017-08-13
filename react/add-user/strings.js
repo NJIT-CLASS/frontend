@@ -16,4 +16,5 @@ export default {
     Strong: 'Strong',
     Great: 'Great',
     SuccessfulAdd: 'User added successfully',
+    SubmitError: 'There was an problem adding the user',
 };

@@ -54,6 +54,13 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
 
         };
 
+        let submitButton = (
+            <button type="submit">{strings.ButtonText}</button>
+        );
+        if (this.state.result == 'success'){
+            submitButton = <div></div>;
+        }
+
         return (
           <div className="main-container center">
               <div className="loggedout-container">
@@ -88,7 +95,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                             }
 
                             <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
-                            <button type="submit">{strings.ButtonText}</button>
+                            {submitButton}
                         </div>
                     </form>
 

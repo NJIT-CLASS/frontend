@@ -856,6 +856,7 @@ class SuperComponent extends React.Component {
               </span>
               {content}
             </div>
+            </div>
         );
     }
 
