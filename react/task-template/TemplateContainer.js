@@ -312,7 +312,7 @@ class TemplateContainer extends React.Component {
     }
 
     getCommentData(target, ID) {
-        apiCall.get(`/comments/ti/${ID}`, (err, res, body) => {
+        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
             let list = [];
             if (body !== undefined && res.statusCode === 200 ) {
                 for (let com of body.Comments) {
