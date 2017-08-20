@@ -25,6 +25,7 @@ import SectionsContainer from './sections/sections-container';
 import UserGradeReportContainer from './grade-report/user-grade-report-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
+import EveryonesWorkMain from './everyones-work/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -60,9 +61,9 @@ case 'add-user-container':
 
 case 'translation-container':
     const translationApp = (
-      <ClassPageContainer>
-        <TranslationContainer />
-      </ClassPageContainer>
+        <ClassPageContainer>
+            <TranslationContainer />
+        </ClassPageContainer>
     );
     ReactDOM.render(translationApp, reactElem);
     break;
@@ -71,16 +72,16 @@ case 'template-container':
     const taskId = reactElem.dataset.taskId;
     const isAdmin = reactElem.dataset.isAdmin;
     ReactDOM.render(
-      <TemplateContainer
-        SectionID={sectionId}
-        CourseID={courseId}
-        UserID={userId}
-        apiUrl={apiUrl}
-        TaskID={taskId}
-        UserType={userType}
-        Admin={isAdmin}
-        __={translationFunction}
-      />, reactElem);
+        <TemplateContainer
+            SectionID={sectionId}
+            CourseID={courseId}
+            UserID={userId}
+            apiUrl={apiUrl}
+            TaskID={taskId}
+            UserType={userType}
+            Admin={isAdmin}
+            __={translationFunction}
+        />, reactElem);
     break;
 
 case 'assignment-editor-container':
@@ -125,5 +126,7 @@ case 'volunteer-pool':
 case 'user-management':
     ReactDOM.render(<UserManagementContainer UserID={userId} />, reactElem);
     break;
-
+case 'everyones-work':
+    ReactDOM.render(<EveryonesWorkMain UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
+    break;
 }

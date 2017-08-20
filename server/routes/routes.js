@@ -28,6 +28,7 @@ const pages = [
     'volunteer-pool',
     'section',
     'user-management',
+    'everyones-work',
 ];
 
 var pageConfigs = [];
