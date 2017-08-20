@@ -421,6 +421,7 @@ class TemplateContainer extends React.Component {
                                 addCommentListItem={this.addCommentListItem.bind(this)}
                                 TaskStatus={this.state.TaskStatus}
                                 IsRevision={this.state.IsRevision}
+                                CurrentTaskType={this.props.TaskActivityType}
             />);
         }
 

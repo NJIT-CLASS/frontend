@@ -10,6 +10,8 @@ import VersionView from './individualFieldVersionsComponent';
 import apiCall from '../shared/apiCall';
 import FileLinksComponent from './fileLinksComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
+import {  isEmpty } from 'lodash';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -17,11 +19,12 @@ class SuperViewComponent extends React.Component {
 
         this.state = {
             ShowContent: false,
-            TaskData: {},
             ShowRubric: false,
             FieldRubrics: [],
             Ready: false,
             Error: false,
+          IsBypassedDispute: false
+            
         };
     }
 
@@ -37,6 +40,12 @@ class SuperViewComponent extends React.Component {
             console.log('No comment count received.');
           }
       });
+
+      if (this.props.CurrentTaskType == TASK_TYPES.DISPUTE && isEmpty(this.props.TaskData[0])){
+        this.setState({
+          IsBypassedDispute: true
+        });
+      }
     }
 
     toggleContent() {
@@ -85,11 +94,17 @@ class SuperViewComponent extends React.Component {
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
 
 
+        if(this.state.IsBypassedDispute === true){
+          return (<div key={this.props.index + 2001} className="section card-2" >
+            <h2 key={this.props.index + 2002} className="title" >{this.props.Strings.BypassedDisputeMessage}</h2>
+          </div>);
+        }
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
               <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
             </div>);
         }
+
 
         if (this.props.Rubric !== '' && this.props.Rubric !== null) { // if no Rubric, don't show it
             let TA_rubric_content = <div></div>;
@@ -222,8 +237,8 @@ class SuperViewComponent extends React.Component {
           </div>);
 
         return (
-          <div key={this.props.index + 2001}className="section card-2" >
-            <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+          <div key={this.props.index + 2001}className="section card-2 " >
+            <h2 key={this.props.index + 2002} className="title collapsable-header" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
             <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
               <i className="fa fa-comment-o fa-stack-1x"></i>
               <span className="fa fa-stack-1x">

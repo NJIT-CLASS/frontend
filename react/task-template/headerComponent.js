@@ -44,13 +44,13 @@ class HeaderComponent extends React.Component {
     render() {
         return ( <div className="section card-2" >
                   <h2 className = "title template-header" >{this.props.Assignment.DisplayName} </h2>
-                  <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-                    <i className="fa fa-comment-o fa-stack-1x"></i>
-                    <span className="fa fa-stack-1x">
-                      <span className = "comment-number">{this.state.NumberComments}</span>
-                    </span>
-                  </span>
                     <div className = "section-content section-header" >
+            <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+              <i className="fa fa-comment-o fa-stack-1x"></i>
+              <span className="fa fa-stack-1x">
+                <span className="comment-number">{this.state.NumberComments}</span>
+              </span>
+            </span>
                       <div name = "course-title" className = "regular-text" >
                       <b> {this.props.Strings.Course}: </b>{this.props.CourseNumber} - {this.props.SectionName} - {this.props.CourseName} - {this.props.SemesterName}
                         <div className="assignment-description">{this.props.Assignment.Instructions}</div>

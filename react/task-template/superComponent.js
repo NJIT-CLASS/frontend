@@ -844,9 +844,9 @@ class SuperComponent extends React.Component {
         return ( // main render return()
           <div>
             {infoMessage}
-            <div className="section card-2">
+            <div className="section card-2 ">
               <div onClick={this.toggleContent.bind(this)}>
-                <h2 className="title">{this.props.ComponentTitle}</h2>
+                <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
               </div>
               <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
                 <i className="fa fa-comment-o fa-stack-1x"></i>

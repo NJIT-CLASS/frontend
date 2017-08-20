@@ -113,6 +113,7 @@ class TasksList extends React.Component{
 								TaskID={task.TaskInstanceID}
 								addCommentListItem={this.props.addCommentListItem.bind(this)}
 								showComments={this.props.showComments.bind(this)}
+								CurrentTaskType={this.props.CurrentTaskType}
         					/>
                         );
                     }

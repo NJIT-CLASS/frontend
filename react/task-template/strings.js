@@ -54,7 +54,8 @@ let strings = {
     ApproveRevisionMessage: 'This task has been approved',
     DisputeMessage: '',
     DidNotDisputeMessage: 'This task will not be disputed',
-    InsufficientFileErrorMessage: 'Missing some files. Please try again'
+    InsufficientFileErrorMessage: 'Missing some files. Please try again',
+    BypassedDisputeMessage: 'This dispute was bypassed.'
 
 };
 
