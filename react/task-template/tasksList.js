@@ -15,17 +15,17 @@ class TasksList extends React.Component{
         let { TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues } = this.props;
 
         return <div>
-          {
-            TasksArray.map(function(task, idx) {
+            {
+                TasksArray.map(function(task, idx) {
         		// Goes over the array of tasks(starting from first task to this task)
         		// and gives the Components an appropriate title.
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
-                let compString = null;
-                if (idx == TasksArray.length - 1) {
+                    let compString = null;
+                    if (idx == TasksArray.length - 1) {
                     
-                    if (task.Status == 'Complete' || task.Status == 'complete') {
-                        return (
+                        if (task.Status == 'Complete' || task.Status == 'complete') {
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -36,15 +36,16 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                    TaskID={task.TaskInstanceID}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
-                    showComments={this.props.showComments.bind(this)}
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
         					/>
-                        );
-                    } 
+                            );
+                        } 
                     
-                    if(this.props.TaskStatus.includes('complete')){
-                        return (
+                        if(this.props.TaskStatus.includes('complete')){
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -55,19 +56,22 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-								
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
         					/>
-                        );
-                    }
-                    else {
-                        return (
+                            );
+                        }
+                        else {
+                            return (
         					<SuperComponent
         						key={idx + 2000}
-                                index={idx}
+                                    index={idx}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                                getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -78,27 +82,28 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
-								showComments={this.props.showComments.bind(this)}
-								addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                IsRevision={this.props.IsRevision}
+                                    showComments={this.props.showComments.bind(this)}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    IsRevision={this.props.IsRevision}
+                                    CurrentTaskType={this.props.CurrentTaskType}
         					/>
-                        );
-                    }
-                } else {
-                    if (Array.isArray(task)) {
-                        return (
+                            );
+                        }
+                    } else {
+                        if (Array.isArray(task)) {
+                            return (
         					<MultiViewComponent
         						UsersTaskData={task}
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-								addCommentListItem={this.props.addCommentListItem.bind(this)}
-								showComments={this.props.showComments.bind(this)}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
         					/>
-                        );
-                    } else {
+                            );
+                        } else {
                         
-                        return (
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -106,20 +111,20 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
-                                Status={task.Status}
+                                    Status={task.Status}
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-								TaskID={task.TaskInstanceID}
-								addCommentListItem={this.props.addCommentListItem.bind(this)}
-								showComments={this.props.showComments.bind(this)}
-								CurrentTaskType={this.props.CurrentTaskType}
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
         					/>
-                        );
+                            );
+                        }
                     }
-                }
-            }, this)
-          }
+                }, this)
+            }
         </div>;
     }
 }

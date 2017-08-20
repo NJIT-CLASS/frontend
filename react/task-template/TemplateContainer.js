@@ -301,14 +301,14 @@ class TemplateContainer extends React.Component {
     }
 
     getIDData() {
-      apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
-          if (!body.Error) {
-            this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID})
-          }
-          else {
-            console.log('No comment ID data received.')
-          }
-      });
+        apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
+            if (!body.Error) {
+                this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
+            }
+            else {
+                console.log('No comment ID data received.');
+            }
+        });
     }
 
     getCommentData(target, ID) {
@@ -323,7 +323,7 @@ class TemplateContainer extends React.Component {
                 });
             }
             else {
-              console.log('No comment data received.')
+                console.log('No comment data received.');
             }
         });
     }
@@ -372,26 +372,26 @@ class TemplateContainer extends React.Component {
         let commentTargetList = this.state.CommentTargetList;
         let found = false;
         for (let i of commentTargetList) {
-          if ((i.Target == target) && (i.ID == id)) {
-            found = true;
-          }
+            if ((i.Target == target) && (i.ID == id)) {
+                found = true;
+            }
         }
         if (!found) {
-          commentTargetList.push({Target: target, ID: id, value: commentTargetList.length, label: title});
-          this.setState({CommentTargetList: commentTargetList});
+            commentTargetList.push({Target: target, ID: id, value: commentTargetList.length, label: title});
+            this.setState({CommentTargetList: commentTargetList});
         }
     }
 
     showComments(target, id) {
-      let show;
-      for (let i of this.state.CommentTargetList) {
-        if ((i.Target == target) && (i.ID == id)) {
-          show = i.value;
+        let show;
+        for (let i of this.state.CommentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                show = i.value;
+            }
         }
-      }
-      console.log('show', show);
-      this.setState({CommentTarget: show, TabSelected: 1});
-      this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
+        console.log('show', show);
+        this.setState({CommentTarget: show, TabSelected: 1});
+        this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
 
@@ -411,105 +411,105 @@ class TemplateContainer extends React.Component {
             renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
-                                TasksArray={this.state.Data}
-                                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                                TaskID={this.props.TaskID}
-                                UserID={this.props.UserID}
-                                Strings={this.state.Strings}
-                                apiUrl={this.props.apiUrl}
-                                showComments={this.showComments.bind(this)}
-                                addCommentListItem={this.addCommentListItem.bind(this)}
-                                TaskStatus={this.state.TaskStatus}
-                                IsRevision={this.state.IsRevision}
-                                CurrentTaskType={this.props.TaskActivityType}
+                TasksArray={this.state.Data}
+                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                TaskID={this.props.TaskID}
+                UserID={this.props.UserID}
+                Strings={this.state.Strings}
+                apiUrl={this.props.apiUrl}
+                showComments={this.showComments.bind(this)}
+                addCommentListItem={this.addCommentListItem.bind(this)}
+                TaskStatus={this.state.TaskStatus}
+                IsRevision={this.state.IsRevision}
+                CurrentTaskType={this.state.TaskActivityType}
             />);
         }
 
         return (
-          <div>
-            <Tabs
-              onSelect={(tab) => {
-                  this.setState({ TabSelected: tab });
-              }}
-              selectedIndex={this.state.TabSelected}
-            >
-              <TabList className="big-text">
-                <Tab>{this.state.Strings.Task}</Tab>
-                <Tab>{this.state.Strings.Comments}</Tab>
-              </TabList>
-              <TabPanel>
-                <HeaderComponent
-                  TaskID={this.props.TaskID}
-                  CourseName={this.state.CourseName}
-                  CourseName={this.state.CourseName}
-                  CourseNumber={this.state.CourseNumber}
-                  Assignment={this.state.Assignment}
-                  TaskActivityType={this.state.TaskActivityType}
-                  SemesterName={this.state.SemesterName}
-                  SectionName={this.state.SectionName}
-                  Strings={this.state.Strings}
-                  AssignmentInstanceID={this.state.AssignmentInstanceID}
-                  WorkflowInstanceID={this.state.WorkflowInstanceID}
-                  addCommentListItem={this.addCommentListItem.bind(this)}
-                  ProblemThreadLabel={this.state.Strings.ProblemThreadLabel}
-                  showComments={this.showComments.bind(this)}
+            <div>
+                <Tabs
+                    onSelect={(tab) => {
+                        this.setState({ TabSelected: tab });
+                    }}
+                    selectedIndex={this.state.TabSelected}
+                >
+                    <TabList className="big-text">
+                        <Tab>{this.state.Strings.Task}</Tab>
+                        <Tab>{this.state.Strings.Comments}</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <HeaderComponent
+                            TaskID={this.props.TaskID}
+                            CourseName={this.state.CourseName}
+                            CourseName={this.state.CourseName}
+                            CourseNumber={this.state.CourseNumber}
+                            Assignment={this.state.Assignment}
+                            TaskActivityType={this.state.TaskActivityType}
+                            SemesterName={this.state.SemesterName}
+                            SectionName={this.state.SectionName}
+                            Strings={this.state.Strings}
+                            AssignmentInstanceID={this.state.AssignmentInstanceID}
+                            WorkflowInstanceID={this.state.WorkflowInstanceID}
+                            addCommentListItem={this.addCommentListItem.bind(this)}
+                            ProblemThreadLabel={this.state.Strings.ProblemThreadLabel}
+                            showComments={this.showComments.bind(this)}
 
-                />
+                        />
 
-                {renderView}
+                        {renderView}
 
-              </TabPanel>
-              <TabPanel>
-                <div className="placeholder" />
-                <div className="regular-text">{this.state.Strings.CommentTargetLabel}</div>
-                <div style={{width: 280}}><Select options={this.state.CommentTargetList} value={this.state.CommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true}/></div>
-                {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
-                    if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
-                        if ((index + 1) < array.length) {
-                            return (
-                                  <CommentComponent
-                                    key={comment.CommentsID}
-                                    Comment={comment}
-                                    Update={this.getCommentData.bind(this)}
-                                    CurrentUser={this.props.UserID}
-                                    NextParent={array[index + 1].Parents}
-                                    NextStatus={array[index + 1].Status}
-                                    UserType={this.props.UserType}
-                                    Admin={this.props.Admin}
-                                    />
-                            );}
-                        else {
-                            return (
-                                <CommentComponent
-                                  key={comment.CommentsID}
-                                  Comment={comment}
-                                  Update={this.getCommentData.bind(this)}
-                                  CurrentUser={this.props.UserID}
-                                  NextParent={null}
-                                  UserType={this.props.UserType}
-                                  Admin={this.props.Admin}
-                                  />
-                            );}
-                    }
-                }))}
+                    </TabPanel>
+                    <TabPanel>
+                        <div className="placeholder" />
+                        <div className="regular-text">{this.state.Strings.CommentTargetLabel}</div>
+                        <div style={{width: 280}}><Select options={this.state.CommentTargetList} value={this.state.CommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true}/></div>
+                        {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
+                            if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
+                                if ((index + 1) < array.length) {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={array[index + 1].Parents}
+                                            NextStatus={array[index + 1].Status}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                        />
+                                    );}
+                                else {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={null}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                        />
+                                    );}
+                            }
+                        }))}
 
-                {this.state.CommentTarget != undefined &&
+                        {this.state.CommentTarget != undefined &&
                   (<CommentEditorComponent
-                    UserID={this.props.UserID}
-                    Update={this.getCommentData.bind(this)}
-                    ReplyLevel={0}
-                    Parents={null}
-                    CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
-                    TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
-                    AssignmentInstanceID={this.state.AssignmentInstanceID}
+                      UserID={this.props.UserID}
+                      Update={this.getCommentData.bind(this)}
+                      ReplyLevel={0}
+                      Parents={null}
+                      CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
+                      TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
+                      AssignmentInstanceID={this.state.AssignmentInstanceID}
                   />)
-                }
+                        }
 
-              </TabPanel>
+                    </TabPanel>
 
-            </Tabs>
+                </Tabs>
 
-          </div>
+            </div>
         );
     }
 }

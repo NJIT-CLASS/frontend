@@ -23,29 +23,29 @@ class SuperViewComponent extends React.Component {
             FieldRubrics: [],
             Ready: false,
             Error: false,
-          IsBypassedDispute: false
+            IsBypassedDispute: false
             
         };
     }
 
     componentWillMount() {
-      this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
-      apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
-          let list = [];
-          if (!body.Error) {
-              let numComments = body.NumberComments;
-              this.setState({NumberComments: numComments})
-          }
-          else {
-            console.log('No comment count received.');
-          }
-      });
-
-      if (this.props.CurrentTaskType == TASK_TYPES.DISPUTE && isEmpty(this.props.TaskData[0])){
-        this.setState({
-          IsBypassedDispute: true
+        this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
+        apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
+            let list = [];
+            if (!body.Error) {
+                let numComments = body.NumberComments;
+                this.setState({NumberComments: numComments});
+            }
+            else {
+                console.log('No comment count received.');
+            }
         });
-      }
+        console.log(this.props.CurrentTaskType, isEmpty(this.props.TaskData[0]));
+        if (this.props.CurrentTaskType == TASK_TYPES.DISPUTE && isEmpty(this.props.TaskData[0])){
+            this.setState({
+                IsBypassedDispute: true
+            });
+        }
     }
 
     toggleContent() {
@@ -84,7 +84,7 @@ class SuperViewComponent extends React.Component {
     }
 
     handleCommentClick() {
-      this.props.showComments('TaskInstance', this.props.TaskID);
+        this.props.showComments('TaskInstance', this.props.TaskID);
     }
 
     render() {
@@ -95,13 +95,13 @@ class SuperViewComponent extends React.Component {
 
 
         if(this.state.IsBypassedDispute === true){
-          return (<div key={this.props.index + 2001} className="section card-2" >
-            <h2 key={this.props.index + 2002} className="title" >{this.props.Strings.BypassedDisputeMessage}</h2>
-          </div>);
+            return (<div key={this.props.index + 2001} className="section card-2" >
+                <h2 key={this.props.index + 2002} className="title" >{this.props.Strings.BypassedDisputeMessage}</h2>
+            </div>);
         }
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
-              <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
             </div>);
         }
 
@@ -112,33 +112,33 @@ class SuperViewComponent extends React.Component {
                 // dangerouslySetInnerHTML is used here in case a markup-based text format is
                 // used in the future (WYSIWYG editor support)
                 TA_rubric_content = (
-                  <div>
-                    <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
-                    <MarkupText classNames="regular-text" content={this.props.Rubric} />
-                  </div>
+                    <div>
+                        <div className="boldfaces">{this.props.Strings.TaskRubric}</div>
+                        <MarkupText classNames="regular-text" content={this.props.Rubric} />
+                    </div>
                 );
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
-              <TransitionGroup>
-                <CSSTransition 
-                  timeout={{enter: 500, exit: 300}}
-                  classNames="example" 
-                  appear
-                  enter 
-                  exit>
-                {TA_rubric_content}
-                </CSSTransition>
-              </TransitionGroup>
+                <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
+                <TransitionGroup>
+                    <CSSTransition 
+                        timeout={{enter: 500, exit: 300}}
+                        classNames="example" 
+                        appear
+                        enter 
+                        exit>
+                        {TA_rubric_content}
+                    </CSSTransition>
+                </TransitionGroup>
             </div>);
         }
 
         if (this.props.Instructions != null && this.props.Instructions !== '') {
             TA_instructions = (
-              <div >
-                <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
-                  <MarkupText classNames="regular-text" content={this.props.Instructions} />
+                <div >
+                    <div className="boldfaces">{this.props.Strings.TaskInstructions}</div>
+                    <MarkupText classNames="regular-text" content={this.props.Instructions} />
                 </div>);
         }
 
@@ -155,8 +155,8 @@ class SuperViewComponent extends React.Component {
 
 
                 fieldTitle = (<div>
-                  <br />
-                  <div key={index + 600}>{fieldTitleText}</div>
+                    <br />
+                    <div key={index + 600}>{fieldTitleText}</div>
                 </div>);
             }
 
@@ -167,86 +167,86 @@ class SuperViewComponent extends React.Component {
 
                 if (this.state.FieldRubrics[index]) {
                     rubric_content = (
-                      <div key={this.props.TaskActivityFields[index].title}>
-                        <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                        <div className="regular-text rubric">
-                          {this.props.TaskActivityFields[index].rubric}
-                        </div>
-                      </div>);
+                        <div key={this.props.TaskActivityFields[index].title}>
+                            <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
+                            <div className="regular-text rubric">
+                                {this.props.TaskActivityFields[index].rubric}
+                            </div>
+                        </div>);
                 }
 
                 fieldRubric = (<div key={1200}>
-                  <button
-                    type="button"
-                    className="float-button in-line"
-                    onClick={this.toggleFieldRubric.bind(this, index)}
-                  >
-                    {rubricButtonText}
-                  </button>
-                  <TransitionGroup>
-                    <CSSTransition 
-                      timeout={{enter: 500, exit: 300}}
-                      classNames="example" 
-                      appear
-                      enter 
-                      exit>
-                    {rubric_content}
-                    </CSSTransition>
-                  </TransitionGroup>
+                    <button
+                        type="button"
+                        className="float-button in-line"
+                        onClick={this.toggleFieldRubric.bind(this, index)}
+                    >
+                        {rubricButtonText}
+                    </button>
+                    <TransitionGroup>
+                        <CSSTransition 
+                            timeout={{enter: 500, exit: 300}}
+                            classNames="example" 
+                            appear
+                            enter 
+                            exit>
+                            {rubric_content}
+                        </CSSTransition>
+                    </TransitionGroup>
                 </div>
-              );
+                );
             }
 
             if (this.props.TaskActivityFields[index].instructions !== '') { // if instructions are empty, don't display anything
                 fieldInstructions = (
-                  <div key={1100}>
-                    <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
-                    <div className="regular-text instructions">
-                      {this.props.TaskActivityFields[index].instructions}
+                    <div key={1100}>
+                        <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
+                        <div className="regular-text instructions">
+                            {this.props.TaskActivityFields[index].instructions}
+                        </div>
                     </div>
-                  </div>
-              );
+                );
             }
 
             if(this.props.TaskActivityFields[index].justification_instructions !== ''){
                 justificationInstructions = (<div>
-                  <div className=".template-field-justification-instructions-label-label">{fieldTitleText} {this.props.Strings.JustificationInstructions}</div>
+                    <div className=".template-field-justification-instructions-label-label">{fieldTitleText} {this.props.Strings.JustificationInstructions}</div>
 
-                <MarkupText className="regular-text" content={this.props.TaskActivityFields[index].justification_instructions}/>
-              </div>);
+                    <MarkupText className="regular-text" content={this.props.TaskActivityFields[index].justification_instructions}/>
+                </div>);
             }
 
 
             return (<div>
-              <div className="template-field-title">{fieldTitle}</div>
-              {fieldInstructions}
-              {fieldRubric}
+                <div className="template-field-title">{fieldTitle}</div>
+                {fieldInstructions}
+                {fieldRubric}
 
-              <br />
-              <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                <br />
+                <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);
 
         content = (
-          <div key={this.props.index + 2003} className="section-content">
-            {TA_instructions}
-            {TA_rubric}
-            <FileLinksComponent Files={this.props.Files} />
-            {fields}
-            <br key={this.props.index + 2005} />
-          </div>);
+            <div key={this.props.index + 2003} className="section-content">
+                {TA_instructions}
+                {TA_rubric}
+                <FileLinksComponent Files={this.props.Files} />
+                {fields}
+                <br key={this.props.index + 2005} />
+            </div>);
 
         return (
-          <div key={this.props.index + 2001}className="section card-2 " >
-            <h2 key={this.props.index + 2002} className="title collapsable-header" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
-            <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-              <i className="fa fa-comment-o fa-stack-1x"></i>
-              <span className="fa fa-stack-1x">
-                <span className = "comment-number">{this.state.NumberComments}</span>
-              </span>
-            </span>
-            {content}
-          </div>
+            <div key={this.props.index + 2001}className="section card-2 " >
+                <h2 key={this.props.index + 2002} className="title collapsable-header" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                    <i className="fa fa-comment-o fa-stack-1x"></i>
+                    <span className="fa fa-stack-1x">
+                        <span className = "comment-number">{this.state.NumberComments}</span>
+                    </span>
+                </span>
+                {content}
+            </div>
         );
     }
 
