@@ -1,4 +1,3 @@
-import {API_URL} from '../../utils/react_constants';
 
 exports.get = (req, res) => {
 
@@ -14,6 +13,6 @@ exports.get = (req, res) => {
         sectionId: req.query.sectionId,
         userType: req.App.user.type,
         isAdmin: req.App.user.admin,
-        apiUrl: API_URL
+        visitorId: req.query.visitorId,
     });
 };

@@ -416,12 +416,12 @@ class TemplateContainer extends React.Component {
                 TaskID={this.props.TaskID}
                 UserID={this.props.UserID}
                 Strings={this.state.Strings}
-                apiUrl={this.props.apiUrl}
                 showComments={this.showComments.bind(this)}
                 addCommentListItem={this.addCommentListItem.bind(this)}
                 TaskStatus={this.state.TaskStatus}
                 IsRevision={this.state.IsRevision}
                 CurrentTaskType={this.state.TaskActivityType}
+                VisitorID={this.props.VisitorID}
             />);
         }
 

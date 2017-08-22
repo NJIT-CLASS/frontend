@@ -75,6 +75,7 @@ case 'translation-container':
 case 'template-container':
     const taskId = reactElem.dataset.taskId;
     const isAdmin = reactElem.dataset.isAdmin;
+    const visitorId = reactElem.dataset.visitorId;
     ReactDOM.render(
         <TemplateContainer
             SectionID={sectionId}
@@ -84,6 +85,7 @@ case 'template-container':
             TaskID={taskId}
             UserType={userType}
             Admin={isAdmin}
+            VisitorID={visitorId}
             __={translationFunction}
         />, reactElem);
     break;

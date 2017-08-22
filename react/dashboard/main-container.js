@@ -9,20 +9,31 @@ class DashboardMain extends Component {
         super(props);
 
         this.state = {
-            Notifications:[]
+            Notifications:[],
+            Strings: strings
         };
+
+
 
     }
 
+    componentWillMount (){
+        this.props.__(strings, (newStrings) => {
+            this.setState({Strings: newStrings});
+        });
+    }
+    
+
     render(){
+        let {Strings} = this.state;
         return <div>
             <div id="left-half">
-                <CoursesComponent Strings={strings} UserID={this.props.UserID}/>
+                <CoursesComponent Strings={Strings} UserID={this.props.UserID}/>
 
             </div>
             <div id="right-half">
-                <PendingTaskComponent Strings={strings} UserID={this.props.UserID}/>
-                <CompletedTaskComponent Strings={strings} UserID={this.props.UserID}/>
+                <PendingTaskComponent Strings={Strings} UserID={this.props.UserID}/>
+                <CompletedTaskComponent Strings={Strings} UserID={this.props.UserID}/>
             </div>
             
         </div>;

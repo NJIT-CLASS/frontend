@@ -96,12 +96,12 @@ class SuperViewComponent extends React.Component {
 
         if(this.state.IsBypassedDispute === true){
             return (<div key={this.props.index + 2001} className="section card-2" >
-                <h2 key={this.props.index + 2002} className="title" >{this.props.Strings.BypassedDisputeMessage}</h2>
+                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
             </div>);
         }
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
-                <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
             </div>);
         }
 
@@ -237,8 +237,8 @@ class SuperViewComponent extends React.Component {
             </div>);
 
         return (
-            <div key={this.props.index + 2001}className="section card-2 " >
-                <h2 key={this.props.index + 2002} className="title collapsable-header" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+            <div key={this.props.index + 2001} className="section card-2 " >
+                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
                 <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
                     <i className="fa fa-comment-o fa-stack-1x"></i>
                     <span className="fa fa-stack-1x">
@@ -249,7 +249,6 @@ class SuperViewComponent extends React.Component {
             </div>
         );
     }
-
 }
 
 SuperViewComponent.propTypes = {
