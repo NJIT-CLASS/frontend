@@ -1,39 +1,45 @@
-table {
+.dashboard-container {
   width: 100%;
-  border: 1px solid #000;
-}
+  table {
+    width: 100%;
+    border: 1px solid #000;
+  }
 
-th, td {
-  width: 25%;
-  text-align: left;
-  vertical-align: top;
-  border: 1px solid #000;
-  border-collapse: collapse;
-  padding: 0.3em;
-  caption-side: bottom;
-}
+  th, td {
+    width: 25%;
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    padding: 0.3em;
+    caption-side: bottom;
+  }
 
-caption {
-  padding: 0.3em;
-}
+  caption {
+    padding: 0.3em;
+  }
 
-b {
-    font-weight: bold;
-}
+  b {
+      font-weight: bold;
+  }
 
-#left-half{
-  width:30%
-}
-#right-half{
-  width:70%;
-}
-
-@media screen and (max-width: $mobile-brk) {
   #left-half{
-    text-align: center;
-    width:100%
+    width:30%;
+    display: inline-block;
+    vertical-align: top;
   }
   #right-half{
-    width:100%;
+    width:65%;
+    display: inline-block;
+  }
+
+  @media screen and (max-width: $mobile-brk) {
+    #left-half{
+      text-align: center;
+      width:100%
+    }
+    #right-half{
+      width:100%;
+    }
   }
 }

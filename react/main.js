@@ -26,6 +26,7 @@ import UserGradeReportContainer from './grade-report/user-grade-report-container
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import EveryonesWorkMain from './everyones-work/main-container';
+import DashboardMain from './dashboard/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -55,6 +56,9 @@ const sectionId = reactElem.dataset.sectionId;
  * Decide which page is displayed currently and render the appropriate component
  */
 switch (currentPage) {
+case 'dashboard-container':
+    ReactDOM.render(<DashboardMain UserID={userId}  __={translationFunction}/>,reactElem);
+    break;
 case 'add-user-container':
     ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,reactElem);
     break;
