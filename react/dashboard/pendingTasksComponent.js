@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
-import ReactTable from 'react-table';
+import TableComponent from '../shared/tableComponent';
 
 export default class PendingTaskComponent extends Component {
     constructor(props) {
@@ -48,7 +48,7 @@ export default class PendingTaskComponent extends Component {
                 <div className="section-content">
                     <div className="col-xs-6">
                         
-                        <ReactTable
+                        <TableComponent
                             data={PendingTasksData}
                             columns={[
                                 {
@@ -77,9 +77,6 @@ export default class PendingTaskComponent extends Component {
                                     accessor: 'Date',
                                 }
                             ]}
-                            defaultPageSize={10}
-                            className="-striped -highlight"
-                            resizable={true}
                             noDataText={String.NoPending}
                         />
                     </div>

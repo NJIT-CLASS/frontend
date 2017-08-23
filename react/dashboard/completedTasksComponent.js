@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
-import ReactTable from 'react-table';
+import TableComponent from '../shared/tableComponent';
 
 export default class CompletedTaskComponent extends Component {
     constructor(props) {
@@ -48,7 +48,7 @@ export default class CompletedTaskComponent extends Component {
                 <h2 className="title">{Strings.CompletedTasks}</h2>
                 <div className="section-content">
                     
-                    <ReactTable
+                    <TableComponent
                         data={CompletedTasksData}
                         columns={[
                             {
@@ -69,9 +69,6 @@ export default class CompletedTaskComponent extends Component {
                                 accessor: 'Date'
                             }
                         ]}
-                        defaultPageSize={10}
-                        className="-striped -highlight"
-                        resizable={true}
                         noDataText={String.NoCompleted}
 
                     />

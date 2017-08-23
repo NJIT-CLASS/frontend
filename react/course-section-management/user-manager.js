@@ -3,6 +3,7 @@ import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Toggle from '../shared/toggleSwitch';
+import TableComponent from '../shared/tableComponent';
 
 var parse = require('csv-parse/lib/sync');
 
