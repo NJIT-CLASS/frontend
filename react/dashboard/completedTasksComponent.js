@@ -7,7 +7,7 @@ export default class CompletedTaskComponent extends Component {
         super(props);
         this.state = {
             CompletedTasks:[],
-            
+            CompletedTasksData: []
         };
     }
     componentWillMount () {
@@ -17,8 +17,19 @@ export default class CompletedTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getCompletedTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
+                let transformedTaskList = body.CompletedTaskInstances.map(task => {
+                    return {
+                        Assignment: task.AssignmentInstance.Assignment.Name,
+                        TaskID: task.TaskInstanceID,
+                        Type: task.TaskActivity.DisplayName,
+                        Course: task.AssignmentInstance.Section.Course.Name,
+                        Date: moment(task.ActualEndDate).format('MMMM Do, YYYY h:mm a'),
+                    };
+                });
+
                 this.setState({
-                    CompletedTasks: body.CompletedTaskInstances
+                    CompletedTasks: body.CompletedTaskInstances,
+                    CompletedTasksData: transformedTaskList
                 });
             }
         });
@@ -26,7 +37,7 @@ export default class CompletedTaskComponent extends Component {
     
     render() {
         let {Strings} = this.props;
-        let {CompletedTasks} = this.state;
+        let {CompletedTasks, CompletedTasksData} = this.state;
         let taskList = null;
         if(CompletedTasks.length > 0){
             taskList = CompletedTasks.map(task => {
@@ -47,14 +58,15 @@ export default class CompletedTaskComponent extends Component {
             <div className="section card-2 sectionTable">
                 <h2 className="title">{Strings.CompletedTasks}</h2>
                 <div className="section-content">
-                    <div className="col-xs-6">
-                        <table width="100%" className="sticky-enabled tableheader-processed sticky-table">
-                            <thead><tr><th>{Strings.Assignment}</th><th>{Strings.Type}</th><th>{Strings.Course}</th><th>{Strings.EndDate}</th> </tr></thead>
-                            <tbody>
-                                {taskList}
-                            </tbody>
-                        </table>
-                    </div>
+                    
+                    <table width="100%" className="sticky-enabled tableheader-processed sticky-table">
+                        <thead><tr><th>{Strings.Assignment}</th><th>{Strings.Type}</th><th>{Strings.Course}</th><th>{Strings.EndDate}</th> </tr></thead>
+                        <tbody>
+                            {taskList}
+                                
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
         );
