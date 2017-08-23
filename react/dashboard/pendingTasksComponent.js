@@ -53,20 +53,28 @@ export default class PendingTaskComponent extends Component {
                             columns={[
                                 {
                                     Header: Strings.Assignment,
-                                    accessor: 'Assignment',
+                                    accessor: d => d.Assignment,
                                     Cell: this.makeLink,
+                                    id:'Pending-Assignment',
+                                    resizable:true
+                                    
                                         
                                 },
                                 {
                                     Header: Strings.Type,
-                                    accessor: 'Type'
+                                    accessor: 'Type',
+                                    id:'Pending-Type',
+                                    resizable:true,
+                                    
                                 },
                                 {         
                                     Header: Strings.Course,
                                     accessor: 'Course',
+                                    resizable:true,                                    
                                 },{
                                     Header: Strings.DueDate,
-                                    accessor: 'Date'
+                                    resizable:true,
+                                    accessor: 'Date',
                                 }
                             ]}
                             defaultPageSize={10}
