@@ -8,5 +8,7 @@ export default {
     PendingTasks: 'Pending Tasks',
     CompletedTasks: 'Completed Tasks',
     EndDate: 'End Date',
+    NoCompleted: 'No completed tasks',
+    NoPending: 'No pending tasks'
     
 };

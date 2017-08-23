@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
+import ReactTable from 'react-table';
 
 export default class CompletedTaskComponent extends Component {
     constructor(props) {
@@ -34,39 +35,46 @@ export default class CompletedTaskComponent extends Component {
             }
         });
     }
-    
+    makeLink({original, row, value}){
+        return <a  href={`/task/${original.TaskID}`}>{value}</a>;
+    }
     render() {
         let {Strings} = this.props;
         let {CompletedTasks, CompletedTasksData} = this.state;
-        let taskList = null;
-        if(CompletedTasks.length > 0){
-            taskList = CompletedTasks.map(task => {
-                const formattedDate = moment(task.ActualEndDate).format('MMMM Do, YYYY h:mm a');
-                return (
-                    <tr>
-                        <td data-label={Strings.Assignment}>
-                            <a href={`/task/${task.TaskInstanceID}`}>{task.AssignmentInstance.Assignment.Name}</a>
-                        </td>
-                        <td data-label={Strings.Type}>{task.TaskActivity.DisplayName}</td>
-                        <td data-label={Strings.Course}>{task.AssignmentInstance.Section.Course.Name}</td>
-                        <td data-label={Strings.EndDate}>{formattedDate}</td>
-                    </tr>
-                );
-            });
-        } 
+        
+        
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{Strings.CompletedTasks}</h2>
                 <div className="section-content">
                     
-                    <table width="100%" className="sticky-enabled tableheader-processed sticky-table">
-                        <thead><tr><th>{Strings.Assignment}</th><th>{Strings.Type}</th><th>{Strings.Course}</th><th>{Strings.EndDate}</th> </tr></thead>
-                        <tbody>
-                            {taskList}
-                                
-                        </tbody>
-                    </table>
-                    
+                    <ReactTable
+                        data={CompletedTasksData}
+                        columns={[
+                            {
+                                Header: Strings.Assignment,
+                                accessor: 'Assignment',
+                                Cell: this.makeLink,
+                                  
+                            },
+                            {
+                                Header: Strings.Type,
+                                accessor: 'Type'
+                            },
+                            {         
+                                Header: Strings.Course,
+                                accessor: 'Course',
+                            },{
+                                Header: Strings.EndDate,
+                                accessor: 'Date'
+                            }
+                        ]}
+                        defaultPageSize={10}
+                        className="-striped -highlight"
+                        resizable={true}
+                        noDataText={String.NoCompleted}
+
+                    />
                 </div>
             </div>
         );

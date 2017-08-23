@@ -11,6 +11,9 @@
     width:65%;
     display: inline-block;
   }
+  .section-content{
+    overflow: visible;
+  }
 
   @media screen and (max-width: $mobile-brk) {
     #left-half{

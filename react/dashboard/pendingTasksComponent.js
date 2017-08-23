@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
+import ReactTable from 'react-table';
+
 export default class PendingTaskComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
             PendingTasks: [],
-            
+            PendingTasksData: []
         };
     }
     componentDidMount () {
@@ -16,45 +18,62 @@ export default class PendingTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getPendingTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
+                let transformedTaskList = body.PendingTaskInstances.map(task => {
+                    return {
+                        Assignment: task.AssignmentInstance.Assignment.Name,
+                        TaskID: task.TaskInstanceID,
+                        Type: task.TaskActivity.DisplayName,
+                        Course: task.AssignmentInstance.Section.Course.Name,
+                        Date: moment(task.EndDate).format('MMMM Do, YYYY h:mm a'),
+                    };
+                });
                 this.setState({
-                    PendingTasks: body.PendingTaskInstances
+                    PendingTasks: body.PendingTaskInstances,
+                    PendingTasksData: transformedTaskList
                 });
             }
         });
     }
+    makeLink({original, row, value}){
+        return <a  href={`/task/${original.TaskID}`}>{value}</a>;
+    }
     
     render() {
         let {Strings} = this.props;
-        let {PendingTasks} = this.state;
-        let taskList = null;
-        if(PendingTasks.length > 0){
-            taskList = PendingTasks.map(task => {
-                const formattedDate = moment(task.EndDate).format('MMMM Do, YYYY h:mm a');
-                
-                return (
-                    <tr>
-                        <td data-label={Strings.Assignment}>
-                            <a href={`/task/${task.TaskInstanceID}`}>{task.AssignmentInstance.Assignment.Name}</a>
-                        </td>
-                        <td data-label={Strings.Type}>{task.TaskActivity.DisplayName}</td>
-                        <td data-label={Strings.Course}>{task.AssignmentInstance.Section.Course.Name}</td>
-                        <td data-label={Strings.DueDate}>{formattedDate}</td>
-                    </tr>
-                );
-            });
-        } 
+        let {PendingTasks, PendingTasksData} = this.state;
+        
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{Strings.PendingTasks}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                        <table width="100%" className="sticky-enabled tableheader-processed sticky-table">
-                            <thead><tr><th>{Strings.Assignment}</th><th>{Strings.Type}</th><th>{Strings.Course}</th><th>{Strings.DueDate}</th> </tr></thead>
-                            <tbody>
-                                {taskList}
-                   
-                            </tbody>
-                        </table>
+                        
+                        <ReactTable
+                            data={PendingTasksData}
+                            columns={[
+                                {
+                                    Header: Strings.Assignment,
+                                    accessor: 'Assignment',
+                                    Cell: this.makeLink,
+                                        
+                                },
+                                {
+                                    Header: Strings.Type,
+                                    accessor: 'Type'
+                                },
+                                {         
+                                    Header: Strings.Course,
+                                    accessor: 'Course',
+                                },{
+                                    Header: Strings.DueDate,
+                                    accessor: 'Date'
+                                }
+                            ]}
+                            defaultPageSize={10}
+                            className="-striped -highlight"
+                            resizable={true}
+                            noDataText={String.NoPending}
+                        />
                     </div>
                 </div>
             </div>
