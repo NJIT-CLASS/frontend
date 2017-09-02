@@ -69,7 +69,7 @@ export default class CompletedTaskComponent extends Component {
                                 accessor: 'Date'
                             }
                         ]}
-                        noDataText={String.NoCompleted}
+                        noDataText={Strings.NoCompleted}
 
                     />
                 </div>

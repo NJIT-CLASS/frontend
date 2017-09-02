@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import Collapsible from 'react-collapsible';
+import ListItemComponent from './listItemComponent';
+
+
 
 class EveryonesWorkMain extends Component {
     constructor(props){
         super(props);
         this.state = {
-            ListofEveryone: {},
+            ListOfWorkflows: {},
             Loaded: false
         };
     }
@@ -15,33 +18,41 @@ class EveryonesWorkMain extends Component {
     }
     
     fetchIDs(props){
-        apiCall.get(`/EveryonesWork/${props.AssignmentID}`, (err, res, body) => {
+        apiCall.get(`/EveryonesWork/AssignmentInstanceID/${props.AssignmentID}`, (err, res, body) => {
             console.log(body);
             this.setState({
-                ListofEveryone: body.EveryonesWork,
+                ListOfWorkflows: body.Workflows,
+                AssignmentInfo: body.AssignmentInfo,
                 Loaded: true
             });
         });
     }
     render() {
-        let {Loaded, ListofEveryone} = this.state;
+        let {Loaded, ListOfWorkflows, AssignmentInfo} = this.state;
+        let {UserID} = this.props;
         if(!Loaded){
             return <div></div>;
         }
-        let listofUsers = Object.keys(ListofEveryone).map(userId => {
-            const listOfTasks = ListofEveryone[userId].map( taskId =>
-                <li><a href={`/task/${taskId}`}>{taskId}</a></li>
+        let listofWorkflows = Object.keys(ListOfWorkflows).map(workflowActivityId => {
+            const listOfTasks = ListOfWorkflows[workflowActivityId].Tasks.map( (taskObject, index) =>
+                <ListItemComponent key={workflowActivityId + ' ' + index} TaskObject={taskObject} 
+                    UserID={UserID}/>
             );
-            
+        
+            let titleText = AssignmentInfo.Name;//ListOfWorkflows[workflowActivityId].Name;
             return ( 
-                <Collapsible trigger={`${userId}`}>
-                    {listOfTasks}
-                </Collapsible>
+                <div className="section" key={`${workflowActivityId}`}>
+                    <div className="title">{`${titleText}`}</div>
+                    <div className="section-content">
+                        <span>{AssignmentInfo.Instructions}</span>
+                        {listOfTasks}
+                    </div>
+                </div>
             );
         });
         return (
             <div>
-                { listofUsers}
+                { listofWorkflows}
             </div>
     
         );

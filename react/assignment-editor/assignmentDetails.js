@@ -12,7 +12,7 @@ class AssignmentDetailsComponent extends React.Component{
     constructor(props){
         super(props);
 
-      /*
+        /*
       Props:
             -AssignmentActivityData
             -Courses
@@ -44,90 +44,92 @@ class AssignmentDetailsComponent extends React.Component{
         let workflowDistWeights = this.mapTasksToOptions();
         if(workflowDistWeights.length > 1){
             workflowDistView = <ul>
-            {
-              workflowDistWeights.map((workflowObj) => {
-                  return <li className="thin-number-field" key={'workflowWeight' + workflowObj.id}>
-                      <label>{workflowObj.name}</label>
-                      <NumberField  key = {'probDet-NumF '+workflowObj.id} allowDecimals={false}
-                                    min={0} max={100}
-                                    onChange={this.props.changeAssignmentGradeDist.bind(this, workflowObj.id)}
-                                    value={workflowObj.weight} />
-                    </li>;
-              })
-            }
-          </ul>;
+                {
+                    workflowDistWeights.map((workflowObj) => {
+                        return <li className="thin-number-field" key={'workflowWeight' + workflowObj.id}>
+                            <label>{workflowObj.name}</label>
+                            <NumberField  key = {'probDet-NumF '+workflowObj.id} allowDecimals={false}
+                                min={0} max={100}
+                                onChange={this.props.changeAssignmentGradeDist.bind(this, workflowObj.id)}
+                                value={workflowObj.weight} />
+                        </li>;
+                    })
+                }
+            </ul>;
         }
         
 
         if(this.props.Courses){
             coursesView = (<div>
-          <label>{strings.Course}</label>
-          <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
-          <Select options={courseList}
-                  value={this.props.AssignmentActivityData.AA_course}
-                  placeholder={strings.SelectACourse}
-                  onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
-                  clearable={false}
-                  searchable={false}
-            />
+                <label>{strings.Course}</label>
+                <Tooltip Text={strings.ActivityCourseMessage} ID={'AA_course_tooltip'} />
+                <Select options={courseList}
+                    value={this.props.AssignmentActivityData.AA_course}
+                    placeholder={strings.SelectACourse}
+                    onChange={this.props.changeAssignmentDropdown.bind(this,'AA_course')}
+                    clearable={false}
+                    searchable={false}
+                />
         
-        </div>);
+            </div>);
         }
 
         return (
-        <div className="section card-2" >
-          <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}> {this.props.AssignmentActivityData.AA_name} {strings.Parameters}</h2>
-          <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
-            <div className="section-divider">
-              <div className="inner">
-                <label>{strings.AssignmentName}</label>
-                <Tooltip Text={strings.AssigmentNameMessage} ID={'AA_name_tooltip'}/>
+            <div className="section card-2" >
+                <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{strings.AssignmentHeader}</h2>
+                <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
+                    <div className="section-divider">
+                        <div className="inner">
+                            <label>{strings.AssignmentName}</label>
+                            <Tooltip Text={strings.AssigmentNameMessage} ID={'AA_name_tooltip'}/>
 
-                <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
-                  onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
-                  ></input>
-              </div>
+                            <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
+                                onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
+                            ></input>
+                        </div>
 
-              <div className="inner">
-                {coursesView}
-              </div>
+                        <div className="inner">
+                            {coursesView}
+                        </div>
 
-              <div className="inner">
-                <label>{strings.AssignmentType}</label>
-                <Tooltip Text={strings.AssigmentTypeMessage} ID={'AA_type_tooltip'}/>
-                <Select options={problemTypeList}
-                  value={this.props.AssignmentActivityData.AA_type}
-                  onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
-                  clearable={false}
-                  searchable={false}
-                  />
-              </div>
+                        {/* Hiding Assignment Type for now
+                        <div className="inner">
+                          <label>{strings.AssignmentType}</label>
+                          <Tooltip Text={strings.AssigmentTypeMessage} ID={'AA_type_tooltip'}/>
+                          <Select options={problemTypeList}
+                            value={this.props.AssignmentActivityData.AA_type}
+                            onChange={this.props.changeAssignmentDropdown.bind(this, 'AA_type')}
+                            clearable={false}
+                            searchable={false}
+                            />
+                        </div>
+                        */}
 
-               {/*set numericinput max to real world limit of numebr of max problems*/}
-              <div className='inner'>
-                <label>{strings.HowManyDifferentTypesOfProblems}</label>
-                <Tooltip Text={strings.AssignmentNumberProblemsMessage} ID={'AA_number_of_workflows_tooltips'} />
-                <br />
-                <NumberField min={1}
-                            max={100}
-                            value={this.props.AssignmentActivityData.NumberofWorkflows}
-                            onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')} />
+                        {/*set numericinput max to real world limit of numebr of max problems*/}
+                        <div className='inner'>
+                            <label>{strings.HowManyDifferentTypesOfProblems}</label>
+                            <Tooltip Text={strings.AssignmentNumberProblemsMessage} ID={'AA_number_of_workflows_tooltips'} />
+                            <br />
+                            <NumberField min={1}
+                                max={100}
+                                value={this.props.AssignmentActivityData.NumberofWorkflows}
+                                onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')} />
 
-              </div>
+                        </div>
 
-              <div className="inner block">
-                <label>{strings.AssignmentInstructions}</label>
-                <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
-                <br />
-                <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
-                  onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
-              </div>
+                        <div className="inner block">
+                            <label>{strings.AssignmentInstructions}</label>
+                            <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
+                            <br />
+                            <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
+                                onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
+                        </div>
 
-              <div className="inner block">
-                {workflowDistView}                
-              </div>
-              <br />
-              {/*
+                        <div className="inner block">
+                            {workflowDistView}                
+                        </div>
+                        <br />
+                        {/*
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
@@ -137,8 +139,8 @@ class AssignmentDetailsComponent extends React.Component{
                 <div className="text-true">Yes</div>
                 <div className="text-false">No</div>
               </div>*/}
-              <br />
-              {/*}
+                        <br />
+                        {/*}
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <ToggleSwitch click={ ()=> {
@@ -147,10 +149,10 @@ class AssignmentDetailsComponent extends React.Component{
               <br />
               */}
               
-            </div>
+                    </div>
 
-          </div>
-        </div>
+                </div>
+            </div>
         );
     }
 }

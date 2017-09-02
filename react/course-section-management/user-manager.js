@@ -12,11 +12,12 @@ class User extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            VolunteerStatus: this.props.volunteer
+            Volunteer: this.props.volunteer,
+            Status: this.props.status
         };
     }
 
-    changeVolunteerStatus(userid, isVolunteer){
+    toggleVolunteer(userid, isVolunteer){
         let postVars = {
             UserID: userid,
             SectionID: this.props.SectionID,
@@ -33,21 +34,44 @@ class User extends React.Component {
             console.log(res);
             if(res.statusCode === 200){
                 this.setState({
-                    VolunteerStatus: !isVolunteer
+                    Volunteer: !isVolunteer
                 });
             }
         });
     }
 
+    toggleStatus(volunteerID, newStatus){
+        let postVars = {
+            VolunteerPoolID: volunteerID,
+            status: newStatus
+        };
+        let endpoint = '/VolunteerPool/individualStatusUpdate';
+        
+
+        apiCall.post(endpoint, postVars, (err, res, body) => {
+            console.log(res);
+            if(res.statusCode === 200){
+                this.setState({
+                    Status: newStatus
+                });
+            }
+        });
+    }
 
     render() {
         //
         //	<td>{this.props.volunteer ? 'Yes' : 'No'}</td>
         let volunteerToggle = null;
+        let statusToggle = null;
         if(this.props.role === 'Student'){
             volunteerToggle = (<td>
-                <Toggle isClicked={this.state.VolunteerStatus}
-                    click={this.changeVolunteerStatus.bind(this, this.props.UserID, this.state.VolunteerStatus)}
+                <Toggle isClicked={this.state.Volunteer}
+                    click={this.toggleVolunteer.bind(this, this.props.UserID, this.state.Volunteer)}
+                />
+            </td>);
+            statusToggle = (<td>
+                <Toggle isClicked={this.state.Status}
+                    click={this.toggleStatus.bind(this, this.props.volunteerID, this.state.Status)}
                 />
             </td>);
         }
@@ -98,7 +122,9 @@ class UserManager extends React.Component {
                     volunteer: user.Volunteer,
                     firstName: user.User.FirstName,
                     lastName: user.User.LastName,
-                    email: user.UserLogin.Email
+                    email: user.UserLogin.Email,
+                    status: user.Status,
+                    volunteerId: user.User.VolunteerPools.length != 0 ? user.User.VolunteerPools[0].VolunteerPoolID : -1
                 });
             }
             this.setState({
@@ -370,6 +396,8 @@ class UserManager extends React.Component {
                         active={user.active}
                         volunteer={user.volunteer}
                         role={this.props.role}
+                        status={user.status}
+                        VolunteerPoolID={user.volunteerId}
                     />
                 );
             });

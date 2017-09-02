@@ -77,7 +77,7 @@ export default class PendingTaskComponent extends Component {
                                     accessor: 'Date',
                                 }
                             ]}
-                            noDataText={String.NoPending}
+                            noDataText={Strings.NoPending}
                         />
                     </div>
                 </div>
