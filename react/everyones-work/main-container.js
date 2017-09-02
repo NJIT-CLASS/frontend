@@ -1,62 +1,97 @@
 import React, { Component } from 'react';
-import apiCall from '../shared/apiCall';
-import Collapsible from 'react-collapsible';
-import ListItemComponent from './listItemComponent';
+import EveryonesWorkContainer from './everyonesWorkContainer';
+import CourseSelectComponent from './courseSelect';
+import SectionSelectComponent from './sectionSelect';
+import AssignmentSelectComponent from './assignmentSelect';
+import SemesterSelectComponent from './semesterSelect';
 
 
-
-class EveryonesWorkMain extends Component {
-    constructor(props){
+class MainPageContainer extends Component {
+    constructor(props) {
         super(props);
-        this.state = {
-            ListOfWorkflows: {},
-            Loaded: false
+
+        this.state= {
+            AssignmentID: this.props.AssignmentID ,
+            CourseID: -1,
+            SectionID: -1,
+            SemesterID: -1,
+            Strings: {
+                Course: 'Course',
+                Semester: 'Semester',
+                Assignment: 'Assignment',
+                Section: 'Section'
+            }
         };
+
+        this.selectAssignment = this.selectAssignment.bind(this);
+        this.selectCourse = this.selectCourse.bind(this);
+        this.selectSection = this.selectSection.bind(this);
+        this.selectSemester = this.selectSemester.bind(this);
     }
-    componentWillMount () {
-        this.fetchIDs(this.props);
-    }
-    
-    fetchIDs(props){
-        apiCall.get(`/EveryonesWork/AssignmentInstanceID/${props.AssignmentID}`, (err, res, body) => {
-            console.log(body);
-            this.setState({
-                ListOfWorkflows: body.Workflows,
-                AssignmentInfo: body.AssignmentInfo,
-                Loaded: true
-            });
+
+    componentDidMount() {
+        this.props.__(this.state.Strings, newStrings => {
+            this.setState({Strings: newStrings});
         });
     }
+    selectCourse(e){
+        this.setState({
+            CourseID: e.value
+        });
+    }
+
+    selectSection(e){
+        this.setState({
+            SectionID: e.value
+        });
+    }
+
+    selectAssignment(e){
+        this.setState({
+            AssignmentID: e.value
+        });
+    }
+    selectSemester(e){
+        this.setState({
+            SemesterID: e.value
+        });
+    }
+
     render() {
-        let {Loaded, ListOfWorkflows, AssignmentInfo} = this.state;
-        let {UserID} = this.props;
-        if(!Loaded){
-            return <div></div>;
+        let {AssignmentID, CourseID, SemesterID, SectionID, Strings} = this.state;
+        let everyonesWorkSection = null;
+        if(AssignmentID != ':assignmentId'){
+            everyonesWorkSection = (
+                <EveryonesWorkContainer UserID={this.props.UserID} AssignmentID={AssignmentID}/>
+            );
         }
-        let listofWorkflows = Object.keys(ListOfWorkflows).map(workflowActivityId => {
-            const listOfTasks = ListOfWorkflows[workflowActivityId].Tasks.map( (taskObject, index) =>
-                <ListItemComponent key={workflowActivityId + ' ' + index} TaskObject={taskObject} 
-                    UserID={UserID}/>
-            );
-        
-            let titleText = AssignmentInfo.Name;//ListOfWorkflows[workflowActivityId].Name;
-            return ( 
-                <div className="section" key={`${workflowActivityId}`}>
-                    <div className="title">{`${titleText}`}</div>
-                    <div className="section-content">
-                        <span>{AssignmentInfo.Instructions}</span>
-                        {listOfTasks}
-                    </div>
-                </div>
-            );
-        });
         return (
             <div>
-                { listofWorkflows}
+                <SemesterSelectComponent selectSemester={this.selectSemester} 
+                    SemesterID={SemesterID}
+                    Strings={Strings}
+                />
+                <CourseSelectComponent selectCourse={this.selectCourse}
+                    UserID={this.props.UserID}
+                    Strings={Strings}
+                    CourseID={CourseID}
+                />
+                <SectionSelectComponent selectSection={this.selectSection} 
+                    UserID={this.props.UserID}
+                    CourseID={CourseID}
+                    SectionID={SectionID}
+                    SemesterID={SemesterID}
+                    Strings={Strings}
+                />
+                <AssignmentSelectComponent selectAssignment={this.selectAssignment}
+                    SectionID={SectionID}
+                    AssignmentID={AssignmentID}
+                    Strings={Strings}
+                />
+                {everyonesWorkSection}
             </div>
-    
         );
     }
 }
 
-export default EveryonesWorkMain;
+export default MainPageContainer;

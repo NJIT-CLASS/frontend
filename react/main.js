@@ -25,7 +25,7 @@ import SectionsContainer from './sections/sections-container';
 import UserGradeReportContainer from './grade-report/user-grade-report-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
-import EveryonesWorkMain from './everyones-work/main-container';
+import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
@@ -127,12 +127,12 @@ case 'user-grade-report':
     ReactDOM.render( <UserGradeReportContainer />, reactElem);
     break;
 case 'volunteer-pool':
-    ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} apiUrl={apiUrl}/>, reactElem);
+    ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />, reactElem);
     break;
 case 'user-management':
     ReactDOM.render(<UserManagementContainer UserID={userId} />, reactElem);
     break;
 case 'everyones-work':
-    ReactDOM.render(<EveryonesWorkMain UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
+    ReactDOM.render(<MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
     break;
 }

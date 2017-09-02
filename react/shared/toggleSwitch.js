@@ -7,17 +7,27 @@ class ToggleSwitch extends React.Component{
 
 
     render(){
-
-        return(<div className={this.props.isClicked ? 'toggle-switch true' : 'toggle-switch false'}
-        onClick={() => {
-            if(this.props.click){
-                this.props.click();
+        let classStyle = 'toggle-switch ';
+        if(!this.props.disabled){
+            if(this.props.isClicked){
+                classStyle += 'true';
+            } else {
+                classStyle += 'false';
             }
-        }} >
-      <div className="bubble"></div>
-      <div className="text-true">{this.props.yesLabel}</div>
-      <div className="text-false">{this.props.noLabel}</div>
-    </div>);
+        } else {
+            classStyle += 'disabled';
+        }
+        
+        return(<div className={classStyle}
+            onClick={() => {
+                if(!this.props.disabled && this.props.click){
+                    this.props.click();
+                }
+            }} >
+            <div className="bubble"></div>
+            <div className="text-true">{this.props.yesLabel}</div>
+            <div className="text-false">{this.props.noLabel}</div>
+        </div>);
     }
 }
 

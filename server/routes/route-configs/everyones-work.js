@@ -1,7 +1,7 @@
 const handler = require('../route-handlers/everyones-work');
 
 module.exports = {
-    route: '/everyones-work/:assignmentId',
+    route: '/everyones-work/:assignmentId?',
     title: 'Everyone\'s Work' ,
     routeHandler: handler,
     access: {
@@ -10,6 +10,6 @@ module.exports = {
         students: true,
         loggedOut: false
     },
-    icon: 'user',
-    sidebar: false
+    icon: 'tasks',
+    sidebar: true
 };

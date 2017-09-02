@@ -13,37 +13,49 @@ class User extends React.Component {
         super(props);
         this.state = {
             Volunteer: this.props.volunteer,
-            Status: this.props.status
+            Status: this.props.status,
+            VolunteerPoolID: this.props.VolunteerPoolID
         };
+
+        this.toggleStatus = this.toggleStatus.bind(this);
+        this.toggleVolunteer = this.toggleVolunteer.bind(this);
     }
 
-    toggleVolunteer(userid, isVolunteer){
+    toggleVolunteer(){
         let postVars = {
-            UserID: userid,
+            UserID: this.props.UserID,
             SectionID: this.props.SectionID,
         };
-        console.log(postVars);
         let endpoint = '';
-        if(isVolunteer){
+        if(this.props.VolunteerPoolID != -1){
             endpoint = '/VolunteerPool/deleteVolunteer';
         } else {
             endpoint = '/VolunteerPool/add';
         }
 
         apiCall.post(endpoint, postVars, (err, res, body) => {
-            console.log(res);
+            console.log(res, body);
             if(res.statusCode === 200){
-                this.setState({
-                    Volunteer: !isVolunteer
-                });
-            }
+                if(body){
+                    this.setState({
+                        Volunteer: true,
+                        VolunteerPoolID: body.VolunteerPoolID
+                    });
+                } else {
+                    this.setState({
+                        Volunteer: false,
+                        VolunteerPoolID: -1
+                    });
+                }
+                    
+            } 
         });
     }
 
-    toggleStatus(volunteerID, newStatus){
+    toggleStatus(){
         let postVars = {
-            VolunteerPoolID: volunteerID,
-            status: newStatus
+            VolunteerPoolID: this.state.VolunteerPoolID,
+            status: !this.state.Status
         };
         let endpoint = '/VolunteerPool/individualStatusUpdate';
         
@@ -52,7 +64,7 @@ class User extends React.Component {
             console.log(res);
             if(res.statusCode === 200){
                 this.setState({
-                    Status: newStatus
+                    Status: !this.state.Status
                 });
             }
         });
@@ -66,12 +78,13 @@ class User extends React.Component {
         if(this.props.role === 'Student'){
             volunteerToggle = (<td>
                 <Toggle isClicked={this.state.Volunteer}
-                    click={this.toggleVolunteer.bind(this, this.props.UserID, this.state.Volunteer)}
+                    click={this.toggleVolunteer}
                 />
             </td>);
             statusToggle = (<td>
                 <Toggle isClicked={this.state.Status}
-                    click={this.toggleStatus.bind(this, this.props.volunteerID, this.state.Status)}
+                    click={this.toggleStatus}
+                    disabled={!this.state.Volunteer}
                 />
             </td>);
         }
@@ -82,6 +95,7 @@ class User extends React.Component {
                 <td>{this.props.lastName}</td>
                 <td>{this.props.active ? 'Yes' : 'No'}</td>
                 {volunteerToggle}
+                {statusToggle}
             </tr>
         );
     }
@@ -444,13 +458,15 @@ class UserManager extends React.Component {
         // integreate with volunteer pool table to show active/volunteer flags
         // per assignment, in addition to the current section-wide parameters
         let volunteerHeader = null;
+        let statusHeader = null;
         if(this.props.role === 'Student'){
             volunteerHeader = (<th>{this.props.strings.volunteer}</th>);
+            statusHeader=(<th>{this.props.strings.status}</th>);
         }
         let list = (
             <div className='card'>
                 <h2 className='title'>{this.props.title}</h2>
-                <button type='button' onClick={this.add.bind(this)}>{this.props.strings.add}</button>
+                <button type='button' style={{margin: '10px 0'}} onClick={this.add.bind(this)}>{this.props.strings.add}</button>
                 <table>
                     <thead>
                         <tr>
@@ -459,6 +475,7 @@ class UserManager extends React.Component {
                             <th>{this.props.strings.lastName}</th>
                             <th>{this.props.strings.active}</th>
                             {volunteerHeader}
+                            {statusHeader}
                         </tr>
                     </thead>
                     <tbody>

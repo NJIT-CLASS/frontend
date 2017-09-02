@@ -68,4 +68,20 @@
             display: none;
         }
     }
+    &.disabled{
+        .bubble {
+            background: #777777;
+        }
+
+        .text-false {
+            color: #777777;
+        }
+
+        .text-true {
+            display: none;
+        }
+    }
+    border: #777777 1px solid;
+    
+    
 }
