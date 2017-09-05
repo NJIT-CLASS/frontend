@@ -47,7 +47,14 @@ class EveryonesWorkContainer extends Component {
                 <div className="section" key={`${workflowActivityId}`}>
                     <div className="title">{`${titleText}`}</div>
                     <div className="section-content">
-                        <span>{AssignmentInfo.Instructions}</span>
+                        <div>
+                            <b>
+                                {AssignmentInfo.Course} - {AssignmentInfo.Section} - {AssignmentInfo.Semester}
+                            </b>
+                            <span>{AssignmentInfo.Instructions}</span>
+                        </div>
+                        
+
                         {listOfTasks}
                     </div>
                 </div>

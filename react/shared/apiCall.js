@@ -41,14 +41,17 @@ const postCall = function(endpoint, postVars, cb ){
 
 };
 
-const promiseGetCall = (endpoint, params) => {
-    return axios.get(endpoint, {
-        params: params
+const promiseGetCall = (endpoint, queryStrings ={}) => {
+    queryStrings.endpoint = endpoint;
+    
+    return axios.get(`${window.location.protocol}//${window.location.host}/api/generalCall`, {
+        params: queryStrings
     });
 };
 
-const promisePostCall = (endpoint, postVars) => {
-    return axios.post(endpoint, postVars);
+const promisePostCall = (endpoint, postVars ={}) => {
+    postVars.endpoint = endpoint;
+    return axios.post(`${window.location.protocol}//${window.location.host}/api/generalCall`, postVars);
 };
 
 const postMultiCall = (requestsArray) => {

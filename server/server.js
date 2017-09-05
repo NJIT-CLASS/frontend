@@ -154,13 +154,13 @@ app.post('/api/getTranslatedString', (req, res) => {
 
 app.get('/api/translations', (req, res) => {
     languageService(redisClient).getAllStringsInLanguage(
-		req.query.lang ? req.query.lang : 'en',
-		(err, results) => {
-    res.json(results);
+        req.query.lang ? req.query.lang : 'en',
+        (err, results) => {
+            res.json(results);
 
-    res.end();
-}
-	);
+            res.end();
+        }
+    );
 });
 
 app.post('/api/translations', (req, res) => {
@@ -172,10 +172,10 @@ app.post('/api/translations', (req, res) => {
 
     for (let str in req.body.strs) {
         languageService(redisClient).addTranslation(
-			language,
-			str,
-			req.body.strs[str]
-		);
+            language,
+            str,
+            req.body.strs[str]
+        );
     }
 
     res.status(200).end();
@@ -192,25 +192,25 @@ app.post('/api/change-admin-status', (req, res) => {
     }
 
     req.App.api.put(
-		'/makeUserAdmin/',
+        '/makeUserAdmin/',
         {
             UserID: userId
         },
-		(err, statusCode, body) => {
-    res.status(statusCode).end();
-}
-	);
+        (err, statusCode, body) => {
+            res.status(statusCode).end();
+        }
+    );
 });
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
-  // language options
+    // language options
     const languages = react_consts.LANGUAGES;
-	// default language
+    // default language
     res.locale = 'en';
 
     if(req.headers['accept-language']){
-      //set language to user's browser configuration
+        //set language to user's browser configuration
         let locales = languages.map(lang => lang.locale);
         let browserLangs = req.headers['accept-language'].match(/[a-z]{2}/g);
         for(let idx = 0; idx < browserLangs.length; idx +=1){
@@ -310,7 +310,7 @@ app.use((req, res, next) => {
 
             next();
         }
-		);
+        );
     }
 
     next();
@@ -330,7 +330,7 @@ app.use((req, res, next) => {
 
         options.language = req.App.lang;
         options.languageOptions = req.App.langOptions;
-        options.apiUrl = react_consts.API_URL;
+        
 
         if (options.loggedOut) {
             options.layout = 'logged_out';
@@ -344,8 +344,8 @@ app.use((req, res, next) => {
             }
         }
         options.showMasqueradingOption = req.App.user.admin
-			? req.App.user.admin
-			: false; //new value, not working yet
+            ? req.App.user.admin
+            : false; //new value, not working yet
 
         var sidebarNavItems = [];
 
@@ -389,7 +389,7 @@ app.use((req, res, next) => {
 
         options.sidebarNavItems = sidebarNavItems;
 
-		// only allow logged out users access to pages that are meant for logged out users
+        // only allow logged out users access to pages that are meant for logged out users
         if (!req.App.user || !req.App.user.userId) {
             return res.sendStatus(404);
         }
@@ -432,50 +432,50 @@ app.use(function(req, res, next) {
     ];
     for (const route of routes) {
         for (const method in route.routeHandler) {
-			// if the method is allowed then bind the route to it
+            // if the method is allowed then bind the route to it
             if (allowedRouteMethods.indexOf(method) !== -1) {
                 app[method](
-					route.route,
-					(function() {
-    return (req, res, next) => {
-        const previousRender = res.render;
-        res.render = (function() {
-            return function(template, options, cb) {
-                options = options ? options : {};
-                options.loggedOut = route.access.loggedOut;
-                options.route = route.route;
-                options.student = route.access.students;
-                options.teacher = route.access.instructors;
-                options.admin = route.access.admins;
-									// if the render doesn't set the title then set it by the route
-                if (!('title' in options)) {
-                    options.title = `${route.title} | CLASS Learning System`;
-                }
+                    route.route,
+                    (function() {
+                        return (req, res, next) => {
+                            const previousRender = res.render;
+                            res.render = (function() {
+                                return function(template, options, cb) {
+                                    options = options ? options : {};
+                                    options.loggedOut = route.access.loggedOut;
+                                    options.route = route.route;
+                                    options.student = route.access.students;
+                                    options.teacher = route.access.instructors;
+                                    options.admin = route.access.admins;
+                                    // if the render doesn't set the title then set it by the route
+                                    if (!('title' in options)) {
+                                        options.title = `${route.title} | CLASS Learning System`;
+                                    }
 
-									// set the page header to be the route title if the pageHeader is not set
-                if (!('pageHeader' in options)) {
-                    options.pageHeader = route.title;
-                }
+                                    // set the page header to be the route title if the pageHeader is not set
+                                    if (!('pageHeader' in options)) {
+                                        options.pageHeader = route.title;
+                                    }
 
-									// pass masquerading info to template
-                if (req.session.masqueraderId && options.route !== '/') {
-                    options.masquerading = true;
-                    options.userEmail = req.App.user.email;
-                }
+                                    // pass masquerading info to template
+                                    if (req.session.masqueraderId && options.route !== '/') {
+                                        options.masquerading = true;
+                                        options.userEmail = req.App.user.email;
+                                    }
 
-                previousRender.call(
-										this,
-										template,
-										options,
-										cb
-									);
-            };
-        })();
-        next();
-    };
-})(),
-					route.routeHandler[method]
-				);
+                                    previousRender.call(
+                                        this,
+                                        template,
+                                        options,
+                                        cb
+                                    );
+                                };
+                            })();
+                            next();
+                        };
+                    })(),
+                    route.routeHandler[method]
+                );
             }
         }
     }

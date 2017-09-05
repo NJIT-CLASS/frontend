@@ -17,7 +17,7 @@ class DashboardMain extends Component {
 
     }
 
-    componentWillMount (){
+    componentDidMount(){
         this.props.__(strings, (newStrings) => {
             this.setState({Strings: newStrings});
         });

@@ -12,7 +12,6 @@ const pages = [
     'settings',
     'account',
     'translation-manager',
-    'about',
     'reset-password',
     'confirm-password-reset',
     'course-page',
@@ -29,6 +28,8 @@ const pages = [
     'section',
     'user-management',
     'everyones-work',
+    'about',
+    
 ];
 
 var pageConfigs = [];

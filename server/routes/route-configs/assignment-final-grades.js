@@ -1,7 +1,7 @@
 const handler = require('../route-handlers/assignment-final-grades');
 
 module.exports = {
-    route: '/assignment-grade-report/all/:ai_id',
+    route: '/assignment-grade-report/all/:assignmentId',
     title: 'Assignment Final Grades',
     routeHandler: handler,
     access: {
