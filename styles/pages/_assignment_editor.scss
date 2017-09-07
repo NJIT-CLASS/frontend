@@ -10,24 +10,29 @@
   .add-margin-for-button{
     margin-right: 30px;
   }
-}
-.section-divider{
-  position: relative;
-  overflow: visible;
-  border-bottom: 0.5px solid #e7eaec;
-  margin-bottom: 5px;
-
-  br{
-    display:block;
+  .faded-message-text{
+    padding: 5px 5px;
+    display: inline;
+      color: #777777;
   }
+}
 
+  .section-divider{
+    position: relative;
+    overflow: visible;
+    border-bottom: 0.5px solid #e7eaec;
+    margin-bottom: 5px;
+
+    br{
+      display:block;
+    }
+  }
 
   .subheading{
     font-size:20px;
-    text-align: center;
-    font-weight: 400px;
+    font-weight: 400;
     padding: 20px 30px 20px 30px;
-    color: #000000;
+    color: #777777;
   }
   .inner{
     @media screen and (max-width: $mobile-brk) {
@@ -60,7 +65,7 @@
         }
     }
 
-}
+
 
 .workflow-task-list{
   width:20%;

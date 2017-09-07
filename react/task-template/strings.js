@@ -40,7 +40,22 @@ let strings = {
     uploadedLabel: 'Uploaded',
     Max: 'Max',
     Justification: 'Justification',
-    JustificationInstructions: 'Justification Instructions'
+    JustificationInstructions: 'Justification Instructions',
+    RejectRevision: 'Send Back for Revising',
+    ApproveRevision: 'Approve',
+    ProblemThreadLabel: 'Problem Thread',
+    CommentTargetLabel: 'View comments on...',
+    RejectButtonSuccess:'Sent for Revision',
+    ApproveButtonSuces: 'Approved',
+    DisputeButtonSuccess: 'Disputed',
+    DidNotDisputeButtonSuccess: 'Did not Dispute',
+    SubmitButtonSuccess:'Submitted',
+    RejectRevisionMessage: 'This task has been submitted for revision',
+    ApproveRevisionMessage: 'This task has been approved',
+    DisputeMessage: '',
+    DidNotDisputeMessage: 'This task will not be disputed',
+    InsufficientFileErrorMessage: 'Missing some files. Please try again',
+    BypassedDisputeMessage: 'This dispute was bypassed.'
 
 };
 

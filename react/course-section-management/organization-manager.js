@@ -1,12 +1,14 @@
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Dropzone from 'react-dropzone';
 
 class OrganizationManager extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            DeleteChangeMessage: ''
+        };
     }
 	// load all organizations when page loads
     componentWillMount() {
@@ -15,13 +17,7 @@ class OrganizationManager extends React.Component {
 	// retrieve all organizations in system
 	// format as organizationID, Name tuples for select component
     fetchAll() {
-        const fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization',
-            json: true
-        };
-
-        request(fetchAllOptions, (err, res, body) => {
+        apiCall.get('/organization', (err, res, body) => {
             let list = [];
             for (let org of body.Organization) {
                 list.push({ value: org.OrganizationID, label: org.Name});
@@ -33,12 +29,7 @@ class OrganizationManager extends React.Component {
     }
 	// get single organization information for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+        apiCall.get(`/organization/${this.state.id}`, (err, res, body) => {
             this.setState({
                 name: body.Organization.Name,
                 editing: true
@@ -59,13 +50,23 @@ class OrganizationManager extends React.Component {
 	// EXTENSIVE, PARANOID confirmation should be added here
 	// opportunity for MASSIVE accidental data loss
 	// reload organization list after deletion, nullify selected ID, propagate to parent
+
+//two level warning check
+    deleteChange(num) {
+        if (num == 1) {
+            this.setState({DeleteChangeMessage: 'check-1'});
+        }
+        if (num == 2) {
+            this.setState({DeleteChangeMessage: 'check-2'});
+        }
+    }
+    closeDeleteMessage() {
+        this.setState({DeleteChangeMessage: ''});
+    }
+
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/organization/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+        this.setState({DeleteChangeMessage: ''});
+        apiCall.get(`/organization/delete/${this.state.id}`, (err, res, body) => {
             this.changeID({
                 value: null
             });
@@ -75,15 +76,10 @@ class OrganizationManager extends React.Component {
 	// update organization name, logo editing should be added
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/organization/update/' + this.state.id,
-            body: {
                 Name: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post(`/organization/update/${this.state.id}`, updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -105,6 +101,7 @@ class OrganizationManager extends React.Component {
             creating: false,
             editing: false
         });
+        this.setState({DeleteChangeMessage: ''});
     }
 	// send selected ID to parent if it changed, exit edit mode on successful ID change
     changeID(option) {
@@ -127,16 +124,11 @@ class OrganizationManager extends React.Component {
 	// reload organization list to show new organization
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/createorganization',
-            body: {
 				//userid: this.props.userID,
                 organizationname: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post('/createorganization', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -198,12 +190,31 @@ class OrganizationManager extends React.Component {
 		// fix Dropzone for organization logo here (not fully functional)
         let edit = (
 			<div className='card'>
-				<h2 className='title'>{this.props.strings.editOrganization}</h2>
+				<h2 className='title'>{this.props.strings.editOrganization}</h2><br /><br />
 
+        {(this.state.DeleteChangeMessage == 'check-1') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteOrganization}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.deleteChange.bind(this, 2)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
+        {(this.state.DeleteChangeMessage == 'check-2') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteOrgDoubleCheck}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.delete.bind(this)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
 
         <button type='button' onClick={this.cancel.bind(this)}>{this.props.strings.cancel}</button>
-        <button type='button' onClick={this.delete.bind(this)}>{this.props.strings.delete}</button>
+        <button type='button' onClick={this.deleteChange.bind(this, 1)}>{this.props.strings.delete}</button>
         <button type='button' onClick={this.update.bind(this)}>{this.props.strings.save}</button>
+
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>
 					<label>{this.props.strings.name}</label>

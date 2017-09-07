@@ -22,6 +22,14 @@ import QuickAssignmentReport from './quick-assignment-report/main-container';
 import MainBadge from './badge/mainBadge';
 import MainLeaderboard from './leaderboard/mainLeaderboard';
 import AchievementUnlock from './achievementUnlock/achievementUnlock';
+import AboutContainer from './about/about-container';
+import ForgotPasswordContainer from './forgot-password/forgot-password-container';
+import SectionsContainer from './sections/sections-container';
+import UserGradeReportContainer from './grade-report/user-grade-report-container';
+import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
+import UserManagementContainer from './user-management/main-container';
+import MainPageContainer from './everyones-work/main-container';
+import DashboardMain from './dashboard/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -42,48 +50,54 @@ const reactElem = document.getElementById('react-page'); //get the react DOM ele
 
 const currentPage = reactElem.dataset.page;     // get some variables that are used in several pages
 const userId = reactElem.dataset.userId;
-const apiUrl = reactElem.dataset.apiUrl;
 const courseId = reactElem.dataset.courseId;
 const assignmentId = reactElem.dataset.assignmentId;
+const userType = reactElem.dataset.userType;
+const sectionId = reactElem.dataset.sectionId;
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
 switch (currentPage) {
+case 'dashboard-container':
+    ReactDOM.render(<DashboardMain UserID={userId}  __={translationFunction}/>,reactElem);
+    break;
 case 'add-user-container':
-    const userType = reactElem.dataset.userType;
-    ReactDOM.render(<AddUserContainer userId={userId} apiUrl={apiUrl} userType={userType} __={translationFunction}/>,reactElem);
+    ReactDOM.render(<AddUserContainer userId={userId} userType={userType} __={translationFunction}/>,reactElem);
     break;
 
 case 'translation-container':
     const translationApp = (
-      <ClassPageContainer>
-        <TranslationContainer />
-      </ClassPageContainer>
+        <ClassPageContainer>
+            <TranslationContainer />
+        </ClassPageContainer>
     );
     ReactDOM.render(translationApp, reactElem);
     break;
 
 case 'template-container':
     const taskId = reactElem.dataset.taskId;
-    const sectionId = reactElem.dataset.sectionId;
+    const isAdmin = reactElem.dataset.isAdmin;
+    const visitorId = reactElem.dataset.visitorId;
     ReactDOM.render(
-      <TemplateContainer
-        SectionID={sectionId}
-        CourseID={courseId}
-        UserID={userId}
-        apiUrl={apiUrl}
-        TaskID={taskId}
-        __={translationFunction}
-      />, reactElem);
+        <TemplateContainer
+            SectionID={sectionId}
+            CourseID={courseId}
+            UserID={userId}
+            TaskID={taskId}
+            UserType={userType}
+            Admin={isAdmin}
+            VisitorID={visitorId}
+            __={translationFunction}
+        />, reactElem);
     break;
 
 case 'assignment-editor-container':
     const partialAssignmentId = reactElem.dataset.partialAssignmentId;
-    ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} __={translationFunction} />, reactElem);
     break;
 
 case 'assign-to-section-container':
-    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId} apiUrl={apiUrl} __={translationFunction}/>,reactElem);
+    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId}  __={translationFunction}/>,reactElem);
     break;
 
 case 'testing-container':
@@ -91,15 +105,36 @@ case 'testing-container':
     break;
 
 case 'assignment-record-container':
-    ReactDOM.render(<QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
+    ReactDOM.render(<QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
     break;
 
 case 'course-section-management':
-    ReactDOM.render(<CourseSectionManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<CourseSectionManagement UserID={userId} __={translationFunction} />, reactElem);
     break;
 
 case 'account':
-    ReactDOM.render(<AccountManagement UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<AccountManagement UserID={userId}  __={translationFunction} />, reactElem);
+    break;
+case 'about':
+    ReactDOM.render(<AboutContainer />, reactElem);
+    break;
+case 'forgot-password':
+    ReactDOM.render(<ForgotPasswordContainer />, reactElem);
+    break;
+case 'sections':
+    ReactDOM.render(<SectionsContainer  UserID={userId}/>, reactElem);
+    break;
+case 'user-grade-report':
+    ReactDOM.render( <UserGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
+    break;
+case 'volunteer-pool':
+    ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />, reactElem);
+    break;
+case 'user-management':
+    ReactDOM.render(<UserManagementContainer UserID={userId} />, reactElem);
+    break;
+case 'everyones-work':
+    ReactDOM.render(<MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
     break;
 
 case 'badges':

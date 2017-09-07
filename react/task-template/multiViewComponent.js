@@ -6,7 +6,6 @@
 */
 
 import React from 'react';
-import request from 'request';
 import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import ErrorComponent from './errorComponent';
 import SuperViewComponent from './superViewComponent';
@@ -87,6 +86,9 @@ class MutliViewComponent extends React.Component {
                 Rubric={task.TaskActivity.Rubric}
                 TaskActivityFields={task.TaskActivity.Fields}
                 Strings={this.props.Strings}
+                TaskID={task.TaskInstanceID}
+                addCommentListItem={this.props.addCommentListItem.bind(this)}
+                showComments={this.props.showComments.bind(this)}
               />
           </div>
                 );

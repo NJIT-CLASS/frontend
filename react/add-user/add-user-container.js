@@ -1,10 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-import request from 'request';
 import Checkbox from '../shared/checkbox';
 import PasswordField from '../shared/passwordField';
 import {clone, cloneDeep} from 'lodash';
 import Strings from './strings.js';
+import apiCall from '../shared/apiCall';
 
 class AddUserContainer extends React.Component {
     constructor(props) {
@@ -95,141 +95,129 @@ class AddUserContainer extends React.Component {
         }
 
 
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/adduser',
-            body: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                instructor: instructor,
-                admin: admin,
-                password: pass
-            },
-            json: true
+        const vars = {
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            instructor: instructor,
+            admin: admin,
+            password: pass
         };
 
-        request(options, (err, res, body) => {
-            console.log(body.Message);
+
+        apiCall.post('/addUser', vars, (err, res, body) => {
+            
+            if (res.statusCode != 200){
+                showMessage(this.state.Strings.SubmitError);
+            } else {
+                showMessage(this.state.Strings.SuccessfulAdd);
+                document.addUser.reset();
+            }
         });
     }
 
-  /*checkThesuser(){
-    const options = {
-      method: 'GET',
-      uri: 'http://localhost:400/api/adduser',
-      body: {
-        userid: 1
-      },
-      json: true
-    };
 
-    request(options, (err, res, body) => {
-
-    })
-  }*/
 
 
     render() {
-  //  checkThesuser();
         let errorView = null;
         const Strings = this.state.Strings;
         var roles = [
-          { value: 'Student', label: 'Student' },
-          { value: 'Instructor', label: 'Instructor' },
-          { value: 'Admin', label: 'Admin' }
+            { value: 'Student', label: 'Student' },
+            { value: 'Instructor', label: 'Instructor' },
+            { value: 'Admin', label: 'Admin' }
         ];
 
         if(this.state.displayError){
             errorView = (<div className="error form-error" role="alert">
-        <i className="fa fa-exclamation-circle"></i>
-          <span className="sr-only">{Strings.error} </span>
-        </div>);
+                <i className="fa fa-exclamation-circle"></i>
+                <span className="sr-only">{Strings.error} </span>
+            </div>);
         }
 
         return (
-          <div className="section add-user-details">
-            <h2 className="title">{Strings.UserDetails}</h2>
+            <div className="section add-user-details">
+                <h2 className="title">{Strings.UserDetails}</h2>
 
 
-            {errorView}
+                {errorView}
 
 
 
 
-            <form className="section-content" onSubmit={this.adduserSubmit.bind(this)}>
-              <table>
-                <tr>
-                  <td>
-                    <div>
-                      <label>{Strings.FirstName}:</label>
-                      <input type="text"
-                        name="firstname"
-                        onChange={this.onChangeFirstname.bind(this)}
-                        className={ this.state.firstnameError ? 'error' : '' }/>
-                    </div>
-                  </td>
-                  <td>
-                    <div>
-                      <label>{Strings.LastName}:</label>
-                      <input type="text"
-                        name="lastname"
-                        onChange={this.onChangeLastname.bind(this)}
-                        className={ this.state.lastnameError ? 'error' : '' }
-                      />
-                    </div>
-                  </td></tr>
-                <tr>
-                  <td>  <div>
-                    <label>{Strings.Email}:</label>
-                    <input type="text"
-                      name="email"
-                      onChange={this.onChangeEmail.bind(this)}/>
-                  </div>
-                  </td><td>
-                    <div>
-                      <label>{Strings.IsAdmin}:</label>
-                      <Checkbox click={this.onChangeAdminRole.bind(this)} isClicked={this.state.admin} />
-                    </div>
-                    <div><label>{Strings.IsInstructor}:</label>
-                    <Checkbox click={this.onChangeInstructorRole.bind(this)} isClicked={this.state.instructor} /></div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div>
-                      <label>{Strings.Password}:</label>
-                      <br />
-                      <PasswordField value={this.state.pass} onChange={this.onChangePass.bind(this)} Strings={Strings} />
+                <form className="section-content" name="addUser" onSubmit={this.adduserSubmit.bind(this)}>
+                    <table>
+                        <tr>
+                            <td>
+                                <div>
+                                    <label>{Strings.FirstName}:</label>
+                                    <input type="text"
+                                        name="firstname"
+                                        onChange={this.onChangeFirstname.bind(this)}
+                                        className={ this.state.firstnameError ? 'error' : '' }/>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <label>{Strings.LastName}:</label>
+                                    <input type="text"
+                                        name="lastname"
+                                        onChange={this.onChangeLastname.bind(this)}
+                                        className={ this.state.lastnameError ? 'error' : '' }
+                                    />
+                                </div>
+                            </td></tr>
+                        <tr>
+                            <td>  <div>
+                                <label>{Strings.Email}:</label>
+                                <input type="text"
+                                    name="email"
+                                    onChange={this.onChangeEmail.bind(this)}/>
+                            </div>
+                            </td><td>
+                                <div>
+                                    <label>{Strings.IsAdmin}:</label>
+                                    <Checkbox click={this.onChangeAdminRole.bind(this)} isClicked={this.state.admin} />
+                                </div>
+                                <div><label>{Strings.IsInstructor}:</label>
+                                    <Checkbox click={this.onChangeInstructorRole.bind(this)} isClicked={this.state.instructor} /></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <label>{Strings.Password}:</label>
+                                    <br />
+                                    <PasswordField value={this.state.pass} onChange={this.onChangePass.bind(this)} Strings={Strings} />
 
-                    </div>
-                  </td>
-                  <td>
-                    <div className="grouped">
-                      <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>{Strings.GeneratePassword}</button>
-                    </div>
-                  </td>
+                                </div>
+                            </td>
+                            <td>
+                                <div className="grouped">
+                                    <button className="row generate-pass" type="button" name="generate" onClick={this.onPassGenerator.bind(this)}>{Strings.GeneratePassword}</button>
+                                </div>
+                            </td>
 
-                </tr>
-                <tr><td>
-                  <div>
-                    {/*}<label>Course Section:</label>
+                        </tr>
+                        <tr><td>
+                            <div>
+                                {/*}<label>Course Section:</label>
                       <Select
                       name="section"
                       searchable={false}
                       clearable={false}
                     />*/}
-                  </div>
-                </td></tr>
-              </table>
+                            </div>
+                        </td></tr>
+                    </table>
 
-              <div className="row">
-                <div className="section-button-area">
-                  <button type="submit">{Strings.AddUser}</button>
-                </div>
-                  </div>
-              </form>
-          </div>
+                    <div className="row">
+                        <div className="section-button-area">
+                            <button type="submit">{Strings.AddUser}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         );
     }
 }

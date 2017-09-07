@@ -32,6 +32,7 @@
 @import 'components/message';
 @import 'components/leaderboard';
 @import 'components/achievementUnlock.scss';
+@import 'components/icons';
 
 // pages
 @import 'pages/my_account';
@@ -56,11 +57,13 @@
 
 // external components
 @import 'external/rdt';
+@import 'external/tooltip';
 
 // vendor
 @import 'vendor/react-select/default';
 //@import 'vendor/react-select.min';
 @import 'vendor/react-quill/react-quill-snow';
+@import 'vendor/react-table/react-table';
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;

@@ -1,5 +1,5 @@
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
 
@@ -7,7 +7,9 @@ import Datetime from 'react-datetime';
 class SemesterManager extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            DeleteChangeMessage: ''
+        };
     }
 	// fetch all semesters when card is loaded
     componentWillMount() {
@@ -25,12 +27,8 @@ class SemesterManager extends React.Component {
 	// retrieve all semesters for given organization
 	// store in semesterID, Name tuples for select dropdown
     fetchAll() {
-        const fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/getOrganizationSemesters/' + this.props.organizationID,
-            json: true
-        };
-        request(fetchAllOptions, (err, res, body) => {
+
+        apiCall.get(`/getOrganizationSemesters/${this.props.organizationID}`,(err, res, body) => {
             let list = [];
             for (let sem of body.Semesters) {
                 list.push({ value: sem.SemesterID, label: sem.Name });
@@ -42,12 +40,8 @@ class SemesterManager extends React.Component {
     }
 	// fetch single semester organization for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+
+        apiCall.get(`/semester/${this.state.id}`, (err, res, body) => {
             this.setState({
                 name: body.Semester.Name,
                 startDate: body.Semester.StartDate.split('T')[0],
@@ -66,36 +60,41 @@ class SemesterManager extends React.Component {
     edit() {
         this.fetch();
     }
+
+//two level warning check
+    deleteChange(num) {
+        if (num == 1) {
+            this.setState({DeleteChangeMessage: 'check-1'});
+        }
+        if (num == 2) {
+            this.setState({DeleteChangeMessage: 'check-2'});
+        }
+    }
 	// delete semester
 	// additional confirmation should be presented to user to prevent data loss
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+        this.setState({DeleteChangeMessage: ''});
+        apiCall.get(`/semester/delete/${this.state.id}`,(err, res, body) => {
             this.changeID({
                 value: null
             });
             this.fetchAll();
         });
     }
+
+    closeDeleteMessage() {
+        this.setState({DeleteChangeMessage: ''});
+    }
 	// update name, start date, and end date of semester
 	// exit edit or create mode, reload semester list with updated semester
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/semester/update/' + this.state.id,
-            body: {
                 Name: this.state.name,
                 Start: this.state.startDate,
                 End: this.state.endDate
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post(`/semester/update/${this.state.id}`, updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -117,6 +116,7 @@ class SemesterManager extends React.Component {
             creating: false,
             editing: false
         });
+        this.setState({DeleteChangeMessage: ''});
     }
 	// propagate new semesterID to parent for rendering
     changeID(option) {
@@ -150,18 +150,13 @@ class SemesterManager extends React.Component {
 	// save new semester, reload semester list on success
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/createSemester',
-            body: {
                 organizationID: this.props.organizationID,
                 semesterName: this.state.name,
                 start_sem: this.state.startDate,
                 end_sem: this.state.endDate
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post('/createSemester', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -233,10 +228,29 @@ class SemesterManager extends React.Component {
 		// again, update date fields with better date entry interface
         let edit = (
 			<div className='card'>
-				<h2 className='title'>{this.props.strings.editSemester}</h2>
+				<h2 className='title'>{this.props.strings.editSemester}</h2><br /><br />
+
+        {(this.state.DeleteChangeMessage == 'check-1') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteSemester}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.deleteChange.bind(this, 2)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
+        {(this.state.DeleteChangeMessage == 'check-2') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteSemDoubleCheck}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.delete.bind(this)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
 
         <button type='button' onClick={this.cancel.bind(this)}>{this.props.strings.cancel}</button>
-        <button type='button' onClick={this.delete.bind(this)}>{this.props.strings.delete}</button>
+        <button type='button' onClick={this.deleteChange.bind(this, 1)}>{this.props.strings.delete}</button>
         <button type='button' onClick={this.update.bind(this)}>{this.props.strings.save}</button>
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>

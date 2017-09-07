@@ -16,7 +16,11 @@ exports.LANGUAGES = [{
 {
     language: 'Português',
     locale: 'pt'
-}];
+},{
+    language: ' ελληνικά',
+    locale: 'el'
+}
+];
 
 
 //Define all Task Types and their names

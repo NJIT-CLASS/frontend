@@ -55,7 +55,18 @@
         border-left: 4px solid #00AB8D;
         color: #fff;
     }
+    .selected-language-text{
+        display: inline-block;
+    }
 
+    
+    #language-picker {
+        width: fit-content;
+            .fa{
+                font-size: 25px;
+            }
+            transition: margin-left 0.2s ease-in-out;
+        }
 
     &.collapsed:not(.transition) {
         @media screen and (max-width: $mobile-brk) {
@@ -90,7 +101,24 @@
         }
 
         #language-picker {
-            display: none;
+            position: absolute;
+            bottom: 0;
+            left:0;
+            z-index: 1;
+
+            
+            a {
+                font-size: 16px;
+            }   
+
+            &.hidden{
+                width: 30px;
+                
+                .selected-language-text{
+                opacity: 0;
+                }
+            }
+            
         }
     }
 

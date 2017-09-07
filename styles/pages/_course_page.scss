@@ -1,4 +1,5 @@
-.course_header{
+#course-page-container{
+  .course_header{
     width: 100%;
     background-color: #FFFFFF;
     box-sizing: border-box;
@@ -18,20 +19,42 @@
         font-weight: lighter;
         text-align: center;
     }
-}
+    .description:empty{
+      padding: 0;
+    }
 
-.block-container{
-  display: block;
-  width:100%;
-  .section-button-area{
-    text-align: right;
+    .section-description{
+      
+    }
   }
-}
 
-.assignment-button{
-
-  margin-right: 10%;
-  @media screen and (max-width: $mobile-brk){
-    margin-right: 0;
+  .block-container{
+    display: block;
+    width:100%;
+    .section-button-area{
+      text-align: right;
+    }
   }
+
+  .assignment-button{
+    margin-top:10px;
+    margin-right: 20px;
+    @media screen and (min-width: $mobile-brk){
+      float: right;
+    }
+    @media screen and (max-width: $mobile-brk){
+      display: block;
+      margin-right: 0;
+    }
+  }
+
+  .overflow-list{
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .section-content{
+   max-height: 300px;
+   overflow: auto;
+  }
+  
 }

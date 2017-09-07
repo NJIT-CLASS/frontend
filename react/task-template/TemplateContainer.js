@@ -5,15 +5,16 @@ future stuff.
 
 */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
+import Select from 'react-select';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
-
 
 // Display Components: These only display data retrived from the database. Not interactive.
 
 import HeaderComponent from './headerComponent';
 import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
+import CommentEditorComponent from './commentEditorComponent';
 
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
@@ -24,6 +25,10 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
+
+var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
+let FlatToNested = require('flat-to-nested');
+
 /*      PROPS:
             - TaskID
             - SectionID
@@ -32,8 +37,12 @@ const TabPanel = ReactTabs.TabPanel;
 */
 
 class TemplateContainer extends React.Component {
+    
+    
     constructor(props) {
         super(props);
+
+        this.tree = new TreeModel();
         this.state = {
             Loaded: false, // this variable is set to true when the page succesfully fetches data from the backend
             CourseID: null,
@@ -49,45 +58,45 @@ class TemplateContainer extends React.Component {
             TabSelected: 0,
             Strings: strings,
             NotAllowed: false,
+            CommentTargetList: [],
+            IsRevision: false,
         };
+
+        console.log(props.UserType, props.Admin);
+    }
+
+    unflattenTreeStructure(flatTreeString){
+        let flatToNested = new FlatToNested();
+        let flatTreeArray = JSON.parse(flatTreeString);
+        let nestedTreeObj = flatToNested.convert(flatTreeArray);
+        let treeRoot = this.tree.parse(nestedTreeObj);
+        return treeRoot;
     }
 
     getTaskData() {
-		// this function makes an API call and saves the data into appropriate state variables
+        // this function makes an API call and saves the data into appropriate state variables
 
         const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl
-				}/api/taskInstanceTemplate/main/${
-				this.props.TaskID}`,
-            qs: {
-				// query strings
-                courseID: this.props.CourseID,
-                userID: this.props.UserID,
-                sectionID: this.props.SectionID,
-            },
-            json: true,
+            // query strings
+            courseID: this.props.CourseID,
+            userID: this.props.UserID,
+            sectionID: this.props.SectionID,
         };
 
-		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
-		// for rendering
+        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+        // for rendering
         const options2 = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/superCall/${this.props.TaskID}`,
-            qs: {
-                userID: this.props.UserID,
-            },
-            json: true,
+            userID: this.props.UserID,
         };
 
-        request(options2, (err, res, bod) => {
+        apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
             if (res.statusCode != 200) {
                 this.setState({ Error: true });
                 return;
             }
             this.props.__(strings, (newStrings) => {
 
-                request(options, (err, res, body) => {
+                apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`,options, (err, res, body) => {
                     if (res.statusCode != 200) {
                         this.setState({ Error: true });
                         return;
@@ -99,7 +108,7 @@ class TemplateContainer extends React.Component {
 
                     if (bod.error === true) {
                         console.log('Error message', bod.message);
-                        this.setState({
+                        return this.setState({
                             NotAllowed: true,
                             Loaded: true,
                         });
@@ -140,6 +149,7 @@ class TemplateContainer extends React.Component {
 
                             return newTask;
                         });
+
                         const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
@@ -164,10 +174,112 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
+                        
+                        if([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)){
+                        /** Check if the current task is a revision task
+                         *      If not, it's a regular edit and show regular buttons
+                         *      Else, check if it has a consolidation task
+                         *          If it does, show regular buttons
+                         *          Else, show revision buttons
+                         */
+                            if(currentTask.TaskActivity.AllowRevision === true){
+
+                                apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                    reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                                    console.log(reviseBod);
+                                    let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                        return node.model.id === currentTask.TaskActivity.TaskActivityID;
+                                    });
+
+                                    console.log('Revision: currentTask', currentTaskNode);
+                                    if(currentTaskNode.children !== undefined && currentTaskNode.children[2]  !== undefined){
+                                        console.log('Revision: first child', currentTaskNode.children[2]  !== undefined);
+                                        if(currentTaskNode.children[2].children  !== undefined && currentTaskNode.children[2].children[2]){
+                                            console.log('Revision: second child: ', currentTaskNode.children[2].children[2]);
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        }
+                                    } else{
+                                        this.setState({
+                                            IsRevision: true
+                                        });
+                                    }
+                                });
+                            
+                            }else {
+                                this.setState({
+                                    IsRevision: false
+                                });
+                            }
+                        }else if([TASK_TYPES.CONSOLIDATION].includes(currentTask.TaskActivity.Type)){
+                        /** Check if current consolidation is acting on an Revision edit task
+                         *  If it is, show revision buttons
+                         *  Else, show normal buttons
+                         * 
+                         * 
+                         */
+
+                            apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                                //console.log(reviseBod);
+                                let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                    return node.model.id === currentTask.TaskActivity.TaskActivityID;
+                                });
+                                let possibleEditTask = currentTaskNode;
+                                let editIndex = null;
+                                if(currentTaskNode.parent){
+                                    possibleEditTask = currentTaskNode.parent; //possible needs consolidation
+                                    if(possibleEditTask.parent){
+                                        possibleEditTask = possibleEditTask.parent; //possible edit task
+                                        editIndex= possibleEditTask.model.id;
+                                    } else {
+                                        possibleEditTask = null;
+                                    }
+                                } else {
+                                    possibleEditTask = null;
+                                }
+                                if(possibleEditTask === null) {
+                                    this.setState({
+                                        IsRevision: false
+                                    });
+                                } else {
+                                    let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
+                                    if([TASK_TYPES.COMMENT].includes(possibleEditData.Type)){
+                                        if(possibleEditData.AllowRevision === true){
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        } else {
+                                            this.setState({
+                                                IsRevision: false
+                                            });
+                                        }
+
+                                    } else {
+                                        this.setState({
+                                            IsRevision: false
+                                        });
+                                    }
+                                }
+                                console.log(currentTaskNode);
+                        
+                            });
+                        }
+                    // apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                    //     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                    //         //console.log(reviseBod);
+                    //     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                    //         return node.model.id === parseInt(this.props.TaskID);
+                    //     });
+
+                    //     console.log(currentTaskNode);
+                        
+                    // });
                     }
 
+                    
                     console.log('tasklist', taskList);
-
 
                     this.setState({
                         Loaded: true,
@@ -177,7 +289,8 @@ class TemplateContainer extends React.Component {
                         TaskActivityType: body.taskActivityType,
                         SemesterID: body.semesterID,
                         SemesterName: body.semesterName,
-                        TaskActivityVisualID: body.taskActivityVisualID,
+                        SectionName: body.sectionName,
+                        SectionID: body.sectionID,
                         Data: taskList,
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
@@ -187,9 +300,39 @@ class TemplateContainer extends React.Component {
         });
     }
 
+    getIDData() {
+        apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
+            if (!body.Error) {
+                this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
+            }
+            else {
+                console.log('No comment ID data received.');
+            }
+        });
+    }
+
+    getCommentData(target, ID) {
+        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+            let list = [];
+            if (body !== undefined && res.statusCode === 200 ) {
+                for (let com of body.Comments) {
+                    list.push(com);
+                }
+                this.setState({
+                    commentList: list
+                });
+            }
+            else {
+                console.log('No comment data received.');
+            }
+        });
+    }
+
     componentWillMount() {
-		// this function is called before the component renders, so that the page renders with the appropriate state data
+        // this function is called before the component renders, so that the page renders with the appropriate state data
         this.getTaskData();
+        this.getIDData();
+        this.getCommentData();
     }
 
     /**
@@ -202,7 +345,7 @@ class TemplateContainer extends React.Component {
         let returningValues = ['', ''];
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
-              /// If multiple participants, assume that whichever is first in the array is desired
+                /// If multiple participants, assume that whichever is first in the array is desired
                 task.forEach((miniTask) => {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
@@ -211,7 +354,7 @@ class TemplateContainer extends React.Component {
                 });
             } else {
                 if(task.TaskActivity.TaskActivityID === taskActivityID){
-                  //if multiple versions, assume that the lastest version is desired
+                    //if multiple versions, assume that the lastest version is desired
 
                     returningValues = task.Data[task.Data.length - 1][fieldIndex];
                 }
@@ -220,88 +363,153 @@ class TemplateContainer extends React.Component {
         return returningValues;
     }
 
+    handleChangeTarget(event) {
+        this.setState({CommentTarget: event.value});
+        this.getCommentData(event.Target, event.ID);
+    }
+
+    addCommentListItem(target, id, title) {
+        let commentTargetList = this.state.CommentTargetList;
+        let found = false;
+        for (let i of commentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                found = true;
+            }
+        }
+        if (!found) {
+            commentTargetList.push({Target: target, ID: id, value: commentTargetList.length, label: title});
+            this.setState({CommentTargetList: commentTargetList});
+        }
+    }
+
+    showComments(target, id) {
+        let show;
+        for (let i of this.state.CommentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                show = i.value;
+            }
+        }
+        console.log('show', show);
+        this.setState({CommentTarget: show, TabSelected: 1});
+        this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
+    }
+
+
     render() {
         let renderView = null;
         if (this.state.Error) {
-			// if there was an error in the data fetching calls, show the Error Component
+            // if there was an error in the data fetching calls, show the Error Component
             return <ErrorComponent />;
         }
         if (!this.state.Loaded) {
-			// while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
+            // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return <div />;
         }
+        
 
         if (this.state.NotAllowed === true) {
-            renderView = (<div>{this.state.Strings.NotAllowed}</div>);
+            renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
-              TasksArray={this.state.Data}
-              getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-              TaskID={this.props.TaskID}
-              UserID={this.props.UserID}
-              Strings={this.state.Strings}
-              apiUrl={this.props.apiUrl}
+                TasksArray={this.state.Data}
+                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                TaskID={this.props.TaskID}
+                UserID={this.props.UserID}
+                Strings={this.state.Strings}
+                showComments={this.showComments.bind(this)}
+                addCommentListItem={this.addCommentListItem.bind(this)}
+                TaskStatus={this.state.TaskStatus}
+                IsRevision={this.state.IsRevision}
+                CurrentTaskType={this.state.TaskActivityType}
+                VisitorID={this.props.VisitorID}
             />);
         }
 
-
         return (
-          <div>
-            <Tabs
-              onSelect={(tab) => {
-                  this.setState({ TabSelected: tab });
-              }}
-              selectedIndex={this.state.TabSelected}
-            >
-              <TabList className="big-text">
-                <Tab>{this.state.Strings.Task}</Tab>
-                <Tab>{this.state.Strings.Comments}</Tab>
-              </TabList>
-              <TabPanel>
-                <HeaderComponent
-                  TaskID={this.props.TaskID}
-                  CourseName={this.state.CourseName}
-                  CourseName={this.state.CourseName}
-                  CourseNumber={this.state.CourseNumber}
-                  Assignment={this.state.Assignment}
-                  TaskActivityType={this.state.TaskActivityType}
-                  SemesterName={this.state.SemesterName}
-                  Strings={this.state.Strings}
-                />
+            <div>
+                <Tabs
+                    onSelect={(tab) => {
+                        this.setState({ TabSelected: tab });
+                    }}
+                    selectedIndex={this.state.TabSelected}
+                >
+                    <TabList className="big-text">
+                        <Tab>{this.state.Strings.Task}</Tab>
+                        <Tab>{this.state.Strings.Comments}</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <HeaderComponent
+                            TaskID={this.props.TaskID}
+                            CourseName={this.state.CourseName}
+                            CourseName={this.state.CourseName}
+                            CourseNumber={this.state.CourseNumber}
+                            Assignment={this.state.Assignment}
+                            TaskActivityType={this.state.TaskActivityType}
+                            SemesterName={this.state.SemesterName}
+                            SectionName={this.state.SectionName}
+                            Strings={this.state.Strings}
+                            AssignmentInstanceID={this.state.AssignmentInstanceID}
+                            WorkflowInstanceID={this.state.WorkflowInstanceID}
+                            addCommentListItem={this.addCommentListItem.bind(this)}
+                            ProblemThreadLabel={this.state.Strings.ProblemThreadLabel}
+                            showComments={this.showComments.bind(this)}
 
-                {renderView}
+                        />
 
-              </TabPanel>
-              <TabPanel>
-                <div className="placeholder" />
-                {/*  Future work to support comments*/}
+                        {renderView}
 
-                <CommentComponent
-                  Comment={{
-                      Author: 'User1',
-                      Timestamp: 'May 6, 2013 9:43am',
-                      Content: 'I really liked your problem. It was very intriguing.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'User2',
-                      Timestamp: 'May 6, 2013 11:09am',
-                      Content: 'I agree. I would have never thought of this.',
-                  }}
-                />
-                <CommentComponent
-                  Comment={{
-                      Author: 'Instructor',
-                      Timestamp: 'May 6, 2013 3:32pm',
-                      Content: 'Your approach of the problem is very unique. Well done.',
-                  }}
-                />
-              </TabPanel>
+                    </TabPanel>
+                    <TabPanel>
+                        <div className="placeholder" />
+                        <div className="regular-text">{this.state.Strings.CommentTargetLabel}</div>
+                        <div style={{width: 280}}><Select options={this.state.CommentTargetList} value={this.state.CommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true}/></div>
+                        {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
+                            if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
+                                if ((index + 1) < array.length) {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={array[index + 1].Parents}
+                                            NextStatus={array[index + 1].Status}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                        />
+                                    );}
+                                else {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={null}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                        />
+                                    );}
+                            }
+                        }))}
 
-            </Tabs>
+                        {this.state.CommentTarget != undefined &&
+                  (<CommentEditorComponent
+                      UserID={this.props.UserID}
+                      Update={this.getCommentData.bind(this)}
+                      ReplyLevel={0}
+                      Parents={null}
+                      CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
+                      TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
+                      AssignmentInstanceID={this.state.AssignmentInstanceID}
+                  />)
+                        }
 
-          </div>
+                    </TabPanel>
+
+                </Tabs>
+
+            </div>
         );
     }
 }

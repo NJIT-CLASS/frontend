@@ -6,48 +6,49 @@ import SuperComponent from './superComponent';
 import MultiViewComponent from './multiViewComponent';
 import SuperViewComponent from './superViewComponent';
 
-const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues }) => {
-    return <div>
-          {
-            TasksArray.map(function(task, idx) {
+class TasksList extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        let { TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues } = this.props;
+
+        return <div>
+            {
+                TasksArray.map(function(task, idx) {
         		// Goes over the array of tasks(starting from first task to this task)
         		// and gives the Components an appropriate title.
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
-                let compString = null;
-                if (idx == TasksArray.length - 1) {
-                    switch (task.TaskActivity.Type) {
-                    case TASK_TYPES.CREATE_PROBLEM:
-                        compString = Strings.CreateProblemTitle;
-                        break;
-                    case TASK_TYPES.EDIT:
-                        compString = Strings.EditProblemTitle;
-                        break;
-                    case TASK_TYPES.COMMENT:
-                        compString = Strings.CommentTitle;
-                    case TASK_TYPES.SOLVE_PROBLEM:
-                        compString = Strings.SolveProblemTitle;
-                        break;
-                    case TASK_TYPES.GRADE_PROBLEM:
-                        compString = Strings.GradeProblemTitle;
-                        break;
-                    case TASK_TYPES.CRITIQUE:
-                        compString = Strings.CritiqueTitle;
-                    case TASK_TYPES.CONSOLIDATION:
-                        compString = Strings.ConsolidateProblemTitle;
-                        break;
-                    case TASK_TYPES.DISPUTE:
-                        compString = Strings.DisputeGradeTitle;
-                        break;
-                    case TASK_TYPES.RESOLVE_DISPUTE:
-                        compString = Strings.ResolveDisputeTitle;
-                        break;
-                    default:
-                        compString = '';
-                        break;
-                    }
-                    if (task.Status == 'Complete' || task.Status == 'complete') {
-                        return (
+                    let compString = null;
+                    if (idx == TasksArray.length - 1) {
+                    
+                        if (task.Status == 'Complete' || task.Status == 'complete') {
+                            return (
+        					<SuperViewComponent
+        						key={idx + 2000}
+        						index={idx}
+        						ComponentTitle={task.TaskActivity.DisplayName}
+        						TaskData={task.Data}
+        						Files={task.Files}
+        						Instructions={task.TaskActivity.Instructions}
+        						Rubric={task.TaskActivity.Rubric}
+        						TaskActivityFields={task.TaskActivity.Fields}
+                                    TaskOwner={task.UserID}
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
+                                    Strings={Strings}
+
+        					/>
+                            );
+                        } 
+                    
+                        if(this.props.TaskStatus.includes('complete')){
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -58,17 +59,25 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskV
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
+                                    TaskOwner={task.UserID}
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
+
         					/>
-                        );
-                    } else {
-                        return (
+                            );
+                        }
+                        else {
+                            return (
         					<SuperComponent
         						key={idx + 2000}
-                    index={idx}
+                                    index={idx}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -79,52 +88,33 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskV
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
+                                    TaskOwner={task.UserID}
+                                    showComments={this.props.showComments.bind(this)}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    IsRevision={this.props.IsRevision}
+                                    CurrentTaskType={this.props.CurrentTaskType}
+									
         					/>
-                        );
-                    }
-                } else {
-                    if (Array.isArray(task)) {
-                        return (
+                            );
+                        }
+                    } else {
+                        if (Array.isArray(task)) {
+                            return (
         					<MultiViewComponent
         						UsersTaskData={task}
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-        					/>
-                        );
-                    } else {
-                        switch (task.TaskActivity.Type) {
-                        case TASK_TYPES.CREATE_PROBLEM:
-                            compString = Strings.CreateProblemTitle;
-                            break;
-                        case TASK_TYPES.EDIT:
-                            compString = Strings.EditProblemTitle;
-                            break;
-                        case TASK_TYPES.COMMENT:
-                            compString = Strings.CommentTitle;
-                        case TASK_TYPES.SOLVE_PROBLEM:
-                            compString = Strings.SolveProblemTitle;
-                            break;
-                        case TASK_TYPES.GRADE_PROBLEM:
-                            compString = Strings.GradeProblemTitle;
-                            break;
-                        case TASK_TYPES.CRITIQUE:
-                            compString = Strings.CritiqueTitle;
-                        case TASK_TYPES.CONSOLIDATION:
-                            compString = Strings.ConsolidateProblemTitle;
-                            break;
-                        case TASK_TYPES.DISPUTE:
-                            compString = Strings.DisputeGradeTitle;
-                            break;
-                        case TASK_TYPES.RESOLVE_DISPUTE:
-                            compString = Strings.ResolveDisputeTitle;
-                            break;
-                        default:
-                            compString = '';
-                            break;
-                        }
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    TaskOwner={task.UserID}
+                                    VisitorID={this.props.VisitorID}
 
-                        return (
+        					/>
+                            );
+                        } else {
+                        
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -132,18 +122,26 @@ const TasksList = ({ TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskV
         						Rubric={task.TaskActivity.Rubric}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
-                    Status={task.Status}
+                                    Status={task.Status}
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-        					/>
-                        );
-                    }
-                }
-            }, this)
-          }
-        </div>;
+                                    TaskOwner={task.UserID}
+                                    TaskID={task.TaskInstanceID}
+                                    addCommentListItem={this.props.addCommentListItem.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
+                                    CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
 
-};
+        					/>
+                            );
+                        }
+                    }
+                }, this)
+            }
+        </div>;
+    }
+}
+
 
 export default TasksList;

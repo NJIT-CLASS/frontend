@@ -5,7 +5,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Tasks from './components/Tasks.js';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Assignment from './components/Assignment.js';
 import WorkFlow from './components/WorkFlow.js';
 import Strings from './strings';
@@ -40,7 +40,9 @@ class AssignToSectionContainer extends React.Component
             DataLoaded: false,
             InfoMessage: '',
             InfoMessageType:'',
-            Strings: Strings
+            Strings: Strings,
+            SubmittingInProgress: false,
+            SubmitSuccess: false
         };
     }
 
@@ -53,35 +55,39 @@ class AssignToSectionContainer extends React.Component
             });
         });
 
-        const options = {
-            method: 'GET',
-            uri: this.props.apiUrl +'/api/getAssignToSection/',
-            qs:{
-                courseid: this.props.CourseID,
-                assignmentid: this.props.AssignmentID
-            },
-            json: true
-        };
-        const semOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester',
-            json: true
+        const getAssignQueryStrings = {
+            courseid: this.props.CourseID,
+            assignmentid: this.props.AssignmentID
         };
 
-        request(options, (err, res, body) => {
-            request(semOptions, (err2, res2, bod2) => {
+        apiCall.get('/getAssignToSection',getAssignQueryStrings, (err, res, body) => {
+            apiCall.get('/semester', (err2, res2, bod2) => {
                 console.log(body);
                 console.log(bod2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
+                    let taskDaysPast = 0;
                     let tasks = body.taskActivityCollection[key].map(function(task){
-                        const dueTypeArray = JSON.parse(task.defaults);
+                        let dueTypeArray = JSON.parse(task.defaults);
+                        console.log('duettype for ', task.taskActivityID, dueTypeArray);
+                        if(dueTypeArray[0] === 'specific time'){
+                            if(!isNaN(dueTypeArray[1])){
+                                taskDaysPast += dueTypeArray[1];
+                                dueTypeArray = ['specific time', moment().add(Math.floor((taskDaysPast + dueTypeArray[1])/1440), 'days').format('YYYY-MM-DD')+(' 23:59')];
+                            }
+
+
+                        }
+                        else{
+                            taskDaysPast += dueTypeArray[1];
+                        }
+
                         return {
                             ID: task.taskActivityID,
                             Type:task.type,
                             Name: task.name,
                             StartNow:dueTypeArray[0] === 'duration',
                             StartLater:dueTypeArray[0] === 'specific time',
-                            Time:4320,
+                            Time:dueTypeArray[1],
                             TimeArray: dueTypeArray
                         };
                     }, this);
@@ -90,6 +96,7 @@ class AssignToSectionContainer extends React.Component
                         id: key,
                         StartNow:true,
                         StartLater:false,
+                        Name: body.workflowNames[key],
                         Time:moment().format('YYYY-MM-DD HH:mm:ss'),
                         Tasks: tasks
                     };
@@ -116,16 +123,11 @@ class AssignToSectionContainer extends React.Component
 
     fetchSectionsForSemester()  {
         const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/getCourseSections/${this.props.CourseID}`,
-            qs: {
-                userID: this.props.UserID,
-                semesterID: this.state.Assignment.Semester
-            },
-            json: true
+            userID: this.props.UserID,
+            semesterID: this.state.Assignment.Semester
         };
 
-        request(options, (err, res, body) => {
+        apiCall.get(`/getCourseSections/${this.props.CourseID}`, options, (err, res, body) => {
             let sectionsList = body.Sections.map((section) => {
                 return {value: section.SectionID, label: section.Name};
             });
@@ -138,14 +140,17 @@ class AssignToSectionContainer extends React.Component
 
     onSubmit(){
     //saves the state data to the database
-      if(this.state.Assignment.Section.length === 0){
-        showMessage(this.state.Strings.NoSectionsSelected);
         this.setState({
-          InfoMessage: this.state.Strings.NoSectionsSelected,
-          InfoMessageType: 'error'
+            SubmittingInProgress: true
         });
-        return;
-      }
+        if(this.state.Assignment.Section.length === 0){
+            showMessage(this.state.Strings.NoSectionsSelected);
+            this.setState({
+                InfoMessage: this.state.Strings.NoSectionsSelected,
+                InfoMessageType: 'error'
+            });
+            return;
+        }
 
         let timingArray = this.state.WorkFlow.map(function(Workflow){
 
@@ -173,28 +178,32 @@ class AssignToSectionContainer extends React.Component
         };
 
 
-        const options = {
-            method: 'POST',
-            uri: this.props.apiUrl +'/api/getAssignToSection/submit/',
-            body: newData,
-            json: true
-        };
+        const options = newData;
+
         console.log(options);
-        request(options, (err, res, body) => {
+        apiCall.post('/getAssignToSection/submit/', options, (err, res, body) => {
             if(res.statusCode === 200){
                 console.log(this.state.Strings.SubmitSuccess);
+                showMessage(this.state.Strings.SubmitSuccess);
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitSuccess,
-                    InfoMessageType: 'success'
+                    InfoMessageType: 'success',
+                    SubmitSuccess: true
                 });
             }
             else{
                 console.log(this.state.Strings.SubmitError);
+                showMessage(this.state.Strings.SubmitError);
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitError,
                     InfoMessageType: 'success'
                 });
             }
+            
+            this.setState({
+                SubmittingInProgress: false
+            });
+            
         });
         return;
     }
@@ -213,7 +222,7 @@ class AssignToSectionContainer extends React.Component
         let newA = this.state.Assignment;
         newA.StartNow = false;
         newA.StartLater = true;
-        newA.Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        newA.Time = moment().add(3, 'days').format('YYYY-MM-DD HH:mm:ss');
         this.setState({Assignment: newA});
     }
 
@@ -292,20 +301,34 @@ class AssignToSectionContainer extends React.Component
     onChangeCertainTimeTasks(index, workflowIndex)
   {
         let newA = this.state.WorkFlow;
+        newA[workflowIndex].Tasks[index].Time = this.getAddedTime(index, workflowIndex);
+        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
         newA[workflowIndex].Tasks[index].StartNow= false;
         newA[workflowIndex].Tasks[index].StartLater=true;
-        newA[workflowIndex].Tasks[index].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
-        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
+
         this.setState({WorkFlow: newA});
     }
 
+
+    getAddedTime(index, workflowIndex){
+        let count = 3*1440;
+        for(let i = index-1; i >= 0 ; i--){
+            if(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[0] === 'specific time'){
+                return moment(this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1], 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+            } else {
+                count += this.state.WorkFlow[workflowIndex].Tasks[i].TimeArray[1];
+            }
+        }
+
+        return moment(this.state.WorkFlow[workflowIndex].Time, 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
+    }
 //-----------------------------------------------------------------------------
 
 /////////// Functions used in WorkFlow Component ///////////////////////////////
     onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
   {
         let newA = this.state.WorkFlow;
-        newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');;
+        newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
         this.setState({WorkFlow: newA});
     }
 
@@ -314,7 +337,7 @@ class AssignToSectionContainer extends React.Component
         let newA = this.state.WorkFlow;
         newA[workflowIndex].StartNow = false;
         newA[workflowIndex].StartLater = true;
-        newA[workflowIndex].Time = moment().add(3, 'days').format('MM/DD/YYYY')+(' 23:59');
+        newA[workflowIndex].Time = moment().add(3, 'days').format('YYYY-MM-DD HH:mm:ss');
         this.setState({WorkFlow: newA});
     }
 
@@ -333,9 +356,21 @@ class AssignToSectionContainer extends React.Component
   {
         let strings = this.state.Strings;
         let infoMessage = null;
-        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>);
+        let buttonView =  <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>;
         if(!this.state.DataLoaded){
             return (<div></div>);
+        }
+
+        if(this.state.SubmittingInProgress === true){
+            buttonView = null;
+            buttonView = (
+                <div>
+                    <i className="fa fa-cog fa-spin fa-2x fa-fw"></i>
+                </div>
+            )
+        }
+        if(this.state.SubmitSuccess === true){
+            buttonView = null;
         }
 
         if(this.state.InfoMessage !== ''){

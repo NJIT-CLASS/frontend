@@ -1,6 +1,6 @@
 import React from 'react';
 import Reactable from 'reactable';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import InfoModal from './info-modal';
@@ -32,11 +32,7 @@ class Frames extends React.Component {
                 Strings: newStrings
             });
         });
-        const options = {
-            method: 'GET',
-            uri: `${this.props.apiUrl}/api/getAssignmentRecord/${this.props.AssignmentID}`,
-            json: true,
-        };
+
 
         const colors = { 'In Progress': '#ffffff',
             Complete: '#80ff80',
@@ -44,7 +40,7 @@ class Frames extends React.Component {
             'Not Needed': '#ffff66',
             'Inactive:': '#d9d9d9' };
 
-        request(options, (err, res, body) => {
+        apiCall.get(`/getAssignmentRecord/${this.props.AssignmentID}`, (err, res, body) => {
             console.log(err, res, body);
             this.setState(
                 { Workflows: body.AssignmentRecords,

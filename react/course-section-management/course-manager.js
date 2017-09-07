@@ -1,11 +1,13 @@
 import React from 'react';
-import request from 'request';
 import Select from 'react-select';
+import apiCall from '../shared/apiCall';
 
 class CourseManager extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            DeleteChangeMessage: ''
+        };
     }
 	// load all courses when selected organization changes
     componentWillMount() {
@@ -25,12 +27,7 @@ class CourseManager extends React.Component {
 	// list is used in select element
 	// courses displayed in "Number - Name" format
     fetchAll(organizationID) {
-        let fetchAllOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/getOrganizationCourses/' + organizationID,
-            json: true
-        };
-        request(fetchAllOptions, (err, res, body) => {
+        apiCall.get(`/getOrganizationCourses/${organizationID}`, (err, res, body) => {
             let list = [];
             for (let course of body.Courses) {
                 list.push({ value: course.CourseID, label: course.Number + ' – ' + course.Name });
@@ -42,12 +39,8 @@ class CourseManager extends React.Component {
     }
 	// fetch course info for editing
     fetch() {
-        const fetchOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/course/' + this.state.id,
-            json: true
-        };
-        request(fetchOptions, (err, res, body) => {
+
+        apiCall.get(`/course/${this.state.id}`, (err, res, body) => {
             this.setState({
                 name: body.Course.Name,
                 number: body.Course.Number,
@@ -65,33 +58,39 @@ class CourseManager extends React.Component {
     edit() {
         this.fetch();
     }
+
+    //two level warning check
+    deleteChange(num) {
+        if (num == 1) {
+            this.setState({DeleteChangeMessage: 'check-1'});
+        }
+        if (num == 2) {
+            this.setState({DeleteChangeMessage: 'check-2'});
+        }
+    }
+
 	// delete course, cascade deletes
     delete() {
-        const deleteOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/course/delete/' + this.state.id,
-            json: true
-        };
-        request(deleteOptions, (err, res, body) => {
+        this.setState({DeleteChangeMessage: ''});
+        apiCall.get(`/course/delete/${this.state.id}`, (err, res, body) => {
             this.changeID({
                 value: null
             });
             this.fetchAll();
         });
     }
+
+    closeDeleteMessage() {
+        this.setState({DeleteChangeMessage: ''});
+    }
 	// update number and name of course, reload course list, exit edit mode
     update() {
         const updateOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/update/' + this.state.id,
-            body: {
                 Number: this.state.number,
                 Name: this.state.name
-            },
-            json: true
-        };
+            };
 
-        request(updateOptions, (err, res, body) => {
+        apiCall.post(`/course/update/${this.state.id}`,updateOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -113,6 +112,7 @@ class CourseManager extends React.Component {
             creating: false,
             editing: false
         });
+        this.setState({DeleteChangeMessage: ''});
     }
 	// on successful creation of course, new ID is passed to parent
     changeID(option) {
@@ -140,18 +140,13 @@ class CourseManager extends React.Component {
 	// save new course, update selected courseID, reload course list
     save() {
         const saveOptions = {
-            method: 'POST',
-            uri: this.props.apiUrl + '/api/course/create',
-            body: {
                 userid: this.props.userID,
                 number: this.state.number,
                 Name: this.state.name,
                 organizationid: this.props.organizationID
-            },
-            json: true
-        };
+            };
 
-        request(saveOptions, (err, res, body) => {
+        apiCall.post('/course/create', saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
                 console.log('Error submitting!');
                 return;
@@ -190,7 +185,7 @@ class CourseManager extends React.Component {
 			</div>
 		);
 
-    
+
 		// display form to create new course
         let create = (
 			<div className='card'>
@@ -212,11 +207,29 @@ class CourseManager extends React.Component {
 		// display form to edit existing course, prepopulated with existing data
         let edit = (
 			<div className='card'>
-				<h2 className='title'>{this.props.strings.editCourse}</h2>
+				<h2 className='title'>{this.props.strings.editCourse}</h2><br /><br />
 
+        {(this.state.DeleteChangeMessage == 'check-1') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteCourse}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.deleteChange.bind(this, 2)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
+        {(this.state.DeleteChangeMessage == 'check-2') &&
+        <div>
+            <div className = "error form-error" style={{display: 'inline'}}>
+            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i>
+                                      <span>{this.props.strings.deleteCourseDoubleCheck}</span></div><br /><br />
+                                      <button className = "ynbutton" onClick={this.delete.bind(this)}>{this.props.strings.yes}</button>
+                                      <button className = "ynbutton" onClick={this.closeDeleteMessage.bind(this)}>{this.props.strings.no}</button><br /><br /><br />
+                                    </div>
+        }
 
         <button type='button' onClick={this.cancel.bind(this)}>{this.props.strings.cancel}</button>
-        <button type='button' onClick={this.delete.bind(this)}>{this.props.strings.delete}</button>
+        <button type='button' onClick={this.deleteChange.bind(this, 1)}>{this.props.strings.delete}</button>
         <button type='button' onClick={this.update.bind(this)}>{this.props.strings.save}</button>
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>

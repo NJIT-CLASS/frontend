@@ -1,0 +1,66 @@
+Account
+/\ G /api/generalUser/:
+/\ P /api/update/password
+/\ P /api/userContact
+P /api/upload/profile-picture
+
+Add-User
+/\ P /api/adduser
+
+AssignToSection
+/\ G /api/getAssignToSection
+/\ P /api/getAssignToSection/submit
+
+AssignmentEditor
+/\ G /api/getCourseCreated/:
+/\ G /api/partialAssignments/ById/:
+/\ P /api/assignment/save
+/\ P /api/assignment/create
+
+AssignmentRecords
+/\ G /api/getAssignmentRecord/:
+
+CourseSectionManagement
+/\ G /api/organization
+/\ G /api/organization/:
+/\ G /api/organization/delete/:
+/\ P /api/organization/update/:
+/\ P /api/createorganization
+/\ G /api/section/:
+/\ G /api/section/delete/:
+/\ P /api/course/updatesection
+/\ P /api/course/createsection
+/\ G /api/getOrganizationSemesters/:
+/\ G /api/semester/delete/:
+/\ P /api/semester/update/:
+/\ P /api/createSemester
+/\ G /api/getOrganizationCourses/:
+/\ G /api/course/:
+/\ G /api/course/delete/:
+/\ P /api/course/update/:
+/\ P /api/course/create
+/\ G /api/sectionUsers/:/:
+/\ P /api/sectionUsers/:
+/\ P /api/sectionUsers/addMany/:
+
+QuickAssignmentReport
+/\ G /api/getAssignmentReport/alternate/:
+
+FileUpload
+G /api/upload/files
+
+TaskTemplate
+G /api/download/file
+/\ G /api/taskInstanceTemplate/main/:
+/\ G /api/superCall/:
+/\ P /api/taskInstanceTemplate/create/save
+/\ P /api/taskInstanceTemplate/create/submit
+/\ G /api/skipDispute
+
+
+AssignToSection, CourseSectionManagement
+/\ G /api/getCourseSections/:
+
+
+AssignToSection, AssignmentEditor, CourseSectionManagement
+/\ G /api/semester/:
