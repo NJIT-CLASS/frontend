@@ -1,3 +1,7 @@
+
+
+
+
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -5,7 +9,6 @@ const cryptoJS = require('crypto-js');
 const request = require('request');
 const redis = require('redis');
 const _ = require('lodash');
-const multer  = require('multer');
 var fs = require('fs');
 
 const session = require('./server-middleware/session');
@@ -22,6 +25,17 @@ const redisClient = redis.createClient({
     host: consts.REDIS_HOST,
     port: consts.REDIS_PORT,
     password: consts.REDIS_AUTH
+});
+
+
+const multer = require('multer'); //TODO: we may need to limit the file upload size
+
+var storage = multer({
+    dest: './tempFiles/',
+    limits: { //Max 3 files and total of 50MB
+        fileSize: consts.FILE_SIZE,
+        files: consts.MAX_NUM_FILES
+    }
 });
 
 app.use('/static', express.static(`${__dirname}/static`));

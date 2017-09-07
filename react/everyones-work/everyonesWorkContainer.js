@@ -36,13 +36,24 @@ class EveryonesWorkContainer extends Component {
         if(!Loaded){
             return <div></div>;
         }
-        let listofWorkflows = Object.keys(ListOfWorkflows).map(workflowActivityId => {
+        const listofWorkflows = Object.keys(ListOfWorkflows).map((workflowActivityId, workflowIndex) => {
             const listOfTasks = ListOfWorkflows[workflowActivityId].Tasks.map( (taskObject, index) =>
                 <ListItemComponent key={workflowActivityId + ' ' + index} TaskObject={taskObject} 
                     UserID={UserID}/>
             );
         
-            let titleText = AssignmentInfo.Name;//ListOfWorkflows[workflowActivityId].Name;
+            let titleText = AssignmentInfo.Name;
+            if(ListOfWorkflows[workflowActivityId].Name != ''){
+                if(ListOfWorkflows[workflowActivityId].Name === 'Problem'){
+                    titleText = `${AssignmentInfo.Name} - 
+                    ${ListOfWorkflows[workflowActivityId].Name} ${(workflowIndex + 1)}`;
+                } 
+                else {
+                    titleText = ListOfWorkflows[workflowActivityId].Name;
+                }
+            } 
+            
+
             return ( 
                 <div className="section" key={`${workflowActivityId}`}>
                     <div className="title">{`${titleText}`}</div>
