@@ -27,7 +27,7 @@ class MainLeaderboard extends React.Component {
             method: 'GET',
             uri: this.props.apiUrl + '/api/semester',
             json: true
-        }
+        };
         request(semOptions, (err2, res2, bod2) => {
             let semestersArray = bod2.Semesters.map(function (sem) {
                 return ( {value: sem.SemesterID, label: sem.Name} );
@@ -43,7 +43,7 @@ class MainLeaderboard extends React.Component {
 
 
     onSemesterChange(value){
-        console.log("Semester value YEah ", value);
+        console.log('Semester value YEah ', value);
         console.log(value);
         this.setState({
             SemesterID: value.value
@@ -51,7 +51,7 @@ class MainLeaderboard extends React.Component {
     }
 
     onClassChange(value){
-        console.log("Class value YEah ", value);
+        console.log('Class value YEah ', value);
         this.setState({
             CourseID: value.value,
             SectionID: value.sectionId
@@ -68,10 +68,10 @@ class MainLeaderboard extends React.Component {
             courseAndSection = (
                 <div id="courseForLeaderBoard">
                     <CourseForAchievementUnlock apiUrl={this.props.apiUrl}
-                                          UserID={this.props.UserID}
-                                          SemesterID={this.state.SemesterID}
-                                          onClassChange={this.onClassChange}
-                                          CourseID={this.state.CourseID}
+                        UserID={this.props.UserID}
+                        SemesterID={this.state.SemesterID}
+                        onClassChange={this.onClassChange}
+                        CourseID={this.state.CourseID}
                     />
                 </div>
             );
@@ -83,10 +83,10 @@ class MainLeaderboard extends React.Component {
                     <div id="achievementUnlock">
                         <div id="classRanking">
                             <ClassRanking apiUrl={this.props.apiUrl}
-                                          UserID={this.props.UserID}
-                                          SemesterID={this.state.SemesterID}
-                                          CourseID={this.state.CourseID}
-                                          SectionID={this.state.SectionID}
+                                UserID={this.props.UserID}
+                                SemesterID={this.state.SemesterID}
+                                CourseID={this.state.CourseID}
+                                SectionID={this.state.SectionID}
                             />
                         </div>
 
@@ -96,19 +96,19 @@ class MainLeaderboard extends React.Component {
 
                         <div id="vsSections">
                             <VsSections apiUrl={this.props.apiUrl}
-                                        UserID={this.props.UserID}
+                                UserID={this.props.UserID}
                             />
                         </div>
-                    </div>
+                    </div>;
             } else {
                 apiContentHolder =
-                    <div id="badge"><h1 id="noRankh1">Please select a Class!!!</h1></div>
+                    <div id="badge"><h1 id="noRankh1">Please select a Class!!!</h1></div>;
             }
         }
         else{
 
             apiContentHolder =
-                <div id="badge"><h1 id="noRankh1">Please select a Semester!!!</h1></div>
+                <div id="badge"><h1 id="noRankh1">Please select a Semester!!!</h1></div>;
         }
         return (
 

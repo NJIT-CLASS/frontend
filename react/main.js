@@ -138,11 +138,11 @@ case 'everyones-work':
     break;
 
 case 'badges':
-    ReactDOM.render(<MainBadge UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<MainBadge UserID={userId}  __={translationFunction} />, reactElem);
     break;
 
 case 'leaderboard':
-    ReactDOM.render(<MainLeaderboard UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<MainLeaderboard UserID={userId}  __={translationFunction} />, reactElem);
     break;
 
 case 'achievementUnlock':

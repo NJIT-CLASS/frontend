@@ -3,7 +3,8 @@
  * This file will allow the user to choose the category of the badge
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
+
 import Select from 'react-select';
 
 class BadgeCategory extends React.Component {
@@ -16,21 +17,16 @@ class BadgeCategory extends React.Component {
     }
 
     fetchCategories(nextProps) {
-        const fetchOptions = {
-            method: 'GET',
-            //Badge Category API to get all the categories of the badge based on course ID, Section ID, and Semester ID.
-            uri: nextProps.apiUrl + '/api/badgeCategories/' + nextProps.CourseID+ '/' + nextProps.SectionID+ '/' + nextProps.SemesterID,
-            json: true
-        };
+        
 
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptions,(err, response, body) => {
+        apiCall.get(`/badgeCategories/${nextProps.CourseID}/${nextProps.SectionID}/${nextProps.SemesterID}`,(err, response, body) => {
             this.setState({
                 badgeCategory: body.categories,//List of Badge Categories
                 //badges: body.badges//body.whatever we need from api
-            })
+            });
         });
 
     }
@@ -52,7 +48,7 @@ class BadgeCategory extends React.Component {
             return{
                 value: badgeKatKey.CategoryID,
                 label: badgeKatKey.Name
-            }
+            };
         });
 
         //Select menu for badge Category

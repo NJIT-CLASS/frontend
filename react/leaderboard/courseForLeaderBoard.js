@@ -3,7 +3,7 @@
  * This file will display the courses that student can choose from.
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 
 class CourseForLeaderBoard extends React.Component {
@@ -15,21 +15,16 @@ class CourseForLeaderBoard extends React.Component {
     }
 
     fetchClassData(nextProps) {
-        const fetchOptions = {
-            method: 'GET',
-            //API to get course list for leaderboard
-            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID + '/'  + nextProps.SemesterID,
-            json: true
-        };
+        
 
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptions,(err, response, body) => {
+        apiCall.get(`/studentCourses/${nextProps.UserID}/${nextProps.SemesterID}`,(err, response, body) => {
             console.log(body);
             this.setState({
                 studentClasses: body.courses//List of courses from database
-            })
+            });
         });
 
     }
@@ -52,7 +47,7 @@ class CourseForLeaderBoard extends React.Component {
                 value: klass.CourseID,
                 label: klass.Number,
                 sectionId: klass.SectionID,
-            }
+            };
 
         });
 

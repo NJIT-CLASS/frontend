@@ -3,7 +3,8 @@
  * This file will have a dropdown for the user to select the class
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
+
 import Tooltip from '../shared/tooltip';
 import Select from 'react-select';
 
@@ -16,21 +17,14 @@ class ClassForBadge extends React.Component {
     }
 
     fetchClassData(nextProps) {
-        const fetchOptions = {
-            method: 'GET',
-            //API to get Class For Badge Data
-            uri: this.props.apiUrl + '/api/studentCourses/' + nextProps.UserID + '/' + nextProps.SemesterID,
-            json: true
-        };
-
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptions,(err, response, body) => {
+        apiCall.get(`/studentCourses/${nextProps.UserID}/${nextProps.SemesterID}`,(err, response, body) => {
             console.log(body);
             this.setState({
                 studentClasses: body.courses//List of Courses for the current student from backend (based on semester)
-            })
+            });
         });
     }
 
@@ -47,11 +41,11 @@ class ClassForBadge extends React.Component {
         //get data of class for badge to pass it in the select
         let classList = this.state.studentClasses.filter(klass => klass.Section !== null).map(klass => {
 
-         return {
-             value: klass.CourseID,
-             label: klass.Number,
-             sectionId: klass.SectionID,
-         }
+            return {
+                value: klass.CourseID,
+                label: klass.Number,
+                sectionId: klass.SectionID,
+            };
         });
         //Select menu for Class for badge
         return (

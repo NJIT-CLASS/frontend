@@ -13,7 +13,7 @@ import ClassRanking from './classRanking';
 import TopMovers from './topMovers';
 import VsSections from './vsSections';
 import CourseForLeaderBoard from './courseForLeaderBoard';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 
 
@@ -33,12 +33,8 @@ class MainLeaderboard extends React.Component {
 
     //Will render the Data
     componentWillMount() {
-        const semOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester',
-            json: true
-        }
-        request(semOptions, (err2, res2, bod2) => {
+        
+        apiCall.get('/semester', (err2, res2, bod2) => {
             let semestersArray = bod2.Semesters.map(function (sem) {
                 return ( {value: sem.SemesterID, label: sem.Name} );
             });
@@ -77,10 +73,10 @@ class MainLeaderboard extends React.Component {
             courseAndSection = (
                 <div id="courseForLeaderBoard">
                     <CourseForLeaderBoard apiUrl={this.props.apiUrl}
-                                          UserID={this.props.UserID}
-                                          SemesterID={this.state.SemesterID}
-                                          onClassChange={this.onClassChange}
-                                          CourseID={this.state.CourseID}
+                        UserID={this.props.UserID}
+                        SemesterID={this.state.SemesterID}
+                        onClassChange={this.onClassChange}
+                        CourseID={this.state.CourseID}
                     />
                 </div>
             );
@@ -92,10 +88,10 @@ class MainLeaderboard extends React.Component {
                     <div id="achievementUnlock">
                         <div id="classRanking">
                             <ClassRanking apiUrl={this.props.apiUrl}
-                                          UserID={this.props.UserID}
-                                          SemesterID={this.state.SemesterID}
-                                          CourseID={this.state.CourseID}
-                                          SectionID={this.state.SectionID}
+                                UserID={this.props.UserID}
+                                SemesterID={this.state.SemesterID}
+                                CourseID={this.state.CourseID}
+                                SectionID={this.state.SectionID}
                             />
                         </div>
 
@@ -108,21 +104,21 @@ class MainLeaderboard extends React.Component {
 
                         <div id="vsSections">
                             <VsSections apiUrl={this.props.apiUrl}
-                                        UserID={this.props.UserID}
-                                        SemesterID={this.state.SemesterID}
+                                UserID={this.props.UserID}
+                                SemesterID={this.state.SemesterID}
                             />
                         </div>
-                    </div>
+                    </div>;
             } else {
                 //If class is not selected then have a placeholder that says "Please select a class!!!"
                 apiContentHolder =
-                    <div id="leaderboard"><h1 id="noRankh1">Please select a Class!!!</h1></div>
+                    <div id="leaderboard"><h1 id="noRankh1">Please select a Class!!!</h1></div>;
             }
         }
-    else{
+        else{
             //If section is not selected then have a placeholder that says "Please select a semester!!!"
             apiContentHolder =
-                <div id="leaderboard"><h1 id="noRankh1">Please select a Semester!!!</h1></div>
+                <div id="leaderboard"><h1 id="noRankh1">Please select a Semester!!!</h1></div>;
         }
 
         //Semester Dropdown and passing data to other files

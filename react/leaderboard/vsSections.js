@@ -3,7 +3,7 @@
  * This File will display ranking between different sections and courses for the semester
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Tooltip from '../shared/tooltip';
 
 
@@ -15,22 +15,15 @@ class VsSections extends React.Component {
 
     //Fetch Section Ranking Data From Backend
     fetchClassRankingData(nextProps) {
-        const fetchOptionsForClassRanking = {
-            method: 'GET',
-            //API to get Data for section and class ranking
-            uri: nextProps.apiUrl + '/api/getSectionsRanking/'  + nextProps.SemesterID,
-            json: true
-        };
-
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptionsForClassRanking,(err, response, body) => {
-            console.log("Testing Again Bro "+ body.students);
+        apiCall.get(`/getSectionsRanking/${nextProps.SemesterID}`,(err, response, body) => {
+            console.log('Testing Again Bro '+ body.students);
             this.setState({
                 vsSection: body.sections,//Section Ranking Data
                 vsSectionUpdateDate: body.sections[0].UpdateDate//Last Updated Date
-            })
+            });
         });
     }
 
@@ -57,7 +50,7 @@ class VsSections extends React.Component {
                     <img className="vsSectionAvatars" src={`static/${klassRank.ProfilePicture}`} />
                 </div>
                 <div className="vsSectionClearingDiv"></div>
-            </div>
+            </div>;
         });
 
         //Items returned to screen

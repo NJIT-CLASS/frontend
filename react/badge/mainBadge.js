@@ -8,7 +8,8 @@ import ClassForBadge from './classForBadge';
 import BadgeCategory from './badgeCategory';
 import Badge from './badge';
 import Select from 'react-select';
-import request from 'request';
+import apiCall from '../shared/apiCall';
+
 
 
 class MainBadge extends React.Component {
@@ -29,12 +30,8 @@ class MainBadge extends React.Component {
 
     //Will render the data
     componentWillMount() {
-        const semOptions = {
-            method: 'GET',
-            uri: this.props.apiUrl + '/api/semester',
-            json: true
-        }
-        request(semOptions, (err2, res2, bod2) => {
+        
+        apiCall.get( '/semester', (err2, res2, bod2) => {
             let semestersArray = bod2.Semesters.map(function (sem) {
                 return ( {value: sem.SemesterID, label: sem.Name} );
             });
@@ -83,18 +80,18 @@ class MainBadge extends React.Component {
             classAndCategory =  (
                 <div>
                     <ClassForBadge apiUrl={this.props.apiUrl}
-                                   SemesterID={this.state.SemesterID}
-                                   UserID={this.props.UserID}
-                                   onClassChange={this.onClassChange}
-                                   CourseID={this.state.CourseID}
+                        SemesterID={this.state.SemesterID}
+                        UserID={this.props.UserID}
+                        onClassChange={this.onClassChange}
+                        CourseID={this.state.CourseID}
                     />
                     <div id = "badgeCategory">
                         <BadgeCategory apiUrl={this.props.apiUrl}
-                                       selectedBadgeCategory={this.state.BadgeCategory}
-                                       onBadgeCategoryChange={this.onBadgeCategoryChange}
-                                       CourseID={this.state.CourseID}
-                                       SemesterID={this.state.SemesterID}
-                                       SectionID={this.state.SectionID}                        />
+                            selectedBadgeCategory={this.state.BadgeCategory}
+                            onBadgeCategoryChange={this.onBadgeCategoryChange}
+                            CourseID={this.state.CourseID}
+                            SemesterID={this.state.SemesterID}
+                            SectionID={this.state.SectionID}                        />
                     </div>
                 </div>
             );
@@ -108,17 +105,17 @@ class MainBadge extends React.Component {
             apiContentHolder =
                 <div id = "badge">
                     <Badge apiUrl={this.props.apiUrl}
-                           SemesterID={this.state.SemesterID}
-                           UserID={this.props.UserID}
-                           CourseID={this.state.CourseID}
-                           SectionID={this.state.SectionID}
-                           BadgeCategory={this.state.BadgeCategory}
+                        SemesterID={this.state.SemesterID}
+                        UserID={this.props.UserID}
+                        CourseID={this.state.CourseID}
+                        SectionID={this.state.SectionID}
+                        BadgeCategory={this.state.BadgeCategory}
                     />
-                </div>
+                </div>;
         }else{
             //If Course and Category is not selected then it will say no badge to display with a crying emoji
             apiContentHolder =
-                <div id="badge"><h1 id="noBadgeh1">No Badge To Display 😭</h1></div>
+                <div id="badge"><h1 id="noBadgeh1">No Badge To Display 😭</h1></div>;
         }
 
 

@@ -3,7 +3,7 @@
  * This file will display or generate the data for top movers.
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Tooltip from '../shared/tooltip';
 
 
@@ -15,23 +15,16 @@ class TopMovers extends React.Component {
     }
     //Fetch Top Movers Ranking Data From Backend
     fetchClassRankingData(nextProps) {
-        const fetchOptionsForClassRanking = {
-            method: 'GET',
-            //API to get Data for Top Movers
-            uri: nextProps.apiUrl + '/api/getMovement/'  + nextProps.SemesterID,
-            json: true
-        };
-
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptionsForClassRanking,(err, response, body) => {
-            console.log("Testing Again Bro "+ body.students[0].UpdateDate);
+        apiCall.get(`/getMovement/${nextProps.SemesterID}`,(err, response, body) => {
+            console.log('Testing Again Bro '+ body.students[0].UpdateDate);
             this.setState({
                 topMovers: body.students,//Ranking of the studens
                 topMoversPointMovement: body.students[0].PointsMovement,//Points of the current student
                 topMoversUpdateDate: body.students[0].UpdateDate//Last Updated date
-            })
+            });
         });
     }
 
@@ -58,7 +51,7 @@ class TopMovers extends React.Component {
                     <img className="topMoversAvatars" src={`static/${klassRank.ProfilePicture}`} />
                 </div>
                 <div className="topMoversClearingDiv"></div>
-            </div>
+            </div>;
         });
 
         //Students points, Last Updated, and Rank of students will be displayed here
@@ -69,7 +62,7 @@ class TopMovers extends React.Component {
                 </h2>
                 <div id="topMoversStudentPointArea"><p>Your Rank Movement: {this.state.topMoversPointMovement}</p></div>
                 <div id="topMoversStudentList">
-                  {topMovers}
+                    {topMovers}
 
 
                 </div>

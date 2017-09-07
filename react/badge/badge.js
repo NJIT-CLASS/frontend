@@ -3,8 +3,8 @@
  * This file will send info to other files and then in the end will render the badges with progress bar
  */
 import React from 'react';
-import request from 'request';
 import BadgeDisplay from './badgeDisplay';
+import apiCall from '../shared/apiCall';
 
 class Badge extends React.Component {
     constructor(props){
@@ -13,21 +13,16 @@ class Badge extends React.Component {
     }
 
     fetchBadgeData(nextProps) {
-        const fetchOptionsForProgress = {
-            method: 'GET',
-            //API to receive user progress and badge image
-            uri: nextProps.apiUrl + '/api/userProgress/' + nextProps.UserID +"/" +nextProps.BadgeCategory,
-            json: true
-        };
+        
 
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptionsForProgress,(err, response, body) => {
+        apiCall.get(`/userProgress/${nextProps.UserID}/${nextProps.BadgeCategory}`,(err, response, body) => {
             this.setState({
                 userProgressData: body.progress.badges,//User Progress From backend related to Badge
                 userProgressPointData: body.progress //User progress Data from backend
-            })
+            });
         });
     }
 
@@ -50,17 +45,17 @@ class Badge extends React.Component {
         //If user progress data and user point data is not null then send the info to BadgeDisplay File
         if(this.state.userProgressData !== null && this.state.userProgressPointData !== null){
 
-             badgeDisplay =  <BadgeDisplay requirement1={this.state.userProgressPointData.Tier1Instances}
-                                 requirement2={this.state.userProgressPointData.Tier2Instances}
-                                 requirement3={this.state.userProgressPointData.Tier3Instances}
-                                 urlForBronzeBadge={this.state.userProgressData[0].logo}
-                                 urlForSilverBadge={this.state.userProgressData[1].logo}
-                                 urlForGoldBadge={this.state.userProgressData[2].logo}
-                                 bronzeBadgeDescription={this.state.userProgressData[0].Description}
-                                 silverBadgeDescription={this.state.userProgressData[1].Description}
-                                 goldBadgeDescription={this.state.userProgressData[2].Description}
-                                 badgeKey={this.state.userProgressPointData.CategoryID}
-                                 userPoints={this.state.userProgressPointData.pointInstances}
+            badgeDisplay =  <BadgeDisplay requirement1={this.state.userProgressPointData.Tier1Instances}
+                requirement2={this.state.userProgressPointData.Tier2Instances}
+                requirement3={this.state.userProgressPointData.Tier3Instances}
+                urlForBronzeBadge={this.state.userProgressData[0].logo}
+                urlForSilverBadge={this.state.userProgressData[1].logo}
+                urlForGoldBadge={this.state.userProgressData[2].logo}
+                bronzeBadgeDescription={this.state.userProgressData[0].Description}
+                silverBadgeDescription={this.state.userProgressData[1].Description}
+                goldBadgeDescription={this.state.userProgressData[2].Description}
+                badgeKey={this.state.userProgressPointData.CategoryID}
+                userPoints={this.state.userProgressPointData.pointInstances}
             />;
         }
         return (

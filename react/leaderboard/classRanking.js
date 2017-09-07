@@ -3,7 +3,7 @@
  * This file will have data of students ranking among a class.
  */
 import React from 'react';
-import request from 'request';
+import apiCall from '../shared/apiCall';
 import Tooltip from '../shared/tooltip';
 
 class ClassRanking extends React.Component {
@@ -14,22 +14,17 @@ class ClassRanking extends React.Component {
 
     //Fetch Class Ranking Data From Backend
     fetchClassRankingData(nextProps) {
-        const fetchOptionsForClassRanking = {
-            method: 'GET',
-            //API to get Class Rank Data
-            uri: nextProps.apiUrl + '/api/getSectionRanking/'  +nextProps.SemesterID + "/" + nextProps.CourseID + "/" + nextProps.SectionID +"/"+ nextProps.UserID,
-            json: true
-        };
+        
 
         //body will contain the information which will be passes and it is json
         //err will say if there is any error
         //response will be status
-        request(fetchOptionsForClassRanking,(err, response, body) => {
+        apiCall.get(`/getSectionRanking/${nextProps.SemesterID}/${nextProps.CourseID}/${nextProps.SectionID}/${nextProps.UserID}`,(err, response, body) => {
             this.setState({
                 classRanking: body.students,//body.whatever we need from api
                 studentPoints: body.currentStudent.TotalPoints, // Total points of the student
                 lastUpdated: body.currentStudent.UpdateDate //Ranking Last Updated
-            })
+            });
         });
     }
 
@@ -57,10 +52,10 @@ class ClassRanking extends React.Component {
                     <img className="classRankingAvatars" src={`static/images/badgeImages/${klassRank.ProfilePicture}`} />
                 </div>
                 <div className="classRankingClearingDiv"></div>
-            </div>
+            </div>;
         });
 
-//Here we have students points, updated date, and other students rankings.
+        //Here we have students points, updated date, and other students rankings.
         return (
 
             <div className="section card-2">
