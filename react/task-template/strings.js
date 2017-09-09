@@ -44,7 +44,9 @@ let strings = {
     RejectRevision: 'Reject',
     ApproveRevision: 'Approve',
     ProblemThreadLabel: 'Problem Thread',
-    CommentTargetLabel: 'View comments on...'
+    CommentTargetLabel: 'View comments on...',
+    HideLabel: 'Hide Task Below',
+    UnhideLabel: 'Show Task Below'
 
 };
 

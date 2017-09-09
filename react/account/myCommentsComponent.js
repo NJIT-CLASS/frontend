@@ -1,7 +1,9 @@
 import React, { Component } from 'react'; //import the React library and the Component class from the react package
-import Reactable from 'reactable';
+import ReactTable from 'react-table';
+import Tooltip from '../shared/tooltip';
 import apiCall from '../shared/apiCall';
-var moment = require('moment');
+import { DateRangePicker } from 'react-dates';
+import moment from 'moment';
 
 class MyCommentsComponent extends Component { //create a class for the component
                                          //it will be called in the main.js file under /react
@@ -11,7 +13,9 @@ class MyCommentsComponent extends Component { //create a class for the component
 
         this.state = {
             Data: [],
-            Loaded: false
+            Loaded: false,
+      			startDate: null,
+      			endDate: null,
         }; //initial state, only manually assigned here, elsewhere it's this.setState()
     }
 
@@ -30,13 +34,32 @@ class MyCommentsComponent extends Component { //create a class for the component
                     comment.CourseName = body.CourseName;
                     comment.SectionName = body.SectionName;
                     comment.SemesterName = body.SemesterName;
-                    this.setState({Data: commentData, Loaded: true})
+                    this.setState({Data: commentData})
                   }
                   else {
                     console.log('No course data received.');
                   }
               });
+                let FinalTargetID;
+                apiCall.get(`/getNextTask/${comment.OriginTaskInstanceID}`, (err, res, body) => {
+                    if ((body != undefined) && !body.Error) {
+                        let tasks = body.NextTask;
+                        FinalTargetID = comment.OriginTaskInstanceID;
+                        tasks.forEach((task, index) => {
+                          if (JSON.parse(task.Status)[0] == 'complete') {
+                              FinalTargetID = task.TaskInstanceID;
+                          }
+                        }, this);
+                        comment.AccessLink = `/task/${FinalTargetID}?tab=comments&target=${comment.CommentTarget}&targetID=${comment.TargetID}&commentsID=${comment.CommentsID}`;
+
+                        this.setState({Loaded: comment.CommentsID})
+                    }
+                    else {
+                      console.log('No comment task data received.');
+                    }
+                })
             }
+
           }
           else {
             console.log('No comment UserID data received.');
@@ -44,51 +67,177 @@ class MyCommentsComponent extends Component { //create a class for the component
       });
     }
 
-    render(){
+    render() {
         let strings = {      // define all your strings in an object like this one (the name of the keys can be anything)
                             // we use this for translation
-            CommentLabel: 'Comment',
+            TitleText: 'My Comments',
+            CommentLabel: 'Text',
             TimestampLabel: 'Timestamp',
             CourseLabel: 'Course',
             SectionLabel: 'Section',
             SemesterLabel: 'Semester',
             RatingLabel: 'Rating',
-            StatusLabel: 'Status'
+            StatusLabel: 'Status',
+            FlagStatusLabel: 'Flag Status',
+            ViewLabel: 'View Comment',
+            TypeLabel: 'Type',
+            TooltipText: 'Hold the Shift key to select multiple columns for sorting',
+            AllLabel: 'All',
+            OnLabel: 'On',
+            OffLabel: 'Off',
+            FlagLabel: 'Flag',
+            SubmittedLabel: 'Submitted',
+            SavedLabel: 'Saved'
         };
 
-        let Table = Reactable.Table,
-            Tr = Reactable.Tr,
-            Td = Reactable.Td;
+        let returnLoaded = (
+          <div className="card">
+          <div style={{paddingBottom: 10}}>
+            <h2 className="title">{strings.TitleText}</h2>
+            <Tooltip Text={strings.TooltipText}/>
+          </div>
+            <ReactTable
+                data = {this.state.Data}
+                minRows = {0}
+                filterable = {true}
+                showFilters= {true}
+                defaultFilterMethod = {(filter, row, column) => {
+                    const id = filter.pivotId || filter.id
+                    return row[id] !== undefined ? String(row[id]).includes(filter.value) : true
+                  }
+                }
+                columns = {[
+                    {
+                      Header: strings.CourseLabel,
+                      id: "courseName",
+                      accessor: (row) => row.CourseName,
+                    },
+                    {
+                      Header: strings.SectionLabel,
+                      id: "sectionName",
+                      accessor: (row) => row.SectionName,
+                    },
+                    {
+                      Header: strings.SemesterLabel,
+                      id: "semesterName",
+                      accessor: (row) => row.SemesterName,
+                    },
+                    {
+                      Header: strings.TypeLabel,
+                      id: "type",
+                      accessor: (row) => row.Type,
+                      Cell: row => (row.value == 'flag') ? strings.FlagLabel : strings.CommentLabel,
+                      filterMethod: (filter, row) => {
+                          if (filter.value === "all") {
+                              return true;
+                          }
+                          if (filter.value === "true") {
+                              return row[filter.id] == 'flag';
+                          }
+                          return row[filter.id] == 'comment';
+                      },
+                      Filter: ({ filter, onChange }) =>
+                        <select
+                          onChange={event => onChange(event.target.value)}
+                          style={{ width: "100%" }}
+                          value={filter ? filter.value : "all"}
+                        >
+                          <option value="all">{strings.AllLabel}</option>
+                          <option value="false">{strings.CommentLabel}</option>
+                          <option value="true">{strings.FlagLabel}</option>
+                        </select>
+                    },
+                    {
+                      Header: strings.CommentLabel,
+                      id: "commentsText",
+                      accessor: (row) => row.CommentsText,
+                    },
+                    {
+                      Header: strings.RatingLabel,
+                      id: "rating",
+                      accessor: (row) => row.Rating,
+                      width: 75,
+                    },
+                    {
+                      Header: strings.StatusLabel,
+                      id: "status",
+                      accessor: (row) => row.Status.charAt(0).toUpperCase() + row.Status.slice(1),
+                    },
+                    {
+                      Header: strings.FlagStatusLabel,
+                      id: "flagStatus",
+                      accessor: (row) => row.Flag,
+                      Cell: row => (row.original.Type == 'flag') ? ((row.value == 1) ? <i className="fa fa-flag" style={{color:'red'}}></i> : <i className="fa fa-flag-o" style={{color:'gray'}}></i>) : <div></div>,
+                      filterMethod: (filter, row) => {
+                          if (filter.value === "all") {
+                              return true;
+                          }
+                          if (filter.value === "true") {
+                              return row[filter.id] == 1;
+                          }
+                          return ((row[filter.id] == 0) && (row.type == 'flag'));
+                      },
+                      Filter: ({ filter, onChange }) =>
+                        <select
+                          onChange={event => onChange(event.target.value)}
+                          style={{ width: "100%" }}
+                          value={filter ? filter.value : "all"}
+                        >
+                          <option value="all">{strings.AllLabel}</option>
+                          <option value="true">{strings.OnLabel}</option>
+                          <option value="false">{strings.OffLabel}</option>
+                        </select>
+                    },
+                    {
+                      Header: strings.TimestampLabel,
+                      id: "timestamp",
+                      accessor: (row) => row.Time,
+                      Cell: row => (<div>{moment(row.value).format('MMM Do YYYY, h:mm a')}</div>),
+                      Filter: ({filter, onChange}) => (
+                          <DateRangePicker
+                            startDate={this.state.startDate}
+                            endDate={this.state.endDate}
+                            onDatesChange={({startDate, endDate}) => {
+                                this.setState({startDate: startDate, endDate: endDate},()=>
+                                  {onChange({startDate, endDate});
+                                  });
+                            }}
+                            focusedInput={this.state.focusedInput}
+                            onFocusChange={focusedInput => this.setState({ focusedInput })}
+                            isOutsideRange={() => false}
+                            withPortal={true}
+                            showClearDates={true}
+                          />
+                        ),
+                      filterMethod: (filter, row) => {
+                          if (filter.value.startDate === null || filter.value.endDate === null) {
+                            return true
+                          }
 
-        let TableData = null;
-        if (this.state.Loaded) {
-          TableData = this.state.Data.map((row) => {
-                return(
-                <Tr key={row.CommentsID}>
-                  <Td column={strings.CourseLabel}>{row.CourseName}</Td>
-                  <Td column={strings.SectionLabel}>{row.SectionName}</Td>
-                  <Td column={strings.SemesterLabel}>{row.SemesterName}</Td>
-                  <Td column={strings.CommentLabel}>{(row.CommentsText.length > 5) ? row.CommentsText.substring(0,5).concat('...'): row.CommentsText}</Td>
-                  <Td column={strings.RatingLabel}>{row.Rating}</Td>
-                  <Td column={strings.StatusLabel}>{row.Status.charAt(0).toUpperCase() + row.Status.slice(1)}</Td>
-                  <Td column={strings.TimestampLabel}>{moment(row.Time).format('dddd, MMMM Do YYYY, h:mm:ss a')}</Td>
-                </Tr>)
-              });
-          }
+                          if (moment(row[filter.id]).isBetween(filter.value.startDate, filter.value.endDate)) {
+                            return true
+                          }
+                        },
+                      width: 200,
+                    },
+                    {
+                      Header: strings.ViewLabel,
+                      id: "view",
+                      accessor: (row) => <a style={{color: '#7ABDF9'}} href={row.AccessLink} target='_blank'>{strings.ViewLabel}<i className="fa fa-arrow-circle-right" style={{paddingLeft: 5}} aria-hidden="true"></i></a>,
+                      width: 200,
+                      filterable: false,
+                    },
+                  ]}
+                defaultPageSize={10}
+            />
+          </div>
+        );
 
-        if (!this.state.Loaded) {
-          return (<div></div>)
+        if (this.state.Loaded != false) {
+            return returnLoaded;
         }
         else {
-          return (
-
-            <div className="card">
-                <Table className="table" id="table" sortable={true}>
-                {TableData}
-                </Table>
-
-            </div>
-          );
+            return <div></div>;
         }
     }
 }

@@ -66,7 +66,6 @@ class TasksList extends React.Component{
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
                     TaskID={task.TaskInstanceID}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
                     showComments={this.props.showComments.bind(this)}
         					/>
                         );
@@ -90,7 +89,6 @@ class TasksList extends React.Component{
         						Strings={Strings}
         						apiUrl={apiUrl}
                     showComments={this.props.showComments.bind(this)}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
         					/>
                         );
                     }
@@ -102,7 +100,6 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
                     showComments={this.props.showComments.bind(this)}
         					/>
                         );
@@ -151,7 +148,6 @@ class TasksList extends React.Component{
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
                     TaskID={task.TaskInstanceID}
-                    addCommentListItem={this.props.addCommentListItem.bind(this)}
                     showComments={this.props.showComments.bind(this)}
         					/>
                         );

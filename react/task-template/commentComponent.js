@@ -15,12 +15,14 @@ class CommentComponent extends React.Component{
 
         this.state={
           showEditor: false,
+          showFlagEditor: false,
           editExistingComment: false,
           CommentChangeMessage: '',
           CommentHideMessage: '',
           HideReasonValue: '',
           CommentFlagValue: this.props.Comment.Flag,
-          CommentFlagColor: (this.props.Comment.Flag == 1) ? 'red' : 'black'
+          CommentFlagDisplay: (this.props.Comment.Flag == 1) ? 'on' : 'off',
+          ShowAuthor: false
         };
     }
     componentWillMount() {
@@ -38,6 +40,11 @@ class CommentComponent extends React.Component{
             }
         });
       }
+      this.getAuthor();
+    }
+
+    componentDidMount() {
+        this.props.scroll();
     }
     displayNewEditor() {
       if (!this.state.showEditor) {
@@ -45,6 +52,15 @@ class CommentComponent extends React.Component{
       }
       else {
         this.setState({showEditor: false});
+      }
+    }
+
+    displayNewFlagEditor() {
+      if (!this.state.showFlagEditor) {
+        this.setState({showFlagEditor: true});
+      }
+      else {
+        this.setState({showFlagEditor: false});
       }
     }
 
@@ -60,7 +76,7 @@ class CommentComponent extends React.Component{
     }
 
     endReply() {
-      this.setState({showEditor: false});
+      this.setState({showEditor: false, showFlagEditor: false});
       this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
     }
 
@@ -83,6 +99,12 @@ class CommentComponent extends React.Component{
       else {
         console.log('showChangeMessage: Cannot modify comment. Access denied.')
       }
+    }
+
+    showConfirmMessage() {
+        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+            this.setState({CommentChangeMessage:'unhide'});
+        }
     }
 
     closeChangeMessage() {
@@ -157,7 +179,7 @@ class CommentComponent extends React.Component{
 
     handleFlagClick() {
         if (this.state.CommentFlagValue == 0) {
-            this.setState({CommentFlagColor: 'red', CommentFlagValue: 1});
+            this.setState({CommentFlagDisplay: 'on', CommentFlagValue: 1});
             apiCall.post('/comments/setFlag/', {CommentsID: this.props.Comment.CommentsID, UserID: this.props.CurrentUser, Time: moment().format('YYYY-MM-DD HH:mm:ss')}, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully set flag.');
@@ -168,7 +190,7 @@ class CommentComponent extends React.Component{
             });
         }
         else {
-            this.setState({CommentFlagColor: 'black', CommentFlagValue: 0});
+            this.setState({CommentFlagDisplay: 'off', CommentFlagValue: 0});
             apiCall.post('/comments/removeFlag/', {CommentsID: this.props.Comment.CommentsID, UserID: this.props.CurrentUser, Time: moment().format('YYYY-MM-DD HH:mm:ss')}, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully removed flag.');
@@ -181,55 +203,85 @@ class CommentComponent extends React.Component{
     }
 
     handleMouseEnterFlag() {
-        if (this.state.CommentFlagColor == 'black') {
-            this.setState({CommentFlagColor: 'red'});
+        if (this.state.CommentFlagDisplay == 'off') {
+            this.setState({CommentFlagDisplay: 'on'});
         }
     }
 
     handleMouseLeaveFlag() {
-        if (this.state.CommentFlagColor == 'red' && this.state.CommentFlagValue == 0) {
-            this.setState({CommentFlagColor: 'black'});
+        if (this.state.CommentFlagDisplay == 'on' && this.state.CommentFlagValue == 0) {
+            this.setState({CommentFlagDisplay: 'off'});
         }
+    }
+
+    getAuthor() {
+        apiCall.get(`/generalUser/${this.props.Comment.UserID}`, (err, res, body) => {
+            if (!body.Error) {
+              this.setState({Author: body.User.FirstName.concat(' ').concat(body.User.LastName)});
+            }
+            else {
+              console.log('No comment user data received.');
+            }
+        });
+    }
+
+    displayAuthor() {
+        this.setState({ShowAuthor: true});
+    }
+
+    hideAuthor() {
+        this.setState({ShowAuthor: false});
     }
 
     render(){
         let strings = {
+            CommentLabel: ' Comment',
+            FlagLabel: ' Flag',
             RatingLabel: 'Rating:',
             ReplyLabel: 'Reply',
             CancelLabel: 'Cancel Reply',
-            EditLabel: 'Edit Comment',
-            DeleteLabel: 'Delete Comment',
-            HideLabel: 'Hide Comment',
-            HideRatingLabel: 'Hide Rating',
-            UnhideLabel: 'Unhide Comment',
-            UnhideRatingLabel: 'Unhide Rating',
+            CancelFlagLabel: 'Cancel Flag',
+            EditLabel: 'Edit',
+            DeleteLabel: 'Delete',
+            HideLabel: 'Hide',
+            UnhideLabel: 'Unhide',
             DiscardEditsLabel: 'Discard Edits',
-            DiscardSavedLabel: 'Discard Saved Comment',
-            RepliesMessage: 'Sorry, you cannot delete a comment if it has a reply.',
-            EditRepliesMessage: 'Sorry, you cannot edit a comment if it has a reply.',
-            DeleteConfirmMessage: 'Are you sure you want to delete this comment?',
-            DeleteConfirmMessageReplies: 'Are you sure you want to delete this comment and all of its replies?',
+            DiscardSavedLabel: 'Discard',
+            RepliesMessage: 'Sorry, you cannot delete a comment or flag if it has a reply.',
+            EditRepliesMessage: 'Sorry, you cannot edit a comment or flag if it has a reply.',
+            DeleteConfirmMessage: 'Are you sure you want to delete this comment or flag?',
+            DeleteConfirmMessageReplies: 'Are you sure you want to delete this comment or flag and all of its replies?',
             YesText: 'Yes',
             NoText: 'No',
             CancelText: 'Cancel',
             CommentHiddenText: 'Hidden Comment',
             HiddenText: 'Hidden',
-            HideReasonPlaceholderText: 'Explain why you are hiding this comment.',
+            HideReasonPlaceholderText: 'Explain why you are hiding this comment or flag.',
             HideRatingReasonPlaceholderText: 'Explain why you are hiding this rating.',
-            FlagResultSet: 'This comment has been flagged.',
-            FlagResultRemoved: 'This comment has been unflagged.',
-            EditedLabel: 'Edited'
+            FlagResultSet: 'Flag activated',
+            FlagResultRemoved: 'Flag deactivated',
+            EditedLabel: 'Edited',
+            ShowAuthorLabel: 'Show Author',
+            HideAuthorLabel: 'Hide Author',
+            AuthorLabel: 'Author: ',
+            FlagThisLabel: 'Flag This',
+            UnhideConfirmMessage: 'Are you sure you want to unhide this comment or rating?'
         };
-        let flagColor = 'black';
-        if (this.props.Comment.Flag == 1) {
-            flagColor = 'red';
+
+        let backgroundColor;
+        if (this.props.Emphasize) {
+            backgroundColor = '#ffffc4';
+        }
+
+        let typeName = strings.CommentLabel;
+        if (this.props.Comment.Type == 'flag') {
+            typeName = strings.FlagLabel;
         }
 
         return (
             <div style={{margin: '0 auto'}}>
-
             {(!this.state.editExistingComment && (this.props.Comment.HideType != 'comment')) &&
-            (<div style={{marginLeft: this.props.Comment.ReplyLevel*30}} className="comment animate-fast fadeInUp">
+            (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: backgroundColor}} className="comment">
 
               {
                 (this.state.CommentChangeMessage != '') && (<div className="error form-error">
@@ -238,6 +290,7 @@ class CommentComponent extends React.Component{
                   {(this.state.CommentChangeMessage == 'flag-removed') && (<span>{strings.FlagResultRemoved}</span>)}
                   {(this.state.CommentChangeMessage == 'edit-replies') && (<span>{strings.EditRepliesMessage}</span>)}
                   {(this.state.CommentChangeMessage == 'delete-replies') && (<span>{strings.DeleteConfirmMessageReplies}</span>)}
+                  {(this.state.CommentChangeMessage == 'unhide') && (<span>{strings.UnhideConfirmMessage}</span>)}
                   {(this.state.CommentChangeMessage == 'delete-singleComment') && (<span>{strings.DeleteConfirmMessage}</span>)}<br />
                   {((this.state.CommentChangeMessage == 'delete-replies') || (this.state.CommentChangeMessage == 'delete-singleComment')) && (
                     <div>
@@ -245,40 +298,54 @@ class CommentComponent extends React.Component{
                       <button onClick={this.closeChangeMessage.bind(this)}>{strings.NoText}</button>
                     </div>
                   )}
+                  {(this.state.CommentChangeMessage == 'unhide') && (
+                    <div>
+                      <button onClick={this.unhideExistingComment.bind(this)}>{strings.YesText}</button>
+                      <button onClick={this.closeChangeMessage.bind(this)}>{strings.NoText}</button>
+                    </div>
+                  )}
                   </div>)
               }
 
-              <div className="title"></div>
+              {this.props.Comment.Type == 'flag' ?
+              ((this.props.UserType == 'teacher') || (this.props.Admin == true)) ? ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>)):
+              ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}}></i>))
+              : <i className="fa fa-comment-o" aria-hidden="true"></i>
+              }
+
+              {/* <div className="title"></div> */}
               {((this.props.Comment.Rating != null) && (this.props.Comment.HideType != 'rating')) && (
                 <div style={{display: 'inline'}}>
-                  <label style={{padding: 10}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{this.props.Comment.Rating} / 5</span>
-                  {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.showHideMessage.bind(this, 'rating')}>{strings.HideRatingLabel}</a></div>)}
+                  <label style={{padding: 10, paddingLeft: 5}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{this.props.Comment.Rating} / 5</span>
+                  {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.showHideMessage.bind(this, 'rating')}>{strings.HideLabel.concat(typeName)}</a></div>)}
                 </div>
               )}
 
               {(this.props.Comment.HideType == 'rating') && (
                 <div style={{display: 'inline'}}>
-                  <label style={{padding: 10}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{strings.HiddenText}<Tooltip Text={this.props.Comment.HideReason}/></span>
-                  {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideRatingLabel}</a></div>)}
+                  <label style={{padding: 10, paddingLeft: 5}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{strings.HiddenText}<Tooltip Text={this.props.Comment.HideReason}/></span>
+                  {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel.concat(typeName)}</a></div>)}
                 </div>
               )}
 
-              {((this.props.UserType == 'teacher') || (this.props.Admin == true)) ? (<i className="fa fa-flag" style={{color:this.state.CommentFlagColor, padding: 10}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>):
-                (<i className="fa fa-flag" style={{color:this.state.CommentFlagColor, padding: 10}}></i>)}
               <div className="timestamp" style={{display: 'inline'}}>{(this.props.Comment.Edited == 1) && (<span>{strings.EditedLabel}</span>)} {moment(this.props.Comment.Time).format('dddd, MMMM Do YYYY, h:mm:ss a')}</div>
               <div className="regular-text comtext">{this.props.Comment.CommentsText}</div>
               <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
-              {((((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID) || (this.props.NextStatus == 'saved'))) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) && !this.state.showEditor) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel}</a></div>)}
+              <div className="title"><a onClick={this.displayNewFlagEditor.bind(this)}>{strings.FlagThisLabel}</a></div>
+              {((((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID) || (this.props.NextStatus == 'saved'))) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) && !this.state.showEditor) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel.concat(typeName)}</a></div>)}
               {(!this.state.showEditor && (this.props.UserType == 'teacher') || (this.props.Admin == true)) && (
                 <div style={{display: 'inline'}}>
-                  <div className="title"><a onClick={this.showHideMessage.bind(this, 'comment')}>{strings.HideLabel}</a></div>
-                  <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel}</a></div>
+                  <div className="title"><a onClick={this.showHideMessage.bind(this, 'comment')}>{strings.HideLabel.concat(typeName)}</a></div>
+                  <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel.concat(typeName)}</a></div>
+                  {!this.state.ShowAuthor && <div className="title"><a onClick={this.displayAuthor.bind(this)}>{strings.ShowAuthorLabel}</a></div>}
+                  {this.state.ShowAuthor && <div className="title"><a onClick={this.hideAuthor.bind(this)}>{strings.HideAuthorLabel}</a></div>}
+                  {this.state.ShowAuthor && <Tooltip Text={strings.AuthorLabel.concat(this.state.Author)}/>}
                 </div>
               )}
               {((this.state.CommentHideMessage == 'comment') || (this.state.CommentHideMessage == 'rating')) && (
                 <form role="form" onSubmit={this.hideExistingComment.bind(this)}>
                   <input placeholder={(this.state.CommentHideMessage == 'rating') ? strings.HideRatingReasonPlaceholderText : strings.HideReasonPlaceholderText} type="text" value={this.state.HideReasonValue} onChange={this.handleChangeHideReason.bind(this)} required/>
-                  <button type="submit">{(this.state.CommentHideMessage == 'rating') ? strings.HideRatingLabel : strings.HideLabel}</button>
+                  <button type="submit">{strings.HideLabel.concat(typeName)}</button>
                   <button onClick={this.closeHideMessage.bind(this)}>{strings.CancelText}</button>
                 </form>
               )}
@@ -286,7 +353,7 @@ class CommentComponent extends React.Component{
           }
 
             {(this.props.Comment.HideType == 'comment') &&
-              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: '#dbdbdb'}} className="comment animate-fast fadeInUp">
+              (<div style={{marginLeft: this.props.Comment.ReplyLevel*30, backgroundColor: '#dbdbdb'}} className="comment">
 
                 {
                   (this.state.CommentChangeMessage != '') && (<div className="error form-error">
@@ -301,10 +368,13 @@ class CommentComponent extends React.Component{
                 <div className="regular-text comtext">{strings.CommentHiddenText + ': ' + this.props.Comment.HideReason}</div>
                 {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (
                   <div style={{display: 'inline'}}>
-                    <div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel}</a></div>
-                    <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel}</a></div>
+                    <div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel.concat(typeName)}</a></div>
+                    <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel.concat(typeName)}</a></div>
                   </div>
                 )}
+
+                <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel.concat(typeName)}</a></div>
+
               </div>)
           }
 
@@ -314,6 +384,7 @@ class CommentComponent extends React.Component{
                     UserID={this.props.Comment.UserID}
                     CurrentUser={this.props.CurrentUser}
                     TargetID={this.props.Comment.TargetID}
+                    TaskID={this.props.Comment.TaskID}
                     Update={this.endEdit.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel}
                     Parents={this.props.Comment.Parents}
@@ -328,10 +399,11 @@ class CommentComponent extends React.Component{
                     Status={this.props.Comment.Status}
                     CommentTarget={this.props.Comment.CommentTarget}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
+                    Type={this.props.Comment.Type}
                     Edit={true}
                   />
                   {(this.props.Comment.Status != 'saved') && (<div className="title"><a onClick={this.endEdit.bind(this)}>{strings.DiscardEditsLabel}</a></div>)}
-                  {(this.props.Comment.Status == 'saved') && (<div className="title"><a onClick={this.deleteExistingComment.bind(this)}>{strings.DiscardSavedLabel}</a></div>)}
+                  {(this.props.Comment.Status == 'saved') && (<div className="title"><a onClick={this.deleteExistingComment.bind(this)}>{strings.DiscardSavedLabel.concat(typeName)}</a></div>)}
 
                 </div>)
           }
@@ -341,16 +413,36 @@ class CommentComponent extends React.Component{
                   <CommentEditorComponent
                     UserID={this.props.CurrentUser}
                     TargetID={this.props.Comment.TargetID}
+                    TaskID={this.props.Comment.TaskID}
                     Update={this.endReply.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel + 1}
                     Parents={this.props.Comment.CommentsID}
                     CommentTarget={this.props.Comment.CommentTarget}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
+                    CommentTargetList={this.props.CommentTargetList}
                   />
-
                   <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.CancelLabel}</a></div>
                 </div>)
             }
+
+            {this.state.showFlagEditor &&
+              (<div style={{marginLeft: (this.props.Comment.ReplyLevel + 1)*30}} className="comment">
+                  <CommentEditorComponent
+                    UserID={this.props.CurrentUser}
+                    TargetID={this.props.Comment.TargetID}
+                    TaskID={this.props.Comment.TaskID}
+                    Update={this.endReply.bind(this)}
+                    ReplyLevel={this.props.Comment.ReplyLevel + 1}
+                    Parents={this.props.Comment.CommentsID}
+                    CommentTarget={this.props.Comment.CommentTarget}
+                    AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
+                    SetFlag={true}
+                    CommentTargetList={this.props.CommentTargetList}
+                  />
+                  <div className="title"><a onClick={this.displayNewFlagEditor.bind(this)}>{strings.CancelFlagLabel}</a></div>
+                </div>)
+            }
+
           </div>
         );
     }
