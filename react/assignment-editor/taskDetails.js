@@ -77,7 +77,7 @@ class TaskDetailsComponent extends React.Component {
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
         const assessmentTypeValues = [{ value: 'grade', label: strings.NumericGrade }, { value: 'rating', label: strings.Rating }, { value: 'pass', label: strings.PassFail }, { value: 'evaluation', label: strings.EvaluationByLabels }];
         const onTaskEndValues = [{ value: 'late', label: strings.Late }, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }];
-        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }];
+        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }, {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
@@ -767,6 +767,14 @@ class TaskDetailsComponent extends React.Component {
                     )
                     : null;
                 const reflectConstr = this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex);
+                const allowRevisionOption = this.props.TaskActivityData.TA_allow_reflection[0] === 'comment' ? (
+                    <div>
+                      <label>{strings.AllowRevision}</label>
+                      <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
+                      <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
+                    </div> 
+                    ) : null;
+                
                 const numberOfReflectorsView = (reflectConstr == 'student' || reflectConstr == 'both')
                     ? (
                       <div>
@@ -782,7 +790,11 @@ class TaskDetailsComponent extends React.Component {
                     : null;
                 allowReflectionOptions = (
                   <div>
-                    <Select options={reflectionValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_reflection[0]} clearable={false} searchable={false} />
+                    <Select options={reflectionValues} 
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)}
+                            value={this.props.TaskActivityData.TA_allow_reflection[0]} 
+                            clearable={false} 
+                            searchable={false} />
                     <br />
                     <label>{strings.ShouldReflectBlock}</label><br />
                     <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
@@ -795,23 +807,23 @@ class TaskDetailsComponent extends React.Component {
                     <label>{strings.WhoCanReflect}</label>                    
                     <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                     <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} /> {numberOfReflectorsView}
-                    
-                     
+                     {allowRevisionOption}
                    
                     <br /> {showDispute}
                   </div>
                 );
             }
 
+          
             // TA_allow_revisions
-            const allowRevision = (
-              <div>
+            const allowRevision = [/*TASK_TYPES.EDIT,*/ TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
+              <div className="inner">
                 <label>{strings.AllowRevision}</label>
                 <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
                 <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
               </div>
-            );
-
+            ) : null;
+            
             const allowReflection = (
               <div className="inner">
                 <label>{strings.AllowReflection}</label>
@@ -819,7 +831,6 @@ class TaskDetailsComponent extends React.Component {
                 <Tooltip Text={strings.TaskAllowReflectionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-reflection-tooltip`} />
 
                 {allowReflectionOptions}
-                {allowRevision}
                 
               </div>
             );
@@ -847,6 +858,8 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.SameAs}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>
@@ -866,6 +879,8 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.InSameGroupAs}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>
@@ -886,6 +901,8 @@ class TaskDetailsComponent extends React.Component {
                                 alignContent: 'right',
                             }}
                           >
+                            <label className="faded-message-text">{strings.NotIn}</label>
+                          
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div className="assignee-contraint-section">
@@ -905,6 +922,7 @@ class TaskDetailsComponent extends React.Component {
                                 marginLeft: '8px',
                             }}
                           >
+                            <label className="faded-message-text">{strings.ChooseFrom}</label>
                             {taskCreatedList.map(function (task) {
                                 return (
                                   <div>
@@ -1044,6 +1062,7 @@ class TaskDetailsComponent extends React.Component {
                   {simpleGrade}
                   {allowAssessment}
                   {allowReflection}
+                  {allowRevision}
                   {versionEvaluation}
                   {seeSibblings}
                   {leadsToNewProblem}

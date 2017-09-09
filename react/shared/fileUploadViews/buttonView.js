@@ -45,12 +45,12 @@ class ButtonView extends React.Component {
         );
             break;
         case 'success':
-            if(NumberUploaded < MinUploads){
+            if(NumberUploaded < MaxUploads){
                 uploadView = (
               <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
               {inputView}
-                <label  htmlFor="file-upload-input">{Strings.buttonLabel}</label>
-                <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                <label  htmlFor="file-upload-input">{label}</label>
+                <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
                 {buttonView}
 
               </form>

@@ -355,7 +355,7 @@ app.use((req, res, next) => {
                 continue;
             }
 
-            if (currentRoute.route === options.route) {
+            if (currentRoute.route.includes(options.route)) {
                 currentRoute.selected = true;
             } else {
                 currentRoute.selected = false;
@@ -363,16 +363,20 @@ app.use((req, res, next) => {
 
             currentRoute.title = __(currentRoute.title);
 
-            if (req.App.user.type === 'student') {
+            if(req.App.user.admin === true){
+                if (currentRoute.access.admins) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            }
+            else if (req.App.user.type === 'student') {
                 if (currentRoute.access.students) {
                     sidebarNavItems.push(currentRoute);
                 } else {
                     continue;
                 }
-            } else if (
-				req.App.user.type == 'teacher' &&
-				req.App.user.admin == 0
-			) {
+            } else if (req.App.user.type == 'teacher' && req.App.user.admin == 0) {
                 if (currentRoute.access.instructors) {
                     sidebarNavItems.push(currentRoute);
                 } else {

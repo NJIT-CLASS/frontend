@@ -2,22 +2,56 @@ import Checkbox from '../shared/checkbox';
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import Toggle from '../shared/toggleSwitch';
+
 var parse = require('csv-parse/lib/sync');
 
 // simple React component to render individual section users as table rows
 class User extends React.Component {
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            VolunteerStatus: this.props.volunteer
+        };
     }
+
+    changeVolunteerStatus(userid, isVolunteer){
+        let postVars = {
+            UserID: userid,
+            SectionID: this.props.SectionID,
+        };
+        console.log(postVars);
+        let endpoint = '';
+        if(isVolunteer){
+            endpoint = '/VolunteerPool/deleteVolunteer';
+        } else {
+            endpoint = '/VolunteerPool/add';
+        }
+
+        apiCall.post(endpoint, postVars, (err, res, body) => {
+            console.log(res);
+            if(res.statusCode === 200){
+                this.setState({
+                    VolunteerStatus: !isVolunteer
+                });
+            }
+        });
+    }
+
+
     render() {
+        //
+			//	<td>{this.props.volunteer ? 'Yes' : 'No'}</td>
         return (
 			<tr>
 				<td>{this.props.email}</td>
 				<td>{this.props.firstName}</td>
 				<td>{this.props.lastName}</td>
 				<td>{this.props.active ? 'Yes' : 'No'}</td>
-				<td>{this.props.volunteer ? 'Yes' : 'No'}</td>
+                <td><Toggle isClicked={this.state.VolunteerStatus}
+                            click={this.changeVolunteerStatus.bind(this, this.props.UserID, this.state.VolunteerStatus)}
+                    />
+                </td>
 			</tr>
         );
     }
@@ -49,6 +83,7 @@ class UserManager extends React.Component {
     fetchAll(sectionID) {
 
         apiCall.get(`/sectionUsers/${sectionID}/${this.props.role}`, (err, res, body) => {
+            console.log(body);
             let users = [];
             for (let user of body.SectionUsers) {
                 users.push({
@@ -230,13 +265,13 @@ class UserManager extends React.Component {
 	// this way, the user list is updated only AFTER the last of the users is saved
     saveSingle(user, count=1, total=1) {
         const saveOptions = {
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                active: user.active,
-                volunteer: user.volunteer,
-                role: this.props.role
-            };
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            active: user.active,
+            volunteer: user.volunteer,
+            role: this.props.role
+        };
 
         apiCall.post(`/sectionUsers/${this.props.sectionID}`, saveOptions, (err, res, body) => {
             if(err || res.statusCode == 401) {
@@ -256,12 +291,12 @@ class UserManager extends React.Component {
         //     this.saveSingle(users[i], i+1, num_users);
         // }
         const saveOptions = {
-                users: users.map((user) => {
-                  user.role = this.props.role;
-                  return user;
-                }),
-                role: this.props.role
-            };
+            users: users.map((user) => {
+                user.role = this.props.role;
+                return user;
+            }),
+            role: this.props.role
+        };
 
         apiCall.post(`/sectionUsers/addMany/${this.props.sectionID}`, saveOptions, (err, res, body) => {
             if(err || res.statusCode == 500) {
@@ -320,7 +355,9 @@ class UserManager extends React.Component {
             users = this.state.users.map((user, index) => {
                 return (
 					<User
-						key={index}
+						key={user.id}
+                        UserID={user.id}
+                        SectionID={this.props.sectionID}
 						email={user.email}
 						firstName={user.firstName}
 						lastName={user.lastName}

@@ -1,5 +1,5 @@
 import request from 'request';
-
+import axios from 'axios';
 
 const getCall = function(endpoint, queryStrings, cb){
     if (arguments.length === 2) {
@@ -41,9 +41,28 @@ const postCall = function(endpoint, postVars, cb ){
 
 };
 
-const apiCall = {
-    get: getCall,
-    post: postCall
+const promiseGetCall = (endpoint, params) => {
+    return axios.get(endpoint, {
+        params: params
+    });
 };
 
+const promisePostCall = (endpoint, postVars) => {
+    return axios.post(endpoint, postVars);
+};
+
+const postMultiCall = (requestsArray) => {
+    let axiosCalls = requestsArray.map((req) => {
+        return axios.post(req.endpoint, req.data);
+    });
+};
+
+const apiCall = {
+    get: getCall,
+    post: postCall,
+    multi: postMultiCall,
+    getAsync: promiseGetCall,
+    postAsync: promisePostCall
+    
+};
 export default apiCall;

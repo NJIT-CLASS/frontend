@@ -76,9 +76,9 @@ class Container extends React.Component {
     }
 	// uncomment this translation function when it is functional again
     componentWillMount() {
-		this.props.__(this.strings, (newStrings) => {
-			this.setState({Strings: newStrings});
-		})
+        this.props.__(this.strings, (newStrings) => {
+            this.setState({Strings: newStrings});
+        });
     }
 	// store selected organization ID to state, reset downstream IDs
     changeOrganizationID(organizationID) {
@@ -200,7 +200,9 @@ class Container extends React.Component {
 				/>
 			);
         }
-        return (<div>{output}</div>);
+        return (<div>
+        {output}
+        </div>);
     }
 }
 
