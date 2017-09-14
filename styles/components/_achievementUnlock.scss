@@ -1,11 +1,29 @@
 .achievementUnlock{
-  width: 85%;
+  width: 90%;
   margin: auto;
-}
+  margin-top: 10px;
+
 
 #achievementUnlock{
-  width: 100%;
+  width: 75%;
   clear: both;
+  display: inline-block;
+}
+.points-section, .level-section{
+  display: inline-block;
+  font-weight: bold;
+}
+
+.level-section{
+  width: 80%;
+}
+.points-section{
+  width: calc(20% - 20px);
+  margin-right: 20px;
+}
+.goals-section{
+width: 75%;
+margin: 10px auto;
 }
 
 #achievementUnlockLevelName{
@@ -20,21 +38,69 @@
 }
 
 #achievementUnlockLevelFrom{
-  float: left;
-  padding-right: 20px;
+  display: inline-block;
+  vertical-align: top;
+  padding-right: 25px;
 }
 
 #achievementUnlockLevelTo{
-  float: right;
+  display: inline-block;
+  vertical-align: top;
   padding-left: 25px;
+  
+  
+}
+.top-section{
+  height: 200px;
+}
+.course-number-text{
+  display: inline-block;
+  width: 70%;
+  height: inherit;
+  margin: 0 auto;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 30px;
 }
 
-.goalImageAndDescriptionWithPoints{
-  margin-left: 50px;
-  display: inline-block;
-  width: 275px;
-  margin-right: 50px;
+.dividing-header{
+  font-weight: bolder;
+  text-transform: uppercase;
+  margin: 10px auto;
+  text-align: center;
+  font-size: 24px;
 }
+
+.goal{
+  margin: 25px 50px;
+  display: inline-block;
+  width: calc(33% - 100px);
+  vertical-align: middle;
+  
+  img{
+    width:80px;
+    height:80px;
+    margin: 10px auto;
+    display: block;
+
+  }
+  .name{
+    text-align: center;
+    margin: 0 5px;
+  }
+  .description{
+    text-align: center;
+    margin: 0 5px;
+    
+  }
+  .points{
+    font-weight: bold;
+    text-align: center;
+    margin: 5px 0;
+  }
+}
+
+
 
 #achievementUnlockClassGoals{
   margin-top: 25px;
@@ -57,4 +123,5 @@
   margin-top: 10px;
   font-weight: bold;
   text-align: center;
+}
 }

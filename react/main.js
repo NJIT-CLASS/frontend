@@ -21,7 +21,7 @@ import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
 import MainBadge from './badge/mainBadge';
 import MainLeaderboard from './leaderboard/mainLeaderboard';
-import AchievementUnlock from './achievementUnlock/achievementUnlock';
+import AchievementUnlockMain from './achievementUnlock/mainContainer';
 import AboutContainer from './about/about-container';
 import ForgotPasswordContainer from './forgot-password/forgot-password-container';
 import SectionsContainer from './sections/sections-container';
@@ -146,6 +146,6 @@ case 'leaderboard':
     break;
 
 case 'achievementUnlock':
-    ReactDOM.render(<AchievementUnlock UserID={userId} apiUrl={apiUrl} __={translationFunction} />, reactElem);
+    ReactDOM.render(<AchievementUnlockMain UserID={userId}  __={translationFunction} />, reactElem);
     break;
 }
