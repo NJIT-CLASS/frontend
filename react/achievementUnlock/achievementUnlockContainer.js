@@ -50,7 +50,7 @@ class AchievementUnlockContainer extends Component {
             goalInstanceID:  goalInstanceId,
             sectionUserID: this.props.SectionUserID
         };
-        apiCall.get('/claimExtraCredit', (err, res, body)=> {
+        apiCall.post('/claimExtraCredit', (err, res, body)=> {
             this.fetchData(this.props);
         });
         showMessage(this.props.Strings.SuccessClaim);
