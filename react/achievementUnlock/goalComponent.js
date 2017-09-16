@@ -6,12 +6,16 @@ class Goal extends Component {
         super(props);
 
         this.claimClick = this.claimClick.bind(this);
+
+        this.state = {
+            NoImage: false
+        };
     }
 
     claimClick(){
         let {Claim, Points,Threshold, UserPointInstanceID} = this.props.Goal;
         
-        if(Claim){
+        if(Points >= Threshold){
             this.props.claimReward(UserPointInstanceID);
         }
 
@@ -19,16 +23,25 @@ class Goal extends Component {
     
     render() {
         let {Strings} = this.props;
+        let {NoImage} = this.state;
         let {Logo, Name, Claim, Points,Threshold, Description, LogoAchieved } = this.props.Goal;
         let displayText = <div className="points">{Points} {Strings.Out} {Threshold}</div>;
-        if(Claim){
+        if(Points >= Threshold){
             displayText = <div className="points">{Strings.ClickToClaim}</div>;
+        }
+        if(Claim){
+            displayText = <div className="points">{Strings.EarnedECPoints}</div>;
         }
         return (
             <div className="section goal">
-                <div className="section-content" onClick={this.claimClick} style={{cursor: Claim ? 'pointer':'default'}}>
+                <div className="section-content" onClick={this.claimClick} style={{cursor: Points >= Threshold ? 'pointer':'default'}}>
                     <div className="name">{Name}</div>
-                    <img href={Logo} ></img>
+                    <img className={NoImage ? 'no-image' : ''}onError={()=> {
+                        this.setState({
+                            NoImage: true
+                        });
+                    }} height="80" width="80" src={'/static/images/achievements/' + Logo} ></img>
+                   
                     <div className="description">{Description}</div>
                     {displayText}
                 </div>

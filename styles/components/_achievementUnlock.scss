@@ -37,6 +37,10 @@ margin: 10px auto;
   font-size:2em;
 }
 
+.progress-text{
+  text-align: center;
+}
+
 #achievementUnlockLevelFrom{
   display: inline-block;
   vertical-align: top;
@@ -84,13 +88,17 @@ margin: 10px auto;
     display: block;
 
   }
+
+  .no-image{
+    visibility: hidden;
+  }
   .name{
     text-align: center;
     margin: 0 5px;
   }
   .description{
     text-align: center;
-    margin: 0 5px;
+    margin: 5px 5px;
     
   }
   .points{

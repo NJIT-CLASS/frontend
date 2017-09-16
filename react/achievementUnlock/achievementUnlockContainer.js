@@ -29,6 +29,7 @@ class AchievementUnlockContainer extends Component {
 
     fetchData(props){
         apiCall.get(`/getSectionUserRecord/${props.SectionUserID}`, (err, res, body) => {
+            console.log(body);
             if(isEmpty(body.SectionUserRecord)){
                 return this.setState({
                     NoRecords: true,
@@ -50,7 +51,8 @@ class AchievementUnlockContainer extends Component {
             goalInstanceID:  goalInstanceId,
             sectionUserID: this.props.SectionUserID
         };
-        apiCall.post('/claimExtraCredit', (err, res, body)=> {
+        apiCall.post('/claimExtraCredit',postVars, (err, res, body)=> {
+            console.log(err, res, body);
             this.fetchData(this.props);
         });
         showMessage(this.props.Strings.SuccessClaim);
@@ -68,7 +70,7 @@ class AchievementUnlockContainer extends Component {
             </div>;
         }
         if(NoRecords){
-            return (<div>{Strings.NoRecords}</div>);
+            return (<div></div>);
         }
 
         let goals = Object.keys(Goals).map(key => {
@@ -85,6 +87,7 @@ class AchievementUnlockContainer extends Component {
                 <AchievementUnlockBar Record={SectionUserRecord} Strings={Strings} CourseInfo={CourseInfo} />
                 <div className="dividing-header">{Strings.ClassGoalsForSemester}</div>
                 <div className="goals-section">
+                    {goals}
                     {goals}
                 </div>
             </div>

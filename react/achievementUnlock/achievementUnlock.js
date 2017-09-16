@@ -21,17 +21,9 @@ class AchievementUnlockBar extends React.Component {
         var userPoint = Record.Exp;
         var requirement = Record.ThresholdPoints;
 
-        var progressNumber = userPoint/requirement;
         var percentage = userPoint/requirement;
         var progressForCss = userPoint;
-        if (progressNumber >= 1) {
-            progressForCss = requirement;
-            progressNumber = Strings.Completed;
-        }else{
-            progressForCss = progressNumber * 100;
-            progressNumber = userPoint +'/'+ requirement + ' ' + Strings.ExperiencePoints;
-        }
-        this.Bar.setText(progressNumber);
+        
         this.Bar.animate(percentage);  // Number from 0.0 to 1.0        
     }
 
@@ -41,17 +33,10 @@ class AchievementUnlockBar extends React.Component {
         var userPoint = Record.Exp;
         var requirement = Record.ThresholdPoints;
 
-        var progressNumber = userPoint/requirement;
         var percentage = userPoint/requirement;
         var progressBarContainer = this.levelBar;
         var progressForCss = userPoint;
-        if (progressNumber >= 1) {
-            progressForCss = requirement;
-            progressNumber = Strings.Completed;
-        }else{
-            progressForCss = progressNumber * 100;
-            progressNumber = userPoint +'/'+ requirement + ' ' + Strings.ExperiencePoints;
-        }
+        
         var bar = new ProgressBar.Line(progressBarContainer, {
             strokeWidth: 3,
             easing: 'easeInOut',
@@ -73,9 +58,7 @@ class AchievementUnlockBar extends React.Component {
             },
             from: {color: '#FFEA82'},
             to: {color: '#ED6A5A'},
-            step: (state, bar) => {
-                bar.setText(progressNumber);
-            }
+            
         });
 
         bar.animate(percentage);  // Number from 0.0 to 1.0
@@ -86,6 +69,13 @@ class AchievementUnlockBar extends React.Component {
     render()
     {
         let {Strings, Record} = this.props;
+        let percentage = Record.Exp/ Record.ThresholdPoints;
+        let progressNumber = `${Record.Exp}/${Record.ThresholdPoints}`;
+        if (percentage >= 1) {
+            progressNumber = Strings.Completed;
+        }else{
+            progressNumber += ' ' + Strings.ExperiencePoints;
+        }
         return (
             <div className="displayingExperienceBarBar" >
                 <div className="points-section">
@@ -95,7 +85,10 @@ class AchievementUnlockBar extends React.Component {
                 </div>
                 <div className="level-section">
                     <div id="achievementUnlockLevelFrom">{Strings.Level} {Record.Level}</div>
-                    <div id="achievementUnlock" ref={(span) => { this.levelBar = span; }}></div>
+                    <div id="achievementUnlock">
+                        <div ref={(span) => { this.levelBar = span; }}></div>
+                        <div className="progress-text">{progressNumber}</div>
+                    </div>
                     <div id="achievementUnlockLevelTo">{Strings.Level} {Record.Level + 1} 
                         <br/><br/>
                          + {Record.AvailablePoints} {Record.AvailablePoints == 1? Strings.CLASSPoint : Strings.CLASSPoints}</div>
