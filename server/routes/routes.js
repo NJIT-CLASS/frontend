@@ -29,6 +29,7 @@ const pages = [
     'section',
     'user-management',
     'everyones-work',
+    'reallocation'
 ];
 
 var pageConfigs = [];

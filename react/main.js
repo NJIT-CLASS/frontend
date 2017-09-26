@@ -26,6 +26,7 @@ import UserGradeReportContainer from './grade-report/user-grade-report-container
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import EveryonesWorkMain from './everyones-work/main-container';
+import Reallocation from './reallocation/reallocation-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -129,4 +130,8 @@ case 'user-management':
 case 'everyones-work':
     ReactDOM.render(<EveryonesWorkMain UserID={userId} AssignmentID={assignmentId} apiUrl={apiUrl} __={translationFunction}/>, reactElem);
     break;
+case 'reallocation-container':
+    ReactDOM.render(<Reallocation UserID={userId} apiUrl={apiUrl}/>, reactElem);
+    break;
 }
+
