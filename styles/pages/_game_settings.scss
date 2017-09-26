@@ -1,38 +1,63 @@
 .game-settings{
     width: 100%;
+
+    .header{
+        display: block;
+        margin-bottom: 30px;
+        
+    }
+
+    .option{
+        margin: 10px 0;
+        width: 100%;
+        .option-label{
+            text-align: left;
+            width: 50%;
+            display: inline-block;
+        }
+        .option-value{
+            width: 50%;
+            display: inline-block;
+        }
+        .radio-group{
+            display: inline-block;
+            label{
+                margin-right: 5px;
+            }
+        }
+    }
+
+    .center-block{
+        display: block;
+        margin: 0 auto;
+        width: 50%;
+    }
+
     .general-settings{
         text-align:center;
-        .header{
-            display: block;
-            margin-bottom: 30px;
-        }
+       
 
         .avg-input{
             width: 100px;
         }
+       
+        
+    }
+
+    .badge-settings{
         .center-block{
-            display: block;
-            margin: 0 auto;
-            width: 50%;
+            width: 60%;
         }
-        .option{
-            margin: 10px 0;
-            width: 100%;
-            .option-label{
-                text-align: left;
-                width: 50%;
-                display: inline-block;
-            }
-            .option-value{
-                width: 50%;
-                display: inline-block;
-            }
-            .radio-group{
-                display: inline-block;
-                label{
-                    margin-right: 5px;
-                }
-            }
+        input {
+            width: 75px;
+        }
+        .header{
+            font-weight: bold;
+        }
+
+        .badge-name{
+            width: 60%;
+            display: inline-block;
         }
     }
 }

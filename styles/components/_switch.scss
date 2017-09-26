@@ -4,11 +4,10 @@
     background: white;
     border-radius: 80px;
     border: #00AB8D 1px solid;
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    text-align: center;
     padding: 2px;
     cursor: pointer;
-    margin-left: auto;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -40,6 +39,7 @@
     &.false {
         .bubble {
             background: #00AB8D;
+            float: left;
         }
 
         .text-false {
@@ -56,8 +56,7 @@
 
         .bubble {
             background: #fff;
-            order: 2;
-            margin-left: auto;
+            float: right;
         }
 
         .text-true {
@@ -71,6 +70,7 @@
     &.disabled{
         .bubble {
             background: #777777;
+            float: left;
         }
 
         .text-false {
@@ -82,6 +82,5 @@
         }
     }
     border: #777777 1px solid;
-    
     
 }

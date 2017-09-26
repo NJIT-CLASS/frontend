@@ -30,7 +30,7 @@ import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
-import BasicSettings from './game-settings/basic';
+import BadgeOptions from './game-settings/advancedOptions1';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -150,6 +150,6 @@ case 'achievementUnlock':
     ReactDOM.render(<AchievementUnlockMain UserID={userId}  __={translationFunction} />, reactElem);
     break;
 case 'game-settings':
-    ReactDOM.render(<BasicSettings UserID={userId}  __={translationFunction}/>, reactElem);
+    ReactDOM.render(<BadgeOptions UserID={userId}  __={translationFunction}/>, reactElem);
     break;
 }

@@ -19,4 +19,7 @@ export default {
     Low: 'Low',
     Medium: 'Medium',
     High: 'High',    
+    Bronze: 'Bronze',
+    Silver: 'Silver',
+    Gold: 'Gold',
 };
