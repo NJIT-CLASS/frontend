@@ -32,7 +32,7 @@ const pages = [
     'user-management',
     'everyones-work',
     'about',
-    
+    'game-settings'
 ];
 
 var pageConfigs = [];

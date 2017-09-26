@@ -53,7 +53,6 @@ class CourseForLeaderBoard extends React.Component {
 
         //Dropdown for course
         return (
-
             <Select
                 options={classList}
                 value={this.props.CourseID}

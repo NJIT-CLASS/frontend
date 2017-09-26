@@ -32,6 +32,8 @@ class Goal extends Component {
         if(Claim){
             displayText = <div className="points">{Strings.EarnedECPoints}</div>;
         }
+
+        let logoToShow = Points >= Threshold ? LogoAchieved : Logo;
         return (
             <div className="section goal">
                 <div className="section-content" onClick={this.claimClick} style={{cursor: Points >= Threshold ? 'pointer':'default'}}>
@@ -40,7 +42,7 @@ class Goal extends Component {
                         this.setState({
                             NoImage: true
                         });
-                    }} height="80" width="80" src={'/static/images/achievements/' + Logo} ></img>
+                    }} height="80" width="80" src={'/static/images/achievements/' + logoToShow} ></img>
                    
                     <div className="description">{Description}</div>
                     {displayText}

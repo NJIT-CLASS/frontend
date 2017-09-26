@@ -1,0 +1,38 @@
+.game-settings{
+    width: 100%;
+    .general-settings{
+        text-align:center;
+        .header{
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        .avg-input{
+            width: 100px;
+        }
+        .center-block{
+            display: block;
+            margin: 0 auto;
+            width: 50%;
+        }
+        .option{
+            margin: 10px 0;
+            width: 100%;
+            .option-label{
+                text-align: left;
+                width: 50%;
+                display: inline-block;
+            }
+            .option-value{
+                width: 50%;
+                display: inline-block;
+            }
+            .radio-group{
+                display: inline-block;
+                label{
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}

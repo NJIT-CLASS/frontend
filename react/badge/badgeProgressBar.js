@@ -22,12 +22,14 @@ class BadgeProgressBar extends React.Component {
 
     //Will render the data
     componentDidMount() {
+        let {Strings} = this.props;
+        
         var userPoint = this.props.UserPoints; //User points
         var requirement = this.props.requirement; //Requirement to earn the points
         var progressNumber = userPoint/requirement; //Their progress
 
         //Change the value of dontShowProgress to false if the data is for bronze Bage
-        if(this.props.badgeProgressBarID == "bronzeBadge") {
+        if(this.props.badgeProgressBarID == 'bronzeBadge') {
             dontShowProgress = false;
         }
 
@@ -37,14 +39,14 @@ class BadgeProgressBar extends React.Component {
         //If student progress is 1 or greater than 1 (see progressNumber variable on line 27) then show completed under the badge progress
         if (progressNumber >= 1) {
             progressForCss = 100;
-            progressNumber = "Completed";
+            progressNumber = Strings.Completed;
         }else{
             if(dontShowProgress){
                 progressForCss = 0;
-                progressNumber = "Previous Badge Incomplete"
+                progressNumber = Strings.PreviousBadgeIncomplete;
             }else{
                 progressForCss = progressNumber * 100;
-                progressNumber = userPoint +" / "+ requirement;
+                progressNumber = userPoint +' / '+ requirement;
             }
         }
 
@@ -56,7 +58,7 @@ class BadgeProgressBar extends React.Component {
             color: 'green',
             trailColor: '#eee',
             trailWidth: 1,
-            svgStyle: {width: progressForCss + "%", height: '10px'},
+            svgStyle: {width: progressForCss + '%', height: '10px'},
             text: {
                 style: {
                     // Text color.
@@ -74,7 +76,7 @@ class BadgeProgressBar extends React.Component {
             from: {color: '#FFEA82'},
             to: {color: '#ED6A5A'},
             step: (state, bar) => {
-                    bar.setText(progressNumber);//Number under the progress Bar
+                bar.setText(progressNumber);//Number under the progress Bar
             }
         });
 
@@ -89,32 +91,32 @@ class BadgeProgressBar extends React.Component {
     //If the data is changed without reloading the page then this function will take place
     componentWillReceiveProps(nextProps) {
         //Remove previous Progressbar and number using the if statement
-        if(this.props.badgeProgressBarID == "bronzeBadge") {
-            document.getElementById('bronzeBadge').innerHTML = "";
+        if(this.props.badgeProgressBarID == 'bronzeBadge') {
+            document.getElementById('bronzeBadge').innerHTML = '';
             dontShowProgress = false;
-        }else if(this.props.badgeProgressBarID == "silverBadge") {
-            document.getElementById('silverBadge').innerHTML = "";
-        }else if(this.props.badgeProgressBarID == "goldBadge") {
-            document.getElementById('goldBadge').innerHTML = "";
+        }else if(this.props.badgeProgressBarID == 'silverBadge') {
+            document.getElementById('silverBadge').innerHTML = '';
+        }else if(this.props.badgeProgressBarID == 'goldBadge') {
+            document.getElementById('goldBadge').innerHTML = '';
         }
         var userPoint = nextProps.UserPoints; //User points
         var requirement = nextProps.requirement; //Requirement to earn the points
         var progressNumber = userPoint/requirement; //Their progress
-;
+        ;
 
         var progressBarContainer = document.querySelector(`#${nextProps.badgeProgressBarID}`);
         var progressForCss = 0;
         if (progressNumber >= 1) {
             progressForCss = 100;
-            progressNumber = "Completed";
+            progressNumber = Strings.Completed;
         }else{
             //If previous badge is not complete
             if(dontShowProgress){
                 progressForCss = 0;//progress bar will be 0 if the previous badge is not completed
-                progressNumber = "Previous Badge Incomplete";//Will display this if the previous badge is not completed
+                progressNumber = Strings.PreviousBadgeIncomplete;//Will display this if the previous badge is not completed
             }else{
                 progressForCss = progressNumber * 100; // progress bar
-                progressNumber = userPoint +" / "+ requirement;//number under then progress bar
+                progressNumber = userPoint +' / '+ requirement;//number under then progress bar
             }
         }
         //Progress Bar
@@ -125,7 +127,7 @@ class BadgeProgressBar extends React.Component {
             color: 'green',
             trailColor: '#eee',
             trailWidth: 1,
-            svgStyle: {width: progressForCss + "%", height: '10px'},
+            svgStyle: {width: progressForCss + '%', height: '10px'},
             text: {
                 style: {
                     // Text color.
@@ -153,13 +155,12 @@ class BadgeProgressBar extends React.Component {
         if(requirement > userPoint){
             dontShowProgress = true;
         }
-        console.log(dontShowProgress+ " sadashjksadhjkasdhjksahdjk" )
     }
 
     render(){
         return(
-        <div className="displayProgress" id={`${this.props.badgeProgressBarID}`}></div>
-        )
+            <div className="displayProgress" id={`${this.props.badgeProgressBarID}`}></div>
+        );
     }
 
 }

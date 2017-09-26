@@ -41,7 +41,7 @@ class Badge extends React.Component {
         //badgeDisplay will send all the data to badgeDisplay file for calculation.
 
         let badgeDisplay = null;
-
+        let {Strings} = this.props;
         //If user progress data and user point data is not null then send the info to BadgeDisplay File
         if(this.state.userProgressData !== null && this.state.userProgressPointData !== null){
 
@@ -61,7 +61,7 @@ class Badge extends React.Component {
         return (
 
             <div className="section card-2">
-                <h2 className="title">Badge Earned</h2>
+                <h2 className="title">{Strings.BadgeEarned}</h2>
                 <form className="section-content" >
                     {badgeDisplay}
                 </form>

@@ -4,8 +4,8 @@
 const handler = require('../route-handlers/achievementUnlock');
 
 module.exports = {
-    route: '/achievementUnlock',
-    title: 'Achievement Unlock',
+    route: '/course-goals-levels',
+    title: 'Course Goals and Levels',
     routeHandler: handler,
     access: {
         admins: true,

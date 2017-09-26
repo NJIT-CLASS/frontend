@@ -30,8 +30,6 @@
 @import 'components/placeholder_card';
 @import 'components/image';
 @import 'components/message';
-@import 'components/leaderboard';
-@import 'components/achievementUnlock.scss';
 @import 'components/icons';
 
 // pages
@@ -54,7 +52,9 @@
 @import 'pages/onboarding';
 @import 'pages/quick_assignment_report';
 @import 'pages/badge';
-
+@import 'pages/achievementUnlock.scss';
+@import 'pages/leaderboard';
+@import 'pages/game_settings';
 // external components
 @import 'external/rdt';
 @import 'external/tooltip';

@@ -42,7 +42,8 @@ class BadgeCategory extends React.Component {
 
 
     render(){
-
+        let {Strings} = this.props;
+        
         //get data of badge Category to pass it in the select
         let badgeCategoryMap = this.state.badgeCategory.map(badgeKatKey => {
             return{
@@ -60,7 +61,7 @@ class BadgeCategory extends React.Component {
                 onChange={this.onBadgeCategoryChange}
                 clearable={false}
                 searchable={false}
-                placeholder="Category"
+                placeholder={Strings.Category}
             />
         );
     }

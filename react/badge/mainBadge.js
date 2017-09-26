@@ -9,7 +9,7 @@ import BadgeCategory from './badgeCategory';
 import Badge from './badge';
 import Select from 'react-select';
 import apiCall from '../shared/apiCall';
-
+import strings from './strings';
 
 
 class MainBadge extends React.Component {
@@ -20,7 +20,9 @@ class MainBadge extends React.Component {
             SemesterID: null,
             CourseID: null,
             BadgeCategory: null,
-            SectionID: null
+            SectionID: null,
+            Strings: strings
+
         };
         this.onSemesterChange= this.onSemesterChange.bind(this);
         this.onClassChange = this.onClassChange.bind(this);
@@ -41,6 +43,13 @@ class MainBadge extends React.Component {
                 Semesters: semestersArray
             });
 
+        });
+    }
+    componentDidMount() {
+        this.props.__(strings, (newStrings) => {
+            this.setState({
+                Strings: newStrings
+            });
         });
     }
 
@@ -68,6 +77,7 @@ class MainBadge extends React.Component {
     }
 
     render(){
+        let {Strings} = this.state;
         var apiContentHolder = null;
 
         let classAndCategory = null;
@@ -83,6 +93,7 @@ class MainBadge extends React.Component {
                         SemesterID={this.state.SemesterID}
                         UserID={this.props.UserID}
                         onClassChange={this.onClassChange}
+                        Strings={Strings}
                         CourseID={this.state.CourseID}
                     />
                     <div id = "badgeCategory">
@@ -91,6 +102,7 @@ class MainBadge extends React.Component {
                             onBadgeCategoryChange={this.onBadgeCategoryChange}
                             CourseID={this.state.CourseID}
                             SemesterID={this.state.SemesterID}
+                            Strings={Strings}
                             SectionID={this.state.SectionID}                        />
                     </div>
                 </div>
@@ -110,12 +122,13 @@ class MainBadge extends React.Component {
                         CourseID={this.state.CourseID}
                         SectionID={this.state.SectionID}
                         BadgeCategory={this.state.BadgeCategory}
+                        Strings={Strings}
                     />
                 </div>;
         }else{
             //If Course and Category is not selected then it will say no badge to display with a crying emoji
             apiContentHolder =
-                <div id="badge"><h1 id="noBadgeh1">No Badge To Display 😭</h1></div>;
+                <div id="badge"><h1 id="noBadgeh1">{Strings.NoBadge} 😭</h1></div>;
         }
 
 
@@ -130,7 +143,8 @@ class MainBadge extends React.Component {
                         onChange={this.onSemesterChange}
                         clearable={false}
                         searchable={false}
-                        placeholder="Semester"
+                        placeholder={Strings.Semester}
+                    
                     />
 
                     {classAndCategory}

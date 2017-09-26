@@ -28,27 +28,27 @@ const compileReact = (rootFile, outputName, watch) => {
 
         if(process.env.NODE_ENV === 'production'){
             bundler.bundle()
-            .on('error', function(err) {
-                gutil.log(err);
-                gutil.beep();
-                this.emit('end');
-            })
-            .pipe(source(`${outputName}.js`))
-            .pipe(buffer())
-            .pipe(uglify())
-            .pipe(gulp.dest('./.build/static'));
+                .on('error', function(err) {
+                    gutil.log(err);
+                    gutil.beep();
+                    this.emit('end');
+                })
+                .pipe(source(`${outputName}.js`))
+                .pipe(buffer())
+                .pipe(uglify())
+                .pipe(gulp.dest('./.build/static'));
 
         } else{
 
             bundler.bundle()
-            .on('error', function(err) {
-                gutil.log(err);
-                gutil.beep();
-                this.emit('end');
-            })
-            .pipe(source(`${outputName}.js`))
-            .pipe(buffer())
-            .pipe(gulp.dest('./.build/static'));
+                .on('error', function(err) {
+                    gutil.log(err);
+                    gutil.beep();
+                    this.emit('end');
+                })
+                .pipe(source(`${outputName}.js`))
+                .pipe(buffer())
+                .pipe(gulp.dest('./.build/static'));
         }
 
     }
@@ -168,7 +168,10 @@ gulp.task('create-route', () => {
 
         const routeConfigFilePath = `${__dirname}/server/routes/route-configs/${routeFileName}.js`;
         const routeHandlerFilePath = `${__dirname}/server/routes/route-handlers/${routeFileName}.js`;
-
+        const routeViewFilePath = `${__dirname}/server/views/${routeFileName}.html`;
+        const routeCSSFilePath = `${__dirname}/styles//pages/_${routeFileName.replace(/-/g, '_')}.scss`;
+        const reactFolderPath = `${__dirname}/react/${routeFileName}`;
+        
         const configContents =
 `const handler = require('../route-handlers/${routeFileName}');
 
@@ -193,13 +196,37 @@ exports.get = (req, res) => {
     if(req.App.user === undefined){
       res.redirect('/');
     }
-    res.status(405).end();
+    res.render('${routeFileName}', {
+        scripts: ['/static/react_apps.js'],
+        userId: req.App.user.userId
+    });
 };
 `;
 
+        const viewContents = 
+`<div id="react-page" class="${routeFileName}" data-page="${routeFileName}" data-user-id="{{userId}}">
+    <div class="placeholder center-spinner">
+        <i class=" fa fa-cog fa-spin fa-4x fa-fw"></i>
+    </div>
+</div>
+`;
+
+        const cssContent = 
+    `.${routeFileName}{
+        
+    }
+    `; 
+
         fs.writeFileSync(routeConfigFilePath, configContents);
         fs.writeFileSync(routeHandlerFilePath, routeContents);
+        fs.writeFileSync(routeViewFilePath, viewContents);
+        fs.writeFileSync(routeCSSFilePath, cssContent);
 
+        try{
+            fs.mkdirSync(reactFolderPath);            
+        } catch(err){
+            gutil.log('React folder already exists. Skipping ....\n');
+        }
         const routesFileName = `${__dirname}/server/routes/routes.js`;
 
         const currentRoutesContents = fs.readFileSync(routesFileName);
@@ -207,8 +234,8 @@ exports.get = (req, res) => {
         var secondPiecesPieces = initialPieces[1].split('\n]');
 
         const newPagesArrayContents =
-`${secondPiecesPieces[0]},
-    '${routeFileName}'`;
+        `${secondPiecesPieces[0]},
+            '${routeFileName}'`;
 
         secondPiecesPieces[0] = newPagesArrayContents;
         initialPieces[1] = secondPiecesPieces.join('\n]');
@@ -222,10 +249,10 @@ exports.get = (req, res) => {
 
 gulp.task('node-babel', () => {
     return gulp.src(['server/**/*.js', '!server/{views,views/**}'])
-    .pipe(babel({
-        plugins: ['transform-flow-strip-types']
-    }))
-    .pipe(gulp.dest('.build'));
+        .pipe(babel({
+            plugins: ['transform-flow-strip-types']
+        }))
+        .pipe(gulp.dest('.build'));
 });
 
 gulp.task('node-babel:watch', () => {
@@ -234,7 +261,7 @@ gulp.task('node-babel:watch', () => {
 
 gulp.task('build-views', () => {
     return gulp.src('server/views/**')
-    .pipe(gulp.dest('.build/views'));
+        .pipe(gulp.dest('.build/views'));
 });
 
 gulp.task('build-views:watch', () => {
@@ -243,22 +270,22 @@ gulp.task('build-views:watch', () => {
 
 gulp.task('setup-static', () => {
     return gulp.src('static/**/*')
-    .pipe(gulp.dest('.build/static'));
+        .pipe(gulp.dest('.build/static'));
 });
 
 gulp.task('sass', () => {
     return gulp.src('./styles/**/*.scss')
-    .pipe(sass().on('error', function (error) {
-        sass.logError.call(this, error);
-        gutil.beep();
-    }))
-    .pipe(postcss([ autoprefixer() ]))
-    .pipe(gulp.dest('./.build/static'));
+        .pipe(sass().on('error', function (error) {
+            sass.logError.call(this, error);
+            gutil.beep();
+        }))
+        .pipe(postcss([ autoprefixer() ]))
+        .pipe(gulp.dest('./.build/static'));
 });
 
 gulp.task('flowtype', () => {
     return gulp.src(['server/**/*.js'])
-    .pipe(flow());
+        .pipe(flow());
 });
 
 gulp.task('flowtype:watch', () => {
@@ -296,13 +323,13 @@ gulp.task('clean:build', () => {
 gulp.task('move:server-build', () => {
     const dest = gulp.dest(argv.location + '/server'|| '../build' + '/server');
     return gulp.src(['.build/**/*'])
-  .pipe(dest);
+        .pipe(dest);
 });
 
 gulp.task('move:config-build', () => {
     return gulp.src(['package.json'])
-  .pipe(gulp.dest(argv.location || '../build'))
-  .pipe(install({production: true}));
+        .pipe(gulp.dest(argv.location || '../build'))
+        .pipe(install({production: true}));
 });
 
 gulp.task('generate:build-fallback-settings', () => {
@@ -347,7 +374,7 @@ exports.FRONTEND_PORT = ${answers['server-port']};
 `;
         console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
-    .pipe(gulp.dest(argv.location || '../build'));
+            .pipe(gulp.dest(argv.location || '../build'));
     });
 });
 
@@ -394,7 +421,7 @@ exports.FRONTEND_PORT = ${answers['server-port']};
 `;
         console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
-    .pipe(gulp.dest(__dirname));
+            .pipe(gulp.dest(__dirname));
     });
 });
 

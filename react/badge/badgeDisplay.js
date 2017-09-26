@@ -22,22 +22,22 @@ class BadgeDisplay extends React.Component {
             <div className="displayingBadgesWithProgressContainer">
 
                 <div className="displayingBadgesWithProgress">
-                    <img src={"/static/images/badgeImages/"+this.props.urlForBronzeBadge} alt={this.props.bronzeBadgeDescription} className="badgesImages"/>
+                    <img src={'/static/images/badgeImages/'+this.props.urlForBronzeBadge} alt={this.props.bronzeBadgeDescription} className="badgesImages"/>
                     <BadgeProgressBar UserPoints={this.props.userPoints}
-                                      requirement={this.props.requirement1}
-                                      badgeProgressBarID="bronzeBadge"/>
+                        requirement={this.props.requirement1}
+                        badgeProgressBarID="bronzeBadge"/>
                 </div>
 
                 <div className="displayingBadgesWithProgress">
-                    <img src={"/static/images/badgeImages/"+this.props.urlForSilverBadge} alt={this.props.silverBadgeDescription} className="badgesImages"/>
+                    <img src={'/static/images/badgeImages/'+this.props.urlForSilverBadge} alt={this.props.silverBadgeDescription} className="badgesImages"/>
                     <BadgeProgressBar
                         UserPoints={this.props.userPoints}
                         requirement={this.props.requirement2}
-                         badgeProgressBarID="silverBadge"/>
+                        badgeProgressBarID="silverBadge"/>
                 </div>
 
                 <div className="displayingBadgesWithProgress">
-                    <img src={"/static/images/badgeImages/"+this.props.urlForGoldBadge} alt={this.props.goldBadgeDescription} className="badgesImages"/>
+                    <img src={'/static/images/badgeImages/'+this.props.urlForGoldBadge} alt={this.props.goldBadgeDescription} className="badgesImages"/>
                     <BadgeProgressBar
                         UserPoints={this.props.userPoints}
                         requirement={this.props.requirement3}

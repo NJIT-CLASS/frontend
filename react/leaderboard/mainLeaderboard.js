@@ -15,6 +15,9 @@ import VsSections from './vsSections';
 import CourseForLeaderBoard from './courseForLeaderBoard';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import CourseSelect from '../everyones-work/courseSelect';
+import SectionSelectComponent from '../everyones-work/sectionSelect';
+import strings from '../achievementUnlock/strings';
 
 
 class MainLeaderboard extends React.Component {
@@ -25,10 +28,12 @@ class MainLeaderboard extends React.Component {
         this.state = {
             SemesterID: null,
             CourseID: null,
-            SectionID: null
+            SectionID: null,
+            Strings: strings,
         };
         this.onSemesterChange= this.onSemesterChange.bind(this);
         this.onClassChange = this.onClassChange.bind(this);
+        this.selectSection = this.selectSection.bind(this);
     }
 
     //Will render the Data
@@ -47,6 +52,14 @@ class MainLeaderboard extends React.Component {
         });
     }
 
+    componentDidMount() {
+        this.props.__(strings, newStrings => {
+            this.setState({
+                Strings: newStrings
+            });
+        });
+    }
+
     //Changes value of semester when user selects semester from dropdown
     onSemesterChange(value){
         this.setState({
@@ -57,13 +70,19 @@ class MainLeaderboard extends React.Component {
     //Changes value of Course and Section when user selects course from dropdown
     onClassChange(value){
         this.setState({
-            CourseID: value.value,
-            SectionID: value.sectionId
+            CourseID: value.value
+        });
+    }
+
+    selectSection(e){
+        this.setState({
+            SectionID: e.value
         });
     }
 
 
     render(){
+        let {CourseID, SemesterID, SectionID, Strings} = this.state;
         var apiContentHolder = null;//Initially null, Basically declaring the variable
 
         let courseAndSection = null;//Initially null, Basically declaring the variable
@@ -72,12 +91,18 @@ class MainLeaderboard extends React.Component {
         if(this.state.SemesterID != null) {
             courseAndSection = (
                 <div id="courseForLeaderBoard">
-                    <CourseForLeaderBoard apiUrl={this.props.apiUrl}
+                    <CourseSelect selectCourse={this.onClassChange}
                         UserID={this.props.UserID}
-                        SemesterID={this.state.SemesterID}
-                        onClassChange={this.onClassChange}
-                        CourseID={this.state.CourseID}
-                    />
+                        Strings={Strings}
+                        CourseID={CourseID}/>
+
+                    <SectionSelectComponent selectSection={this.selectSection} 
+                        UserID={this.props.UserID}
+                        CourseID={CourseID}
+                        SectionID={SectionID}
+                        SemesterID={SemesterID}
+                        Strings={Strings}
+                    /> 
                 </div>
             );
 
@@ -85,7 +110,7 @@ class MainLeaderboard extends React.Component {
             if (this.state.CourseID != null && this.state.SectionID != null) {
 
                 apiContentHolder =
-                    <div id="achievementUnlock">
+                    <div >
                         <div id="classRanking">
                             <ClassRanking apiUrl={this.props.apiUrl}
                                 UserID={this.props.UserID}
@@ -125,7 +150,7 @@ class MainLeaderboard extends React.Component {
         return (
 
             <div className="container">
-                <div id="mainAchievementUnlockSelectDiv">
+                <div className="select-section">
                     <div id="mainAchievementUnlockSemesterSelectDiv">
                         <Select
                             options={this.state.Semesters}
@@ -139,9 +164,11 @@ class MainLeaderboard extends React.Component {
                     {courseAndSection}
 
                 </div>
-                <div></div>
+                <div className="badge-section">
+                    {apiContentHolder}
 
-                {apiContentHolder}
+                </div>
+
 
 
             </div>

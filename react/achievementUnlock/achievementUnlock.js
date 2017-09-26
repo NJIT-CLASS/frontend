@@ -84,6 +84,8 @@ class AchievementUnlockBar extends React.Component {
                     <div>{Strings.EarnedECPoints}: {Record.UsedPoints}</div>
                 </div>
                 <div className="level-section">
+                    <div className="user-title">{Record.Title}</div>
+                    <br />
                     <div id="achievementUnlockLevelFrom">{Strings.Level} {Record.Level}</div>
                     <div id="achievementUnlock">
                         <div ref={(span) => { this.levelBar = span; }}></div>
@@ -91,7 +93,7 @@ class AchievementUnlockBar extends React.Component {
                     </div>
                     <div id="achievementUnlockLevelTo">{Strings.Level} {Record.Level + 1} 
                         <br/><br/>
-                         + {Record.AvailablePoints} {Record.AvailablePoints == 1? Strings.CLASSPoint : Strings.CLASSPoints}</div>
+                         + {Record.PlusPoint} {Record.PlusPoint == 1? Strings.CLASSPoint : Strings.CLASSPoints}</div>
                 </div>
             </div>
 

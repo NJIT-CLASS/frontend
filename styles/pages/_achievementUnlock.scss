@@ -5,7 +5,7 @@
 
 
 #achievementUnlock{
-  width: 75%;
+  width: 70%;
   clear: both;
   display: inline-block;
 }
@@ -44,14 +44,13 @@ margin: 10px auto;
 #achievementUnlockLevelFrom{
   display: inline-block;
   vertical-align: top;
-  padding-right: 25px;
+  width: 15%;
 }
 
 #achievementUnlockLevelTo{
   display: inline-block;
   vertical-align: top;
-  padding-left: 25px;
-  
+  width: 15%;
   
 }
 .top-section{
@@ -66,7 +65,11 @@ margin: 10px auto;
   vertical-align: middle;
   font-size: 30px;
 }
-
+.user-title{
+  width: 70%;
+  text-align: center;
+  margin: 0 15%; 
+}
 .dividing-header{
   font-weight: bolder;
   text-transform: uppercase;

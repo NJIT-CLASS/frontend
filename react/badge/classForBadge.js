@@ -39,6 +39,7 @@ class ClassForBadge extends React.Component {
 
     render(){
         //get data of class for badge to pass it in the select
+        let {Strings} = this.props;
         let classList = this.state.studentClasses.filter(klass => klass.Section !== null).map(klass => {
 
             return {
@@ -56,7 +57,7 @@ class ClassForBadge extends React.Component {
                 onChange={this.onClassChange}
                 clearable={false}
                 searchable={false}
-                placeholder="Class Number"
+                placeholder={Strings.ClassNumber}
             />
         );
     }
