@@ -43,16 +43,10 @@
     "react-datepicker": "^0.53.0",
     "react-datetime": "^2.9.0",
     "react-dom": "^15.6.1",
-<<<<<<< HEAD
     "react-dropzone": "^3.13.3",
     "react-highlight-words": "^0.8.0",
     "react-loading": "^0.1.4",
     "react-numeric-input": "^2.0.7",
-=======
-    "react-dropzone": "^4.1.0",
-    "react-highlight-words": "^0.8.1",
-    "react-numeric-input": "^2.2.0",
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
     "react-progressbar.js": "^0.2.0",
     "react-quill": "^1.1.0",
     "react-radio-group": "^3.0.2",

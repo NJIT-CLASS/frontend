@@ -1,3 +1,4 @@
+
 /* This component holds the task header, which will include the assignment name,
  * course details, and task type. This component is dumb, so it makes no api
  * calls. This component is ALWAYS shown.
