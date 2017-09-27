@@ -150,33 +150,36 @@ export default class Reallocate extends React.Component{
                     <textarea rows={10} onChange={this.onCSVInput.bind(this)} placeholder='Enter a list of task IDs to reallocate...'/>
                     <br/><br/><br/>
                     {/* --------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+                    <div>
+                        <h5 className='list-faded-subheader'>List of students to replace tasks</h5>
+                        <Select multi joinValues options={this.state.students} value={this.state.selectedStudents} placeholder="Selected" onChange={this.handleSelect.bind(this)} resetValue={''} clearable={true} searchable={true}/>
+                        <br/><br/>
 
-                    <h5 className='list-faded-subheader'>List of students to replace tasks</h5>
-                    <Select multi joinValues options={this.state.students} value={this.state.selectedStudents} placeholder="Selected" onChange={this.handleSelect.bind(this)} resetValue={''} clearable={true} searchable={true}/>
-                    <br/><br/>
-
-                    <button type="button" onClick={this.changeToList.bind(this)}>Submit</button>  
+                        <button type="button" onClick={this.changeToList.bind(this)}>Submit</button>  
+                    </div>
+                    
 
                     {/* --------------------------------------------------------------------------------------------------------------------------------------------------------------- */}
+                    <div style={{borderTop:'1px solid black'}}>
+                        <h5 className='list-faded-subheader'>Or select one of the following to reallocate</h5>
+                        <div>
+                            <input style={{display: 'inline-block', float:'left'}} type="radio" name="volunteers" checked={this.state.reallocateOptions === 'volunteers'} onChange={this.changeReallocateOptions.bind(this)}/>
+                            <label>Volunteers</label>
+                        </div>
 
-                    <h5 className='list-faded-subheader'>Or select one of the following to reallocate</h5>
-                    <div>
-                        <input style={{display: 'inline-block', float:'left'}} type="radio" name="volunteers" checked={this.state.reallocateOptions === 'volunteers'} onChange={this.changeReallocateOptions.bind(this)}/>
-                        <label>Volunteers</label>
-                    </div>
+                        <div>
+                            <input style={{display: 'inline-block', float:'left'}} type="radio" name="students" checked={this.state.reallocateOptions === 'students'} onChange={this.changeReallocateOptions.bind(this)}/>  
+                            <label>Students</label>       
+                        </div>
 
-                    <div>
-                        <input style={{display: 'inline-block', float:'left'}} type="radio" name="students" checked={this.state.reallocateOptions === 'students'} onChange={this.changeReallocateOptions.bind(this)}/>  
-                        <label>Students</label>       
-                    </div>
+                        <div>
+                            <input style={{display: 'inline-block', float:'left'}} type="radio" name="instructor" checked={this.state.reallocateOptions === 'instructor'} onChange={this.changeReallocateOptions.bind(this)}/>  
+                            <label>Instructor</label>       
+                        </div>
+                        <br/><br/>
 
-                    <div>
-                        <input style={{display: 'inline-block', float:'left'}} type="radio" name="instructor" checked={this.state.reallocateOptions === 'instructor'} onChange={this.changeReallocateOptions.bind(this)}/>  
-                        <label>Instructor</label>       
-                    </div>
-                    <br/><br/>
-
-                    <button type="button" onClick={this.changeToOptions.bind(this)}>Submit</button>                
+                        <button type="button" onClick={this.changeToOptions.bind(this)}>Submit</button>
+                    </div>                
                 </div>
             );
         } else {

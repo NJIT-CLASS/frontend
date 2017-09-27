@@ -10,6 +10,6 @@ module.exports = {
         students: false,
         loggedOut: false
     },
-    icon: '',
-    sidebar: false
+    icon: 'exchange',
+    sidebar: true
 }
