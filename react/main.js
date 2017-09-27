@@ -25,14 +25,10 @@ import SectionsContainer from './sections/sections-container';
 import UserGradeReportContainer from './grade-report/user-grade-report-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
-<<<<<<< HEAD
 import EveryonesWorkMain from './everyones-work/main-container';
 import Reallocation from './reallocation/reallocation-container';
-=======
 import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
-
 const translationFunction = (objOfStrings, cb) => {
     const options = {
         method: 'POST',

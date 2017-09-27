@@ -106,8 +106,6 @@ class SuperComponent extends React.Component {
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
         const filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
 
-<<<<<<< HEAD
-=======
         this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
 
         apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
@@ -121,7 +119,6 @@ class SuperComponent extends React.Component {
             }
         });
 
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
@@ -462,13 +459,10 @@ class SuperComponent extends React.Component {
         
     }
 
-<<<<<<< HEAD
-=======
     handleCommentClick() {
         this.props.showComments('TaskInstance', this.props.TaskID);
     }
 
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
     render() {
         let content = null;
         let infoMessage = null;
@@ -850,22 +844,22 @@ class SuperComponent extends React.Component {
         }
 
         return ( // main render return()
-<<<<<<< HEAD
-          <div>
-            {infoMessage}
-            <div className="section card-2 ">
-              <div onClick={this.toggleContent.bind(this)}>
-                <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
-              </div>
-              <CommentInfoComponent
-                TargetID = {this.props.TaskID}
-                Target = {'TaskInstance'}
-                ComponentTitle = {this.props.ComponentTitle}
-                showComments = {this.props.showComments}
-              />
-              {content}
-            </div>
-=======
+
+        //   <div>
+        //     {infoMessage}
+        //     <div className="section card-2 ">
+        //       <div onClick={this.toggleContent.bind(this)}>
+        //         <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
+        //       </div>
+        //       <CommentInfoComponent
+        //         TargetID = {this.props.TaskID}
+        //         Target = {'TaskInstance'}
+        //         ComponentTitle = {this.props.ComponentTitle}
+        //         showComments = {this.props.showComments}
+        //       />
+        //       {content}
+        //     </div>
+
             <div>
                 {infoMessage}
                 <div className="section card-2 ">
@@ -880,7 +874,6 @@ class SuperComponent extends React.Component {
                     </span>
                     {content}
                 </div>
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
             </div>
         );
     }

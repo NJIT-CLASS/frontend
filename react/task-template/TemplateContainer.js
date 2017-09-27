@@ -456,17 +456,6 @@ class TemplateContainer extends React.Component {
             renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
-<<<<<<< HEAD
-                                TasksArray={this.state.Data}
-                                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                                TaskID={this.props.TaskID}
-                                UserID={this.props.UserID}
-                                Strings={this.state.Strings}
-                                apiUrl={this.props.apiUrl}
-                                showComments={this.showComments.bind(this)}
-                                TaskStatus={this.state.TaskStatus}
-                                IsRevision={this.state.IsRevision}
-=======
                 TasksArray={this.state.Data}
                 getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
                 TaskID={this.props.TaskID}
@@ -478,7 +467,6 @@ class TemplateContainer extends React.Component {
                 IsRevision={this.state.IsRevision}
                 CurrentTaskType={this.state.TaskActivityType}
                 VisitorID={this.props.VisitorID}
->>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
             />);
         }
 
