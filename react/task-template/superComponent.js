@@ -106,19 +106,6 @@ class SuperComponent extends React.Component {
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
         const filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
 
-        this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
-
-        apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
-            let list = [];
-            if (!body.Error) {
-                let numComments = body.NumberComments;
-                this.setState({NumberComments: numComments});
-            }
-            else {
-                console.log('No comment count received.');
-            }
-        });
-
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
@@ -457,10 +444,6 @@ class SuperComponent extends React.Component {
             showMessage(this.props.Strings.InputErrorMessage);
         }
         
-    }
-
-    handleCommentClick() {
-        this.props.showComments('TaskInstance', this.props.TaskID);
     }
 
     render() {
@@ -844,36 +827,20 @@ class SuperComponent extends React.Component {
         }
 
         return ( // main render return()
-
-        //   <div>
-        //     {infoMessage}
-        //     <div className="section card-2 ">
-        //       <div onClick={this.toggleContent.bind(this)}>
-        //         <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
-        //       </div>
-        //       <CommentInfoComponent
-        //         TargetID = {this.props.TaskID}
-        //         Target = {'TaskInstance'}
-        //         ComponentTitle = {this.props.ComponentTitle}
-        //         showComments = {this.props.showComments}
-        //       />
-        //       {content}
-        //     </div>
-
-            <div>
-                {infoMessage}
-                <div className="section card-2 ">
-                    <div onClick={this.toggleContent.bind(this)}>
-                        <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
-                    </div>
-                    <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-                        <i className="fa fa-comment-o fa-stack-1x"></i>
-                        <span className="fa fa-stack-1x">
-                            <span className = "comment-number">{this.state.NumberComments}</span>
-                        </span>
-                    </span>
-                    {content}
-                </div>
+          <div>
+            {infoMessage}
+            <div className="section card-2">
+              <div onClick={this.toggleContent.bind(this)}>
+                <h2 className="title">{this.props.ComponentTitle}</h2>
+              </div>
+              <CommentInfoComponent
+                TargetID = {this.props.TaskID}
+                Target = {'TaskInstance'}
+                ComponentTitle = {this.props.ComponentTitle}
+                showComments = {this.props.showComments}
+              />
+              {content}
+            </div>
             </div>
         );
     }

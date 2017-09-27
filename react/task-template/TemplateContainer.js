@@ -308,14 +308,33 @@ class TemplateContainer extends React.Component {
     }
 
     getIDData() {
-        apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
-            if (!body.Error) {
-                this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
-            }
-            else {
-                console.log('No comment ID data received.');
-            }
-        });
+      apiCall.get(`/comments/IDData/${this.props.TaskID}`, (err, res, body) => {
+          if (!body.Error) {
+            this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID})
+          }
+          else {
+            console.log('No comment ID data received.')
+          }
+      });
+    }
+
+    getCommentData(target, ID, type) {
+        if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
+            apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+                let list = [];
+                if (body != undefined ) {
+                    for (let com of body.Comments) {
+                        list.push(com);
+                    }
+                    this.setState({
+                        commentList: list
+                    });
+                }
+                else {
+                  console.log('No comment data received.');
+                }
+            });
+        }
     }
 
     getCommentData(target, ID, type) {
@@ -456,17 +475,15 @@ class TemplateContainer extends React.Component {
             renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
         } else {
             renderView = (<TasksList
-                TasksArray={this.state.Data}
-                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                TaskID={this.props.TaskID}
-                UserID={this.props.UserID}
-                Strings={this.state.Strings}
-                showComments={this.showComments.bind(this)}
-                addCommentListItem={this.addCommentListItem.bind(this)}
-                TaskStatus={this.state.TaskStatus}
-                IsRevision={this.state.IsRevision}
-                CurrentTaskType={this.state.TaskActivityType}
-                VisitorID={this.props.VisitorID}
+                                TasksArray={this.state.Data}
+                                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                                TaskID={this.props.TaskID}
+                                UserID={this.props.UserID}
+                                Strings={this.state.Strings}
+                                apiUrl={this.props.apiUrl}
+                                showComments={this.showComments.bind(this)}
+                                TaskStatus={this.state.TaskStatus}
+                                IsRevision={this.state.IsRevision}
             />);
         }
 

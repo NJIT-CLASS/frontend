@@ -437,11 +437,11 @@ class CommentComponent extends React.Component{
                     CommentTarget={this.props.Comment.CommentTarget}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                     SetFlag={true}
-                    CommentTargetList={this.props.CommentTargetList}
+                      CommentTargetList={this.props.CommentTargetList}
                   />
                   <div className="title"><a onClick={this.displayNewFlagEditor.bind(this)}>{strings.CancelFlagLabel}</a></div>
-                </div>)
-            }
+              </div>)
+          }
 
           </div>
         );
