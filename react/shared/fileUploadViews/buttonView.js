@@ -21,40 +21,40 @@ class ButtonView extends React.Component {
         }
 
         let inputView = (
-          <input onChange={selectClick} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
+            <input onChange={selectClick} ref="uploadInput" type="file" name="file-upload-input" id="file-upload-input" className="upload-file-input" multiple/>
         );
 
         let buttonView = (
-          <button type="button" ref="button" value="Upload" onClick={this.callUpload}>{Strings.buttonLabel}</button>
+            <button type="button" ref="button" value="Upload" onClick={this.callUpload}>{Strings.buttonLabel}</button>
         );
 
         switch(UploadStatus){
         case 'start':
             uploadView = (
-          <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-          {inputView}
-            <label  htmlFor="file-upload-input">{label}</label><div className="inline"> {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
-            {buttonView}
+                <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                    {inputView}
+                    <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{label}</label><div className="inline"> {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                    {buttonView}
 
-          </form>
-      );
+                </form>
+            );
             break;
         case 'pending':
             uploadView = (
-          <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-        );
+                <i className="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+            );
             break;
         case 'success':
             if(NumberUploaded < MaxUploads){
                 uploadView = (
-              <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-              {inputView}
-                <label  htmlFor="file-upload-input">{label}</label>
-                <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
-                {buttonView}
+                    <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                        {inputView}
+                        <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{label}</label>
+                        <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                        {buttonView}
 
-              </form>
-          );
+                    </form>
+                );
             }else{
                 uploadView = (<div>{Strings.UploadComplete}</div>);
 
@@ -62,32 +62,32 @@ class ButtonView extends React.Component {
             break;
         case 'error':
             uploadView = (<div>{Strings.UploadError}
-          <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-            {inputView}
-            <label  htmlFor="file-upload-input">{Strings.buttonLabel}</label>
-            <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
-            {buttonView}
+                <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                    {inputView}
+                    <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{Strings.buttonLabel}</label>
+                    <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                    {buttonView}
 
-          </form>
-        </div>);
+                </form>
+            </div>);
             break;
         case 'full':
             uploadView = (<div>
-            <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
-              <label  htmlFor="file-upload-input">{Strings.fullLabel}</label>
-              <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
+                    <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{Strings.fullLabel}</label>
+                    <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
 
-            </form>
-          </div>);
+                </form>
+            </div>);
             break;
         default:
             uploadView = <div></div>;
         }
 
         return (
-    <div className="upload-view-section">
-      {uploadView}
-    </div>
+            <div className="upload-view-section">
+                {uploadView}
+            </div>
         );
     }
 

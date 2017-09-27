@@ -1,0 +1,28 @@
+export default {
+    AssignmentGrades: 'Assignment Grades',
+    Assignment: 'Assignment',
+    StudentInformation: 'Student Information',
+    RegularTasks: 'Regular Tasks',
+    ExtraCreditTasks: 'Extra Credit Tasks',
+    Email: 'Email',
+    LastName: 'Last Name',
+    FirstName: 'First Name',
+    Total: 'Total',
+    CompletenessGrade: 'Completeness Grade',
+    Grade: 'Grade',
+    QualityGrade: 'Quality Grade',
+    FinalGrade: 'Final Grade',
+    Comments: 'Comments',
+    ECCompletenessGrade: 'Extra Credit Completeness Grade',
+    ECQualtiyGrade: 'Extra Credit Qualtiy Grade',
+    ECGrade: 'Extra Credit Grade',
+    ECComments: 'Extra Credit Comments',
+    InstructorReport: 'Instructor Report',
+    Student: 'Student',
+    Task: 'Task',
+    CombinedWeight: 'Combined Weight',
+    WeightedGrade: 'Weighted Grade',
+    UserName: 'UserName',
+    
+
+};

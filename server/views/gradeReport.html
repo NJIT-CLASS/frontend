@@ -62,18 +62,18 @@
             <td data-label={{__ 'UserName'}}>
               <a href="">{{User.LastName}}, {{User.FirstName}}<br>{{User.UserContact.Email}}</a>
             </td>
-          {{#each assignmentGrade.WorkflowActivityGrades}}
-          {{#each WorkflowActivity.users_WA_Tasks}}
-          
-            <td data-label={{__ 'Task'}}>{{taskActivity.Name}}</td>
-            <td data-label={{__ 'Completness Grade'}}>{{taskSimpleGrade.Grade}}%</td>
-            <td data-label={{__ 'Quality Grade'}}>{{FinalGrade}}%</td>
-            <td data-label={{__ 'Combine Weight'}}>{{taskGrade.Weight}}</td>
-            <td data-label={{__ 'Weighted Grade'}}>{{taskGrade.weightedGrade}}%</td>
-            <td data-label={{__ 'Comments'}}>{{assignmentGrade.Comments}}</td>
-          </tr>
-            {{/each}}
-            {{/each}}
+            {{#each assignmentGrade.WorkflowActivityGrades}}
+              {{#each WorkflowActivity.users_WA_Tasks}}
+              
+                  <td data-label={{__ 'Task'}}>{{taskActivity.Name}}</td>
+                  <td data-label={{__ 'Completness Grade'}}>{{taskSimpleGrade.Grade}}%</td>
+                  <td data-label={{__ 'Quality Grade'}}>{{FinalGrade}}%</td>
+                  <td data-label={{__ 'Combine Weight'}}>{{taskGrade.Weight}}</td>
+                  <td data-label={{__ 'Weighted Grade'}}>{{taskGrade.weightedGrade}}%</td>
+                  <td data-label={{__ 'Comments'}}>{{assignmentGrade.Comments}}</td>
+                </tr>
+                {{/each}}
+              {{/each}}
             {{/each}}
     		</tbody>
     		</table>

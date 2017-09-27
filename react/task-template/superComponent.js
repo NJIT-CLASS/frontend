@@ -19,6 +19,8 @@ import FileLinksComponent from './fileLinksComponent';
 
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
+import CommentInfoComponent from './CommentInfoComponent';
+
 class SuperComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -104,19 +106,22 @@ class SuperComponent extends React.Component {
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
         const filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
 
+<<<<<<< HEAD
+=======
         this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
 
         apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
             let list = [];
             if (!body.Error) {
                 let numComments = body.NumberComments;
-                this.setState({NumberComments: numComments})
+                this.setState({NumberComments: numComments});
             }
             else {
-              console.log('No comment count received.');
+                console.log('No comment count received.');
             }
         });
 
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
@@ -457,10 +462,13 @@ class SuperComponent extends React.Component {
         
     }
 
+<<<<<<< HEAD
+=======
     handleCommentClick() {
-      this.props.showComments('TaskInstance', this.props.TaskID);
+        this.props.showComments('TaskInstance', this.props.TaskID);
     }
 
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
     render() {
         let content = null;
         let infoMessage = null;
@@ -557,10 +565,10 @@ class SuperComponent extends React.Component {
         }
 
         if(this.state.NewFilesUploaded.length !== 0){
-            fileLinksView = (<FileLinksComponent Files={this.state.NewFilesUploaded} apiUrl={this.props.apiUrl} />);
+            fileLinksView = (<FileLinksComponent Files={this.state.NewFilesUploaded} />);
 
         }else{
-            fileLinksView = (<FileLinksComponent Files={this.props.Files} apiUrl={this.props.apiUrl} />);
+            fileLinksView = (<FileLinksComponent Files={this.props.Files} />);
         }
 
         if (this.props.Instructions != null && this.props.Instructions != '') {
@@ -842,20 +850,37 @@ class SuperComponent extends React.Component {
         }
 
         return ( // main render return()
+<<<<<<< HEAD
           <div>
             {infoMessage}
             <div className="section card-2 ">
               <div onClick={this.toggleContent.bind(this)}>
                 <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
               </div>
-              <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-                <i className="fa fa-comment-o fa-stack-1x"></i>
-                <span className="fa fa-stack-1x">
-                  <span className = "comment-number">{this.state.NumberComments}</span>
-                </span>
-              </span>
+              <CommentInfoComponent
+                TargetID = {this.props.TaskID}
+                Target = {'TaskInstance'}
+                ComponentTitle = {this.props.ComponentTitle}
+                showComments = {this.props.showComments}
+              />
               {content}
             </div>
+=======
+            <div>
+                {infoMessage}
+                <div className="section card-2 ">
+                    <div onClick={this.toggleContent.bind(this)}>
+                        <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
+                    </div>
+                    <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                        <i className="fa fa-comment-o fa-stack-1x"></i>
+                        <span className="fa fa-stack-1x">
+                            <span className = "comment-number">{this.state.NumberComments}</span>
+                        </span>
+                    </span>
+                    {content}
+                </div>
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
             </div>
         );
     }

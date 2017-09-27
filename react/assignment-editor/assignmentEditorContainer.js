@@ -16,6 +16,7 @@ import TaskDetailsComponent from './taskDetails';
 import AssignmentDetailsComponent from './assignmentDetails';
 import ProblemDetailsComponent from './problemDetails';
 import confirmModal from './confirmModal';
+import HeaderComponent from './headerComponent';
 import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/react_constants';
 import Strings from './assignmentEditorStrings';
 
@@ -137,7 +138,7 @@ class AssignmentEditorContainer extends React.Component {
             return newTask;
         };
 
-      //////////// Defining all Task Types Here /////////
+        //////////// Defining all Task Types Here /////////
         this.createProblemTask = createTaskObject({
             TA_display_name: strings.CreateProblemName,
             TA_type: TASK_TYPES.CREATE_PROBLEM,
@@ -371,7 +372,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_assignee_constraints: [
                 'student',
                 'individual',
-              {}
+                {}
             ],
             TA_trigger_consolidation_threshold: [15,'percent'],
             TA_fields: null
@@ -455,11 +456,11 @@ class AssignmentEditorContainer extends React.Component {
         //     ],
         //     TA_fields: null
         // });
-      ///----------------------
+        ///----------------------
 
         let standardWorkflow = [cloneDeep(this.createProblemTask)];
 
-      //template for the standard workflow
+        //template for the standard workflow
         this.blankWorkflow = {
             WA_name: strings.DefaultWorkflowName,
             WA_type: '',
@@ -504,7 +505,7 @@ class AssignmentEditorContainer extends React.Component {
             this.setState({Strings: newStrings});
 
 
-        //Get the semesters
+            //Get the semesters
 
             apiCall.get('/semester', (err, res, body) => {
                 semestersArray = body.Semesters.map(function(sem) {
@@ -516,7 +517,7 @@ class AssignmentEditorContainer extends React.Component {
                 });
             });
 
-        //Get courses if one was not already chosen
+            //Get courses if one was not already chosen
             if (this.props.CourseID === '*' || this.props.CourseID === '') {
 
                 apiCall.get(`/getCourseCreated/${this.props.UserID}`, (err, res, bod) => {
@@ -533,7 +534,7 @@ class AssignmentEditorContainer extends React.Component {
                 });
             }
 
-        //Load partially made assignment from the database
+            //Load partially made assignment from the database
             if(this.props.PartialAssignmentID !== ''){
                 const assignmentOptions = {
                     userId: this.props.UserID,
@@ -575,7 +576,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     makeDefaultWorkflowStructure(workflowIndex){
-      //this sets the default problem structure
+        //this sets the default problem structure
         this.changeDataCheck('TA_allow_reflection', 0, workflowIndex);
         this.changeDataCheck('TA_leads_to_new_solution', 0, workflowIndex);
         // this.changeDataCheck('TA_allow_assessment', 2, workflowIndex);
@@ -666,7 +667,7 @@ class AssignmentEditorContainer extends React.Component {
             ob['id'] = task.model.id;
             ob['isSubWorkflow'] = task.model.isSubWorkflow;
 
-          //ob = { ...task.model};
+            //ob = { ...task.model};
 
             flatty.push(ob);
         }, this);
@@ -688,7 +689,7 @@ class AssignmentEditorContainer extends React.Component {
         workflowData.forEach((workflow, index) => {
             workflow.WorkflowStructure = this.unflattenTreeStructure(workflow.WorkflowStructure);
         })
-;
+        ;
         this.setState({
             AssignmentActivityData: assignmentData,
             WorkflowDetails: workflowData
@@ -698,10 +699,10 @@ class AssignmentEditorContainer extends React.Component {
     onSave(){
         //Save Partiallly cocmpleted assignment data to database
         //Done in stages:
-            //1. Flatten all Workflow trees
-            //2. Send to database.
-            //3. Show some kind of acknowledgement messageDiv
-            //
+        //1. Flatten all Workflow trees
+        //2. Send to database.
+        //3. Show some kind of acknowledgement messageDiv
+        //
         if(this.state.SubmitSuccess === true){
             return;
         }
@@ -754,7 +755,7 @@ class AssignmentEditorContainer extends React.Component {
 
     }
     onSubmit() {
-      /*
+        /*
         When submitting the data to the backend, the workflow structure
         (tree object) must be cleaned and flattened. This function will:
           A. Check for CourseID not null.
@@ -806,7 +807,7 @@ class AssignmentEditorContainer extends React.Component {
         sendData.WorkflowActivity.forEach((workflow, index) => {
 
 
-          // B.1 Clean Workflow array
+            // B.1 Clean Workflow array
             let counter = 0;
             let mapping = {}; //new IDs of tasks after B.1
             let newWorkflow = new Array();
@@ -833,7 +834,7 @@ class AssignmentEditorContainer extends React.Component {
             });
             console.log(workflow.Workflow, workflow.WorkflowStructure);
 
-          // B.2 Add Subworkflow labels
+            // B.2 Add Subworkflow labels
             workflow.WorkflowStructure = this.makeSubWorkflows(workflow.WorkflowStructure,workflow.Workflow, index);
 
             workflow.WorkflowStructure.walk((node) => {
@@ -841,7 +842,7 @@ class AssignmentEditorContainer extends React.Component {
             });
 
 
-          // B.3 Clean IDs in AssigneeConstraints and Fields
+            // B.3 Clean IDs in AssigneeConstraints and Fields
 
             workflow.Workflow.forEach(function(task) {
                 Object.keys(task.TA_assignee_constraints[2]).forEach(function(constr) {
@@ -858,7 +859,7 @@ class AssignmentEditorContainer extends React.Component {
                     }
                 }
 
-              //Make Number of Students accurately reflect number of participants
+                //Make Number of Students accurately reflect number of participants
                 if(task.TA_assignee_constraints[0] == 'instructor'){
                     task.TA_number_participant = 1;
                 }
@@ -867,7 +868,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
             });
 
-          // B.4 Clean GradeDistribution
+            // B.4 Clean GradeDistribution
             let newGradeDist = new Object();
             Object.keys(workflow.WA_grade_distribution).forEach(function(taskKey) {
                 newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
@@ -875,7 +876,7 @@ class AssignmentEditorContainer extends React.Component {
 
             workflow.WA_grade_distribution = newGradeDist;
 
-          // B5 Link Fields in Tasks
+            // B5 Link Fields in Tasks
             let taskTypesToLink = [TASK_TYPES.EDIT,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
             let taskstoLink = workflow.Workflow.map((task,index) => {
                 if(taskTypesToLink.includes(task.TA_type)){
@@ -893,11 +894,11 @@ class AssignmentEditorContainer extends React.Component {
             });
 
 
-          // B.6 Flatten workflow
+            // B.6 Flatten workflow
 
             workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
 
-          //-----------------------------------------
+            //-----------------------------------------
         }, this);
 
 
@@ -1280,15 +1281,15 @@ class AssignmentEditorContainer extends React.Component {
         }
         newName = prefixString;
         let previousTaskIndex = stateData[workflowIndex].WorkflowStructure
-        .first((node) => {
-            return node.model.id === taskIndex;
-        }).parent.model.id;
+            .first((node) => {
+                return node.model.id === taskIndex;
+            }).parent.model.id;
 
         newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
         
         return newName;
     }
-/**
+    /**
      * [propogateNameChangeDownTree sends name change in task down to other tasks]
      * @param  {[number]} startIndex    [index to begin searching the tree]
      * @param  {[number]} workflowIndex [workflow's array index]
@@ -1362,8 +1363,8 @@ class AssignmentEditorContainer extends React.Component {
 
 
     getConsolidationIndex(reflect, index, workflowIndex) {
-      //see if reflect or assess has consolidate task and return its index
-      //doesn't check if task is consol or dispute
+        //see if reflect or assess has consolidate task and return its index
+        //doesn't check if task is consol or dispute
         let targetIndex = null;
         if (reflect) {
             targetIndex = this.getReflectIndex(index, workflowIndex);
@@ -1656,7 +1657,7 @@ class AssignmentEditorContainer extends React.Component {
      */
     getParentID(root, workflowData, taskIndex){
         let excludedTasks = [TASK_TYPES.NEEDS_CONSOLIDATION,TASK_TYPES.CONSOLIDATION, TASK_TYPES.DISPUTE, TASK_TYPES.RESOLVE_DISPUTE];
-      /* This function returns the parent task of of Consolidate, Dispute, or Resolve Task.
+        /* This function returns the parent task of of Consolidate, Dispute, or Resolve Task.
          Parent means the task (Edit,Comment,Grade,or Critique) that it belongs to*/
         let possibleParents = root.first(function(node){
             return node.model.id == taskIndex;
@@ -1679,7 +1680,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     addLinkedTaskFields(root, workflowData,taskIndex){
-      /* Adds the linked task's fields object to the current task's fields
+        /* Adds the linked task's fields object to the current task's fields
          Usually, the current task will have no fields, but it is done by adding in
          case future support for adding more fields on top of linked fields is desired*/
 
@@ -1773,10 +1774,10 @@ class AssignmentEditorContainer extends React.Component {
                                 <br />
                                 <ul>
                                 ${taskChildrenNodes.map((task)=>{
-                                    return (`<li>${task}</li>`);
-                                }).reduce((val, acc) => {
-                                    return acc + val;
-                                }, '')}
+        return (`<li>${task}</li>`);
+    }).reduce((val, acc) => {
+        return acc + val;
+    }, '')}
                             </ul>
                             <br />
                             Are you sure you want to continue?`;
@@ -1810,10 +1811,10 @@ class AssignmentEditorContainer extends React.Component {
                                 <br />
                                 <ul>
                                 ${taskChildrenNodes.map((task)=>{
-                                    return (`<li>${task}</li>`);
-                                }).reduce((val, acc) => {
-                                    return acc + val;
-                                }, '')}
+        return (`<li>${task}</li>`);
+    }).reduce((val, acc) => {
+        return acc + val;
+    }, '')}
                                 </ul>
                                 <br />
                                 Are you sure you want to continue?`;
@@ -1847,10 +1848,10 @@ class AssignmentEditorContainer extends React.Component {
                                 <br />
                                 <ul>
                                 ${taskChildrenNodes.map((task)=>{
-                                    return (`<li>${task}</li>`);
-                                }).reduce((val, acc) => {
-                                    return acc + val;
-                                }, '')}
+        return (`<li>${task}</li>`);
+    }).reduce((val, acc) => {
+        return acc + val;
+    }, '')}
                             </ul>
                             <br />
                             Are you sure you want to continue?`;
@@ -1882,10 +1883,10 @@ class AssignmentEditorContainer extends React.Component {
                                 <br />
                                 <ul>
                                 ${taskChildrenNodes.map((task)=>{
-                                    return (`<li>${task}</li>`);
-                                }).reduce((val, acc) => {
-                                    return acc + val;
-                                }, '')}
+        return (`<li>${task}</li>`);
+    }).reduce((val, acc) => {
+        return acc + val;
+    }, '')}
                                 </ul>
                                 <br />
                                 Are you sure you want to continue?`;
@@ -1976,8 +1977,8 @@ class AssignmentEditorContainer extends React.Component {
             break;
         default:
             newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
-                    ? false
-                    : true;
+                ? false
+                : true;
             break;
         }
 
@@ -2247,12 +2248,12 @@ class AssignmentEditorContainer extends React.Component {
             newData[workflowIndex].Workflow[taskIndex][stateField][1] = value * 1440;
             break;
         case 'TA_trigger_consolidation_threshold_reflect':
-                //let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
+            //let targetIndex1 = this.getReflectIndex(taskIndex, workflowIndex);
             let targetIndex1 = this.getConsolidationIndex(true, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex1]['TA_trigger_consolidation_threshold'][0] = value;
             break;
         case 'TA_trigger_consolidation_threshold_assess':
-                //let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
+            //let targetIndex2 = this.getAssessIndex(taskIndex, workflowIndex);
             let targetIndex2 = this.getConsolidationIndex(false, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[targetIndex2]['TA_trigger_consolidation_threshold'][0] = value;
             break;
@@ -2317,12 +2318,12 @@ class AssignmentEditorContainer extends React.Component {
             newData[workflowIndex].Workflow[targetIndex2]['TA_trigger_consolidation_threshold'][1] = val;
             break;
         case 'StartDelay':
-            {
-                newData[workflowIndex].Workflow[taskIndex][stateField] = val;
-                newData[workflowIndex].Workflow[taskIndex]['TA_start_delay'] = (val
-                        ? 1
-                        : 0);
-            }
+        {
+            newData[workflowIndex].Workflow[taskIndex][stateField] = val;
+            newData[workflowIndex].Workflow[taskIndex]['TA_start_delay'] = (val
+                ? 1
+                : 0);
+        }
         default:
             newData[workflowIndex].Workflow[taskIndex][stateField] = val;
             break;
@@ -2567,7 +2568,7 @@ class AssignmentEditorContainer extends React.Component {
         return newGradeDist;
     }
 
-	/**
+    /**
 	 * Handler to change the Assignment's Grade Distribution of Workflows
 	 * @param {number} workflowIndex 	Index of workflow that will be updated 
 	 * @param {number} value 	New value for the weight
@@ -2837,8 +2838,8 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     callTaskFunction(){
-      //Passed to taskDetails to call every other function defined here.
-      //This is just to pass only a few functions down
+        //Passed to taskDetails to call every other function defined here.
+        //This is just to pass only a few functions down
         const args = [].slice.call(arguments);
         const functionName = args.shift();
         return this[functionName](...args);
@@ -2847,9 +2848,9 @@ class AssignmentEditorContainer extends React.Component {
     render() {
         let infoMessage = null;
         let submitButtonView = (
-          <button  type="button" onClick={this.onSubmit.bind(this)}>
-              <i className="fa fa-check"></i>{this.state.Strings.Submit}
-          </button>
+            <button  type="button" onClick={this.onSubmit.bind(this)}>
+                <i className="fa fa-check"></i>{this.state.Strings.Submit}
+            </button>
         );
         let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
 
@@ -2892,9 +2893,9 @@ class AssignmentEditorContainer extends React.Component {
                 <span onClick={() => {
                     this.setState({InfoMessage: ''});
                 }} className="small-info-message">
-                <span className={`${this.state.InfoMessageType}-message`}>
-                  {this.state.InfoMessage}
-                </span>
+                    <span className={`${this.state.InfoMessageType}-message`}>
+                        {this.state.InfoMessage}
+                    </span>
                 </span>
             );
         }
@@ -2929,14 +2930,14 @@ class AssignmentEditorContainer extends React.Component {
                         }
                         if (Object.keys(workflow.Workflow[node.model.id]).length !== 0) {
                             tV.push(
-                              <div className={node.model.id === this.state.SelectedTask
-                                ? 'workflow-task-list-item selected' : 'workflow-task-list-item' }
+                                <div className={node.model.id === this.state.SelectedTask
+                                    ? 'workflow-task-list-item selected' : 'workflow-task-list-item' }
                                 onClick={this.changeSelectedTask.bind(this, node.model.id)
                                 }
                                 key={`${index}-${node.model.id}-list-item`}
                                 >
-                                  {workflow.Workflow[node.model.id].TA_display_name}
-                              </div>);
+                                    {workflow.Workflow[node.model.id].TA_display_name}
+                                </div>);
                         }
                     }
                 }, this);
@@ -2947,35 +2948,35 @@ class AssignmentEditorContainer extends React.Component {
                 tabPanelAr.push(
                     <TabPanel key={'tab ' + index}>
                         <div >
-                          <ProblemDetailsComponent key={'Workflows' + index} workflowIndex={index}
-                            WorkflowDetails={workflow}
-                            NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
-                            changeWorkflowData={this.changeWorkflowData.bind(this)}
-                            changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
-                            changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
-                            changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}
-                            addCustomProblemType={this.addCustomProblemType.bind(this)}
-                            Strings={this.state.Strings}
-                            />
-                          <br/>
-                          <br/>
-                          <div className='task-details-section'>
-                            <div className='workflow-task-list'>
-                              {tV}
-                            </div>
-                            <div className='current-task-view'>
-                                <TaskDetailsComponent key={index + '-' + this.state.SelectedTask}
-                                index={this.state.SelectedTask}
-                                workflowIndex={index}
-                                LastTaskChanged={this.state.LastTaskChanged}
-                                TaskActivityData={this.state.WorkflowDetails[index].Workflow[this.state.SelectedTask]}
-                                isOpen={true}
+                            <ProblemDetailsComponent key={'Workflows' + index} workflowIndex={index}
+                                WorkflowDetails={workflow}
+                                NumberofWorkflows={this.state.AssignmentActivityData.NumberofWorkflows}
+                                changeWorkflowData={this.changeWorkflowData.bind(this)}
+                                changeWorkflowInputData={this.changeWorkflowInputData.bind(this)}
+                                changeWorkflowDropdownData={this.changeWorkflowDropdownData.bind(this)}
+                                changeWorkflowGradeDist={this.changeWorkflowGradeDist.bind(this)}
+                                addCustomProblemType={this.addCustomProblemType.bind(this)}
                                 Strings={this.state.Strings}
-                                changeSelectedTask={this.changeSelectedTask.bind(this)}
-                                callTaskFunction={this.callTaskFunction.bind(this)}
-                              />
+                            />
+                            <br/>
+                            <br/>
+                            <div className='task-details-section'>
+                                <div className='workflow-task-list'>
+                                    {tV}
+                                </div>
+                                <div className='current-task-view'>
+                                    <TaskDetailsComponent key={index + '-' + this.state.SelectedTask}
+                                        index={this.state.SelectedTask}
+                                        workflowIndex={index}
+                                        LastTaskChanged={this.state.LastTaskChanged}
+                                        TaskActivityData={this.state.WorkflowDetails[index].Workflow[this.state.SelectedTask]}
+                                        isOpen={true}
+                                        Strings={this.state.Strings}
+                                        changeSelectedTask={this.changeSelectedTask.bind(this)}
+                                        callTaskFunction={this.callTaskFunction.bind(this)}
+                                    />
+                                </div>
                             </div>
-                          </div>
                         </div>
                     </TabPanel>
                 );
@@ -2993,31 +2994,33 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-                     <div className="section-button-area add-margin-for-button">
-                      {submitButtonView}
-                    </div>
-                  <div>
-                    <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
-                      Courses={this.state.Courses} Semesters={this.state.Semesters}
-					  WorkflowData={this.state.WorkflowDetails}
-                      changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
-                      changeAssignmentInput={this.changeAssignmentInput.bind(this)}
-                      changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
-                      changeAssignmentGradeDist={this.changeAssignmentGradeDist.bind(this)}
-                      Strings={this.state.Strings}
-                    />
-                    <br />
-                   
-                     {workflowsView}
-                    <br/>
-                    {infoMessage}
+                    
+                    <HeaderComponent Strings={this.state.Strings} />
                     <div className="section-button-area add-margin-for-button">
-                      <div className="faded-message-text">
-                        {this.state.Strings.SubmitReminderMessage}
-                      </div>
-                      {saveButtonView}
+                        {submitButtonView}
                     </div>
-                  </div>
+                    <div>
+                        <AssignmentDetailsComponent AssignmentActivityData={this.state.AssignmentActivityData}
+                            Courses={this.state.Courses} Semesters={this.state.Semesters}
+					  WorkflowData={this.state.WorkflowDetails}
+                            changeAssignmentNumeric={this.changeAssignmentNumeric.bind(this)}
+                            changeAssignmentInput={this.changeAssignmentInput.bind(this)}
+                            changeAssignmentDropdown={this.changeAssignmentDropdown.bind(this)}
+                            changeAssignmentGradeDist={this.changeAssignmentGradeDist.bind(this)}
+                            Strings={this.state.Strings}
+                        />
+                        <br />
+                   
+                        {workflowsView}
+                        <br/>
+                        {infoMessage}
+                        <div className="section-button-area add-margin-for-button">
+                            <div className="faded-message-text">
+                                {this.state.Strings.SubmitReminderMessage}
+                            </div>
+                            {saveButtonView}
+                        </div>
+                    </div>
                 </div>
             );
         }

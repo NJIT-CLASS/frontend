@@ -28,9 +28,9 @@ const taskStrings = {
     AddAnotherField : 'Add another field',
     ShowAdvancedOptions : 'Show Advanced Options',
     DefaultTaskDuration: 'Default duration for task',
-    ShouldTaskEndAtCertainTime: 'Should this task end at a certain time',
-    ExpireAfter: 'Expire after default duration',
-    EndAtThisTime: 'End at a specific time',
+    ShouldTaskEndAtCertainTime: 'Should this task be due:',
+    ExpireAfter: 'the default duration after actually starting',
+    EndAtThisTime: 'at a specific time',
     DelayBeforeStartingTask: 'Delay before starting task',
     StartWhenPriorTaskIsComplete : 'Start when prior task is complete',
     StartAfterPriorTaskEndsBy : 'Start after prior task ends by',
@@ -108,7 +108,10 @@ const taskStrings = {
     Other: 'Other',
     Pass: 'Pass',
     Fail: 'Fail',
-    ShouldReflectBlock: 'Should tasks wait for the reflection to be complete'
+    ShouldReflectBlock: 'Should tasks wait for the reflection to be complete',
+    TaskParamHeader: 'Task-level Parameters',
+    UserFieldHeader: 'User Input Fields',
+    AdvancedTaskParamHeader: 'Advanced Task-level Parameters',
 };
 const assignmentStrings = {
     Essay: 'Essay', //AssignmentDetails Strings
@@ -127,9 +130,25 @@ const assignmentStrings = {
     HowManyDifferentTypesOfProblems: 'How Many Different Types of Problems',
     Instructions: 'Instructions',
     DefaultAssignmentName: 'Assignment',
-    SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page'
+    SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page',
+    
 };
 
+const headerStrings = {
+    AssignmentHeader: 'Parameters at the Assignment-level',
+    WorkflowHeader: 'Parameters for the Entire Problem Thread',
+    TaskHeader: 'Individual Task-level Parameters',
+    MainHeader: `An assignment consists of one or more independent problems. Each problem has
+    its own full thread of tasks. In this page you define an assignment that can be used
+    in several courses and sections. (You specify the section elsewhere). To define an
+    assignment you should define:`,
+    TaskDurationHeader: 'Task Duration and Start Time Defaults',
+    TaskDueHeader: 'When Task is Due',
+    AssessmentHeader: 'Assessment Parameters (Grading/Critique)',
+    ReflectionHeader: 'Reflection Parameters (Edit/Comment on/Revise & Resubmit Task)',
+    FollowOnHeader: 'Does a Solution or Problem Follow-on?',
+    AssigneeConstraintHeader: 'Who Sees/Does this Task?',
+};
 const workflowStrings = {
     MultipleChoice: 'Multiple Choice', //Problem Details Strings
     ShortAnswer: 'Short Answer',
@@ -245,7 +264,7 @@ const tooltipMessages = {
     TaskConstraintInSameGroupAsMessage: '(Not used.  Groups are not implemented.)  The user must be in the same group as the user allocated to the task checked below.  (If two columns of check boxes appear, then use the column corresponding to the first or all subsequent users as appropriate.)',
     TaskConstraintNotInMessage: 'The user must NOT be the same as one allocated to the task checked below.  (If two columns of check boxes appear, then use the column corresponding to the first or all subsequent users as appropriate.)',
     TaskConstraintChooseFromMessage: 'The user must be selected from the users allocated to one of the tasks checked below.  (If two columns of check boxes appear, then use the column corresponding to the first or all subsequent users as appropriate.)',
-// I don't know what this is...
+    // I don't know what this is...
     TaskGetFieldContentMessage: '',
     TaskRequiresJustificationMessage:'',
     TaskGroupTaskMessage:'Should this task be conducted jointly by a group or by a single user.  (Not used.  Currently groups are not implemented.)',
@@ -255,4 +274,4 @@ const tooltipMessages = {
 };
 
 
-export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...fieldStrings, ...tooltipMessages};
+export default {...taskStrings, ...assignmentStrings, ...workflowStrings, ...fieldStrings, ...tooltipMessages, ...headerStrings};

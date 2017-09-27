@@ -1,51 +1,97 @@
 import React, { Component } from 'react';
-import apiCall from '../shared/apiCall';
-import Collapsible from 'react-collapsible';
+import EveryonesWorkContainer from './everyonesWorkContainer';
+import CourseSelectComponent from './courseSelect';
+import SectionSelectComponent from './sectionSelect';
+import AssignmentSelectComponent from './assignmentSelect';
+import SemesterSelectComponent from './semesterSelect';
 
-class EveryonesWorkMain extends Component {
-    constructor(props){
+
+class MainPageContainer extends Component {
+    constructor(props) {
         super(props);
-        this.state = {
-            ListofEveryone: {},
-            Loaded: false
+
+        this.state= {
+            AssignmentID: this.props.AssignmentID ,
+            CourseID: -1,
+            SectionID: -1,
+            SemesterID: -1,
+            Strings: {
+                Course: 'Course',
+                Semester: 'Semester',
+                Assignment: 'Assignment',
+                Section: 'Section'
+            }
         };
+
+        this.selectAssignment = this.selectAssignment.bind(this);
+        this.selectCourse = this.selectCourse.bind(this);
+        this.selectSection = this.selectSection.bind(this);
+        this.selectSemester = this.selectSemester.bind(this);
     }
-    componentWillMount () {
-        this.fetchIDs(this.props);
-    }
-    
-    fetchIDs(props){
-        apiCall.get(`/EveryonesWork/${props.AssignmentID}`, (err, res, body) => {
-            console.log(body);
-            this.setState({
-                ListofEveryone: body.EveryonesWork,
-                Loaded: true
-            });
+
+    componentDidMount() {
+        this.props.__(this.state.Strings, newStrings => {
+            this.setState({Strings: newStrings});
         });
     }
+    selectCourse(e){
+        this.setState({
+            CourseID: e.value
+        });
+    }
+
+    selectSection(e){
+        this.setState({
+            SectionID: e.value
+        });
+    }
+
+    selectAssignment(e){
+        this.setState({
+            AssignmentID: e.value
+        });
+    }
+    selectSemester(e){
+        this.setState({
+            SemesterID: e.value
+        });
+    }
+
     render() {
-        let {Loaded, ListofEveryone} = this.state;
-        if(!Loaded){
-            return <div></div>;
+        let {AssignmentID, CourseID, SemesterID, SectionID, Strings} = this.state;
+        let everyonesWorkSection = null;
+        if(AssignmentID != ':assignmentId'){
+            everyonesWorkSection = (
+                <EveryonesWorkContainer UserID={this.props.UserID} AssignmentID={AssignmentID}/>
+            );
         }
-        let listofUsers = Object.keys(ListofEveryone).map(userId => {
-            const listOfTasks = ListofEveryone[userId].map( taskId =>
-                <li><a href={`/task/${taskId}`}>{taskId}</a></li>
-            );
-            
-            return ( 
-                <Collapsible trigger={`${userId}`}>
-                    {listOfTasks}
-                </Collapsible>
-            );
-        });
         return (
             <div>
-                { listofUsers}
+                <SemesterSelectComponent selectSemester={this.selectSemester} 
+                    SemesterID={SemesterID}
+                    Strings={Strings}
+                />
+                <CourseSelectComponent selectCourse={this.selectCourse}
+                    UserID={this.props.UserID}
+                    Strings={Strings}
+                    CourseID={CourseID}
+                />
+                <SectionSelectComponent selectSection={this.selectSection} 
+                    UserID={this.props.UserID}
+                    CourseID={CourseID}
+                    SectionID={SectionID}
+                    SemesterID={SemesterID}
+                    Strings={Strings}
+                />
+                <AssignmentSelectComponent selectAssignment={this.selectAssignment}
+                    SectionID={SectionID}
+                    AssignmentID={AssignmentID}
+                    Strings={Strings}
+                />
+                {everyonesWorkSection}
             </div>
-    
         );
     }
 }
 
-export default EveryonesWorkMain;
+export default MainPageContainer;

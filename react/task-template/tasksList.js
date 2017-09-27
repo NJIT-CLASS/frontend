@@ -21,11 +21,11 @@ class TasksList extends React.Component{
         		// and gives the Components an appropriate title.
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
-                    let compString = null;
-                    if (idx == TasksArray.length - 1) {
-                    
-                        if (task.Status == 'Complete' || task.Status == 'complete') {
-                            return (
+                let compString = null;
+                if (idx == TasksArray.length - 1) {
+
+                    if (task.Status == 'Complete' || task.Status == 'complete') {
+                        return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -35,17 +35,26 @@ class TasksList extends React.Component{
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
+<<<<<<< HEAD
         						Strings={Strings}
+                    TaskID={task.TaskInstanceID}
+                    showComments={this.props.showComments.bind(this)}
+=======
+                                    TaskOwner={task.UserID}
                                     TaskID={task.TaskInstanceID}
                                     addCommentListItem={this.props.addCommentListItem.bind(this)}
                                     showComments={this.props.showComments.bind(this)}
                                     CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
+                                    Strings={Strings}
+
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         					/>
-                            );
-                        } 
-                    
-                        if(this.props.TaskStatus.includes('complete')){
-                            return (
+                        );
+                    }
+
+                    if(this.props.TaskStatus.includes('complete')){
+                        return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -56,10 +65,16 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
+<<<<<<< HEAD
+=======
+                                    TaskOwner={task.UserID}
                                     TaskID={task.TaskInstanceID}
                                     addCommentListItem={this.props.addCommentListItem.bind(this)}
                                     showComments={this.props.showComments.bind(this)}
                                     CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
+
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         					/>
                             );
                         }
@@ -71,7 +86,7 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                      getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -82,10 +97,17 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
+<<<<<<< HEAD
+                    showComments={this.props.showComments.bind(this)}
+                    IsRevision={this.props.IsRevision}
+=======
+                                    TaskOwner={task.UserID}
                                     showComments={this.props.showComments.bind(this)}
                                     addCommentListItem={this.props.addCommentListItem.bind(this)}
                                     IsRevision={this.props.IsRevision}
                                     CurrentTaskType={this.props.CurrentTaskType}
+									
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         					/>
                             );
                         }
@@ -97,13 +119,20 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
+<<<<<<< HEAD
+                    showComments={this.props.showComments.bind(this)}
+=======
                                     addCommentListItem={this.props.addCommentListItem.bind(this)}
                                     showComments={this.props.showComments.bind(this)}
+                                    TaskOwner={task.UserID}
+                                    VisitorID={this.props.VisitorID}
+
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         					/>
-                            );
-                        } else {
-                        
-                            return (
+                        );
+                    } else {
+
+                        return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -115,10 +144,18 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
+<<<<<<< HEAD
+                    TaskID={task.TaskInstanceID}
+                    showComments={this.props.showComments.bind(this)}
+=======
+                                    TaskOwner={task.UserID}
                                     TaskID={task.TaskInstanceID}
                                     addCommentListItem={this.props.addCommentListItem.bind(this)}
                                     showComments={this.props.showComments.bind(this)}
                                     CurrentTaskType={this.props.CurrentTaskType}
+                                    VisitorID={this.props.VisitorID}
+
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
         					/>
                             );
                         }

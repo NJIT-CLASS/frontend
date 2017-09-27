@@ -12,7 +12,6 @@ const pages = [
     'settings',
     'account',
     'translation-manager',
-    'about',
     'reset-password',
     'confirm-password-reset',
     'course-page',
@@ -29,7 +28,12 @@ const pages = [
     'section',
     'user-management',
     'everyones-work',
+<<<<<<< HEAD
     'reallocation'
+=======
+    'about',
+    
+>>>>>>> db46d4324848a5565b0bea1837cec191d3d993d6
 ];
 
 var pageConfigs = [];
