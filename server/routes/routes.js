@@ -28,6 +28,7 @@ const pages = [
     'section',
     'user-management',
     'everyones-work',
+    'reallocation',
     'about',
     
 ];

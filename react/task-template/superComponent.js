@@ -19,6 +19,8 @@ import FileLinksComponent from './fileLinksComponent';
 
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
+import CommentInfoComponent from './CommentInfoComponent';
+
 class SuperComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -842,6 +844,22 @@ class SuperComponent extends React.Component {
         }
 
         return ( // main render return()
+
+        //   <div>
+        //     {infoMessage}
+        //     <div className="section card-2 ">
+        //       <div onClick={this.toggleContent.bind(this)}>
+        //         <h2 className="title collapsable-header">{this.props.ComponentTitle}</h2>
+        //       </div>
+        //       <CommentInfoComponent
+        //         TargetID = {this.props.TaskID}
+        //         Target = {'TaskInstance'}
+        //         ComponentTitle = {this.props.ComponentTitle}
+        //         showComments = {this.props.showComments}
+        //       />
+        //       {content}
+        //     </div>
+
             <div>
                 {infoMessage}
                 <div className="section card-2 ">

@@ -45,6 +45,8 @@ let strings = {
     ApproveRevision: 'Approve',
     ProblemThreadLabel: 'Problem Thread',
     CommentTargetLabel: 'View comments on...',
+    HideLabel: 'Hide Task Below',
+    UnhideLabel: 'Show Task Below',
     RejectButtonSuccess:'Sent for Revision',
     ApproveButtonSuces: 'Approved',
     DisputeButtonSuccess: 'Disputed',

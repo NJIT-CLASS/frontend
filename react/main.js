@@ -25,9 +25,10 @@ import SectionsContainer from './sections/sections-container';
 import UserGradeReportContainer from './grade-report/user-grade-report-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
+import EveryonesWorkMain from './everyones-work/main-container';
+import Reallocation from './reallocation/reallocation-container';
 import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
-
 const translationFunction = (objOfStrings, cb) => {
     const options = {
         method: 'POST',
@@ -133,4 +134,8 @@ case 'user-management':
 case 'everyones-work':
     ReactDOM.render(<MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
     break;
+case 'reallocation-container':
+    ReactDOM.render(<Reallocation UserID={userId} apiUrl={apiUrl}/>, reactElem);
+    break;
 }
+

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
+import CommentInfoComponent from './CommentInfoComponent';
 import apiCall from '../shared/apiCall';
 import FileLinksComponent from './fileLinksComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
@@ -26,26 +27,6 @@ class SuperViewComponent extends React.Component {
             IsBypassedDispute: false
             
         };
-    }
-
-    componentWillMount() {
-        this.props.addCommentListItem('TaskInstance', this.props.TaskID, this.props.ComponentTitle);
-        apiCall.get(`/comments/countOfComments/TaskInstance/id/${this.props.TaskID}`, (err, res, body) => {
-            let list = [];
-            if (!body.Error) {
-                let numComments = body.NumberComments;
-                this.setState({NumberComments: numComments});
-            }
-            else {
-                console.log('No comment count received.');
-            }
-        });
-        console.log(this.props.CurrentTaskType, isEmpty(this.props.TaskData[0]));
-        if (this.props.CurrentTaskType == TASK_TYPES.DISPUTE && isEmpty(this.props.TaskData[0])){
-            this.setState({
-                IsBypassedDispute: true
-            });
-        }
     }
 
     toggleContent() {
@@ -83,10 +64,6 @@ class SuperViewComponent extends React.Component {
         }
     }
 
-    handleCommentClick() {
-        this.props.showComments('TaskInstance', this.props.TaskID);
-    }
-
     render() {
         let content = null;
         let TA_rubric = null;
@@ -120,17 +97,17 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-                <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
-                <TransitionGroup>
-                    <CSSTransition 
-                        timeout={{enter: 500, exit: 300}}
-                        classNames="example" 
-                        appear
-                        enter 
-                        exit>
-                        {TA_rubric_content}
-                    </CSSTransition>
-                </TransitionGroup>
+              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
+              <TransitionGroup>
+                <CSSTransition
+                  timeout={{enter: 500, exit: 300}}
+                  classNames="example"
+                  appear
+                  enter
+                  exit>
+                {TA_rubric_content}
+                </CSSTransition>
+              </TransitionGroup>
             </div>);
         }
 
@@ -176,23 +153,23 @@ class SuperViewComponent extends React.Component {
                 }
 
                 fieldRubric = (<div key={1200}>
-                    <button
-                        type="button"
-                        className="float-button in-line"
-                        onClick={this.toggleFieldRubric.bind(this, index)}
-                    >
-                        {rubricButtonText}
-                    </button>
-                    <TransitionGroup>
-                        <CSSTransition 
-                            timeout={{enter: 500, exit: 300}}
-                            classNames="example" 
-                            appear
-                            enter 
-                            exit>
-                            {rubric_content}
-                        </CSSTransition>
-                    </TransitionGroup>
+                  <button
+                    type="button"
+                    className="float-button in-line"
+                    onClick={this.toggleFieldRubric.bind(this, index)}
+                  >
+                    {rubricButtonText}
+                  </button>
+                  <TransitionGroup>
+                    <CSSTransition
+                      timeout={{enter: 500, exit: 300}}
+                      classNames="example"
+                      appear
+                      enter
+                      exit>
+                    {rubric_content}
+                    </CSSTransition>
+                  </TransitionGroup>
                 </div>
                 );
             }
@@ -237,6 +214,7 @@ class SuperViewComponent extends React.Component {
             </div>);
 
         return (
+
             <div key={this.props.index + 2001} className="section card-2 " >
                 <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
                 <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
