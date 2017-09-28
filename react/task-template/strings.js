@@ -44,10 +44,11 @@ let strings = {
     RejectRevision: 'Reject',
     ApproveRevision: 'Approve',
     ProblemThreadLabel: 'Problem Thread',
-    CommentTargetLabel: 'View comments on...',
+    CommentTargetLabel: 'View comments, ratings, and flags on...',
     HideLabel: 'Hide Task Below',
-    UnhideLabel: 'Show Task Below'
-
+    UnhideLabel: 'Show Task Below',
+    GoDownLabel: 'Comment On or Flag This Task',
+    CommentsTooltipText: 'Select the assignment, problem thread, or task for which you would like to view or add comments, ratings, or flags from the dropdown menu',
 };
 
 export default strings;

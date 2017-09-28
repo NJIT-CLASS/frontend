@@ -58,6 +58,11 @@
 @import 'vendor/react-select/default';
 //@import 'vendor/react-select.min';
 @import 'vendor/react-quill/react-quill-snow';
+@import 'vendor/react-table/react-table';
+
+@import '../node_modules/react-table/react-table';
+@import '../node_modules/react-dates/lib/css/_datepicker';
+@import '../node_modules/react-dates/css/styles';
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;

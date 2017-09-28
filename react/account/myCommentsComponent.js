@@ -70,8 +70,8 @@ class MyCommentsComponent extends Component { //create a class for the component
     render() {
         let strings = {      // define all your strings in an object like this one (the name of the keys can be anything)
                             // we use this for translation
-            TitleText: 'My Comments',
-            CommentLabel: 'Text',
+            TitleText: 'My Comments, Ratings, and Flags',
+            CommentLabel: 'Comment',
             TimestampLabel: 'Timestamp',
             CourseLabel: 'Course',
             SectionLabel: 'Section',
@@ -79,15 +79,15 @@ class MyCommentsComponent extends Component { //create a class for the component
             RatingLabel: 'Rating',
             StatusLabel: 'Status',
             FlagStatusLabel: 'Flag Status',
-            ViewLabel: 'View Comment',
+            ViewLabel: 'View Comment or Flag',
             TypeLabel: 'Type',
             TooltipText: 'Hold the Shift key to select multiple columns for sorting',
             AllLabel: 'All',
-            OnLabel: 'On',
-            OffLabel: 'Off',
+            OnLabel: 'Activated',
+            OffLabel: 'Deactivated',
             FlagLabel: 'Flag',
             SubmittedLabel: 'Submitted',
-            SavedLabel: 'Saved'
+            SavedLabel: 'Draft'
         };
 
         let returnLoaded = (
@@ -161,7 +161,27 @@ class MyCommentsComponent extends Component { //create a class for the component
                     {
                       Header: strings.StatusLabel,
                       id: "status",
-                      accessor: (row) => row.Status.charAt(0).toUpperCase() + row.Status.slice(1),
+                      accessor: (row) => row.Status,
+                      Cell: (row) => ((row.original.Status == 'saved') ? strings.SavedLabel : strings.SubmittedLabel),
+                      filterMethod: (filter, row) => {
+                        if (filter.value === "all") {
+                            return true;
+                        }
+                        if (filter.value === "true") {
+                            return row[filter.id] == 'submitted';
+                        }
+                        return row[filter.id] == 'saved';
+                      },
+                      Filter: ({ filter, onChange }) =>
+                        <select
+                          onChange={event => onChange(event.target.value)}
+                          style={{ width: "100%" }}
+                          value={filter ? filter.value : "all"}
+                        >
+                          <option value="all">{strings.AllLabel}</option>
+                          <option value="true">{strings.SubmittedLabel}</option>
+                          <option value="false">{strings.SavedLabel}</option>
+                        </select>
                     },
                     {
                       Header: strings.FlagStatusLabel,

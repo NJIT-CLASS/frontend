@@ -28,13 +28,23 @@ class CommentInfoComponent extends React.Component {
             console.log('No comment count received.');
           }
       });
+      apiCall.get(`/comments/countOfFlags/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
+          let list = [];
+          if (!body.Error) {
+              let numFlags = body.NumberComments;
+              this.setState({NumberFlags: numFlags});
+          }
+          else {
+            console.log('No comment count received.');
+          }
+      });
       apiCall.get(`/comments/aveRating/comment/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
           let list = [];
           if (!body.Error) {
               let aveRating5 = Math.round(body.AveRating * 2) / 2;
               let aveRating1 = Math.round(body.AveRating * 10) / 10;
               let numRatings = body.NumRatings;
-              this.setState({AveRating5: aveRating5, AveRating1: aveRating1, NumRatings: numRatings})
+              this.setState({AveRating5: aveRating5, AveRating1: aveRating1, NumRatings: numRatings});
           }
           else {
             console.log('No comment average rating received.');
@@ -43,7 +53,7 @@ class CommentInfoComponent extends React.Component {
     }
 
     handleCommentClick() {
-      this.props.showComments(this.props.Target, this.props.TargetID);
+      this.props.showComments(this.props.Target, this.props.TargetID, 1);
     }
 
     render() {
@@ -70,6 +80,12 @@ class CommentInfoComponent extends React.Component {
                 <i className="fa fa-comment-o fa-stack-1x"></i>
                 <span className="fa fa-stack-1x">
                   <span className = "comment-number">{this.state.NumberComments}</span>
+                </span>
+              </span>
+              <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                <i className="fa fa-flag-o fa-stack-1x"></i>
+                <span className="fa fa-stack-1x">
+                  <span className = "comment-number" style={{marginTop: -3}}>{this.state.NumberFlags}</span>
                 </span>
               </span>
               <div style={{whiteSpace: 'nowrap', display: 'inline'}}>{starIcons}</div>

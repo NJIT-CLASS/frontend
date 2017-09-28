@@ -8,7 +8,6 @@ import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'; // contains constants and their values
-import scrollToComponent from 'react-scroll-to-component';
 
 // Display Components: These only display data retrived from the database. Not interactive.
 
@@ -18,6 +17,7 @@ import CommentComponent from './commentComponent';
 import TasksList from './tasksList';
 import CommentEditorComponent from './commentEditorComponent';
 import SuperViewComponent from './superViewComponent';
+import Tooltip from '../shared/tooltip';
 
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
@@ -191,6 +191,7 @@ class TemplateContainer extends React.Component {
                         Strings: newStrings,
                     });
                     this.createCommentList();
+                    console.log(commentsTaskList, body.assignment)
                 });
             });
         });
@@ -207,9 +208,10 @@ class TemplateContainer extends React.Component {
       });
     }
 
-    getCommentData(target, ID, type) {
-        if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
+    getCommentData(target, ID) {
+        //if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
             apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+                console.log('Comment data fetched')
                 let list = [];
                 if (body != undefined ) {
                     for (let com of body.Comments) {
@@ -223,7 +225,7 @@ class TemplateContainer extends React.Component {
                   console.log('No comment data received.');
                 }
             });
-        }
+        //}
     }
 
     componentWillMount() {
@@ -265,13 +267,16 @@ class TemplateContainer extends React.Component {
         let target = this.getQS('target');
         let targetID = this.getQS('targetID');
         if ((target != undefined) && (targetID != undefined)) {
-            this.showComments(target, targetID);
+            this.showComments(target, targetID, 1);
+        }
+        else {
+            this.showComments('TaskInstance', this.props.TaskID, 0);
         }
     }
 
     showSingleComment() {
         let commentsID = this.getQS('commentsID');
-        console.log('showSingleComment called', '2');
+        console.log('showSingleComment called');
         if (commentsID != undefined) {
             this.setState({EmphasizeID: commentsID});
         }
@@ -307,13 +312,13 @@ class TemplateContainer extends React.Component {
 
     handleChangeTarget(event) {
         this.setState({CommentTarget: event.value});
-        this.getCommentData(event.Target, event.ID, 'refresh');
+        this.getCommentData(event.Target, event.ID);
         if (this.state.BoxHide) {
             this.hideBox();
         }
     }
 
-    showComments(target, id) {
+    showComments(target, id, tab) {
       let show;
       for (let i of this.state.CommentTargetList) {
         if ((i.Target == target) && (i.ID == id)) {
@@ -321,7 +326,7 @@ class TemplateContainer extends React.Component {
         }
       }
       console.log('show', show);
-      this.setState({CommentTarget: show, TabSelected: 1});
+      this.setState({CommentTarget: show, TabSelected: tab});
       this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
@@ -391,10 +396,11 @@ class TemplateContainer extends React.Component {
               </TabPanel>
               <TabPanel>
                 <div className="placeholder" />
-                <div className="regular-text">{this.state.Strings.CommentTargetLabel}</div>
+                <div className="regular-text">{this.state.Strings.CommentTargetLabel}<Tooltip Text={this.state.Strings.CommentsTooltipText}></Tooltip></div>
                 <div style={{width: 280, display: 'inline'}}>
                   <Select options={this.state.CommentTargetList} value={this.state.CommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true}/>
                 </div>
+                <div style={{display: 'inline', paddingRight: 14}} className="link"><a href="#nc">{this.state.Strings.GoDownLabel}</a></div>
                 {this.state.CommentTarget > 1 && <div style={{display: 'inline'}} className="link"><a onClick={this.hideBox.bind(this)}>{this.state.BoxHide ? this.state.Strings.UnhideLabel : this.state.Strings.HideLabel}</a></div>}
                 {(this.state.CommentTarget > 1 && !this.state.BoxHide) &&
                 (<SuperViewComponent
@@ -428,6 +434,7 @@ class TemplateContainer extends React.Component {
                                     ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
                                     scroll={this.showSingleComment.bind(this)}
                                     Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
+                                    CommentTargetList={this.state.CommentTargetList}
                                     />
                             );}
                         else {
@@ -443,6 +450,7 @@ class TemplateContainer extends React.Component {
                                   ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
                                   scroll={this.showSingleComment.bind(this)}
                                   Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
+                                  CommentTargetList={this.state.CommentTargetList}
                                   />
                             );
                         }
@@ -450,19 +458,21 @@ class TemplateContainer extends React.Component {
                 }))}
 
                 {this.state.CommentTarget != undefined &&
-                  (<CommentEditorComponent
-                    UserID={this.props.UserID}
-                    Update={this.getCommentData.bind(this)}
-                    ReplyLevel={0}
-                    Parents={null}
-                    CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
-                    TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
-                    AssignmentInstanceID={this.state.AssignmentInstanceID}
-                    TaskID={this.props.TaskID}
-                    CommentTargetList={this.state.CommentTargetList}
-                    CommentTargetOnList={this.state.CommentTarget}
-                    Emphasize={false}
-                  />)
+                  (<div id = "nc">
+                    <CommentEditorComponent
+                      UserID={this.props.UserID}
+                      Update={this.getCommentData.bind(this)}
+                      ReplyLevel={0}
+                      Parents={null}
+                      CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
+                      TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
+                      AssignmentInstanceID={this.state.AssignmentInstanceID}
+                      TaskID={this.props.TaskID}
+                      CommentTargetList={this.state.CommentTargetList}
+                      CommentTargetOnList={this.state.CommentTarget}
+                      Emphasize={false}
+                    />
+                  </div>)
                 }
 
               </TabPanel>
