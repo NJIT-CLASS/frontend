@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class ToggleSwitch extends React.Component{
     constructor(props){
@@ -35,6 +36,13 @@ ToggleSwitch.defaultProps = {
     isClicked: false,
     yesLabel: 'Yes',
     noLabel: 'No'
+};
+ToggleSwitch.PropTypes = {
+    isClicked: PropTypes.bool,
+    yesLabel: PropTypes.string,
+    noLabel: PropTypes.string,
+    disabled: PropTypes.bool,
+    click: PropTypes.func
 };
 
 export default ToggleSwitch;

@@ -55,16 +55,15 @@ class User extends React.Component {
     toggleStatus(){
         let postVars = {
             VolunteerPoolID: this.state.VolunteerPoolID,
-            status: !this.state.Status
+            status: this.state.Status === 'Approved' ? 'Inactive' : 'Approved'
         };
         let endpoint = '/VolunteerPool/individualStatusUpdate';
-        
+        console.log(postVars);
 
         apiCall.post(endpoint, postVars, (err, res, body) => {
-            console.log(res);
-            if(res.statusCode === 200){
+            if(res.statusCode === 201){
                 this.setState({
-                    Status: !this.state.Status
+                    Status: postVars.status
                 });
             }
         });
@@ -82,12 +81,13 @@ class User extends React.Component {
                 />
             </td>);
             statusToggle = (<td>
-                <Toggle isClicked={this.state.Status}
+                <Toggle isClicked={this.state.Status !== 'Inactive' }
                     click={this.toggleStatus}
                     disabled={!this.state.Volunteer}
                 />
             </td>);
         }
+        console.log('Status: ', this.state.Status);
         return (
             <tr>
                 <td>{this.props.email}</td>
