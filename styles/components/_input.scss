@@ -5,6 +5,7 @@ input[type=date],
 input[type=number],
 textarea {
     width: 100%;
+    max-width: 1000px;
     @media screen and (max-width: $mobile-brk) {
       width: 100%
      }
@@ -28,6 +29,7 @@ textarea {
 
     &:hover {
         border-color: #00AB8D;
+        cursor: pointer;
     }
 
     &.error {
@@ -42,8 +44,6 @@ textarea {
   }
   width: 65%;
   height: 20%;
-  max-width: 1000px;
-  max-height: 1000px;
   font-size: 18px;
   box-sizing: border-box;
   display: block;
@@ -110,10 +110,4 @@ textarea {
 
 .passwordField{
   display:block !important;
-}
-
-.react-numeric-input{
-  b{
-    height: 33px !important;
-  }
 }

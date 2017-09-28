@@ -5,8 +5,7 @@
     flex-direction: column;
     align-self: center;
     flex-grow: 1;
-    text-align:-webkit-center;
-    
+
     h2 {
         font-size: 40px;
         margin: 0 10px 50px 10px;
@@ -16,8 +15,6 @@
         i {
             display: block;
             font-size: 70px;
-          /* change font size for smaller phones*/
-            font-size:10vh;
             margin-bottom: 15px;
         }
     }
@@ -37,15 +34,7 @@
     }
 
     p {
-         margin: 20px 23px;
-        font-style: italic;
-        color: rgb(46, 64, 81);
-        
-        a{
-        text-decoration:underline;
-        }
-        
-
+        margin: 20px 10px;
     }
 
     .remember-text {

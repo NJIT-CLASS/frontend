@@ -7,17 +7,15 @@ import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import CommentInfoComponent from './CommentInfoComponent';
-import apiCall from '../shared/apiCall';
-import FileLinksComponent from './fileLinksComponent';
-import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            ShowContent: false,
+            ShowContent: true,
             TaskData: {},
             ShowRubric: false,
             FieldRubrics: [],
@@ -75,7 +73,7 @@ class SuperViewComponent extends React.Component {
         }
 
         if (this.props.Rubric !== '' && this.props.Rubric !== null) { // if no Rubric, don't show it
-            let TA_rubric_content = <div></div>;
+            let TA_rubric_content = null;
             if (this.state.ShowRubric) {
                 // dangerouslySetInnerHTML is used here in case a markup-based text format is
                 // used in the future (WYSIWYG editor support)
@@ -88,17 +86,10 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
-              <TransitionGroup>
-                <CSSTransition
-                  timeout={{enter: 500, exit: 300}}
-                  classNames="example"
-                  appear
-                  enter
-                  exit>
+              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+              <CSSTransitionGroup transitionEnterTimeout={500} transitionLeaveTimeout={300} transitionName="example" transitionAppear={false} transitionEnter transitionLeave>
                 {TA_rubric_content}
-                </CSSTransition>
-              </TransitionGroup>
+              </CSSTransitionGroup>
             </div>);
         }
 
@@ -129,7 +120,7 @@ class SuperViewComponent extends React.Component {
             }
 
             if (this.props.TaskActivityFields[index].rubric != '') { // if Rubric is empty, don't show anything
-                let rubric_content = <div></div>;
+                let rubric_content = null;
                 const buttonTextHelper = this.props.TaskActivityFields[index].show_title ? field : '';
                 const rubricButtonText = this.state.FieldRubrics[index] ? this.props.Strings.HideRubric : this.props.Strings.ShowRubric;
 
@@ -151,16 +142,16 @@ class SuperViewComponent extends React.Component {
                   >
                     {rubricButtonText}
                   </button>
-                  <TransitionGroup>
-                    <CSSTransition
-                      timeout={{enter: 500, exit: 300}}
-                      classNames="example"
-                      appear
-                      enter
-                      exit>
+                  <CSSTransitionGroup
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}
+                    transitionAppearTimeout={500}
+                    transitionName="example"
+                    transitionAppear={false}
+                    transitionEnter transitionLeave
+                  >
                     {rubric_content}
-                    </CSSTransition>
-                  </TransitionGroup>
+                  </CSSTransitionGroup>
                 </div>
               );
             }
@@ -199,7 +190,6 @@ class SuperViewComponent extends React.Component {
           <div key={this.props.index + 2003} className="section-content">
             {TA_instructions}
             {TA_rubric}
-            <FileLinksComponent Files={this.props.Files} />
             {fields}
             <br key={this.props.index + 2005} />
           </div>);

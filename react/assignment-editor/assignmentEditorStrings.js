@@ -40,7 +40,6 @@ const taskStrings = {
     SeeSameActivity: 'Should students be able to see each other\'s work ',
     WhatHappensWhenTaskEnds: 'What happens at end of default time',
     WhatIfLate: 'What happens if late',
-    AllocateExtraCredit: 'Reassign for Extra Credit',
     ReduceByWhatPercent: 'Reduce this by what % per day late',
     NoPointsIfLate: 'No Points If Late',
     AwardPointsForDoing: 'Award points just for doing the task on time',

@@ -19,13 +19,6 @@
         font-weight: lighter;
         text-align: center;
     }
-    .description:empty{
-      padding: 0;
-    }
-
-    .section-description{
-      
-    }
   }
 
   .block-container{
@@ -37,13 +30,9 @@
   }
 
   .assignment-button{
-    margin-top:10px;
-    margin-right: 20px;
-    @media screen and (min-width: $mobile-brk){
-      float: right;
-    }
+
+    margin-right: 10%;
     @media screen and (max-width: $mobile-brk){
-      display: block;
       margin-right: 0;
     }
   }
@@ -53,8 +42,9 @@
     overflow-y: auto;
   }
   .section-content{
-   max-height: 300px;
-   overflow: auto;
+    /*padding-right: 0 !important;
+    ul{
+      padding-right: 45px;
+    }*/
   }
-  
 }

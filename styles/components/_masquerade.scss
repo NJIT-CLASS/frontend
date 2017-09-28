@@ -1,14 +1,12 @@
 .masquerade-activate {
     position: fixed;
     bottom: 0;
-    right: 20px;
+    right: 0;
     padding: 10px;
     margin: 10px;
     background: #2E4051;
     color: white;
-    border-radius: 20px;      
-    box-shadow:0 0 4px rgba(0,0,0,.14),0 4px 4px*2 rgba(0,0,0,.28);
-
+    border-radius: 20px;
 
     &:hover {
         cursor: pointer;

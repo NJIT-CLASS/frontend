@@ -1,6 +1,6 @@
 const path = require('path');
 
-exports.API_URL = process.env.API_URL || 'http://localhost:4000' ;
+exports.API_URL = process.env.API_URL || 'http://localhost:3000' ;
 
 //Language Options
 exports.LANGUAGES = [{
@@ -16,11 +16,7 @@ exports.LANGUAGES = [{
 {
     language: 'Português',
     locale: 'pt'
-},{
-    language: ' ελληνικά',
-    locale: 'el'
-}
-];
+}];
 
 
 //Define all Task Types and their names

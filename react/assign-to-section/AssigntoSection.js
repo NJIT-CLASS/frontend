@@ -40,9 +40,7 @@ class AssignToSectionContainer extends React.Component
             DataLoaded: false,
             InfoMessage: '',
             InfoMessageType:'',
-            Strings: Strings,
-            SubmittingInProgress: false,
-            SubmitSuccess: false
+            Strings: Strings
         };
     }
 
@@ -140,9 +138,6 @@ class AssignToSectionContainer extends React.Component
 
     onSubmit(){
     //saves the state data to the database
-        this.setState({
-            SubmittingInProgress: true
-        });
         if(this.state.Assignment.Section.length === 0){
             showMessage(this.state.Strings.NoSectionsSelected);
             this.setState({
@@ -187,8 +182,7 @@ class AssignToSectionContainer extends React.Component
                 showMessage(this.state.Strings.SubmitSuccess);
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitSuccess,
-                    InfoMessageType: 'success',
-                    SubmitSuccess: true
+                    InfoMessageType: 'success'
                 });
             }
             else{
@@ -199,11 +193,6 @@ class AssignToSectionContainer extends React.Component
                     InfoMessageType: 'success'
                 });
             }
-            
-            this.setState({
-                SubmittingInProgress: false
-            });
-            
         });
         return;
     }
@@ -356,21 +345,9 @@ class AssignToSectionContainer extends React.Component
   {
         let strings = this.state.Strings;
         let infoMessage = null;
-        let buttonView =  <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>;
+        let buttonView = this.state.SubmitSuccess ? null : (<button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>);
         if(!this.state.DataLoaded){
             return (<div></div>);
-        }
-
-        if(this.state.SubmittingInProgress === true){
-            buttonView = null;
-            buttonView = (
-                <div>
-                    <i className="fa fa-cog fa-spin fa-2x fa-fw"></i>
-                </div>
-            )
-        }
-        if(this.state.SubmitSuccess === true){
-            buttonView = null;
         }
 
         if(this.state.InfoMessage !== ''){

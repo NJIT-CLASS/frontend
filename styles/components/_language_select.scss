@@ -4,10 +4,10 @@
     align-self: center;
     background-color: #fff;
     border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
     &.hidden {
         background-color: #2D4052;
-        box-shadow: none;
+
         & > a {
             background-color: #2D4052;
 

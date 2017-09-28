@@ -21,10 +21,6 @@ import AccountManagement from './account/container';
 import QuickAssignmentReport from './quick-assignment-report/main-container';
 import AboutContainer from './about/about-container';
 import ForgotPasswordContainer from './forgot-password/forgot-password-container';
-import SectionsContainer from './sections/sections-container';
-import UserGradeReportContainer from './grade-report/user-grade-report-container';
-import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
-import UserManagementContainer from './user-management/main-container';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -49,7 +45,6 @@ const apiUrl = reactElem.dataset.apiUrl;
 const courseId = reactElem.dataset.courseId;
 const assignmentId = reactElem.dataset.assignmentId;
 const userType = reactElem.dataset.userType;
-const sectionId = reactElem.dataset.sectionId;
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
@@ -69,6 +64,7 @@ case 'translation-container':
 
 case 'template-container':
     const taskId = reactElem.dataset.taskId;
+    const sectionId = reactElem.dataset.sectionId;
     const isAdmin = reactElem.dataset.isAdmin;
     ReactDOM.render(
       <TemplateContainer
@@ -113,17 +109,4 @@ case 'about':
 case 'forgot-password':
     ReactDOM.render(<ForgotPasswordContainer />, reactElem);
     break;
-case 'sections':
-    ReactDOM.render(<SectionsContainer  UserID={userId} apiUrl={apiUrl}/>, reactElem);
-    break;
-case 'user-grade-report':
-    ReactDOM.render( <UserGradeReportContainer />, reactElem);
-    break;
-case 'volunteer-pool':
-    ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} apiUrl={apiUrl}/>, reactElem);
-    break;
-case 'user-management':
-    ReactDOM.render(<UserManagementContainer UserID={userId} />, reactElem);
-    break;
-
 }

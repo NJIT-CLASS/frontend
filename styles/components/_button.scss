@@ -94,17 +94,3 @@ button {
   .float-button{
      float: right;
   }
-
-  .circle-button{
-      display:block;
-      height: 40px;
-      width: 40px;
-      float: right;
-      padding: 10px;
-      margin: 10px;
-      clear: both;
-      position: fixed;
-      border-radius: 50%;
-      text-align: center;
-      box-shadow:0 0 4px rgba(0,0,0,.14),0 4px 4px*2 rgba(0,0,0,.28);
-  }

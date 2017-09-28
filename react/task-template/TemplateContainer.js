@@ -28,10 +28,6 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
-
-var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
-let FlatToNested = require('flat-to-nested');
-
 /*      PROPS:
             - TaskID
             - SectionID
@@ -40,12 +36,8 @@ let FlatToNested = require('flat-to-nested');
 */
 
 class TemplateContainer extends React.Component {
-
-
     constructor(props) {
         super(props);
-
-        this.tree = new TreeModel();
         this.state = {
             Loaded: false, // this variable is set to true when the page succesfully fetches data from the backend
             CourseID: null,
@@ -62,33 +54,24 @@ class TemplateContainer extends React.Component {
             Strings: strings,
             NotAllowed: false,
             CommentTargetList: [],
-            BoxHide: false,
-            IsRevision: false,
+            BoxHide: false
         };
 
         console.log(props.UserType, props.Admin);
     }
 
-    unflattenTreeStructure(flatTreeString){
-        let flatToNested = new FlatToNested();
-        let flatTreeArray = JSON.parse(flatTreeString);
-        let nestedTreeObj = flatToNested.convert(flatTreeArray);
-        let treeRoot = this.tree.parse(nestedTreeObj);
-        return treeRoot;
-    }
-
     getTaskData() {
-        // this function makes an API call and saves the data into appropriate state variables
+		// this function makes an API call and saves the data into appropriate state variables
 
         const options = {
-            // query strings
+				// query strings
             courseID: this.props.CourseID,
             userID: this.props.UserID,
             sectionID: this.props.SectionID,
         };
 
-        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
-        // for rendering
+		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+		// for rendering
         const options2 = {
             userID: this.props.UserID,
         };
@@ -113,7 +96,7 @@ class TemplateContainer extends React.Component {
 
                     if (bod.error === true) {
                         console.log('Error message', bod.message);
-                        return this.setState({
+                        this.setState({
                             NotAllowed: true,
                             Loaded: true,
                         });
@@ -154,7 +137,6 @@ class TemplateContainer extends React.Component {
 
                             return newTask;
                         });
-
                         const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
@@ -179,111 +161,18 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
-
-                        if([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)){
-                        /** Check if the current task is a revision task
-                         *      If not, it's a regular edit and show regular buttons
-                         *      Else, check if it has a consolidation task
-                         *          If it does, show regular buttons
-                         *          Else, show revision buttons
-                         */
-                            if(currentTask.TaskActivity.AllowRevision === true){
-
-                                apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
-                                    reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                                    console.log(reviseBod);
-                                    let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
-                                        return node.model.id === currentTask.TaskActivity.TaskActivityID;
-                                    });
-
-                                    console.log('Revision: currentTask', currentTaskNode);
-                                    if(currentTaskNode.children !== undefined && currentTaskNode.children[2]  !== undefined){
-                                        console.log('Revision: first child', currentTaskNode.children[2]  !== undefined);
-                                        if(currentTaskNode.children[2].children  !== undefined && currentTaskNode.children[2].children[2]){
-                                            console.log('Revision: second child: ', currentTaskNode.children[2].children[2]);
-                                            this.setState({
-                                                IsRevision: true
-                                            });
-                                        }
-                                    } else{
-                                        this.setState({
-                                            IsRevision: true
-                                        });
-                                    }
-                                });
-
-                            }else {
-                                this.setState({
-                                    IsRevision: false
-                                });
+                        parseTaskList.forEach((task, index) => {
+                            if (task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
+                                return;
                             }
-                        }else if([TASK_TYPES.CONSOLIDATION].includes(currentTask.TaskActivity.Type)){
-                        /** Check if current consolidation is acting on an Revision edit task
-                         *  If it is, show revision buttons
-                         *  Else, show normal buttons
-                         *
-                         *
-                         */
+                            else {
+                                commentsTaskList.push(task);
+                            }
+                        }, this);
 
-                            apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
-                                reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                                //console.log(reviseBod);
-                                let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
-                                    return node.model.id === currentTask.TaskActivity.TaskActivityID;
-                                });
-                                let possibleEditTask = currentTaskNode;
-                                let editIndex = null;
-                                if(currentTaskNode.parent){
-                                    possibleEditTask = currentTaskNode.parent; //possible needs consolidation
-                                    if(possibleEditTask.parent){
-                                        possibleEditTask = possibleEditTask.parent; //possible edit task
-                                        editIndex= possibleEditTask.model.id;
-                                    } else {
-                                        possibleEditTask = null;
-                                    }
-                                } else {
-                                    possibleEditTask = null;
-                                }
-                                if(possibleEditTask === null) {
-                                    this.setState({
-                                        IsRevision: false
-                                    });
-                                } else {
-                                    let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
-                                    if([TASK_TYPES.COMMENT].includes(possibleEditData.Type)){
-                                        if(possibleEditData.AllowRevision === true){
-                                            this.setState({
-                                                IsRevision: true
-                                            });
-                                        } else {
-                                            this.setState({
-                                                IsRevision: false
-                                            });
-                                        }
+                        commentsTaskList.push(currentTask);
 
-                                    } else {
-                                        this.setState({
-                                            IsRevision: false
-                                        });
-                                    }
-                                }
-                                console.log(currentTaskNode);
-
-                            });
-                        }
-                    // apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
-                    //     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                    //         //console.log(reviseBod);
-                    //     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
-                    //         return node.model.id === parseInt(this.props.TaskID);
-                    //     });
-
-                    //     console.log(currentTaskNode);
-
-                    // });
                     }
-
-
                     console.log('tasklist', taskList);
 
                     this.setState({
@@ -398,7 +287,7 @@ class TemplateContainer extends React.Component {
         let returningValues = ['', ''];
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
-                /// If multiple participants, assume that whichever is first in the array is desired
+              /// If multiple participants, assume that whichever is first in the array is desired
                 task.forEach((miniTask) => {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
@@ -407,7 +296,7 @@ class TemplateContainer extends React.Component {
                 });
             } else {
                 if(task.TaskActivity.TaskActivityID === taskActivityID){
-                    //if multiple versions, assume that the lastest version is desired
+                  //if multiple versions, assume that the lastest version is desired
 
                     returningValues = task.Data[task.Data.length - 1][fieldIndex];
                 }
@@ -443,28 +332,25 @@ class TemplateContainer extends React.Component {
     render() {
         let renderView = null;
         if (this.state.Error) {
-            // if there was an error in the data fetching calls, show the Error Component
+			// if there was an error in the data fetching calls, show the Error Component
             return <ErrorComponent />;
         }
         if (!this.state.Loaded) {
-            // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
+			// while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return <div />;
         }
 
-
         if (this.state.NotAllowed === true) {
-            renderView = (<div>{this.state.Strings.NotAllowed}  </div>);
+            renderView = (<div>{this.state.Strings.NotAllowed}</div>);
         } else {
             renderView = (<TasksList
-                                TasksArray={this.state.Data}
-                                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                                TaskID={this.props.TaskID}
-                                UserID={this.props.UserID}
-                                Strings={this.state.Strings}
-                                apiUrl={this.props.apiUrl}
-                                showComments={this.showComments.bind(this)}
-                                TaskStatus={this.state.TaskStatus}
-                                IsRevision={this.state.IsRevision}
+              TasksArray={this.state.Data}
+              getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+              TaskID={this.props.TaskID}
+              UserID={this.props.UserID}
+              Strings={this.state.Strings}
+              apiUrl={this.props.apiUrl}
+              showComments={this.showComments.bind(this)}
             />);
         }
 

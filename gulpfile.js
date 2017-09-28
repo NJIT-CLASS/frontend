@@ -28,27 +28,27 @@ const compileReact = (rootFile, outputName, watch) => {
 
         if(process.env.NODE_ENV === 'production'){
             bundler.bundle()
-            .on('error', function(err) {
-                gutil.log(err);
-                gutil.beep();
-                this.emit('end');
-            })
-            .pipe(source(`${outputName}.js`))
-            .pipe(buffer())
-            .pipe(uglify())
-            .pipe(gulp.dest('./.build/static'));
+      .on('error', function(err) {
+          gutil.log(err);
+          gutil.beep();
+          this.emit('end');
+      })
+      .pipe(source(`${outputName}.js`))
+      .pipe(buffer())
+      .pipe(uglify())
+      .pipe(gulp.dest('./.build/static'));
 
         } else{
 
             bundler.bundle()
-            .on('error', function(err) {
-                gutil.log(err);
-                gutil.beep();
-                this.emit('end');
-            })
-            .pipe(source(`${outputName}.js`))
-            .pipe(buffer())
-            .pipe(gulp.dest('./.build/static'));
+      .on('error', function(err) {
+          gutil.log(err);
+          gutil.beep();
+          this.emit('end');
+      })
+      .pipe(source(`${outputName}.js`))
+      .pipe(buffer())
+      .pipe(gulp.dest('./.build/static'));
         }
 
     }

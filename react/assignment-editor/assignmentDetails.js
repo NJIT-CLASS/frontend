@@ -57,7 +57,6 @@ class AssignmentDetailsComponent extends React.Component{
             }
           </ul>;
         }
-        
 
         if(this.props.Courses){
             coursesView = (<div>

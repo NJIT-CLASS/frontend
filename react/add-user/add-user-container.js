@@ -106,13 +106,8 @@ class AddUserContainer extends React.Component {
 
 
         apiCall.post('/addUser', vars, (err, res, body) => {
-            
-            if (res.statusCode != 200){
-                showMessage(this.state.Strings.SubmitError);
-            } else {
-                showMessage(this.state.Strings.SuccessfulAdd);
-                document.addUser.reset();
-            }
+          showMessage(this.state.Strings.SuccessfulAdd);
+            console.log(body.Message);
         });
     }
 
@@ -145,7 +140,7 @@ class AddUserContainer extends React.Component {
 
 
 
-            <form className="section-content" name="addUser" onSubmit={this.adduserSubmit.bind(this)}>
+            <form className="section-content" onSubmit={this.adduserSubmit.bind(this)}>
               <table>
                 <tr>
                   <td>

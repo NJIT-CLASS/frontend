@@ -71,7 +71,6 @@ class AssignmentEditorContainer extends React.Component {
             list_of_labels: [strings.Easy,strings.Medium, strings.Difficult],
             field_type: 'text',
             requires_justification: false,
-            revise_and_resubmit: '',
             instructions: '',
             rubric: '',
             justification_instructions: '',
@@ -167,7 +166,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
-                    revise_and_resubmit: '',
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -204,7 +202,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
-                    revise_and_resubmit: '',
                     instructions: strings.EditFieldInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -260,7 +257,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
-                    revise_and_resubmit: '',
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -295,7 +291,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
-                    revise_and_resubmit: '',
                     instructions: strings.GradeCorrectnessInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -314,7 +309,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
-                    revise_and_resubmit: '',                    
                     instructions: strings.GradeCompletenessInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -350,7 +344,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: false,
-                    revise_and_resubmit: '',
                     instructions: '',
                     rubric: '',
                     justification_instructions: '',
@@ -417,7 +410,6 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'text',
                     requires_justification: false,
-                    revise_and_resubmit: '',
                     instructions: strings.DisputeFieldInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -584,7 +576,7 @@ class AssignmentEditorContainer extends React.Component {
         this.checkAssigneeConstraintTasks(1, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(2, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(2, 'not', 1, workflowIndex);
-        //this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
+        this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(3, 'same_as', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(4, 'same_as', 2, workflowIndex);
         this.checkAssigneeConstraintTasks(5, 'not', 2, workflowIndex);
@@ -907,8 +899,7 @@ class AssignmentEditorContainer extends React.Component {
         const options = {
             assignment: sendData,
             userId: this.props.UserID,
-            partialAssignmentId: this.state.PartialAssignmentID,
-            courseId: sendData.AA_course
+            partialAssignmentId: this.state.PartialAssignmentID
         };
 
         apiCall.post('/assignment/create', options, (err, res, body) => {
@@ -971,17 +962,12 @@ class AssignmentEditorContainer extends React.Component {
         stateData[workflowIndex].Workflow.push(needsConsolData);
         stateData[workflowIndex].Workflow.push(consolData);
 
-        let newNeedsConsolIndex = stateData[workflowIndex].Workflow.length - 2;
-        let newConsolIndex = stateData[workflowIndex].Workflow.length - 1;
-
-       
-        
         let needsConsolidateNode = this.tree.parse({
-            id: newNeedsConsolIndex
+            id: stateData[workflowIndex].Workflow.length - 2
         });
 
         let consolidateNode = this.tree.parse({
-            id: newConsolIndex
+            id: stateData[workflowIndex].Workflow.length - 1
         });
         needsConsolidateNode = this.fillGaps(needsConsolidateNode, this.CONSOL_DISP_IDX);
         needsConsolidateNode.addChildAtIndex(consolidateNode, this.CONSOL_DISP_IDX);
@@ -1001,9 +987,6 @@ class AssignmentEditorContainer extends React.Component {
             needsConsolidateNode.children[this.CONSOL_DISP_IDX].addChildAtIndex(temp, this.CONSOL_DISP_IDX);
             selectedNode.addChildAtIndex(needsConsolidateNode, this.CONSOL_DISP_IDX);
         }
-
-        stateData[workflowIndex].Workflow[newNeedsConsolIndex].TA_display_name = this.computeNewName(stateData,newNeedsConsolIndex, workflowIndex);
-        stateData[workflowIndex].Workflow[newConsolIndex].TA_display_name = this.computeNewName(stateData,newConsolIndex, workflowIndex);
 
         return stateData;
     }
@@ -1053,14 +1036,11 @@ class AssignmentEditorContainer extends React.Component {
         stateData[workflowIndex].Workflow.push(this.createNewTask(stateData, this.disputeTask, parentIndex, workflowIndex, 'Dispute of '));
         stateData[workflowIndex].Workflow.push(this.createNewTask(stateData, this.resolveDisputeTask, parentIndex, workflowIndex, 'Resolve Dispute of'));
 
-        let newDisputeIndex = stateData[workflowIndex].Workflow.length - 2;
-        let newResolveDisputeIndex = stateData[workflowIndex].Workflow.length - 1;
-
         let disputeNode = this.tree.parse({
-            id: newDisputeIndex
+            id: stateData[workflowIndex].Workflow.length - 2
         });
         let resolveNode = this.tree.parse({
-            id: newResolveDisputeIndex
+            id: stateData[workflowIndex].Workflow.length - 1
         });
 
         disputeNode = this.fillGaps(disputeNode, this.CONSOL_DISP_IDX);
@@ -1084,9 +1064,6 @@ class AssignmentEditorContainer extends React.Component {
             temp.children[this.CONSOL_DISP_IDX].addChildAtIndex(disputeNode, this.CONSOL_DISP_IDX);
             selectedNode.addChildAtIndex(temp, this.CONSOL_DISP_IDX);
         }
-
-        stateData[workflowIndex].Workflow[newDisputeIndex].TA_display_name = this.computeNewName(stateData,newDisputeIndex, workflowIndex);
-        stateData[workflowIndex].Workflow[newResolveDisputeIndex].TA_display_name = this.computeNewName(stateData,newResolveDisputeIndex, workflowIndex);
         return stateData;
     }
 
@@ -1171,19 +1148,8 @@ class AssignmentEditorContainer extends React.Component {
         //swtich to add follow-on tasks
         switch(type){
         case this.ASSESS_IDX:
-            //add default assignee constraints
-            console.log('Before task array call', stateData);
-            let tasksToAvoid = this.getAlreadyCreatedTasks(newTaskIndex, workflowIndex, stateData);
-            console.log('tasksTo avaoid', tasksToAvoid);
-            tasksToAvoid.forEach((task) => {
-                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
-            });
-            
-            //add default consolidation task and dispte task
             stateData = this.changeDataCheck('Assess_Consolidate', index, workflowIndex, stateData);
             stateData = this.changeDataCheck('Assess_Dispute', index, workflowIndex, stateData);
-            
-           
             break;
         case this.REFLECT_IDX:
             break;
@@ -1281,42 +1247,13 @@ class AssignmentEditorContainer extends React.Component {
         newName = prefixString;
         let previousTaskIndex = stateData[workflowIndex].WorkflowStructure
         .first((node) => {
+            console.log(node.model.id);
             return node.model.id === taskIndex;
         }).parent.model.id;
 
         newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
-        
+
         return newName;
-    }
-/**
-     * [propogateNameChangeDownTree sends name change in task down to other tasks]
-     * @param  {[number]} startIndex    [index to begin searching the tree]
-     * @param  {[number]} workflowIndex [workflow's array index]
-     * @return {[void]}
-     */
-    propogateNameChangeDownTree(startIndex, workflowIndex){
-
-        let newData = this.state.WorkflowDetails;
-        let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
-            return node.model.id === startIndex;
-        });
-
-        selectedNode.walk(function(node){
-            if(node.model.id === -1 || node.model.id === startIndex){
-                return;
-            }
-
-            if(newData[workflowIndex].Workflow[node.model.id].CustomNameSet){
-                return;
-            }
-
-            newData[workflowIndex].Workflow[node.model.id].TA_display_name = this.computeNewName(newData, node.model.id, workflowIndex);
-
-        }, this);
-
-        this.setState({
-            WorkflowDetails: newData
-        });
     }
 
     getAssessIndex(parentIndex, workflowIndex, stateData) {
@@ -1599,7 +1536,36 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    
+    /**
+     * [propogateNameChangeDownTree sends name change in task down to other tasks]
+     * @param  {[number]} startIndex    [index to begin searching the tree]
+     * @param  {[number]} workflowIndex [workflow's array index]
+     * @return {[void]}
+     */
+    propogateNameChangeDownTree(startIndex, workflowIndex){
+
+        let newData = this.state.WorkflowDetails;
+        let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
+            return node.model.id === startIndex;
+        });
+
+        selectedNode.walk(function(node){
+            if(node.model.id === -1 || node.model.id === startIndex){
+                return;
+            }
+
+            if(newData[workflowIndex].Workflow[node.model.id].CustomNameSet){
+                return;
+            }
+
+            newData[workflowIndex].Workflow[node.model.id].TA_display_name = this.computeNewName(newData, node.model.id, workflowIndex);
+
+        }, this);
+
+        this.setState({
+            WorkflowDetails: newData
+        });
+    }
 
     
 
@@ -1966,7 +1932,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
             }
             break;
-        case 'TA_allow_revisions-child':
+        case 'TA_allow_revisions':
             {
                 let reflectIndex = this.getReflectIndex(taskIndex, workflowIndex, newData);
                 let newVal  = !newData[workflowIndex].Workflow[reflectIndex].TA_allow_revisions;
@@ -2052,12 +2018,6 @@ class AssignmentEditorContainer extends React.Component {
         return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
     }
 
-    getTaskRevisioninChild(taskIndex, workflowIndex){
-        let targetIndex = this.getReflectIndex(taskIndex, workflowIndex);
-
-        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].TA_allow_revisions;
-    }
-
     cleanAssigneeConstraints(stateData, deleteTaskIndex, workflowIndex) {
         //will need to go through list of workflows, go to TA_assignee_constraints[2], go through ALL constraints keys, check if taskIndex is in the array, if it is, pop it
 
@@ -2095,9 +2055,8 @@ class AssignmentEditorContainer extends React.Component {
     }
 
 
-    checkAssigneeConstraintTasks(taskIndex, constraint, referId, workflowIndex, stateData) {
-        console.log('stateData type', stateData, stateData == null);
-        let newData = stateData || this.state.WorkflowDetails;
+    checkAssigneeConstraintTasks(taskIndex, constraint, referId, workflowIndex) {
+        let newData = this.state.WorkflowDetails;
         if (newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] == undefined) {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
         }
@@ -2111,16 +2070,7 @@ class AssignmentEditorContainer extends React.Component {
         } else {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].push(referId);
         }
-
-        if(stateData == null){
-            console.log('no data passed', newData);
-            return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
-            
-        } else {
-            console.log('data passed', newData);
-            return newData;
-
-        }
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
     changeDropdownFieldData(stateField, taskIndex, field, workflowIndex, e) {
@@ -2385,20 +2335,18 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
-    getAlreadyCreatedTasks(currTaskIndex, workflowIndex, stateData) { //change to get from tree
-        console.log('task list of created',currTaskIndex, workflowIndex, stateData);
+    getAlreadyCreatedTasks(currTaskIndex, workflowIndex) { //change to get from tree
         let tasksPath = new Array();
-        const stateDataToCheck = stateData === undefined ?  this.state.WorkflowDetails : stateData;
-        stateDataToCheck[workflowIndex].WorkflowStructure.walk(function(node) {
+        this.state.WorkflowDetails[workflowIndex].WorkflowStructure.walk(function(node) {
 
             if (node.model.id == currTaskIndex) {
                 return false;
             }
             if (node.model.id != -1) {
-                if (stateDataToCheck[workflowIndex].Workflow[node.model.id].TA_type !== TASK_TYPES.NEEDS_CONSOLIDATION) {
+                if (this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_type !== TASK_TYPES.NEEDS_CONSOLIDATION) {
                     tasksPath.push({
                         value: node.model.id,
-                        label: stateDataToCheck[workflowIndex].Workflow[node.model.id].TA_display_name
+                        label: this.state.WorkflowDetails[workflowIndex].Workflow[node.model.id].TA_display_name
                     });
 
                 }

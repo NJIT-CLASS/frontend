@@ -1,11 +1,10 @@
 import React from 'react';
-import { API_URL } from '../../server/utils/react_constants';
 
 //PROPS:
 //Files
 //apiUrl
 const FileLinksComponent = ({Files, apiUrl}) => {
-    const downloadLink = `${API_URL}/api/download/file/`;
+    const downloadLink = `${apiUrl}/api/download/file/`;
 
     if(Files === null){
         return <div></div>;
