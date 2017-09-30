@@ -129,13 +129,13 @@ case 'volunteer-pool':
     ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />, reactElem);
     break;
 case 'user-management':
-    ReactDOM.render(<UserManagementContainer UserID={userId} />, reactElem);
+    ReactDOM.render(<UserManagementContainer UserID={userId} __={translationFunction} />, reactElem);
     break;
 case 'everyones-work':
     ReactDOM.render(<MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
     break;
 case 'reallocation-container':
-    ReactDOM.render(<Reallocation UserID={userId} apiUrl={apiUrl}/>, reactElem);
+    ReactDOM.render(<Reallocation UserID={userId} />, reactElem);
     break;
 }
 

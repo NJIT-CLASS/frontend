@@ -321,7 +321,6 @@ app.use((req, res, next) => {
             req.App.user.lastName = user.LastName;
             req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
-
             next();
         }
         );
@@ -337,7 +336,8 @@ app.use((req, res, next) => {
         options = options ? options : {};
 
         options.template = template;
-
+        options.user = req.App.user;
+        
         if (!('showHeader' in options)) {
             options.showHeader = true;
         }
@@ -461,6 +461,7 @@ app.use(function(req, res, next) {
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
                                     options.admin = route.access.admins;
+                                    options.username = req.App.user.firstName + req.App.user.lastName;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
                                         options.title = `${route.title} | CLASS Learning System`;
