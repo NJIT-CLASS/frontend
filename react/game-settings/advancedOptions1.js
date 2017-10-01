@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Strings from './strings';
 import apiCall from '../shared/apiCall';
 import Toggle from '../shared/toggleSwitch';
 import Tooltip from '../shared/tooltip';
@@ -11,7 +10,6 @@ class BadgeOptions extends Component {
         this.state = {
             Badges: []
         };
-
     }
 
     componentWillMount() {
@@ -33,6 +31,7 @@ class BadgeOptions extends Component {
 
     render() {
         let {Badges} = this.state;
+        let {Strings} = this.props;
         return (
             <div className="badge-settings">
                 <div className="center-block">
@@ -40,9 +39,9 @@ class BadgeOptions extends Component {
                     { Badges.map(badge => 
                         <div className="option" key={badge.CategoryID}>
                             <div className="option-label">
-                                <div className="badge-name">
+                                <label className="badge-name">
                                     {badge.Name}
-                                </div>
+                                </label>
                                 <Tooltip ID={`badge-${badge.CategoryID}-tooltip`} />
                                 <Toggle />
                                 

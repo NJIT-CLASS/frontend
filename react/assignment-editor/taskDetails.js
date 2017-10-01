@@ -9,9 +9,10 @@ import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants'
 import { RadioGroup, Radio } from 'react-radio-group';
 import Tooltip from '../shared/tooltip';
 import Rater from 'react-rater';
-
+import ReactTooltip from 'react-tooltip';
 import TaskDisplayName from './taskComponents/taskDisplayName';
 import AllowAssessmentComponent from './taskComponents/allowAssessmentComponent';
+
 class TaskDetailsComponent extends React.Component {
 
     // PROPS:

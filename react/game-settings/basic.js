@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Strings from './strings';
 import {Radio, RadioGroup} from 'react-radio-group';
 class BasicSettings extends Component {
     constructor(props){
@@ -11,6 +10,7 @@ class BasicSettings extends Component {
     }
 
     render() {
+        let {Strings} = this.props;
         return (
             <div className="general-settings">
                 <span className='header'>{Strings.GeneralSettings}</span>
