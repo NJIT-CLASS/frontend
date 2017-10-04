@@ -1,7 +1,3 @@
-
-
-
-
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -30,13 +26,7 @@ const redisClient = redis.createClient({
 
 const multer = require('multer'); //TODO: we may need to limit the file upload size
 
-var storage = multer({
-    dest: './tempFiles/',
-    limits: { //Max 3 files and total of 50MB
-        fileSize: consts.FILE_SIZE,
-        files: consts.MAX_NUM_FILES
-    }
-});
+
 
 app.use('/static', express.static(`${__dirname}/static`));
 app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`)
@@ -461,7 +451,6 @@ app.use(function(req, res, next) {
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
                                     options.admin = route.access.admins;
-                                    options.username = req.App.user.firstName + req.App.user.lastName;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
                                         options.title = `${route.title} | CLASS Learning System`;
