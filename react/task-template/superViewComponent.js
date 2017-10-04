@@ -214,17 +214,19 @@ class SuperViewComponent extends React.Component {
             </div>);
 
         return (
-
-            <div key={this.props.index + 2001} className="section card-2 " >
-                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
-                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-                    <i className="fa fa-comment-o fa-stack-1x"></i>
-                    <span className="fa fa-stack-1x">
-                        <span className = "comment-number">{this.state.NumberComments}</span>
-                    </span>
-                </span>
-                {content}
-            </div>
+          <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
+            {!this.props.oneBox &&
+            (<div>
+              <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+              <CommentInfoComponent
+                TargetID = {this.props.TaskID}
+                Target = {'TaskInstance'}
+                ComponentTitle = {this.props.ComponentTitle}
+                showComments = {this.props.showComments}
+              />
+             </div>)}
+            {content}
+          </div>
         );
     }
 }

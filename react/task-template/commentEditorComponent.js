@@ -40,9 +40,9 @@ class CommentEditorComponent extends React.Component {
       }
     }
 
-    /*componentDidMount() {
+    componentDidMount() {
       this.editCommentTarget();
-    }*/
+    }
 
     componentWillReceiveProps(nextProps) {
       if (nextProps.CommentTargetOnList != this.state.NewCommentTarget) {
@@ -223,7 +223,7 @@ class CommentEditorComponent extends React.Component {
         this.setState({NewCommentTarget: event.value});
     }
 
-    /*editCommentTarget(target, id) {
+    editCommentTarget(target, id) {
       let m;
       for (let i of this.props.CommentTargetList) {
         if ((i.Target == target) && (i.ID == id)) {
@@ -231,7 +231,7 @@ class CommentEditorComponent extends React.Component {
         }
       }
       this.setState({NewCommentTarget: m});
-    }*/
+    }
 
     render() {
         let strings = {

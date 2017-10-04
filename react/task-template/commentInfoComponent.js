@@ -22,7 +22,7 @@ class CommentInfoComponent extends React.Component {
           let list = [];
           if (!body.Error) {
               let numComments = body.NumberComments;
-              this.setState({NumberComments: numComments})
+              this.setState({NumberComments: numComments});
           }
           else {
             console.log('No comment count received.');

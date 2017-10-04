@@ -35,13 +35,9 @@ class TasksList extends React.Component{
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
-                                TaskOwner={task.UserID}
-                                TaskID={task.TaskInstanceID}
-                                addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                showComments={this.props.showComments.bind(this)}
-                                CurrentTaskType={this.props.CurrentTaskType}
-                                VisitorID={this.props.VisitorID}
-                                Strings={Strings}
+        						Strings={Strings}
+                    TaskID={task.TaskInstanceID}
+                    showComments={this.props.showComments.bind(this)}
         					/>
                         );
                     }
@@ -58,12 +54,6 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                                TaskOwner={task.UserID}
-                                TaskID={task.TaskInstanceID}
-                                addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                showComments={this.props.showComments.bind(this)}
-                                CurrentTaskType={this.props.CurrentTaskType}
-                                VisitorID={this.props.VisitorID}
         					/>
                             );
                         }
@@ -75,7 +65,7 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                                getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                      getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -86,12 +76,8 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
-                                TaskOwner={task.UserID}
-                                showComments={this.props.showComments.bind(this)}
-                                addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                IsRevision={this.props.IsRevision}
-                                CurrentTaskType={this.props.CurrentTaskType}
-									
+                    showComments={this.props.showComments.bind(this)}
+                    IsRevision={this.props.IsRevision}
         					/>
                             );
                         }
@@ -103,10 +89,7 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-                                addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                showComments={this.props.showComments.bind(this)}
-                                TaskOwner={task.UserID}
-                                VisitorID={this.props.VisitorID}
+                    showComments={this.props.showComments.bind(this)}
         					/>
                         );
                     } else {
@@ -123,12 +106,8 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                                TaskOwner={task.UserID}
-                                TaskID={task.TaskInstanceID}
-                                addCommentListItem={this.props.addCommentListItem.bind(this)}
-                                showComments={this.props.showComments.bind(this)}
-                                CurrentTaskType={this.props.CurrentTaskType}
-                                VisitorID={this.props.VisitorID}
+                    TaskID={task.TaskInstanceID}
+                    showComments={this.props.showComments.bind(this)}
         					/>
                             );
                         }
