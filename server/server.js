@@ -76,6 +76,132 @@ app.post('/api/generalCall', (req, res) => {
 app.post('/api/file/upload', upload.array('files'), (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
+    //maybe check for authorization before continuing
+    delete postVars.endpoint;
+    const listOfErrors = [];
+    const uploadStatus = {
+        successfulFiles: [],
+        failedFiles: []
+    };
+    console.log(req.files, consts.UPLOAD_DIRECTORY_PATH,req.body );
+    console.log(path.resolve(__dirname, '../tempFiles'));
+    
+    req.files.forEach(file => {
+        console.log(file);
+        let oldPath = file.path;
+        let newPath = consts.UPLOAD_DIRECTORY_PATH + `/${file.filename}`;
+        let { path, destination, ...usefulFileInfo } = file;
+        request({
+            uri: `${react_consts.API_URL}/api/file/upload`,
+            method: 'POST',
+            body: {
+                userId: req.App.user.userId,
+                fileInfo: usefulFileInfo,
+            },
+            json: true
+        }, (err,response,body) => {
+            if(response.statusCode == 200){
+                mv(oldPath, newPath, {mkdirp: true}, function (e) {
+                    if (e) {
+                        console.error(e);
+                        listOfErrors.push(e);
+                        uploadStatus.failedFiles.push(file.originalname);
+                        
+                    } else {
+                        uploadStatus.successfulFiles.push(file.originalname);
+                    }
+                });
+
+
+            } else {
+                listOfErrors.append(err);
+                uploadStatus.failedFiles.push(file.originalname);
+            }
+        });
+        //make API call to save data to DB
+    });
+    if(listOfErrors.length == 0){
+        res.status(200).json(uploadStatus);
+    } else {
+        res.status(400).json(uploadStatus);
+        
+    }
+});
+
+app.get('/api/file/download/:fileId', function(req, res) {
+    // router.post('/download/file/:fileId', function (req, res) {
+    // router.get('/download/file', function (req, res) {
+    
+    var file_id = req.body.fileId || req.params.fileId;
+
+    if (file_id == null) {
+        return res.status(400).end();
+    }
+
+    request({
+        uri: `${react_consts.API_URL}/api/file/download/${file_id}`,
+        method: 'GET',
+        json: true
+    }, (err,response,body) => {
+        var file_ref = body;
+
+        if (!file_ref) {
+            return res.status(400).end();
+        }
+        file_ref = file_ref.Info;
+        let contDispFirstHalf = file_ref.mimetype.match('image') ? 'inline' : 'attachment';
+        let contDispSecondHalf = file_ref.originalname;
+        var content_headers = {
+            'Content-Type': file_ref.mimetype,
+            'Content-Length': file_ref.size,
+            'Content-Disposition': `${contDispFirstHalf};filename=${contDispSecondHalf}`,
+        };
+        res.writeHead(200, content_headers);
+        const readStream = fs.createReadStream(`${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        readStream.on('open', () => {
+            readStream.pipe(res);
+        });
+        readStream.on('error', (err) => {
+            console.error(err);
+            res.status(400).end();
+        });
+    });
+});
+
+
+app.post('/api/file/delete/', function(req,res){
+    //probably verify authorization and owner first
+    var file_id = req.body.fileId;
+
+    if(!file_id){
+        return res.status(400).end();
+    }
+    
+    request({
+        uri: `${react_consts.API_URL}/api/file/delete/${file_id}`,
+        method: 'DELETE',
+        json: true
+    }, (err,response,body) => {
+        var file_ref = body.Info;
+        let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
+        fs.unlink(filePath, (err)=> {
+            if(err){
+                console.error(err);
+                return res.status(400).end();
+            } 
+            return res.status(200).end();
+            
+        });
+    });
+});
+/**
+    ***** 
+ **********/
+
+/*
+app.post('/api/file/upload', upload.array('files'), (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
     const formData = new FormData();
     req.files.forEach(file => {
@@ -112,7 +238,7 @@ app.post('/api/file/upload', upload.array('files'), (req, res) => {
 
     };
     xhr.send(formData);
-});
+});*/
 
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
