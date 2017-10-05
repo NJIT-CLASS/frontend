@@ -48,9 +48,12 @@
         
     }
 
-    .badge-settings, .leaderboard-settings,.level-settings{
+    .badge-settings, .leaderboard-settings,.level-settings, .goal-settings{
+        margin-bottom: 10px;
+        margin-top: 10px;
         .center-block{
             width: 60%;
+            
         }
         input {
             width: 75px;
@@ -59,24 +62,45 @@
             font-weight: bold;
         }
     }
+    .goal-settings{
+        span{
+            width:  40%;
+            display: inline-block;
+        }
+        .tooltip-section{
+            width: 20%;
+
+        }
+        .requirement-section{
+            width: 40%;
+        }
+    }
 
     .level-settings{
         .full-width{
             width: 100%;
             display: block;
             margin: 10px 0;
-
+            
             .first-third{
                 width:20%;
                 display: inline-block;
+                vertical-align: top;
+                b{
+                    text-decoration: underline;
+                }
             }
             .second-third{
                 width: 40%;
                 display: inline-block;
+                vertical-align: top;
+                
             }
             .third-third{
                 width: 40%;
                 display: inline-block;
+                vertical-align: top;
+                
             }
         }
 

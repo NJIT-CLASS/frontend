@@ -12,8 +12,15 @@ class GoalOptions extends Component {
         };
     }
 
-    fetchGoals(){
-        apiCall.get(`/goals/section/${this.props.SectionID}`, (err,res,body) => {
+    componentWillMount() {
+        this.fetchGoals(this.props);
+    }
+    componentWillReceiveProps(nextProps) {
+        this.fetchGoals(nextProps);
+    }
+    fetchGoals(props){
+        apiCall.get(`/getGoals/${props.SemesterID}/${props.CourseID}/${props.SectionID}`, (err,res,body) => {
+            console.log(body);
             this.setState({
                 Goals: body.Goals
             });
@@ -24,16 +31,33 @@ class GoalOptions extends Component {
         let {Strings} = this.props;
         return (
             <div className="goal-settings">
-                {
-                    Goals.map(goal => 
-                        <div>
-                            <span>{goal.Goal.Name}</span><Tooltip ID={`goal-${goal.GoalInstanceID}-tooltip`} Text='' />
-                            <Toggle /> <label>{Strings.Requirements}</label><input type="text" />
-                        </div>)
-                }
+                <div className="center-block">
+                    <div className="header">{Strings.Goals}</div>
+                    {
+                        Goals.map(goal => 
+                            <div>
+                                <span>{goal.Name}</span>
+                                <span className="tooltip-section">
+                                    <Tooltip ID={`goal-${goal.GoalInstanceID}-tooltip`} Text='' />
+                                    <Toggle />
+                                </span>
+                                <span className="requirement-section">
+                                    
+                                    <label>{Strings.Requirements}</label>&nbsp;<input type="text" />
+                                </span>
+                            </div>)
+                    }
+                </div>
+                
             </div>
         );
     }
 }
+
+GoalOptions.defaultProps = {
+    CourseID: 1,
+    SectionID: 1,
+    SemesterID: 1
+};
 
 export default GoalOptions;

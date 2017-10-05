@@ -21,6 +21,7 @@ class GameSettingsContainter extends Component {
         return (
             <div>
                 <BasicSettings Strings={Strings} />
+                <div style={{margin: '0 auto', textAlign: 'center', width: 'fit-content'}}><button>{Strings.AdvancedOptions}</button></div>
                 <BadgeOptions Strings={Strings}/>
                 <LeaderboardOptions Strings={Strings}/>
                 <LevelOptions Strings={Strings}/>

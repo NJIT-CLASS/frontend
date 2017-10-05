@@ -35,7 +35,7 @@ class BadgeOptions extends Component {
         return (
             <div className="badge-settings">
                 <div className="center-block">
-                    <div className="header">{Strings.Goals}</div>
+                    <div className="header">{Strings.Badges}</div>
                     { Badges.map(badge => 
                         <div className="option" key={badge.CategoryID}>
                             <div className="option-label">
@@ -47,12 +47,12 @@ class BadgeOptions extends Component {
                                 
                             </div>
                             <div className="option-value">
-                                <span>{Strings.Bronze}</span>
-                                <input type="text" name="bronze"  value={badge.Tier1Instances}/>
-                                <span>{Strings.Silver}</span>
-                                <input type="text" name="silver" value={badge.Tier2Instances} />
-                                <span>{Strings.Gold}</span>
-                                <input type="text" name="gold" value={badge.Tier3Instances} />
+                                <span>{Strings.Bronze}</span>&nbsp;
+                                <input type="text" name="bronze"  value={badge.Tier1Instances}/>&nbsp;&nbsp;
+                                <span>{Strings.Silver}</span>&nbsp;
+                                <input type="text" name="silver" value={badge.Tier2Instances} />&nbsp;&nbsp;
+                                <span>{Strings.Gold}</span>&nbsp;
+                                <input type="text" name="gold" value={badge.Tier3Instances} />&nbsp;&nbsp;
                             </div>
                         </div>
                     )}
