@@ -358,7 +358,7 @@ app.get('/api/file/download/:fileId', function(req, res) {
     // router.get('/download/file', function (req, res) {
     
     var file_id = req.body.fileId || req.params.fileId;
-
+    
     if (file_id == null) {
         return res.status(400).end();
     }
@@ -373,7 +373,8 @@ app.get('/api/file/download/:fileId', function(req, res) {
         if (!file_ref) {
             return res.status(400).end();
         }
-        file_ref = file_ref.Info;
+        file_ref = JSON.parse(file_ref.Info);
+        console.log(file_ref);
         let contDispFirstHalf = file_ref.mimetype.match('image') ? 'inline' : 'attachment';
         let contDispSecondHalf = file_ref.originalname;
         var content_headers = {
@@ -383,6 +384,7 @@ app.get('/api/file/download/:fileId', function(req, res) {
         };
         res.writeHead(200, content_headers);
         const readStream = fs.createReadStream(`${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        console.log('path', `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
         readStream.on('open', () => {
             readStream.pipe(res);
         });
