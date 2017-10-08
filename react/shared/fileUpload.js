@@ -30,7 +30,7 @@ class FileUpload extends React.Component{
 
 
     uploadFiles(files){
-
+        console.log(files, 'files from view');
         if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
             return;
         }
@@ -64,7 +64,7 @@ class FileUpload extends React.Component{
                 }
             }
         } else{
-          //DropZone
+            //DropZone
             upperLimit = files.length;
             [].forEach.call(files, function (file) {
                 formData.append('files', file);
@@ -76,11 +76,12 @@ class FileUpload extends React.Component{
             Files: filesAr,
             NumberJustUploaded: upperLimit
         });
-
+        console.log('form data', formData);
+        
         const x = this;
         var xhr = new XMLHttpRequest();
-        xhr.open( 'POST',`${API_URL}${this.props.endpoint}`, true);
-        //xhr.open( 'POST', `${window.location.protocol}//${window.location.host}/api/file/upload`, true);
+        //xhr.open( 'POST',`${API_URL}${this.props.endpoint}`, true);
+        xhr.open( 'POST', `${window.location.protocol}//${window.location.host}/api/file/upload`, true);
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
@@ -94,7 +95,7 @@ class FileUpload extends React.Component{
                         conditionsMet: (x.state.NumberUploaded >= x.props.MinUploads) && (x.state.NumberUploaded <= x.props.MaxUploads),
                         numberOfUploads: newNum
                     };
-                    console.log(changedConditions)
+                    console.log(changedConditions);
                     x.props.onChange(changedConditions);
                 }
                 else{
@@ -133,21 +134,22 @@ class FileUpload extends React.Component{
         switch(this.props.View){
         case 'button':
             uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={uploadStatus}
-                                      NumberUploaded={this.state.NumberUploaded} MinUploads={this.props.MinUploads}
-                                      MaxUploads={this.props.MaxUploads} selectClick={this.selectClick}
-                                      uploadRef={el => this.uploadRef = el} HasFiles={this.state.HasFiles}
+                NumberUploaded={this.state.NumberUploaded} MinUploads={this.props.MinUploads}
+                MaxUploads={this.props.MaxUploads} selectClick={this.selectClick}
+                uploadRef={el => this.uploadRef = el} HasFiles={this.state.HasFiles}
 
-                            />);
+            />);
             break;
         case 'dropzone':
-            uploadView = (<DropzoneView uploadFiles={this.uploadFiles} Strings={this.props.Strings}/>);
+            uploadView = (<DropzoneView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={uploadStatus}/>
+            );
             break;
         }
 
         return (
-          <div >
-            {uploadView}
-          </div>
+            <div >
+                {uploadView}
+            </div>
         );
     }
 }

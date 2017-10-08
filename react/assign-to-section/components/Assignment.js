@@ -7,7 +7,6 @@ var moment = require('moment');
 import Checkbox from '../../shared/checkbox';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
-var CheckBoxList = require('react-checkbox-list');
 
 class Assignment extends React.Component {
     constructor(props){
@@ -43,32 +42,32 @@ class Assignment extends React.Component {
         };
 
         let semesterView = (<div className="inner">
-          <label>{strings.Semester}</label>
-          <Select
-            options={this.props.Semesters}
-            value={this.props.Assignment.Semester}
-            onChange={this.props.onChangeSemesterAssignment.bind(this)}
-            clearable={false}
-            searchable={false}
+            <label>{strings.Semester}</label>
+            <Select
+                options={this.props.Semesters}
+                value={this.props.Assignment.Semester}
+                onChange={this.props.onChangeSemesterAssignment.bind(this)}
+                clearable={false}
+                searchable={false}
             />
         </div>
-      );
+        );
 
         if(this.props.Assignment.StartLater)
-  {
+        {
             CalendarView =
     (
-      <div style={{display: 'block', height: '400px'}}>
-        <Datetime
-              open={true}
-              defaultValue={moment().add(3, 'days').format('MM/DD/YYYY')+(' 11:59 PM')}
-              renderDay={this.renderDay}
-              renderMonth={this.renderMonth}
-              renderYear={this.renderYear}
-              isValidDate={ valid }
-              onChange={this.props.onChangeCalendarAssignment.bind(this)}
-        />
-      </div>
+        <div style={{display: 'block', height: '400px'}}>
+            <Datetime
+                open={true}
+                defaultValue={moment().add(3, 'days').format('MM/DD/YYYY')+(' 11:59 PM')}
+                renderDay={this.renderDay}
+                renderMonth={this.renderMonth}
+                renderYear={this.renderYear}
+                isValidDate={ valid }
+                onChange={this.props.onChangeCalendarAssignment.bind(this)}
+            />
+        </div>
     );
         }
         let checkBoxList = <div>{strings.NoSectionsAvailable}</div>;
@@ -76,19 +75,19 @@ class Assignment extends React.Component {
         if(this.props.SectionsList.length > 0){
             checkBoxList = this.props.SectionsList.map((section)=>{
                 return(<div style={{display: 'inline-block'}}>
-                        <label>{section.label}</label> <Checkbox isClicked={this.isSectionChecked(section.value)} click={this.props.onChangeSectionAssignment.bind(this, section.value)}/>
-                      </div>);
+                    <label>{section.label}</label> <Checkbox isClicked={this.isSectionChecked(section.value)} click={this.props.onChangeSectionAssignment.bind(this, section.value)}/>
+                </div>);
             });
         }
 
 
         return (
-    <div style={{width:'fit-content',height: 'fit-content'}} className = "section">
-      <h1 className = "title">{this.props.Assignment.AssigmentName}</h1>
-      <div className = "section-content">
-        <table border="0" cellPadding="0" cellSpacing="0" className="tab">
-          <tbody className="children">
-            {/*<tr className="children">
+            <div style={{width:'fit-content',height: 'fit-content'}} className = "section">
+                <h1 className = "title">{this.props.Assignment.AssigmentName}</h1>
+                <div className = "section-content">
+                    <table border="0" cellPadding="0" cellSpacing="0" className="tab">
+                        <tbody className="children">
+                            {/*<tr className="children">
               <td className="children">
                 <form>
                   <input type="text" name="AssigmentName" value={this.props.Assignment.AssigmentName} onChange = {this.props.onChangeAssigmentName.bind(this)}>
@@ -97,50 +96,50 @@ class Assignment extends React.Component {
               </td>
             </tr>*/}
 
-            <tr className="children">
-              <td className="children">
-                {semesterView}
-              </td>
-            </tr>
+                            <tr className="children">
+                                <td className="children">
+                                    {semesterView}
+                                </td>
+                            </tr>
 
-            <tr className="children">
-              <td className="children">
-                <h1> {strings.Sections} </h1>
-              </td>
-            </tr>
+                            <tr className="children">
+                                <td className="children">
+                                    <h1> {strings.Sections} </h1>
+                                </td>
+                            </tr>
 
-            <tr className="children" >
-              <td className="children">
-                {checkBoxList}
-              </td>
-            </tr>
+                            <tr className="children" >
+                                <td className="children">
+                                    {checkBoxList}
+                                </td>
+                            </tr>
 
-            <tr className="children">
-              <td className="children">
-                <form>
-                  <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
-                    name="Days" value="Days">
-                  </input>
-                  <label>{strings.StartNow}</label>
-                </form>
-              </td>
-            </tr>
+                            <tr className="children">
+                                <td className="children">
+                                    <form>
+                                        <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
+                                            name="Days" value="Days">
+                                        </input>
+                                        <label>{strings.StartNow}</label>
+                                    </form>
+                                </td>
+                            </tr>
 
-            <tr className="children">
-              <td className="children">
-                <form>
-                  <input type="radio" checked={this.props.Assignment.StartLater}  onChange={this.props.onChangeStartLaterAssignment.bind(this)}
-                    name="Days" value="Days">
-                  </input>
-                  <label>{strings.StartLater}</label>
-                  {CalendarView}
-              </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  </div>
+                            <tr className="children">
+                                <td className="children">
+                                    <form>
+                                        <input type="radio" checked={this.props.Assignment.StartLater}  onChange={this.props.onChangeStartLaterAssignment.bind(this)}
+                                            name="Days" value="Days">
+                                        </input>
+                                        <label>{strings.StartLater}</label>
+                                        {CalendarView}
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         );
     }
 }

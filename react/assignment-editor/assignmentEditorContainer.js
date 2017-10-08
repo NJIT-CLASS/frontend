@@ -520,7 +520,7 @@ class AssignmentEditorContainer extends React.Component {
             //Get courses if one was not already chosen
             if (this.props.CourseID === '*' || this.props.CourseID === '') {
 
-                apiCall.get(`/getCourseCreated/${this.props.UserID}`, (err, res, bod) => {
+                apiCall.get(`/course/getCourses/${this.props.UserID}`, (err, res, bod) => {
                     coursesArray = bod.Courses.map(function(course) {
                         return ({value: course.CourseID, label: course.Name});
                     });
@@ -549,7 +549,7 @@ class AssignmentEditorContainer extends React.Component {
                     if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
                         return;
                     }
-                    this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
+                    this.onLoad(assignBody.PartialAssignment.Data);
                     return this.setState({ Loaded: true});
 
                 });
@@ -1810,7 +1810,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
@@ -1847,7 +1847,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
@@ -1882,7 +1882,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
