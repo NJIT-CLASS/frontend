@@ -338,14 +338,12 @@ app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
         successfulFiles: [],
         failedFiles: []
     };
-    console.log(req.files);
-    
     let filesToUpload = req.files.map( file =>
-        uploadFile(file, type, req.App.user.userId));
-    return Promise.all(filesToUpload, resultsArray => {
+        uploadFile(file, type, req.App.user.userId, postVars));
+    
+    return Promise.all(filesToUpload).then(resultsArray => {
         uploadStatus.successfulFiles = resultsArray.filter(file => file.FileID !== undefined);
         uploadStatus.failedFiles = resultsArray.filter(file => file.FileID === undefined);
-
         if(uploadStatus.failedFiles.length == 0){
             return res.status(200).json(uploadStatus);
         } else {

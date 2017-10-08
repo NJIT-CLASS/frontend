@@ -30,7 +30,6 @@ class FileUpload extends React.Component{
 
 
     uploadFiles(files){
-        console.log(files, 'files from view');
         if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
             return;
         }
@@ -76,12 +75,11 @@ class FileUpload extends React.Component{
             Files: filesAr,
             NumberJustUploaded: upperLimit
         });
-        console.log('form data', formData);
         
         const x = this;
         var xhr = new XMLHttpRequest();
         //xhr.open( 'POST',`${API_URL}${this.props.endpoint}`, true);
-        xhr.open( 'POST', `${window.location.protocol}//${window.location.host}/api/file/upload`, true);
+        xhr.open( 'POST', `${window.location.protocol}//${window.location.host}${this.props.endpoint}`, true);
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
