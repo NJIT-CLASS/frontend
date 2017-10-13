@@ -21,11 +21,11 @@ class TasksList extends React.Component{
         		// and gives the Components an appropriate title.
         		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
-                let compString = null;
-                if (idx == TasksArray.length - 1) {
+                    let compString = null;
+                    if (idx == TasksArray.length - 1) {
 
-                    if (task.Status == 'Complete' || task.Status == 'complete') {
-                        return (
+                        if (task.Status == 'Complete' || task.Status == 'complete') {
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -36,14 +36,14 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                    TaskID={task.TaskInstanceID}
-                    showComments={this.props.showComments.bind(this)}
+                                    TaskID={task.TaskInstanceID}
+                                    showComments={this.props.showComments.bind(this)}
         					/>
-                        );
-                    }
+                            );
+                        }
 
-                    if(this.props.TaskStatus.includes('complete')){
-                        return (
+                        if(this.props.TaskStatus.includes('complete')){
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -53,7 +53,9 @@ class TasksList extends React.Component{
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
         						TaskActivityFields={task.TaskActivity.Fields}
-        						Strings={Strings}
+                                    Strings={Strings}
+                                    showComments={this.props.showComments.bind(this)}
+								
         					/>
                             );
                         }
@@ -65,7 +67,7 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
-                      getLinkedTaskValues={getLinkedTaskValues.bind(this)}
+                                    getLinkedTaskValues={getLinkedTaskValues.bind(this)}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						Type={task.TaskActivity.Type}
         						FileUpload={task.TaskActivity.FileUpload}
@@ -76,8 +78,8 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
         						apiUrl={apiUrl}
-                    showComments={this.props.showComments.bind(this)}
-                    IsRevision={this.props.IsRevision}
+                                    showComments={this.props.showComments.bind(this)}
+                                    IsRevision={this.props.IsRevision}
         					/>
                             );
                         }
@@ -89,12 +91,12 @@ class TasksList extends React.Component{
         						TaskID={TaskID}
         						UserID={UserID}
         						Strings={Strings}
-                    showComments={this.props.showComments.bind(this)}
+                                    showComments={this.props.showComments.bind(this)}
         					/>
-                        );
-                    } else {
+                            );
+                        } else {
 
-                        return (
+                            return (
         					<SuperViewComponent
         						key={idx + 2000}
         						index={idx}
@@ -102,12 +104,12 @@ class TasksList extends React.Component{
         						Rubric={task.TaskActivity.Rubric}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
-                                Status={task.Status}
+                                    Status={task.Status}
         						Files={task.Files}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
-                    TaskID={task.TaskInstanceID}
-                    showComments={this.props.showComments.bind(this)}
+                                    TaskID={task.TaskInstanceID}
+                                    showComments={this.props.showComments.bind(this)}
         					/>
                             );
                         }

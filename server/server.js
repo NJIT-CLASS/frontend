@@ -314,7 +314,41 @@ app.get('/api/generalCall', (req, res) => {
 
     });
 });
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
 
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
 app.post('/api/generalCall', (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;

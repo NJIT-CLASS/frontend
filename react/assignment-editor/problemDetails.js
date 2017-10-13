@@ -20,6 +20,8 @@ class ProblemDetailsComponent extends React.Component{
     }
 
     mapTasksToOptions(){
+        console.log('GradeDistribution', this.props.WorkflowDetails.WA_grade_distribution);
+        
         return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
             if(task === 'simple'){
                 return {id: task, name: this.props.Strings.SimpleGradeWorkflowDistribution, weight: this.props.WorkflowDetails.WA_grade_distribution[task] };

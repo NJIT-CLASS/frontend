@@ -41,6 +41,49 @@ const postCall = function(endpoint, postVars, cb ){
 
 };
 
+const putCall = function(endpoint, postVars, cb ){
+    if (arguments.length === 2) {
+        var cb = postVars;
+        postVars = {};
+    }
+
+    postVars.endpoint = endpoint;
+
+    const options = {
+        method: 'PUT',
+        uri: `${window.location.protocol}//${window.location.host}/api/generalCall`,
+        body: postVars,
+        json: true
+    };
+
+    request(options, (err, status, body) => {
+        cb(err, status, body);
+    });
+
+};
+
+
+const deleteCall = function(endpoint, postVars, cb ){
+    if (arguments.length === 2) {
+        var cb = postVars;
+        postVars = {};
+    }
+
+    postVars.endpoint = endpoint;
+
+    const options = {
+        method: 'DELETE',
+        uri: `${window.location.protocol}//${window.location.host}/api/generalCall`,
+        body: postVars,
+        json: true
+    };
+
+    request(options, (err, status, body) => {
+        cb(err, status, body);
+    });
+
+};
+
 const promiseGetCall = (endpoint, queryStrings ={}) => {
     queryStrings.endpoint = endpoint;
     
@@ -63,6 +106,8 @@ const postMultiCall = (requestsArray) => {
 const apiCall = {
     get: getCall,
     post: postCall,
+    put: putCall,
+    delete: deleteCall,
     multi: postMultiCall,
     getAsync: promiseGetCall,
     postAsync: promisePostCall

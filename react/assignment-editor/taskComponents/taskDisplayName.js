@@ -14,7 +14,7 @@ class TaskDisplayName extends Component {
         return (
             <div className="inner">
                 <label>{strings.DisplayName}</label>
-                <Tooltip Text={strings.TaskDisplayNameMessage} ID={`w${workflowIndex}-T${index}-display-name-tooltip`} />
+                <Tooltip Text={strings.TaskDisplayName} ID={`w${workflowIndex}-T${index}-display-name-tooltip`} />
                 <br />
                 <input type="text" placeholder={strings.DisplayName} value={value} onChange={this.changeInput} /><br />
             </div>

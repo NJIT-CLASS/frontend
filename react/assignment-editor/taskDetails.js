@@ -55,6 +55,7 @@ class TaskDetailsComponent extends React.Component {
         this.callTaskFunction = this.props.callTaskFunction.bind(this);
         this.toggleAdvanced = this.toggleAdvanced.bind(this);
         this.toggleUserFields = this.toggleUserFields.bind(this);
+        this.toggleTaskParams = this.toggleTaskParams.bind(this);
     }
 
     componentWillUnmount() {
@@ -95,6 +96,11 @@ class TaskDetailsComponent extends React.Component {
             ShowAdvanced: !this.state.ShowAdvanced
         });
     }
+    toggleTaskParams(){
+        this.setState({
+            ShowTaskLevelParams: !this.state.ShowTaskLevelParams
+        });
+    }
     render() {
         const strings = this.props.Strings;
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
@@ -130,7 +136,7 @@ class TaskDetailsComponent extends React.Component {
 
         let taskLevelParameters = (
             <div key={`Task-level Params for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                <h2 className="title">{strings.TaskHeader}
+                <h2 className="title" onClick={this.toggleTaskParams}>{strings.TaskHeader}
                     <span className="fa fa-angle-down" style={{float: 'right'}}></span>
                 </h2>
             </div>
@@ -211,7 +217,7 @@ class TaskDetailsComponent extends React.Component {
 
             taskLevelParameters = (
                 <div key={`Task-level Params for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                    <h2 className="title">
+                    <h2 className="title" onClick={this.toggleTaskParams}>
                         {strings.TaskHeader}
                         <span className="fa fa-angle-up" style={{float: 'right'}}></span>
                     </h2>
@@ -574,6 +580,8 @@ class TaskDetailsComponent extends React.Component {
                 </h2>
             </div>);
         if (this.state.ShowAdvanced) {
+            const firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
+            
             const dueType = (
                 <div className="inner">
 
@@ -626,14 +634,14 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             ) : null;
 
-            const seeSameActivity = (
+            const seeSameActivity = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ? (
                 <div className="inner">
                     <label>{strings.SeeSameActivity}</label>
                     <Tooltip Text={strings.TaskSeeSameActivityMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-see-same-activity-tooltip`} />
 
                     <Checkbox isClicked={this.props.TaskActivityData.SeeSameActivity} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'SeeSameActivity', this.props.index, this.props.workflowIndex)} />
                 </div>
-            );
+            ) : null;
 
             const atDurationEnd = (
                 <div className="inner">
@@ -927,7 +935,7 @@ class TaskDetailsComponent extends React.Component {
             // TA_assignee_constraints
             let assigneeConstraints = null;
             let assigneeRelations = null;
-            const firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
+            
             if (this.props.index != 0) { // if it's the first task or an instructor task, don't show assignee contraint relation part
                 if (firstAssigneeConstr != 'instructor') {
                     const sameAsOptions = this.showAssigneeSection('same_as')
@@ -1150,6 +1158,7 @@ class TaskDetailsComponent extends React.Component {
                             </div>
                             <div className="section-divider">
                                 <div className="subheading">{strings.AssessmentHeader}</div>
+                                {simpleGrade}
                                 {allowAssessment}
                             </div>
                             <div className="section-divider">
@@ -1166,7 +1175,6 @@ class TaskDetailsComponent extends React.Component {
                                 <div className="subheading">{strings.AssigneeConstraintHeader}</div>
                                 {oneOrSeparate}
                                 {seeSameActivity}
-                                {simpleGrade}
                                 {versionEvaluation}
                                 {seeSibblings}
                                 {assigneeConstraints}
