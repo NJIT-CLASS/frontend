@@ -24,4 +24,8 @@ export default {
     Bronze: 'Bronze',
     Silver: 'Silver',
     Gold: 'Gold',
+    Course: 'Course',
+    Semester: 'Semester',
+    Assignment: 'Assignment',
+    Section: 'Section'
 };

@@ -26,7 +26,7 @@ class LevelOptions extends Component {
                         <div className="second-third">
                             {
                                 lowerLevels.map(level => {
-                                    return <label>{Strings.Level}&nbsp;{level} <input type="text"/><br/></label>; 
+                                    return <label key={Strings.level + '-key'}>{Strings.Level}&nbsp;{level} <input type="text"/><br/></label>; 
 
                                 })
                             }

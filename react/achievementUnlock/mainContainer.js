@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import AchievementUnlockContainer from './achievementUnlockContainer';
 import CourseSelect from '../everyones-work/courseSelect';
 import SemesterSelectComponent from '../everyones-work/semesterSelect';
-import AchievementUnlockContainer from './achievementUnlockContainer';
 import SectionSelectComponent from '../everyones-work/sectionSelect';
 import apiCall from '../shared/apiCall';
 import {isEmpty} from 'lodash';
