@@ -2820,7 +2820,7 @@ class AssignmentEditorContainer extends React.Component {
         let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM];
         stateData[workflowIndex].Workflow.forEach(function(task, index) {
             if (Object.keys(task).length > 0) {
-                if (indexOf(assessmentTypes, task.TA_type) != -1) {
+                if (assessmentTypes.includes(task.TA_type)) {
                     newArray.push(index);
                 }
             }
