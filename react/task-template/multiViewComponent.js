@@ -77,19 +77,19 @@ class MutliViewComponent extends React.Component {
 
                 console.log('TaskActivityFields', task.TaskActivity.Fields, 'TaskData', task.Data);
                 return(
-            <div className="child" key={index +500}>
-              <SuperViewComponent key={index + 2000} index={index+200}
-                ComponentTitle={task.TaskActivity.DisplayName}
-                TaskData={task.Data}
-                Files={task.Files}
-                Instructions={task.TaskActivity.Instructions}
-                Rubric={task.TaskActivity.Rubric}
-                TaskActivityFields={task.TaskActivity.Fields}
-                Strings={this.props.Strings}
-                TaskID={task.TaskInstanceID}
-                showComments={this.props.showComments.bind(this)}
-              />
-          </div>
+                    <div className="child" key={index +500}>
+                        <SuperViewComponent key={index + 2000} index={index+200}
+                            ComponentTitle={task.TaskActivity.DisplayName}
+                            TaskData={task.Data}
+                            Files={task.Files}
+                            Instructions={task.TaskActivity.Instructions}
+                            Rubric={task.TaskActivity.Rubric}
+                            TaskActivityFields={task.TaskActivity.Fields}
+                            Strings={this.props.Strings}
+                            TaskID={task.TaskInstanceID}
+                            showComments={this.props.showComments.bind(this)}
+                        />
+                    </div>
                 );
             }, this);
         }
@@ -99,9 +99,9 @@ class MutliViewComponent extends React.Component {
         }
 
         return(<div>
-          <div className="multi-view-container animate fadeInUp">
-            {gradesView}
-          </div>
+            <div className="multi-view-container animate fadeInUp">
+                {gradesView}
+            </div>
         </div>
         );
 

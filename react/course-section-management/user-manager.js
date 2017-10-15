@@ -14,11 +14,13 @@ class User extends React.Component {
         this.state = {
             Volunteer: this.props.volunteer,
             Status: this.props.status,
-            VolunteerPoolID: this.props.VolunteerPoolID
+            VolunteerPoolID: this.props.VolunteerPoolID,
+            Active: this.props.active
         };
 
         this.toggleStatus = this.toggleStatus.bind(this);
         this.toggleVolunteer = this.toggleVolunteer.bind(this);
+        this.toggleActive = this.toggleActive.bind(this);
     }
 
     toggleVolunteer(){
@@ -52,13 +54,27 @@ class User extends React.Component {
         });
     }
 
+    toggleActive(){
+        let postVars = {
+            active: !this.state.Active
+        };
+        let endpoint = `/sectionUsers/changeActive/${this.props.SectionUserID}`;
+
+        apiCall.post(endpoint, postVars, (err, res, body) => {
+            if(res.statusCode === 201){
+                this.setState({
+                    Active: !this.state.Active
+                });
+            }
+        });
+    }
+
     toggleStatus(){
         let postVars = {
             VolunteerPoolID: this.state.VolunteerPoolID,
             status: this.state.Status === 'Approved' ? 'Inactive' : 'Approved'
         };
         let endpoint = '/VolunteerPool/individualStatusUpdate';
-        console.log(postVars);
 
         apiCall.post(endpoint, postVars, (err, res, body) => {
             if(res.statusCode === 201){
@@ -93,7 +109,8 @@ class User extends React.Component {
                 <td>{this.props.email}</td>
                 <td>{this.props.firstName}</td>
                 <td>{this.props.lastName}</td>
-                <td>{this.props.active ? 'Yes' : 'No'}</td>
+                <td><div style={{margin: '0 auto', width: 'fit-content'}}><Toggle isClicked={this.state.Active}
+                    click={this.toggleActive} /></div></td>
                 {volunteerToggle}
                 {statusToggle}
             </tr>
@@ -138,6 +155,7 @@ class UserManager extends React.Component {
                     lastName: user.User.LastName,
                     email: user.UserLogin.Email,
                     status: user.Status,
+                    sectionUserId: user.SectionUserID,
                     volunteerId: user.User.VolunteerPools.length != 0 ? user.User.VolunteerPools[0].VolunteerPoolID : -1
                 });
             }
@@ -412,6 +430,7 @@ class UserManager extends React.Component {
                         role={this.props.role}
                         status={user.status}
                         VolunteerPoolID={user.volunteerId}
+                        SectionUserID={user.sectionUserId}
                     />
                 );
             });

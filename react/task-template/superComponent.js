@@ -533,7 +533,7 @@ class SuperComponent extends React.Component {
                             taskInstanceId: this.props.TaskID
                         }}
                         MinUploads={this.props.FileUpload.mandatory}
-                        endpoint={'/api/upload/files'}
+                        endpoint={'/api/file/upload/task'}
                         MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
                         onChange={this.handleFileUploads.bind(this)}
                     />
@@ -827,20 +827,20 @@ class SuperComponent extends React.Component {
         }
 
         return ( // main render return()
-          <div>
-            {infoMessage}
-            <div className="section card-2">
-              <div onClick={this.toggleContent.bind(this)}>
-                <h2 className="title">{this.props.ComponentTitle}</h2>
-              </div>
-              <CommentInfoComponent
-                TargetID = {this.props.TaskID}
-                Target = {'TaskInstance'}
-                ComponentTitle = {this.props.ComponentTitle}
-                showComments = {this.props.showComments}
-              />
-              {content}
-            </div>
+            <div>
+                {infoMessage}
+                <div className="section card-2">
+                    <div onClick={this.toggleContent.bind(this)}>
+                        <h2 className="title">{this.props.ComponentTitle}</h2>
+                    </div>
+                    <CommentInfoComponent
+                        TargetID = {this.props.TaskID}
+                        Target = {'TaskInstance'}
+                        ComponentTitle = {this.props.ComponentTitle}
+                        showComments = {this.props.showComments}
+                    />
+                    {content}
+                </div>
             </div>
         );
     }

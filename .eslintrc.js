@@ -6,7 +6,9 @@ module.exports = {
         "es6": true
     },
     //"extends": "airbnb",
+    "parser": "babel-eslint",
     "parserOptions": {
+        "ecmaVersion": 8,
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
             "jsx": true,

@@ -7,11 +7,40 @@ import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
 import { TASK_TYPES, TASK_TYPES_TEXT } from '../../server/utils/react_constants';
 import { RadioGroup, Radio } from 'react-radio-group';
+import ReactTooltip from 'react-tooltip';
 import Tooltip from '../shared/tooltip';
 import Rater from 'react-rater';
-
 import TaskDisplayName from './taskComponents/taskDisplayName';
 import AllowAssessmentComponent from './taskComponents/allowAssessmentComponent';
+
+//Initial state, needed to maintain across mount and unmount
+
+let state = {
+    FileUp: false,
+    NewTask: true,
+    FieldType: 'text',
+    Tasks: [
+        {
+            AtDurationEnd: '',
+            WhatIfLate: '',
+            Reflection: ['none', null],
+        },
+    ],
+    SimpleGradePointReduction: 0,
+    CurrentFieldSelection: null,
+    GradingThreshold: [
+        '', '',
+    ],
+    DefaultFieldForeign: [false], // will be true if want to show Def Content from other tasks
+    CurrentTaskFieldSelection: null,
+    ShowAssigneeConstraintSections: [
+        false, false, false, false,
+    ], // same as, in same group as, not in, choose from
+    ShowAdvanced: false,
+    ShowTaskLevelParams: true,
+    ShowUserFields: true,
+};
+
 class TaskDetailsComponent extends React.Component {
 
     // PROPS:
@@ -21,37 +50,17 @@ class TaskDetailsComponent extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            FileUp: false,
-            NewTask: true,
-            FieldType: 'text',
-            Tasks: [
-                {
-                    AtDurationEnd: '',
-                    WhatIfLate: '',
-                    Reflection: ['none', null],
-                },
-            ],
-            SimpleGradePointReduction: 0,
-            CurrentFieldSelection: null,
-            GradingThreshold: [
-                '', '',
-            ],
-            DefaultFieldForeign: [false], // will be true if want to show Def Content from other tasks
-            CurrentTaskFieldSelection: null,
-            ShowAssigneeConstraintSections: [
-                false, false, false, false,
-            ], // same as, in same group as, not in, choose from
-            ShowAdvanced: false,
-            ShowContent: !!this.props.isOpen,
-            ShowUserFields: true,
-        };
+        this.state = state;
 
         this.callTaskFunction = this.props.callTaskFunction.bind(this);
         this.toggleAdvanced = this.toggleAdvanced.bind(this);
         this.toggleUserFields = this.toggleUserFields.bind(this);
+        this.toggleTaskParams = this.toggleTaskParams.bind(this);
     }
 
+    componentWillUnmount() {
+        state = this.state;
+    }
     isAssigneeConstraintChecked(constraint, taskID) {
         const constraintArray = this.props.TaskActivityData.TA_assignee_constraints[2];
 
@@ -87,6 +96,11 @@ class TaskDetailsComponent extends React.Component {
             ShowAdvanced: !this.state.ShowAdvanced
         });
     }
+    toggleTaskParams(){
+        this.setState({
+            ShowTaskLevelParams: !this.state.ShowTaskLevelParams
+        });
+    }
     render() {
         const strings = this.props.Strings;
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
@@ -120,78 +134,102 @@ class TaskDetailsComponent extends React.Component {
         const chooseFromOptions = null;
         const assigneeRelations = null;
 
-        // TA_display_name
-        const displayName = (
-            <TaskDisplayName workflowIndex={this.props.workflowIndex} 
-                index={this.props.index}
-                value={this.props.TaskActivityData.TA_display_name}
-                strings={strings} 
-                callTaskFunction={this.callTaskFunction}
-            />
-            
+        let taskLevelParameters = (
+            <div key={`Task-level Params for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
+                <h2 className="title" onClick={this.toggleTaskParams}>{strings.TaskHeader}
+                    <span className="fa fa-angle-down" style={{float: 'right'}}></span>
+                </h2>
+            </div>
         );
+        if(this.state.ShowTaskLevelParams){
+        // TA_display_name
+            const displayName = (
+                <TaskDisplayName workflowIndex={this.props.workflowIndex} 
+                    index={this.props.index}
+                    value={this.props.TaskActivityData.TA_display_name}
+                    strings={strings} 
+                    callTaskFunction={this.callTaskFunction}
+                />
+            
+            );
 
-        // TA_file_upload
-        const fileUploadOptions = this.state.FileUp
-            ? (
-                <div
-                    style={{
-                        display: 'inline-block',
-                    }}
-                >
-                    <div className="inner">
-                        <label>
-                            {strings.HowManyRequiredFiles}</label>
-                        <Tooltip Text={strings.TaskRequiredFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-required-files-tooltip`} />
+            // TA_file_upload
+            const fileUploadOptions = this.state.FileUp
+                ? (
+                    <div
+                        style={{
+                            display: 'inline-block',
+                        }}
+                    >
+                        <div className="inner">
+                            <label>
+                                {strings.HowManyRequiredFiles}</label>
+                            <Tooltip Text={strings.TaskRequiredFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-required-files-tooltip`} />
 
-                        <br />
-                        <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'mandatory', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.mandatory} />
+                            <br />
+                            <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'mandatory', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.mandatory} />
+                        </div>
+                        <div className="inner">
+                            <label>
+                                {strings.MaximumNumberOfOptionalFiles}
+                            </label>
+                            <Tooltip Text={strings.TaskOptionalFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-optional-files-tooltip`} />
+
+                            <br />
+                            <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'optional', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.optional} />
+
+                        </div>
                     </div>
-                    <div className="inner">
-                        <label>
-                            {strings.MaximumNumberOfOptionalFiles}
-                        </label>
-                        <Tooltip Text={strings.TaskOptionalFilesMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-optional-files-tooltip`} />
+                )
+                : null;
+            const fileUploads = (
+                <div className="inner">
+                    <label>{strings.AreAnyFileUploadsRequired}</label>
+                    <Checkbox
+                        isClicked={this.state.FileUp} click={() => {
+                            this.setState({
+                                FileUp: !this.state.FileUp,
+                            });
+                        }}
+                    /> {fileUploadOptions}
+                </div>
+            );
 
-                        <br />
-                        <NumberField min={0} max={10} onChange={this.props.callTaskFunction.bind(this, 'changeFileUpload', 'optional', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_file_upload.optional} />
+            // TA_overall_instructions
+            const taskInstructions = (
+                <div className="inner block">
+                    <label>{strings.TaskInstructions}</label>
+                    <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
 
+                    <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_instructions} />
+                </div>
+
+            );
+
+            // TA_overall_rubric
+            const taskRubric = (
+                <div className="inner block">
+                    <label>{strings.TaskRubric}</label>
+                    <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
+                    <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_rubric} />
+                </div>
+            );
+
+            taskLevelParameters = (
+                <div key={`Task-level Params for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
+                    <h2 className="title" onClick={this.toggleTaskParams}>
+                        {strings.TaskHeader}
+                        <span className="fa fa-angle-up" style={{float: 'right'}}></span>
+                    </h2>
+                    <div className="section-content">
+                        {displayName}
+                        {fileUploads}
+                        {taskInstructions}
+                        {taskRubric}
                     </div>
                 </div>
-            )
-            : null;
-        const fileUploads = (
-            <div className="inner">
-                <label>{strings.AreAnyFileUploadsRequired}</label>
-                <Checkbox
-                    isClicked={this.state.FileUp} click={() => {
-                        this.setState({
-                            FileUp: !this.state.FileUp,
-                        });
-                    }}
-                /> {fileUploadOptions}
-            </div>
-        );
-
-        // TA_overall_instructions
-        const taskInstructions = (
-            <div className="inner block">
-                <label>{strings.TaskInstructions}</label>
-                <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
-
-                <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_instructions} />
-            </div>
-
-        );
-
-        // TA_overall_rubric
-        const taskRubric = (
-            <div className="inner block">
-                <label>{strings.TaskRubric}</label>
-                <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
-                <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_rubric} />
-            </div>
-        );
+            );
+        }
 
         // inputFields
 
@@ -536,9 +574,14 @@ class TaskDetailsComponent extends React.Component {
 
         let advancedOptionsView = (
             <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}</h2>
+                <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}
+                    <span className={'fa fa-angle-down'} style={{float: 'right'}}></span> 
+                    
+                </h2>
             </div>);
         if (this.state.ShowAdvanced) {
+            const firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
+            
             const dueType = (
                 <div className="inner">
 
@@ -555,7 +598,6 @@ class TaskDetailsComponent extends React.Component {
                             {strings.ExpireAfter}
                         </label>
                         <label><Radio value="specific time" />{strings.EndAtThisTime}</label>
-
                     </RadioGroup>
                 </div>
             );
@@ -592,14 +634,14 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             ) : null;
 
-            const seeSameActivity = (
+            const seeSameActivity = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ? (
                 <div className="inner">
                     <label>{strings.SeeSameActivity}</label>
                     <Tooltip Text={strings.TaskSeeSameActivityMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-see-same-activity-tooltip`} />
 
                     <Checkbox isClicked={this.props.TaskActivityData.SeeSameActivity} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'SeeSameActivity', this.props.index, this.props.workflowIndex)} />
                 </div>
-            );
+            ) : null;
 
             const atDurationEnd = (
                 <div className="inner">
@@ -893,7 +935,7 @@ class TaskDetailsComponent extends React.Component {
             // TA_assignee_constraints
             let assigneeConstraints = null;
             let assigneeRelations = null;
-            const firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
+            
             if (this.props.index != 0) { // if it's the first task or an instructor task, don't show assignee contraint relation part
                 if (firstAssigneeConstr != 'instructor') {
                     const sameAsOptions = this.showAssigneeSection('same_as')
@@ -981,7 +1023,7 @@ class TaskDetailsComponent extends React.Component {
                         )
                         : null;
                     assigneeRelations = (
-                        <div className="inner">
+                        <div >
                             <label>{strings.ShouldAssigneeHaveRelationship}</label>
                             <br />
                             <label>{strings.None}</label>
@@ -1046,7 +1088,7 @@ class TaskDetailsComponent extends React.Component {
                 </div>
                 ) : null;
             assigneeConstraints = (
-                <div className="inner">
+                <div>
                     <label>{strings.AssigneeConstraints}</label>
                     <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
 
@@ -1098,7 +1140,10 @@ class TaskDetailsComponent extends React.Component {
             
             advancedOptionsView = (
                 <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                    <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}</h2>
+                    <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}
+                        <span className={'fa fa-angle-up'} style={{float: 'right'}}></span> 
+                        
+                    </h2>
                     <div className="section-content">
                         <div className="advanced">
                             <div className="section-divider">
@@ -1113,6 +1158,7 @@ class TaskDetailsComponent extends React.Component {
                             </div>
                             <div className="section-divider">
                                 <div className="subheading">{strings.AssessmentHeader}</div>
+                                {simpleGrade}
                                 {allowAssessment}
                             </div>
                             <div className="section-divider">
@@ -1129,7 +1175,6 @@ class TaskDetailsComponent extends React.Component {
                                 <div className="subheading">{strings.AssigneeConstraintHeader}</div>
                                 {oneOrSeparate}
                                 {seeSameActivity}
-                                {simpleGrade}
                                 {versionEvaluation}
                                 {seeSibblings}
                                 {assigneeConstraints}
@@ -1143,28 +1188,23 @@ class TaskDetailsComponent extends React.Component {
             
             
         }
-        const taskLevelParameters = (
-            <div key={`Task-level Params for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                <h2 className="title">{strings.TaskHeader}</h2>
-                <div className="section-content">
-                    {displayName}
-                    {fileUploads}
-                    {taskInstructions}
-                    {taskRubric}
-                </div>
-            </div>
-        );
+         
 
         let  userInputFields = (
             <div key={`User Input Fields for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
-                <h2 className="title" onClick={this.toggleUserFields}>{strings.UserFieldHeader}</h2>
+                <h2 className="title" onClick={this.toggleUserFields}>{strings.UserFieldHeader}
+                    <span className="fa fa-angle-down" style={{float: 'right'}}></span> 
+                    
+                </h2>
+
             </div>);
 
         if(this.state.ShowUserFields){
             userInputFields = (
                 <div key={`User Input Fields for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
                     <h2 className="title" onClick={this.toggleUserFields}>{strings.UserFieldHeader}
-                        <Tooltip Text={strings.TaskInputFieldsHeaderMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-input-fields-header-tooltip`} /> 
+                        <Tooltip Text={strings.TaskInputFieldsHeaderMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-input-fields-header-tooltip`} />
+                        <span className="fa fa-angle-up" style={{float: 'right'}}></span> 
                     </h2>
                     <div className="section-content">
                         {inputFields}

@@ -614,7 +614,7 @@ class Container extends React.Component {
                     <label> {this.strings.profilePicture} </label> 
                     <FileUpload
                         View="dropzone"
-                        endpoint={'/api/upload/profile-picture'}
+                        endpoint={'/api/file/upload/profile-picture'}
                         PostVars={{
                             userId: this.props.UserID
                         }}
@@ -694,7 +694,7 @@ class Container extends React.Component {
             </div>
         );
     }
-    //<div className="inline-view"><img className="profile-picture" src={`${this.props.apiUrl}/api/download/file/${this.state.profilePicture}`}></img></div>
+    //<div className="inline-view"><img className="profile-picture" src={`${window.location.protocol}//${window.location.host}/api/download/file/${this.state.profilePicture}`}></img></div>
 }
 
 export default Container;

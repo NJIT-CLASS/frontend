@@ -98,7 +98,7 @@ const taskStrings = {
     AllocateToInstructor: 'Allocate to Instructor',
     AllocateToDifferentGroupMember: 'Allocate to Different Group Member',
     Edit: 'Edit',
-    CommentText: 'Comment',
+    CommentText: 'Comment (optionally revise)',
     Grade: 'Grade',
     Critique: 'Critique',
     Student: 'Student',

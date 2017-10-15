@@ -66,6 +66,12 @@ function uploadFiles(e, url, vars){
 function showMessage(message){
     document.getElementById('message-view').innerText = message;
     document.getElementById('message-view').classList.remove('closed');
+
+    setTimeout(closeMessage, 8000);
+}
+
+function closeMessage(){
+    document.getElementById('message-view').classList.add('closed');
 }
 
 document.onload = function() {

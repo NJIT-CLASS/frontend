@@ -1,7 +1,3 @@
-
-
-
-
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -9,8 +5,9 @@ const cryptoJS = require('crypto-js');
 const request = require('request');
 const redis = require('redis');
 const _ = require('lodash');
-var fs = require('fs');
-
+const fs = require('fs');
+const path = require('path');
+const mv = require('mv');
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
@@ -19,8 +16,9 @@ const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
-const app = express();
+import {uploadFile} from './server-middleware/file-upload';
 
+const app = express();
 const redisClient = redis.createClient({
     host: consts.REDIS_HOST,
     port: consts.REDIS_PORT,
@@ -29,7 +27,6 @@ const redisClient = redis.createClient({
 
 
 const multer = require('multer'); //TODO: we may need to limit the file upload size
-
 var storage = multer({
     dest: './tempFiles/',
     limits: { //Max 3 files and total of 50MB
@@ -37,6 +34,7 @@ var storage = multer({
         files: consts.MAX_NUM_FILES
     }
 });
+
 
 app.use('/static', express.static(`${__dirname}/static`));
 app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`)
@@ -48,9 +46,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use(session(redisClient));
-var upload = multer({
-    dest: './files'
-});
+
 app.use((req, res, next) => {
     req.App = {};
 
@@ -59,30 +55,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
 
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
+/*
 app.post('/api/file/upload', upload.array('files'), (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
@@ -122,7 +96,7 @@ app.post('/api/file/upload', upload.array('files'), (req, res) => {
 
     };
     xhr.send(formData);
-});
+});*/
 
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
@@ -329,6 +303,163 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    //maybe check for authorization before continuing
+    let type = req.params.type || '';
+    delete postVars.endpoint;
+    const listOfErrors = [];
+    const uploadStatus = {
+        successfulFiles: [],
+        failedFiles: []
+    };
+    let filesToUpload = req.files.map( file =>
+        uploadFile(file, type, req.App.user.userId, postVars));
+    
+    return Promise.all(filesToUpload).then(resultsArray => {
+        uploadStatus.successfulFiles = resultsArray.filter(file => file.FileID !== undefined);
+        uploadStatus.failedFiles = resultsArray.filter(file => file.FileID === undefined);
+        if(uploadStatus.failedFiles.length == 0){
+            return res.status(200).json(uploadStatus);
+        } else {
+            return res.status(400).json(uploadStatus);
+            
+        }
+    });
+});
+
+app.get('/api/file/download/:fileId', function(req, res) {
+    // router.post('/download/file/:fileId', function (req, res) {
+    // router.get('/download/file', function (req, res) {
+    
+    var file_id = req.body.fileId || req.params.fileId;
+    
+    if (file_id == null) {
+        return res.status(400).end();
+    }
+
+    request({
+        uri: `${react_consts.API_URL}/api/file/download/${file_id}`,
+        method: 'GET',
+        json: true
+    }, (err,response,body) => {
+        var file_ref = body;
+
+        if (!file_ref) {
+            return res.status(400).end();
+        }
+        file_ref = JSON.parse(file_ref.Info);
+        console.log(file_ref);
+        let contDispFirstHalf = file_ref.mimetype.match('image') ? 'inline' : 'attachment';
+        let contDispSecondHalf = file_ref.originalname;
+        var content_headers = {
+            'Content-Type': file_ref.mimetype,
+            'Content-Length': file_ref.size,
+            'Content-Disposition': `${contDispFirstHalf};filename=${contDispSecondHalf}`,
+        };
+        res.writeHead(200, content_headers);
+        const readStream = fs.createReadStream(`${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        console.log('path', `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        readStream.on('open', () => {
+            readStream.pipe(res);
+        });
+        readStream.on('error', (err) => {
+            console.error(err);
+            res.status(400).end();
+        });
+    });
+});
+
+
+app.post('/api/file/delete/', function(req,res){
+    //probably verify authorization and owner first
+    var file_id = req.body.fileId;
+
+    if(!file_id){
+        return res.status(400).end();
+    }
+    
+    request({
+        uri: `${react_consts.API_URL}/api/file/delete/${file_id}`,
+        method: 'DELETE',
+        json: true
+    }, (err,response,body) => {
+        var file_ref = body.Info;
+        let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
+        fs.unlink(filePath, (err)=> {
+            if(err){
+                console.error(err);
+                return res.status(400).end();
+            } 
+            return res.status(200).end();
+            
+        });
+    });
+});
+/**
+    ***** 
+ **********/
+
+
 app.use((req, res, next) => {
     const render = res.render;
 
@@ -461,7 +592,6 @@ app.use(function(req, res, next) {
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
                                     options.admin = route.access.admins;
-                                    options.username = req.App.user.firstName + req.App.user.lastName;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
                                         options.title = `${route.title} | CLASS Learning System`;

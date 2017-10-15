@@ -30,39 +30,39 @@ class App extends React.Component {
     }
 
 
-      // <Editor
-      //   editorState={this.state.EditorState}
-      //   onEditorStateChange={this.onEditorStateChange.bind(this)}
-      // />
+    // <Editor
+    //   editorState={this.state.EditorState}
+    //   onEditorStateChange={this.onEditorStateChange.bind(this)}
+    // />
 
     render() {
         let toolbarOptions = null;
         let gray = <div className="text"></div>;
         return (<div>
-          <div className="section placeholder-card">
-            <h2 className="title">{gray}</h2>
-            <div className="section-content">
-              {gray}
-              <br/>
-              <div className="textarea"></div>
-            </div>
-          </div>
-
-          <div>
-            <ReactQuill
-              theme={'snow'}
-              onChange={this.onChange}
-              value={this.state.EditorHTML}
-            />
-            <div className="ql-editor" dangerouslySetInnerHTML={{ __html: this.state.EditorHTML }}>
+            <div className="section placeholder-card">
+                <h2 className="title">{gray}</h2>
+                <div className="section-content">
+                    {gray}
+                    <br/>
+                    <div className="textarea"></div>
+                </div>
             </div>
 
+            <div>
+                <ReactQuill
+                    theme={'snow'}
+                    onChange={this.onChange}
+                    value={this.state.EditorHTML}
+                />
+                <div className="ql-editor" dangerouslySetInnerHTML={{ __html: this.state.EditorHTML }}>
+                </div>
 
-          </div>
 
-          <FileUpload View="dropzone" endpoint={'/api/upload/profile-picture'} PostVars={{userId: 70}}/>
+            </div>
 
-          </div>
+            <FileUpload View="dropzone" endpoint={'/api/upload/profile-picture'} PostVars={{userId: 70}}/>
+
+        </div>
         );
     }
 }

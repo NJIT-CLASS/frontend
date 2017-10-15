@@ -15,3 +15,4 @@ exports.REDIS_AUTH = process.env.CLASS_REDIS_AUTH || fallbackSettings.REDIS_AUTH
 exports.ROOT_DIRECTORY_PATH = path.resolve(__dirname, '../');
 exports.FILE_SIZE = 52428800;
 exports.MAX_NUM_FILES = 3;
+exports.UPLOAD_DIRECTORY_PATH = './files/';

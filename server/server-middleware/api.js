@@ -62,4 +62,22 @@ apiMethods.put = function(endpoint, body, cb) {
     });
 };
 
+apiMethods.delete = function(endpoint, body, cb) {
+    if (arguments.length === 2) {
+        var cb = body;
+        body = {};
+    }
+
+    const options = {
+        method: 'DELETE',
+        uri: apiUrl(endpoint),
+        json: true,
+        body: body
+    };
+
+    request(options, function(err, response, body) {
+        return cb(err, response.statusCode, body);
+    });
+};
+
 exports.apiMethods = apiMethods;

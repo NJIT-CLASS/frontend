@@ -38,6 +38,9 @@ class CommentEditorComponent extends React.Component {
       if (this.props.Type != undefined) {
           this.setState({NewCommentType: this.props.Type});
       }
+      if (this.props.SetFlag) {
+          this.setState({NewCommentFlagValue: 1})
+      }
     }
 
     componentDidMount() {
@@ -72,6 +75,9 @@ class CommentEditorComponent extends React.Component {
             if (event.value == 'flag') {
                 this.setState({NewCommentFlagValue: 1});
             }
+            else {
+                this.setState({NewCommentFlagValue: 0});
+            }
         }
     }
 
@@ -80,7 +86,7 @@ class CommentEditorComponent extends React.Component {
         const commentParameters = {
             UserID: this.props.UserID,
             AssignmentInstanceID: this.props.AssignmentInstanceID,
-            TargetID: this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID,
+            TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID),
             Flag: this.state.NewCommentFlagValue,
             CommentsText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
@@ -89,7 +95,7 @@ class CommentEditorComponent extends React.Component {
             Time: moment().format('YYYY-MM-DD HH:mm:ss'),
             Status: 'submitted',
             CommentsID: this.props.CommentsID,
-            CommentTarget: this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target,
+            CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target),
             Type: this.state.NewCommentType,
             OriginTaskInstanceID: this.props.TaskID,
         };
@@ -148,7 +154,7 @@ class CommentEditorComponent extends React.Component {
       const commentParameters = {
           UserID: this.props.UserID,
           AssignmentInstanceID: this.props.AssignmentInstanceID,
-          TargetID: this.props.CommentTargetList[this.state.NewCommentTarget].ID,
+          TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID),
           Flag: this.state.NewCommentFlagValue,
           CommentsText: this.state.NewCommentValue,
           Rating: this.state.NewCommentRating,
@@ -157,8 +163,8 @@ class CommentEditorComponent extends React.Component {
           Time: moment().format('YYYY-MM-DD HH:mm:ss'),
           Status: 'saved',
           CommentsID: this.props.CommentsID,
-          CommentTarget: this.props.CommentTargetList[this.state.NewCommentTarget].Target,
           Type: this.state.NewCommentType,
+          CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target),
           OriginTaskInstanceID: this.props.TaskID,
       };
 
@@ -240,7 +246,7 @@ class CommentEditorComponent extends React.Component {
             EditSavedText: 'Edit saved ',
             ButtonText0: 'Post',
             ButtonText1: 'Save for Later',
-            PlaceHolderText: 'Comment text',
+            PlaceHolderText: 'Enter a comment and/or rate this above',
             ExplainFlagText: 'Explain why you flagged this comment',
             RatingLabel: 'Rating:',
             BlankMessage: 'The comment or flag cannot be blank.',
@@ -260,12 +266,9 @@ class CommentEditorComponent extends React.Component {
         }
         let ratingList = [{value: 0, label: '0'}, {value: 1, label: '1'}, {value: 2, label: '2'}, {value: 3, label: '3'}, {value: 4, label: '4'}, {value: 5, label: '5'}];
 
-        let inputPlaceholderText;
+        let inputPlaceholderText = strings.PlaceHolderText;
         if (this.state.NewCommentFlagValue == 1) {
             inputPlaceholderText = strings.ExplainFlagText;
-        }
-        else {
-            inputPlaceholderText = strings.PlaceHolderText;
         }
 
         return (

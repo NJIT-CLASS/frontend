@@ -46,6 +46,7 @@ class CommentComponent extends React.Component{
     componentDidMount() {
         this.props.scroll();
     }
+
     displayNewEditor() {
       if (!this.state.showEditor) {
         this.setState({showEditor: true});
@@ -310,7 +311,8 @@ class CommentComponent extends React.Component{
               {this.props.Comment.Type == 'flag' ?
               ((this.props.UserType == 'teacher') || (this.props.Admin == true)) ? ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>)):
               ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}}></i>))
-              : <i className="fa fa-comment-o" aria-hidden="true"></i>
+              : (this.props.Comment.ReplyLevel == 0 ? <i className="fa fa-comment-o" aria-hidden="true"></i> : <i className="fa fa-reply" aria-hidden="true"></i>
+)
               }
 
               {/* <div className="title"></div> */}

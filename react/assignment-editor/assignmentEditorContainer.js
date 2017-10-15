@@ -520,7 +520,7 @@ class AssignmentEditorContainer extends React.Component {
             //Get courses if one was not already chosen
             if (this.props.CourseID === '*' || this.props.CourseID === '') {
 
-                apiCall.get(`/getCourseCreated/${this.props.UserID}`, (err, res, bod) => {
+                apiCall.get(`/course/getCourses/${this.props.UserID}`, (err, res, bod) => {
                     coursesArray = bod.Courses.map(function(course) {
                         return ({value: course.CourseID, label: course.Name});
                     });
@@ -542,8 +542,8 @@ class AssignmentEditorContainer extends React.Component {
                 };
 
                 console.log(assignmentOptions);
-
-                apiCall.get(`/partialAssignments/ById/${this.props.PartialAssignmentID}`,assignmentOptions, (err3, res3, assignBody) => {
+                console.log('partialAssignmentURL:', `/partialAssignments/ById/${this.props.PartialAssignmentID}`);
+                apiCall.get(`/partialAssignments/byId/${this.props.PartialAssignmentID}`,assignmentOptions, (err3, res3, assignBody) => {
                     console.log(assignBody, res3);
 
                     if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
@@ -683,10 +683,12 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     onLoad(assignmentData){
+        console.log('AssignmentData onLoad',assignmentData.WorkflowActivity);
         let workflowData = clone(assignmentData.WorkflowActivity);
         delete assignmentData['WorkflowActivity'];
         let AA_Data = assignmentData;
         workflowData.forEach((workflow, index) => {
+            console.log(workflow);
             workflow.WorkflowStructure = this.unflattenTreeStructure(workflow.WorkflowStructure);
         })
         ;
@@ -1173,9 +1175,7 @@ class AssignmentEditorContainer extends React.Component {
         switch(type){
         case this.ASSESS_IDX:
             //add default assignee constraints
-            console.log('Before task array call', stateData);
             let tasksToAvoid = this.getAlreadyCreatedTasks(newTaskIndex, workflowIndex, stateData);
-            console.log('tasksTo avaoid', tasksToAvoid);
             tasksToAvoid.forEach((task) => {
                 stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
             });
@@ -1752,7 +1752,7 @@ class AssignmentEditorContainer extends React.Component {
 
         }
 
-        newData = this.removeGradeDist(newData, workflowIndex);
+        newData = this.refreshGradeDist(newData, workflowIndex);
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
@@ -1810,7 +1810,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
@@ -1831,7 +1831,7 @@ class AssignmentEditorContainer extends React.Component {
                     }
                 } else {
                     newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
-                    newData = this.addGradeDist(newData, workflowIndex);
+                    newData = this.refreshGradeDist(newData, workflowIndex);
                     newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
                 }
             }
@@ -1847,7 +1847,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
@@ -1882,7 +1882,7 @@ class AssignmentEditorContainer extends React.Component {
                         let messageDiv = `The following tasks will be dropped:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
+                            ${taskChildrenNodes.map((task)=>{
         return (`<li>${task}</li>`);
     }).reduce((val, acc) => {
         return acc + val;
@@ -2016,6 +2016,11 @@ class AssignmentEditorContainer extends React.Component {
             break;
         case 'TA_assignee_constraints':
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
+            if(e.value == 'instructor'){
+                newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = false;
+            } else {
+                newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = true;
+            }
             break;
         case 'TA_function_type_Assess':
             {
@@ -2345,10 +2350,10 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].SimpleGradePointReduction = 0;
 
         if(temp === 'exists'){
-            newData = this.addSimpleGradeToGradeDistribution(newData, workflowIndex);
+            newData = this.refreshGradeDist(newData, workflowIndex);
 
         } else if (temp === 'none'){
-            this.removeSimpleGradeFromGradeDistribution(workflowIndex);
+            newData = this.refreshGradeDist(newData, workflowIndex);
 
         }
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
@@ -2387,7 +2392,6 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getAlreadyCreatedTasks(currTaskIndex, workflowIndex, stateData) { //change to get from tree
-        console.log('task list of created',currTaskIndex, workflowIndex, stateData);
         let tasksPath = new Array();
         const stateDataToCheck = stateData === undefined ?  this.state.WorkflowDetails : stateData;
         stateDataToCheck[workflowIndex].WorkflowStructure.walk(function(node) {
@@ -2605,26 +2609,30 @@ class AssignmentEditorContainer extends React.Component {
 
     ////////////////    Workflow (Problem) Details functions    ////////////////////
 
-    addGradeDist(stateData, workflowIndex) {
-        // stateData[workflowIndex].WA_grade_distribution[stateData[workflowIndex].Workflow.length - 1] = 0;
-        // let distKeys = Object.keys(stateData[workflowIndex].WA_grade_distribution);
-        // let count = distKeys.length;
-        //
-        // distKeys.forEach(function(task) {
-        //     stateData[workflowIndex].WA_grade_distribution[task] = Math.floor(100 / count);
-        // });
-        //
-        // stateData[workflowIndex].WA_grade_distribution[distKeys[count - 1]] = Math.floor(100 / count) + (100 % count);
-        // stateData[workflowIndex].NumberOfGradingTask += 1;
-        //
-        // distKeys = null;
-        // count = null;
-        //
-        // return stateData;
+    //addGradeDist(stateData, workflowIndex) {
 
+    /** Will make a new, clean version of the workflow grade distribution.
+     *  Clean means the points are distributed mostly evenly
+     * @param {object} stateData 
+     * @param {number} workflowIndex 
+     */
+    refreshGradeDist(stateData, workflowIndex)  {
         let gradedTasks = this.getFinalGradeTasksArray(workflowIndex, stateData);
-        let count = gradedTasks.length;
+        console.log('Grading tasks array,', gradedTasks);
         let newGradeDist = new Object();
+        if(this.scanWorkflowForSimpleGrade(workflowIndex)){
+            gradedTasks.push('simple');
+        }
+        let count = gradedTasks.length;
+        
+
+        gradedTasks.forEach(function(task) {
+            newGradeDist[task] = Math.floor(100 / count);
+        });
+
+        stateData[workflowIndex].WA_grade_distribution = newGradeDist;
+        stateData[workflowIndex].NumberOfGradingTask = count;
+        /*
         if(count == 0){
             return stateData;
         }
@@ -2641,7 +2649,7 @@ class AssignmentEditorContainer extends React.Component {
             gradedTasks = null;
             count = null;
 
-        }
+        } */
 
         return stateData;
     }
@@ -2693,7 +2701,7 @@ class AssignmentEditorContainer extends React.Component {
 
     /**
      * [addSimpleGradeToGradeDistribution Adds simple to Workflow Grade Distribution]
-     * @param {[number]} workflowIndex
+     * @param {number} workflowIndex
      */
     addSimpleGradeToGradeDistribution(stateData, workflowIndex){
         if('simple' in stateData[workflowIndex].WA_grade_distribution){
@@ -2747,8 +2755,8 @@ class AssignmentEditorContainer extends React.Component {
      * [scanWorkflowForSimpleGrade Goes over the workflow to find if any tasks have
      *                             a simple grade. Returns true if it finds any that
      *                             aren't set to 'none']
-     * @param  {[number]} workflowIndex
-     * @return {[boolean]}
+     * @param  {number} workflowIndex
+     * @return {boolean}
      */
     scanWorkflowForSimpleGrade(workflowIndex){
         let count = this.state.WorkflowDetails[workflowIndex].Workflow.length;
@@ -2812,7 +2820,7 @@ class AssignmentEditorContainer extends React.Component {
         let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM];
         stateData[workflowIndex].Workflow.forEach(function(task, index) {
             if (Object.keys(task).length > 0) {
-                if (indexOf(assessmentTypes, task.TA_type) != -1 || task.TA_simple_grade != 'none') {
+                if (assessmentTypes.includes(task.TA_type)) {
                     newArray.push(index);
                 }
             }
