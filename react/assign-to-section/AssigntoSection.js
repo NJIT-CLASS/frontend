@@ -17,9 +17,9 @@ import { TASK_TYPES , TASK_TYPES_TEXT } from '../../server/utils/react_constants
 class AssignToSectionContainer extends React.Component
 {
     constructor(props)
-  {
+    {
         super(props);
-    /*
+        /*
       Props:
             - apiUrl
             - CourseID
@@ -62,8 +62,6 @@ class AssignToSectionContainer extends React.Component
 
         apiCall.get('/getAssignToSection',getAssignQueryStrings, (err, res, body) => {
             apiCall.get('/semester', (err2, res2, bod2) => {
-                console.log(body);
-                console.log(bod2);
                 let workflows = Object.keys(body.taskActivityCollection).map(function(key){
                     let taskDaysPast = 0;
                     let tasks = body.taskActivityCollection[key].map(function(task){
@@ -88,7 +86,8 @@ class AssignToSectionContainer extends React.Component
                             StartNow:dueTypeArray[0] === 'duration',
                             StartLater:dueTypeArray[0] === 'specific time',
                             Time:dueTypeArray[1],
-                            TimeArray: dueTypeArray
+                            TimeArray: dueTypeArray,
+                            PreviousValue: null
                         };
                     }, this);
 
@@ -208,9 +207,9 @@ class AssignToSectionContainer extends React.Component
         return;
     }
 
-//////////////// Functions used in the Assignment Component ////////////////////
+    //////////////// Functions used in the Assignment Component ////////////////////
     onChangeCalendarAssignment(dateString) //dateString is supplied by Datetime module
-  {
+    {
 
         let newA = this.state.Assignment;
         newA.Time = dateString.format('YYYY-MM-DD HH:mm:ss');
@@ -218,7 +217,7 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeStartLaterAssignment()
-  {
+    {
         let newA = this.state.Assignment;
         newA.StartNow = false;
         newA.StartLater = true;
@@ -227,7 +226,7 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeStartNowAssignment()
-  {
+    {
         let newA = this.state.Assignment;
         newA.StartNow = true;
         newA.StartLater = false;
@@ -236,7 +235,7 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeAssigmentName(e) //e is event that is automatically passed in
-  {
+    {
         let newA = this.state.Assignment;
         newA.AssigmentName = e.target.value;
         this.setState({Assignment: newA});
@@ -250,7 +249,7 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeSectionAssignment(sectionID) //Section is automatically passed in by CheckBoxList module
-  {
+    {
         let newA = this.state.Assignment;
         if(newA.Section.indexOf(sectionID) == -1){ //not already in the list of sectionID's
             newA.Section.push(sectionID);
@@ -262,12 +261,12 @@ class AssignToSectionContainer extends React.Component
         this.setState({Assignment: newA});
     }
 
-//----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
 
-/////////////// Functions used in Tasks Component /////////////////////////////
+    /////////////// Functions used in Tasks Component /////////////////////////////
     onChangeCalendarTasks(index, workflowIndex, dateString) //index is task's index in the tasks array, workflowIndex is index in WorkFlow array
     // dateString automatically passed in by Datetime module
-  {
+    {
         let newA = this.state.WorkFlow;
         newA[workflowIndex].Tasks[index].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
         newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
@@ -276,10 +275,10 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeMultipleTasks(index, workflowIndex, value) // value automatically passed in by NumericInput
-  {
+    {
         let newA = this.state.WorkFlow;
         if (value > 100)
-    {
+        {
             value = 100;
         }
 
@@ -289,23 +288,31 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeExpireNumberOfDaysTasks(index, workflowIndex)
-  {
+    {
         let newA = this.state.WorkFlow;
+        let previousVal = newA[workflowIndex].Tasks[index].Time;
+
         newA[workflowIndex].Tasks[index].StartNow= true;
         newA[workflowIndex].Tasks[index].StartLater=false;
-        newA[workflowIndex].Tasks[index].Time = 3 * 1440;
+        newA[workflowIndex].Tasks[index].Time = newA[workflowIndex].Tasks[index].PreviousValue == null ? 3 * 1440 : newA[workflowIndex].Tasks[index].PreviousValue;
         newA[workflowIndex].Tasks[index].TimeArray = ['duration',newA[workflowIndex].Tasks[index].Time];
+        newA[workflowIndex].Tasks[index].PreviousValue = previousVal;
+        
         this.setState({WorkFlow: newA});
     }
 
     onChangeCertainTimeTasks(index, workflowIndex)
-  {
+    {
+
         let newA = this.state.WorkFlow;
-        newA[workflowIndex].Tasks[index].Time = this.getAddedTime(index, workflowIndex);
+        let previousVal = newA[workflowIndex].Tasks[index].Time;
+        
+        newA[workflowIndex].Tasks[index].Time = newA[workflowIndex].Tasks[index].PreviousValue == null ? this.getAddedTime(index, workflowIndex) : newA[workflowIndex].Tasks[index].PreviousValue;
         newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
         newA[workflowIndex].Tasks[index].StartNow= false;
         newA[workflowIndex].Tasks[index].StartLater=true;
-
+        newA[workflowIndex].Tasks[index].PreviousValue = previousVal;
+        
         this.setState({WorkFlow: newA});
     }
 
@@ -322,18 +329,18 @@ class AssignToSectionContainer extends React.Component
 
         return moment(this.state.WorkFlow[workflowIndex].Time, 'YYYY-MM-DD HH:mm:ss').add(Math.floor(count/1440), 'days').format('YYYY-MM-DD HH:mm:ss');
     }
-//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
-/////////// Functions used in WorkFlow Component ///////////////////////////////
+    /////////// Functions used in WorkFlow Component ///////////////////////////////
     onChangeCalendarWorkFlow( workflowIndex,dateString) //workflowIndex is index in WorkFlow array, usually passed in as workflowIndex index prop
-  {
+    {
         let newA = this.state.WorkFlow;
         newA[workflowIndex].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
         this.setState({WorkFlow: newA});
     }
 
     onChangeStartLaterWorkFlow(workflowIndex)
-  {
+    {
         let newA = this.state.WorkFlow;
         newA[workflowIndex].StartNow = false;
         newA[workflowIndex].StartLater = true;
@@ -342,7 +349,7 @@ class AssignToSectionContainer extends React.Component
     }
 
     onChangeStartNowWorkFlow(workflowIndex)
-  {
+    {
         let newA = this.state.WorkFlow;
         newA[workflowIndex].StartNow = true;
         newA[workflowIndex].StartLater = false;
@@ -350,10 +357,10 @@ class AssignToSectionContainer extends React.Component
         this.setState({WorkFlow: newA});
     }
 
-  //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     render()
-  {
+    {
         let strings = this.state.Strings;
         let infoMessage = null;
         let buttonView =  <button type="button" style={{marginBottom: '50px'}} onClick={this.onSubmit.bind(this)}>{strings.Submit}</button>;
@@ -367,7 +374,7 @@ class AssignToSectionContainer extends React.Component
                 <div>
                     <i className="fa fa-cog fa-spin fa-2x fa-fw"></i>
                 </div>
-            )
+            );
         }
         if(this.state.SubmitSuccess === true){
             buttonView = null;
@@ -377,68 +384,68 @@ class AssignToSectionContainer extends React.Component
             infoMessage = (<span onClick={() => {
                 this.setState({InfoMessage: ''});
             }} className="small-info-message">
-            <span className={`${this.state.InfoMessageType}-message`}>
-              {this.state.InfoMessage}
-            </span>
+                <span className={`${this.state.InfoMessageType}-message`}>
+                    {this.state.InfoMessage}
+                </span>
             </span>);
         }
         let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
-    {
+        {
             let tasks = workflow.Tasks.map(function(task, index){
                 if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
                     return null;
                 }
 
                 return (
-            <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
-            onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
-            onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
-            onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
-            onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)}
-            Strings={strings}
-          />
+                    <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
+                        onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
+                        onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
+                        onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
+                        onChangeCertainTimeTasks = {this.onChangeCertainTimeTasks.bind(this)}
+                        Strings={strings}
+                    />
                 );
 
             },this);
 
             return (
-        <div>
-            <WorkFlow WorkFlow = {workflow} workflowIndex ={workindex}
-            onChangeCalendarWorkFlow = {this.onChangeCalendarWorkFlow.bind(this)}
-            onChangeStartLaterWorkFlow = {this.onChangeStartLaterWorkFlow.bind(this)}
-            onChangeStartNowWorkFlow = {this.onChangeStartNowWorkFlow.bind(this)}
-            Strings={strings}
+                <div>
+                    <WorkFlow WorkFlow = {workflow} workflowIndex ={workindex}
+                        onChangeCalendarWorkFlow = {this.onChangeCalendarWorkFlow.bind(this)}
+                        onChangeStartLaterWorkFlow = {this.onChangeStartLaterWorkFlow.bind(this)}
+                        onChangeStartNowWorkFlow = {this.onChangeStartNowWorkFlow.bind(this)}
+                        Strings={strings}
 
-          />
+                    />
 
-          {tasks}
-        </div>);
+                    {tasks}
+                </div>);
         }, this);
 
         return (
-      <div>
+            <div>
 
-        <Assignment Assignment={this.state.Assignment}
-          SectionsList={this.state.Sections}
-          Semesters={this.state.Semesters}
-          onChangeCalendarAssignment ={this.onChangeCalendarAssignment.bind(this)}
-          onChangeStartLaterAssignment={this.onChangeStartLaterAssignment.bind(this)}
-          onChangeStartNowAssignment = {this.onChangeStartNowAssignment.bind(this)}
-          onChangeAssigmentName = {this.onChangeAssigmentName.bind(this)}
-          onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
-          onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
-          Strings={strings}
+                <Assignment Assignment={this.state.Assignment}
+                    SectionsList={this.state.Sections}
+                    Semesters={this.state.Semesters}
+                    onChangeCalendarAssignment ={this.onChangeCalendarAssignment.bind(this)}
+                    onChangeStartLaterAssignment={this.onChangeStartLaterAssignment.bind(this)}
+                    onChangeStartNowAssignment = {this.onChangeStartNowAssignment.bind(this)}
+                    onChangeAssigmentName = {this.onChangeAssigmentName.bind(this)}
+                    onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
+                    onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
+                    Strings={strings}
 
-        />
+                />
 
 
-        {workflowView}
-        {infoMessage}
+                {workflowView}
+                {infoMessage}
 
-        <div className="align-right">
-          {buttonView}
-        </div>
-      </div>
+                <div className="align-right">
+                    {buttonView}
+                </div>
+            </div>
 
         );
     }
