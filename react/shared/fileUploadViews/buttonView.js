@@ -33,7 +33,8 @@ class ButtonView extends React.Component {
             uploadView = (
                 <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                     {inputView}
-                    <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{label}</label><div className="inline"> {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                    <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{label}</label>
+                    <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
                     {buttonView}
 
                 </form>
@@ -65,7 +66,7 @@ class ButtonView extends React.Component {
                 <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                     {inputView}
                     <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{Strings.buttonLabel}</label>
-                    <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                    <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
                     {buttonView}
 
                 </form>
@@ -75,7 +76,7 @@ class ButtonView extends React.Component {
             uploadView = (<div>
                 <form ref="uploadForm" className="fileUpload-view" encType="multipart/form-data" >
                     <label style={{cursor: 'pointer'}} htmlFor="file-upload-input">{Strings.fullLabel}</label>
-                    <div className="inline">{Strings.uploadedLabel} {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
+                    <div className="inline">{Strings.uploadedLabel}: {NumberUploaded} {Strings.Min}: {MinUploads} {Strings.Max}: {MaxUploads}</div>
 
                 </form>
             </div>);

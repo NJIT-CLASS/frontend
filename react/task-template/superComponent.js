@@ -16,6 +16,7 @@ import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
+import FileManagerComponent from './fileManagerComponent';
 
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
@@ -454,7 +455,6 @@ class SuperComponent extends React.Component {
         let TA_instructions = null;
         let formButtons = null;
         let fileUploadView = null;
-        let fileLinksView = null;
         let revisionRejectView = null;
         let revisionApproveView = null;
 
@@ -524,29 +524,24 @@ class SuperComponent extends React.Component {
         if (this.props.FileUpload !== null && (this.props.FileUpload.mandatory !== 0 || this.props.FileUpload.optional !== 0)) {
             fileUploadView = (
                 <div>
-
-                    <FileUpload
+                    <FileManagerComponent TaskID={this.props.TaskID}
                         View='button'
                         InitialNumberUploaded={this.state.NumberFilesStored}
                         PostVars={{
                             userId: this.props.UserID,
                             taskInstanceId: this.props.TaskID
                         }}
+                        UserID={this.props.UserID}
                         MinUploads={this.props.FileUpload.mandatory}
                         endpoint={'/api/file/upload/task'}
                         MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
                         onChange={this.handleFileUploads.bind(this)}
-                    />
+                        Strings={this.props.Strings}/>
                 </div>
             );
         }
 
-        if(this.state.NewFilesUploaded.length !== 0){
-            fileLinksView = (<FileLinksComponent Files={this.state.NewFilesUploaded} />);
-
-        }else{
-            fileLinksView = (<FileLinksComponent Files={this.props.Files} />);
-        }
+    
 
         if (this.props.Instructions != null && this.props.Instructions != '') {
             TA_instructions = (
@@ -817,7 +812,6 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
                 {TA_instructions}
                 {TA_rubric}
-                {fileLinksView}
                 {fileUploadView}
                 {fields}
                 {formButtons}

@@ -32,13 +32,17 @@ let strings = {
     Fail: 'Fail',
     LabelDirections: 'Choose from one of the labels below',
     Course: 'Course',
-    Min: 'Min',
     NotAllowed: 'Sorry, you are not allowed to see this task',
     buttonLabel: 'Upload',
     filesLabel: 'Files',
     selectLabel: 'Select Files',
     uploadedLabel: 'Uploaded',
+    Min: 'Min',
     Max: 'Max',
+    upload: 'Upload',
+    UploadComplete: 'Upload Complete',
+    UploadError: 'Upload Error',
+    fullLabel: 'Limit Reached',
     Justification: 'Justification',
     JustificationInstructions: 'Justification Instructions',
     RejectRevision: 'Send Back for Revising',
@@ -57,8 +61,11 @@ let strings = {
     DisputeMessage: '',
     DidNotDisputeMessage: 'This task will not be disputed',
     InsufficientFileErrorMessage: 'Missing some files. Please try again',
-    BypassedDisputeMessage: 'This dispute was bypassed.'
-
+    BypassedDisputeMessage: 'This dispute was bypassed.',
+    Revision: 'Revision',
+    Original: 'Original',
+    UploadFiles: 'Files Uploads',
+    
 };
 
 export default strings;

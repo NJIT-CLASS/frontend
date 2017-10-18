@@ -10,6 +10,8 @@ export default class PendingTaskComponent extends Component {
             PendingTasks: [],
             PendingTasksData: []
         };
+
+        this.makeRevisionLabel = this.makeRevisionLabel.bind(this);
     }
     componentDidMount () {
         this.fetchCompleted(this.props.UserID);
@@ -24,6 +26,8 @@ export default class PendingTaskComponent extends Component {
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         Course: task.AssignmentInstance.Section.Course.Name,
+                        Revision: task.TaskActivity.AllowRevision,
+                        Status: typeof task.Status === 'string' ? JSON.parse(task.Status) : task.Status,//task.Status,
                         Date: moment(task.EndDate).format('MMMM Do, YYYY h:mm a'),
                     };
                 });
@@ -36,6 +40,19 @@ export default class PendingTaskComponent extends Component {
     }
     makeLink({original, row, value}){
         return <a  href={`/task/${original.TaskID}`}>{value}</a>;
+    }
+
+    makeRevisionLabel({original, row, value}){
+        //if(original.Status.indexOf('submitted_for_approval') != -1 || original.Status.indexOf('being_revised') != -1){
+        if(original.Revision == true ||
+           original.Status[2].indexOf('submitted_for_approval') != -1 ||
+           original.Status[2].indexOf('being_revised') != -1 )  
+        {
+
+            return <div>({this.props.Strings.Revision}){value}</div>;
+        
+        }
+        return <div>{value}</div>;
     }
     
     render() {
@@ -64,6 +81,7 @@ export default class PendingTaskComponent extends Component {
                                     Header: Strings.Type,
                                     accessor: 'Type',
                                     id:'Pending-Type',
+                                    Cell: this.makeRevisionLabel,
                                     resizable:true,
                                     
                                 },

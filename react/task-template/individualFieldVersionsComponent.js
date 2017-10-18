@@ -6,11 +6,11 @@ class FieldVersionView extends React.Component{
     constructor(props){
         super(props);
     }
-  // PROPS:
-  //  Versions: [{}]
-  //  Field: {}
-  //  Strings: ['']
-  //  FieldIndex: int
+    // PROPS:
+    //  Versions: [{}]
+    //  Field: {}
+    //  Strings: ['']
+    //  FieldIndex: int
     render(){
         let rubricView = null;
         let instructionsView = null;
@@ -32,20 +32,20 @@ class FieldVersionView extends React.Component{
 
         if(this.props.Field.rubric !== ''){
             rubricView = (<div>
-            <MarkupText classNames="regular-text" content={this.props.Field.rubric } />
-          </div>);
+                <MarkupText classNames="regular-text" content={this.props.Field.rubric } />
+            </div>);
         }
 
         if(this.props.Field.instructions !== ''){
             instructionsView = (<div>
-            <MarkupText classNames="regular-text" content={this.props.Field.instructions } />
-          </div>);
+                <MarkupText classNames="regular-text" content={this.props.Field.instructions } />
+            </div>);
         }
 
         if(this.props.Field.justification_instructions !== ''){
             justificationInstructions = (<div>
-            <MarkupText classNames="regular-text" content={this.props.Field.justificationInstructions } />
-          </div>);
+                <MarkupText classNames="regular-text" content={this.props.Field.justificationInstructions } />
+            </div>);
         }
 
         let versions = this.props.Versions.map(function(versionArray, vIndex){
@@ -53,23 +53,28 @@ class FieldVersionView extends React.Component{
             let justification = null;
             let contentView = null;
             let fieldVersion = versionArray[this.props.FieldIndex];
-
+            let versionSubheaderText = '';
+            if(vIndex === 0){
+                versionSubheaderText = this.props.Strings.Original;
+            } else {
+                versionSubheaderText = `${this.props.Strings.Revision} ${vIndex}`;
+            }
 
             if(taskField.requires_justification){
                 if(fieldVersion[1] == ''){
                     justification = (
-                      <div>
-                        <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
-                        <div key={this.props.FieldIndex + vIndex + 655}></div>
-                      </div>
+                        <div>
+                            <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
+                            <div key={this.props.FieldIndex + vIndex + 655}></div>
+                        </div>
                     );
                 }
                 else{
                     justification = (
-                      <div>
-                        <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
-                        <MarkupText classNames="faded-big" content={fieldVersion[1]} />
-                      </div>
+                        <div>
+                            <div className=".template-field-justification-label">{title} {this.props.Strings.Justification}</div>
+                            <MarkupText classNames="faded-big" content={fieldVersion[1]} />
+                        </div>
                     );
                 }
             }
@@ -81,13 +86,13 @@ class FieldVersionView extends React.Component{
                 switch(taskField.assessment_type){
                 case 'grade':
                     fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-small"> {fieldVersion[0]}
-                      </div>);
+                    </div>);
                     break;
                 case 'rating':
                     let val = (fieldVersion[0] == null || fieldVersion[0] == '') ? 0 : fieldVersion[0];
                     fieldContentBlock = (<div key={this.props.FieldIndex + vIndex + 600}><b>{fieldTitle}   </b>
                         <Rater total={taskField.rating_max} rating={val} interactive={false} />
-                      </div>);
+                    </div>);
                     break;
                 case 'pass':
                     fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-small"> {fieldVersion[0]}</div>);
@@ -104,7 +109,7 @@ class FieldVersionView extends React.Component{
             case 'text':
                 fieldContentBlock = (
                     <MarkupText classNames="faded-big" content={fieldVersion[0]} />
-                  );
+                );
                 break;
             case 'numeric':
                 fieldContentBlock = (<div key={this.props.FieldIndex + vIndex} className="faded-small"> {fieldVersion[0]}
@@ -117,20 +122,21 @@ class FieldVersionView extends React.Component{
             }
 
             return <div className="version-block">
-              {fieldContentBlock}
-              <br key={this.props.FieldIndex + vIndex+500}/>
-              {justification}
+                <label style={{fontSize: '12px', color: '#777777'}}>{versionSubheaderText}</label><br/>
+
+                {fieldContentBlock}
+                <br key={this.props.FieldIndex + vIndex+500}/>
+                {justification}
             </div>;
 
         }, this);
 
         completeFieldView =  (
-          <div key={this.props.FieldIndex +200}>
-
-            <br/>
-            {versions}
-          </div>
-          );
+            <div key={this.props.FieldIndex +200}>
+                <br/>
+                {versions}
+            </div>
+        );
 
         return <div>{completeFieldView}</div>;
     }
