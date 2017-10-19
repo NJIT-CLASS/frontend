@@ -1,0 +1,36 @@
+.comment{
+  background-color: #ffffff;
+  box-sizing: border-box;
+  margin: 10px;
+  padding:8px;
+  width:75%;
+  @media screen and (max-width: $mobile-brk){
+    width:98vw;
+  }
+  height:auto;
+
+  .title{
+    color:#7ABDF9;
+    margin: 5px;
+    display: inline-flex;;
+  }
+  .title-no-hover{
+    color:#7ABDF9;
+    margin: 5px;
+    display: inline-flex;;
+  }
+
+  .timestamp{
+    color:#999999;
+    margin-top: 3px;
+    margin-left: 9px;
+    font-size: 10px;
+  }
+  .comtext{
+    margin:5px;
+  }
+  .title:hover {
+    color: #3710e8
+  }
+
+}

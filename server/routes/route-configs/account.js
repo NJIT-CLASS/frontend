@@ -2,7 +2,7 @@ const handler = require('../route-handlers/account');
 
 module.exports = {
     route: '/account',
-    title: 'My Profile',
+    title: 'Account',
     routeHandler: handler,
     access: {
         admins: true,

@@ -1,0 +1,16 @@
+.banner {
+    display: flex;
+
+    &.warning {
+        background: #f8ac59;
+        color: #676A6C;
+    }
+
+    div, a {
+        padding: 18px;
+    }
+
+    & a:last-child {
+        margin-left: auto;
+    }
+}

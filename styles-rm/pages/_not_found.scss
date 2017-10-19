@@ -1,0 +1,23 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    h2 {
+        display: flex;
+        margin-top: 10px;
+        margin-left: 10px;
+        font-size: 20px;
+        color: #2E4051;
+    }
+
+    .message {
+        font-size: 40px;
+        color: #2E4051;
+        align-self: center;
+        flex-grow: 1;
+        align-items: center;
+        display: flex;
+        margin-bottom: 53px;
+    }
+}

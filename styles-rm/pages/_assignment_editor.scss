@@ -1,0 +1,108 @@
+.assignment-editor-container{
+    width:100%;
+}
+.editor-container {
+  //margin: 0 auto;
+  width: 100%;
+  h2 {
+    cursor: pointer;
+  }
+  .section-button-area{
+    text-align: right;
+  }
+  .add-margin-for-button{
+    margin-right: 30px;
+  }
+  .faded-message-text{
+    padding: 5px 5px;
+    display: inline;
+      color: #777777;
+  }
+}
+
+  .section-divider{
+    position: relative;
+    overflow: visible;
+    border-bottom: 0.5px solid #e7eaec;
+    margin-bottom: 5px;
+
+    br{
+      display:block;
+    }
+  }
+
+  .subheading{
+    font-size:20px;
+    font-weight: 400;
+    padding: 20px 30px 20px 30px;
+    color: #777777;
+  }
+  .inner{
+    @media screen and (max-width: $mobile-brk) {
+      padding: 0px;
+      margin: 3px 0px;
+      width: 100%;
+    }
+
+     min-width: 150px;
+     display: inline-block;
+     padding: 10px;
+     margin: 3px 12px;
+     vertical-align: top;
+     align-content: center;
+     overflow-x: visible;
+
+     label{
+       display:inline-block;
+       margin-top: 8px;
+       margin-bottom: 4px;
+       clear:right;
+     }
+    }
+    .block{
+      display: block;
+    }
+    .advanced{
+        .inner{
+          width: calc((100% - 200px) / 3);
+        }
+    }
+
+
+
+.workflow-task-list{
+  width:20%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  height: fit-content;
+  margin-right: 10px;
+}
+.workflow-task-list-item{
+  background-color: #ffffff;
+  word-wrap: break-word;
+  border-bottom: 1px solid #e7eaec;
+  font-weight: 500px;
+  font-size: 22px;
+  padding: 20px 30px 20px 30px;
+  color: #4b4d4e;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #eeeeee;
+  }
+}
+
+.workflow-task-list-item.selected{
+background-color: #dddddd;
+}
+
+.current-task-view{
+  width: 80%;
+}
+
+.task-details-section{
+  display: flex;
+  flex-direction: row;
+  .section{
+      margin: 0;
+  }
+}

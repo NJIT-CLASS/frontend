@@ -18,42 +18,42 @@ class CommentInfoComponent extends React.Component {
       if (this.props.header) {
         this.props.addCommentListItem('WorkflowInstance', this.props.WorkflowInstanceID, this.props.ProblemThreadLabel);
       } */}
-        apiCall.get(`/comments/countOfComments/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
-            let list = [];
-            if (!body.Error) {
-                let numComments = body.NumberComments;
-                this.setState({NumberComments: numComments});
-            }
-            else {
-                console.log('No comment count received.');
-            }
-        });
-        apiCall.get(`/comments/countOfFlags/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
-            let list = [];
-            if (!body.Error) {
-                let numFlags = body.NumberComments;
-                this.setState({NumberFlags: numFlags});
-            }
-            else {
-                console.log('No comment count received.');
-            }
-        });
-        apiCall.get(`/comments/aveRating/comment/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
-            let list = [];
-            if (!body.Error) {
-                let aveRating5 = Math.round(body.AveRating * 2) / 2;
-                let aveRating1 = Math.round(body.AveRating * 10) / 10;
-                let numRatings = body.NumRatings;
-                this.setState({AveRating5: aveRating5, AveRating1: aveRating1, NumRatings: numRatings});
-            }
-            else {
-                console.log('No comment average rating received.');
-            }
-        });
+      apiCall.get(`/comments/countOfComments/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
+          let list = [];
+          if (!body.Error) {
+              let numComments = body.NumberComments;
+              this.setState({NumberComments: numComments})
+          }
+          else {
+            console.log('No comment count received.');
+          }
+      });
+      apiCall.get(`/comments/countOfFlags/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
+          let list = [];
+          if (!body.Error) {
+              let numFlags = body.NumberComments;
+              this.setState({NumberFlags: numFlags});
+          }
+          else {
+            console.log('No comment count received.');
+          }
+      });
+      apiCall.get(`/comments/aveRating/comment/${this.props.Target}/id/${this.props.TargetID}`, (err, res, body) => {
+          let list = [];
+          if (!body.Error) {
+              let aveRating5 = Math.round(body.AveRating * 2) / 2;
+              let aveRating1 = Math.round(body.AveRating * 10) / 10;
+              let numRatings = body.NumRatings;
+              this.setState({AveRating5: aveRating5, AveRating1: aveRating1, NumRatings: numRatings});
+          }
+          else {
+            console.log('No comment average rating received.');
+          }
+      });
     }
 
     handleCommentClick() {
-        this.props.showComments(this.props.Target, this.props.TargetID, 1);
+      this.props.showComments(this.props.Target, this.props.TargetID, 1);
     }
 
     render() {

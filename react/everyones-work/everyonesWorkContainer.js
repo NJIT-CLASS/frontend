@@ -42,10 +42,10 @@ class EveryonesWorkContainer extends Component {
                     UserID={UserID}/>
             );
         
-            let titleText = AssignmentInfo.Name;
+            let titleText = AssignmentInfo.Name == null ? '': `${AssignmentInfo.Name} -`;
             if(ListOfWorkflows[workflowActivityId].Name != ''){
                 if(ListOfWorkflows[workflowActivityId].Name === 'Problem'){
-                    titleText = `${AssignmentInfo.Name} - 
+                    titleText = `${titleText}  
                     ${ListOfWorkflows[workflowActivityId].Name} ${(workflowIndex + 1)}`;
                 } 
                 else {

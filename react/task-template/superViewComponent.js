@@ -97,17 +97,17 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'rubric-button'}> {TA_rubricButtonText}</button>
+              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
               <TransitionGroup>
-                <CSSTransition
-                  timeout={{enter: 500, exit: 300}}
-                  classNames="example"
-                  appear
-                  enter
-                  exit>
-                {TA_rubric_content}
-                </CSSTransition>
-              </TransitionGroup>
+              <CSSTransition
+                timeout={{enter: 500, exit: 300}}
+                classNames="example"
+                appear
+                enter
+                exit>
+              {TA_rubric_content}
+              </CSSTransition>
+            </TransitionGroup>
             </div>);
         }
 
@@ -161,15 +161,15 @@ class SuperViewComponent extends React.Component {
                     {rubricButtonText}
                   </button>
                   <TransitionGroup>
-                    <CSSTransition
-                      timeout={{enter: 500, exit: 300}}
-                      classNames="example"
-                      appear
-                      enter
-                      exit>
-                    {rubric_content}
-                    </CSSTransition>
-                  </TransitionGroup>
+                  <CSSTransition
+                    timeout={{enter: 500, exit: 300}}
+                    classNames="example"
+                    appear
+                    enter
+                    exit>
+                  {rubric_content}
+                  </CSSTransition>
+                </TransitionGroup>
                 </div>
                 );
             }

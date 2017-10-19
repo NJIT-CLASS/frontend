@@ -1,0 +1,139 @@
+.error-component {
+    background-color: #ed5565 !important;
+    color: #ffffff !important;
+
+    .title{
+      color: #ffffff;
+    }
+    .regular-text{
+      color:#ffffff;
+    }
+}
+
+.faded-big {
+  background-color: #f2f2f3;
+  width:49%;
+  word-wrap: break-word;
+  height: auto;
+  font-size: 18px;
+  box-sizing: border-box;
+  display: grid;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #e5e6e7;
+  line-height: 1.5;
+  overflow:auto;
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.multi-view-container{
+  overflow-x: auto;
+  box-sizing: border-box;
+  margin: 10px;
+  width:100%;
+  display:flex;
+  flex-flow: row;
+  align-content: space-around;
+  @media screen and (max-width: $mobile-brk) {
+    margin: 3px;
+    width: calc(97vw);
+  }
+  .child{
+    flex: 1 0 340px;
+  }
+}
+
+.version-block:nth-child(odd){
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inline{
+  display: inline;
+}
+
+.template-field-rubric-label{
+  padding: 5px 10px;
+  font-style: italic;
+  font-size: 16px;
+}
+.template-field-instructions-label{
+  padding: 5px 10px;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.template-field-justification-label{
+  padding: 5px 10px;
+  font-style: italic;
+  font-size: 16px;
+}
+.template-field-justification-instructions-label{
+  padding: 5px 10px;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.template-field-title{
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px 0;
+  margin: 5px 0;
+}
+
+.regular-text {
+  width:auto;
+  margin: 10px 5px;
+  word-wrap: break-word;
+  letter-spacing: 0.3px;
+  max-width: 800px;
+  font-weight:500;
+  font-size: 18px;
+  line-height: 1.45em;
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.instructions{
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.rubric{
+  padding-left: 15px;
+}
+
+.big-text{
+  font-size: 20px;
+}
+
+.boldfaces{
+  margin-top: 5px;
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.comment-number{
+  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  display: block;
+}
+
+.link{
+  color:#7ABDF9;
+  margin: 5px;
+  display: inline-flex;;
+}
+.link-no-hover{
+  color:#7ABDF9;
+  margin: 5px;
+  display: inline-flex;
+}
+  .collapsable-header{
+    cursor: pointer;
+  }
+
+.visitors-task{
+  /*background-color: gold;*/
+}
+
+

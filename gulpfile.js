@@ -51,7 +51,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
-                    });;
+                });;
         }
 
     }
