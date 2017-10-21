@@ -19,7 +19,7 @@ import FileLinksComponent from './fileLinksComponent';
 
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
-import CommentInfoComponent from './CommentInfoComponent';
+import CommentInfoComponent from './commentInfoComponent';
 
 class SuperComponent extends React.Component {
     constructor(props) {

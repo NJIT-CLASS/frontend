@@ -1,6 +1,7 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import strings from './strings';
+import Popup from '../shared/modal';
 
 class GradeReport extends React.Component {
     constructor(props) {
@@ -11,16 +12,19 @@ class GradeReport extends React.Component {
             UserList: [],
             AssignmentInstanceInfo: {},
             Strings: strings,
+            viewComments: false,
+            comment: '',
             Loaded: false,
         
         };
     }
+
     componentDidMount() {
         this.fetchGrades(this.props);
     }
+
     fetchGrades(props){
         apiCall.postAsync(`/getAssignmentGrades/${props.AssignmentID}`, {}).then(body => {
-            console.log(body.data);
 
             this.setState({
                 AssignmentGrades: body.data,
@@ -30,44 +34,74 @@ class GradeReport extends React.Component {
             });
         });
     }
+
+    displayPopup(){
+        this.setState({
+            viewComments: true,
+            comment: 'Hello'
+        })
+    }
+
+    closePopup(){
+        this.setState({
+            viewComments: false,
+            comment: ''
+        })
+    }
+
+
     render(){
-        let {Loaded, Strings, UserList, AssignmentInstanceInfo} = this.state;
+        let {Loaded, Strings, UserList, AssignmentInstanceInfo, viewComments, comment} = this.state;
         
         if(!Loaded){
             return <div></div>;
         }
+
         let User = {};
         let ai = AssignmentInstanceInfo;
         let taskActivity = {};
+        let commentModal = null;
+
+
+
+        if(viewComments){
+            commentModal = (
+                <Popup title="Comments" outsideClick={true} children={comment} close={this.closePopup.bind(this)}  />
+            )
+        }
+
         
         const userTaskGradesView = UserList.map( user => {
+
             if(!user.assignmentGrade){
                 return null;
             }
+
             const workflowActivityGradesView = user.assignmentGrade.WorkflowActivityGrades.map(waGrade => {
-                const taskGrades = waGrade.WorkflowActivity.users_WA_Tasks.map(taskGrade => {
+
+                const taskGrades = waGrade.WorkflowActivity.users_WA_Tasks.map(task => {
+                    //let comments = task.assignmentGrade.Comments;
+
                     return (
-                        <div>
+                        <tr>
+                            <td data-label={Strings.UserName}>
+                                <a href="">{user.User.LastName}, {user.User.FirstName}<br/>{user.User.UserContact.Email}</a>
+                            </td>
                             <td data-label={Strings.Task}>{task.taskActivity.Name}</td>
-                            <td data-label={Strings.CompletenessGrade}>{task.taskSimpleGrade.Grade}%</td>
+                            <td data-label={Strings.CompletenessGrade}>{/*task.taskSimpleGrade.Grade*/}%</td>
                             <td data-label={Strings.QualityGrade}>{task.FinalGrade}%</td>
                             <td data-label={Strings.CombinedWeight}>{task.taskGrade.Weight}</td>
                             <td data-label={Strings.WeightedGrade}>{task.taskGrade.weightedGrade}%</td>
-                            <td data-label={Strings.Comments}>{task.assignmentGrade.Comments}</td>
-                        </div>
+                            <td data-label={Strings.Comments}><button type="button" onClick={this.displayPopup.bind(this)}>View</button></td>
+                        </tr>
                     );
+
                 });
+
                 return taskGrades;
             });
 
-            return (
-                <tr>
-                    <td data-label={Strings.UserName}>
-                        <a href="">{user.User.LastName}, {user.User.FirstName}<br/>{user.User.UserContact.Email}</a>
-                    </td>
-                    {workflowActivityGradesView}
-                </tr>
-            );
+            return workflowActivityGradesView;
         });
 
         
@@ -88,6 +122,8 @@ class GradeReport extends React.Component {
             if(!user.User){
                 return null;
             }
+
+            //let comment = assignmentGrade.Comments;
             
             return <tr>
                 <td data-label={Strings.Email}>{user.User.UserContact.Email}</td>
@@ -96,16 +132,17 @@ class GradeReport extends React.Component {
                 <td data-label={Strings.CompletenessGrade}>{assignmentGrade.SimpleGrade}%</td>
                 <td data-label={Strings.QualityGrade}>{assignmentGrade.QualtiyGrade}%</td>
                 <td data-label={Strings.Grade}>{assignmentGrade.Grade}%</td>
-                <td data-label={Strings.Comments}>{assignmentGrade.Comments}</td>
+                <td data-label={Strings.Comments}><button type="button" onClick={this.displayPopup.bind(this)}>View</button></td>
                 <td data-label={Strings.ECCompletenessGrade}>{assignmentGrade.SimpleGrade}%</td>
                 <td data-label={Strings.ECQualtiyGrade}>{assignmentGrade.QualtiyGrade}%</td>
                 <td data-label={Strings.ECGrade}>{assignmentGrade.Grade}%</td>
-                <td data-label={Strings.ECComments}>{assignmentGrade.Comments}</td>
+                <td data-label={Strings.ECComments}><button type="button" onClick={this.displayPopup.bind(this)}>View</button></td>
             </tr>;
         }
         );
         return (
             <div>
+                {commentModal}
                 <form name="assignmentGradeList" role="form" className="section sectionTable" method="POST" action="#">
                     <h2 className="title">{Strings.AssignmentGrades}</h2>
                     <div className="section-content">

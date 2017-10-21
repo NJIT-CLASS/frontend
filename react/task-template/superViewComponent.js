@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
-import CommentInfoComponent from './CommentInfoComponent';
+import CommentInfoComponent from './commentInfoComponent';
 import apiCall from '../shared/apiCall';
 import FileLinksComponent from './fileLinksComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
