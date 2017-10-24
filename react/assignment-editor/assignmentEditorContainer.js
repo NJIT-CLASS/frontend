@@ -873,7 +873,12 @@ class AssignmentEditorContainer extends React.Component {
             // B.4 Clean GradeDistribution
             let newGradeDist = new Object();
             Object.keys(workflow.WA_grade_distribution).forEach(function(taskKey) {
-                newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
+                if(taskKey === 'simple'){
+                    newGradeDist[taskKey] = workflow.WA_grade_distribution[taskKey];
+                } else {
+                    newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
+                    
+                }
             });
 
             workflow.WA_grade_distribution = newGradeDist;
@@ -2629,7 +2634,7 @@ class AssignmentEditorContainer extends React.Component {
         gradedTasks.forEach(function(task) {
             newGradeDist[task] = Math.floor(100 / count);
         });
-
+        newGradeDist[gradedTasks[gradedTasks.length - 1]] +=  (100 % count);
         stateData[workflowIndex].WA_grade_distribution = newGradeDist;
         stateData[workflowIndex].NumberOfGradingTask = count;
         /*
