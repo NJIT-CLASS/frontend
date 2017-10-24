@@ -1,5 +1,6 @@
 const async = require('async');
 
+
 function getInstructorEmails(req, instructor, cb) {
     req.App.api.get(`/generalUser/${instructor.UserID}`, (err, statusCode, body) => {
         cb(null, {
@@ -22,6 +23,7 @@ exports.get = (req, res) => {
         });
     });
 };
+
 
 exports.post = (req, res) => {
     if (!req.body.email) {

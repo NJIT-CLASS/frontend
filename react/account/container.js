@@ -3,7 +3,7 @@ import apiCall from '../shared/apiCall';
 import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 import FileUpload from '../shared/fileUpload';
-import MyCommentsComponent from './MyCommentsComponent.js';
+import MyCommentsComponent from './myCommentsComponent.js';
 
 import Tooltip from '../shared/tooltip';
 

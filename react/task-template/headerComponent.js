@@ -4,7 +4,7 @@
  * calls. This component is ALWAYS shown.
  */
 import React from 'react';
-import CommentInfoComponent from './CommentInfoComponent';
+import CommentInfoComponent from './commentInfoComponent';
 
 /*  Props: (from TemplateContainer)
         - AssignmentTitle
