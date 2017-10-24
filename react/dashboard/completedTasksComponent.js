@@ -24,7 +24,7 @@ export default class CompletedTaskComponent extends Component {
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         Course: task.AssignmentInstance.Section.Course.Name,
-                        Date: moment(task.ActualEndDate).format('MMMM Do, YYYY h:mm a'),
+                        Date: task.ActualEndDate,
                     };
                 });
 
@@ -37,6 +37,9 @@ export default class CompletedTaskComponent extends Component {
     }
     makeLink({original, row, value}){
         return <a  href={`/task/${original.TaskID}`}>{value}</a>;
+    }
+    makeDate({original, row, value}){
+        return <span>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
     }
     render() {
         let {Strings} = this.props;
@@ -66,7 +69,8 @@ export default class CompletedTaskComponent extends Component {
                                 accessor: 'Course',
                             },{
                                 Header: Strings.EndDate,
-                                accessor: 'Date'
+                                accessor: 'Date',
+                                Cell: this.makeDate
                             }
                         ]}
                         noDataText={Strings.NoCompleted}

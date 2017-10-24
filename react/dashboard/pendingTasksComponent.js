@@ -28,7 +28,7 @@ export default class PendingTaskComponent extends Component {
                         Course: task.AssignmentInstance.Section.Course.Name,
                         Revision: task.TaskActivity.AllowRevision,
                         Status: typeof task.Status === 'string' ? JSON.parse(task.Status) : task.Status,//task.Status,
-                        Date: moment(task.EndDate).format('MMMM Do, YYYY h:mm a'),
+                        Date:task.EndDate,
                     };
                 });
                 this.setState({
@@ -40,6 +40,9 @@ export default class PendingTaskComponent extends Component {
     }
     makeLink({original, row, value}){
         return <a  href={`/task/${original.TaskID}`}>{value}</a>;
+    }
+    makeDate({ original, row, value }) {
+        return <span>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
     }
 
     makeRevisionLabel({original, row, value}){
@@ -93,6 +96,7 @@ export default class PendingTaskComponent extends Component {
                                     Header: Strings.DueDate,
                                     resizable:true,
                                     accessor: 'Date',
+                                    Cell: this.makeDate
                                 }
                             ]}
                             noDataText={Strings.NoPending}
