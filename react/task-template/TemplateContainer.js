@@ -28,6 +28,9 @@ const Tabs = ReactTabs.Tabs;
 const TabList = ReactTabs.TabList;
 const TabPanel = ReactTabs.TabPanel;
 
+
+var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
+let FlatToNested = require('flat-to-nested');
 /*      PROPS:
             - TaskID
             - SectionID
@@ -38,6 +41,7 @@ const TabPanel = ReactTabs.TabPanel;
 class TemplateContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.tree = new TreeModel();
         this.state = {
             Loaded: false, // this variable is set to true when the page succesfully fetches data from the backend
             CourseID: null,
@@ -53,6 +57,7 @@ class TemplateContainer extends React.Component {
             TabSelected: 0,
             Strings: strings,
             NotAllowed: false,
+            IsRevision: false,
             CommentTargetList: [],
             BoxHide: false
         };
@@ -60,18 +65,26 @@ class TemplateContainer extends React.Component {
         console.log(props.UserType, props.Admin);
     }
 
+    unflattenTreeStructure(flatTreeString) {
+        let flatToNested = new FlatToNested();
+        let flatTreeArray = JSON.parse(flatTreeString);
+        let nestedTreeObj = flatToNested.convert(flatTreeArray);
+        let treeRoot = this.tree.parse(nestedTreeObj);
+        return treeRoot;
+    }
+
     getTaskData() {
-		// this function makes an API call and saves the data into appropriate state variables
+        // this function makes an API call and saves the data into appropriate state variables
 
         const options = {
-				// query strings
+            // query strings
             courseID: this.props.CourseID,
             userID: this.props.UserID,
             sectionID: this.props.SectionID,
         };
 
-		// this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
-		// for rendering
+        // this function makes an API call to get the current and previous tasks data and saves the data into appropriate state variables
+        // for rendering
         const options2 = {
             userID: this.props.UserID,
         };
@@ -83,20 +96,19 @@ class TemplateContainer extends React.Component {
             }
             this.props.__(strings, (newStrings) => {
 
-                apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`,options, (err, res, body) => {
+                apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
                     if (res.statusCode != 200) {
                         this.setState({ Error: true });
                         return;
                     }
 
                     const taskList = new Array();
-                    let commentsTaskList = [];
                     const skipIndeces = new Array();
                     let currentTaskStatus = '';
 
                     if (bod.error === true) {
                         console.log('Error message', bod.message);
-                        this.setState({
+                        return this.setState({
                             NotAllowed: true,
                             Loaded: true,
                         });
@@ -104,9 +116,9 @@ class TemplateContainer extends React.Component {
                         let parseTaskList = bod.superTask.map((task) => {
                             const newTask = task;
                             if (task.Data !== null) {
-                                if(typeof newTask.Data !== 'object'){
+                                if (typeof newTask.Data !== 'object') {
                                     newTask.Data = JSON.parse(task.Data);
-                                } else{
+                                } else {
                                     newTask.Data = task.Data;
                                 }
 
@@ -114,39 +126,40 @@ class TemplateContainer extends React.Component {
                                 newTask.Data = [new Object()];
                             }
                             if (
-    								task.Files !== null &&
-    								task.Files.constructor !== Object
-    							) {
+                                task.Files !== null &&
+                                task.Files.constructor !== Object
+                            ) {
                                 newTask.Files = JSON.parse(task.Files);
                             } else {
                                 newTask.Files = task.Files;
                             }
-                            if (newTask.TaskActivity.Fields !== null &&newTask.TaskActivity.Fields.constructor !==Object) {
+                            if (newTask.TaskActivity.Fields !== null && newTask.TaskActivity.Fields.constructor !== Object) {
                                 newTask.TaskActivity.Fields = JSON.parse(task.TaskActivity.Fields);
                             }
 
                             newTask.Status = JSON.parse(task.Status);
                             if (
-    								newTask.TaskActivity.FileUpload !== null &&
-    								newTask.TaskActivity.FileUpload.constructor !==
-    									Object
-    							) {
+                                newTask.TaskActivity.FileUpload !== null &&
+                                newTask.TaskActivity.FileUpload.constructor !==
+                                Object
+                            ) {
                                 newTask.TaskActivity.FileUpload = JSON.parse(
-    									task.TaskActivity.FileUpload);
+                                    task.TaskActivity.FileUpload);
                             }
 
                             return newTask;
                         });
+
                         const currentTask = parseTaskList.pop();
                         parseTaskList = parseTaskList.reverse();
 
                         parseTaskList.forEach((task, index) => {
-                            if (skipIndeces.includes(index) ||task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
+                            if (skipIndeces.includes(index) || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
                                 return;
                             }
                             if (task.TaskActivity.NumberParticipants > 1) {
                                 const newArray = parseTaskList.filter((t, idx) => {
-                                    if (t.TaskActivity.TaskActivityID ===task.TaskActivity.TaskActivityID) {
+                                    if (t.TaskActivity.TaskActivityID === task.TaskActivity.TaskActivityID) {
                                         skipIndeces.push(idx);
                                         return true;
                                     }
@@ -161,19 +174,113 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
-                        parseTaskList.forEach((task, index) => {
-                            if (task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
-                                return;
-                            }
-                            else {
-                                commentsTaskList.push(task);
-                            }
-                        }, this);
 
-                        commentsTaskList.push(currentTask);
+                        if ([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)) {
+                            /** Check if the current task is a revision task
+                             *      If not, it's a regular edit and show regular buttons
+                             *      Else, check if it has a consolidation task
+                             *          If it does, show regular buttons
+                             *          Else, show revision buttons
+                             */
+                            if (currentTask.TaskActivity.AllowRevision === true) {
 
+                                apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                    reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                                    console.log(reviseBod);
+                                    let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                        return node.model.id === currentTask.TaskActivity.TaskActivityID;
+                                    });
+
+                                    console.log('Revision: currentTask', currentTaskNode);
+                                    if (currentTaskNode.children !== undefined && currentTaskNode.children[2] !== undefined) {
+                                        console.log('Revision: first child', currentTaskNode.children[2] !== undefined);
+                                        if (currentTaskNode.children[2].children !== undefined && currentTaskNode.children[2].children[2]) {
+                                            console.log('Revision: second child: ', currentTaskNode.children[2].children[2]);
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        }
+                                    } else {
+                                        this.setState({
+                                            IsRevision: true
+                                        });
+                                    }
+                                });
+
+                            } else {
+                                this.setState({
+                                    IsRevision: false
+                                });
+                            }
+                        } else if ([TASK_TYPES.CONSOLIDATION].includes(currentTask.TaskActivity.Type)) {
+                            /** Check if current consolidation is acting on an Revision edit task
+                             *  If it is, show revision buttons
+                             *  Else, show normal buttons
+                             * 
+                             * 
+                             */
+
+                            apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                                reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                                //console.log(reviseBod);
+                                let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                                    return node.model.id === currentTask.TaskActivity.TaskActivityID;
+                                });
+                                let possibleEditTask = currentTaskNode;
+                                let editIndex = null;
+                                if (currentTaskNode.parent) {
+                                    possibleEditTask = currentTaskNode.parent; //possible needs consolidation
+                                    if (possibleEditTask.parent) {
+                                        possibleEditTask = possibleEditTask.parent; //possible edit task
+                                        editIndex = possibleEditTask.model.id;
+                                    } else {
+                                        possibleEditTask = null;
+                                    }
+                                } else {
+                                    possibleEditTask = null;
+                                }
+                                if (possibleEditTask === null) {
+                                    this.setState({
+                                        IsRevision: false
+                                    });
+                                } else {
+                                    let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
+                                    if ([TASK_TYPES.COMMENT].includes(possibleEditData.Type)) {
+                                        if (possibleEditData.AllowRevision === true) {
+                                            this.setState({
+                                                IsRevision: true
+                                            });
+                                        } else {
+                                            this.setState({
+                                                IsRevision: false
+                                            });
+                                        }
+
+                                    } else {
+                                        this.setState({
+                                            IsRevision: false
+                                        });
+                                    }
+                                }
+                                console.log(currentTaskNode);
+
+                            });
+                        }
+                        // apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
+                        //     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
+                        //         //console.log(reviseBod);
+                        //     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
+                        //         return node.model.id === parseInt(this.props.TaskID);
+                        //     });
+
+                        //     console.log(currentTaskNode);
+
+                        // });
                     }
+
+
                     console.log('tasklist', taskList);
+
 
                     this.setState({
                         Loaded: true,
@@ -186,12 +293,11 @@ class TemplateContainer extends React.Component {
                         SectionName: body.sectionName,
                         SectionID: body.sectionID,
                         Data: taskList,
-                        CommentsTaskList: commentsTaskList,
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
                     });
                     this.createCommentList();
-                    console.log(commentsTaskList, body.assignment)
+                    console.log(commentsTaskList, body.assignment);
                 });
             });
         });
@@ -210,23 +316,23 @@ class TemplateContainer extends React.Component {
 
     getCommentData(target, ID) {
         //if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
-            apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-                console.log('Comment data fetched')
-                let list = [];
-                if (body != undefined ) {
-                    for (let com of body.Comments) {
-                        list.push(com);
-                    }
-                    this.setState({
-                        commentList: list
-                    });
+        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+            console.log('Comment data fetched');
+            let list = [];
+            if (body != undefined ) {
+                for (let com of body.Comments) {
+                    list.push(com);
                 }
-                else {
-                    console.log('No comment data received.');
-                    this.setState({
-                        commentList: list
-                    });
-                }
+                this.setState({
+                    commentList: list
+                });
+            }
+            else {
+                console.log('No comment data received.');
+                this.setState({
+                    commentList: list
+                });
+            }
         });
         //}
     }
@@ -296,7 +402,7 @@ class TemplateContainer extends React.Component {
         let returningValues = ['', ''];
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
-              /// If multiple participants, assume that whichever is first in the array is desired
+                /// If multiple participants, assume that whichever is first in the array is desired
                 task.forEach((miniTask) => {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
@@ -305,7 +411,7 @@ class TemplateContainer extends React.Component {
                 });
             } else {
                 if(task.TaskActivity.TaskActivityID === taskActivityID){
-                  //if multiple versions, assume that the lastest version is desired
+                    //if multiple versions, assume that the lastest version is desired
 
                     returningValues = task.Data[task.Data.length - 1][fieldIndex];
                 }
@@ -322,16 +428,30 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    showComments(target, id, tab) {
-      let show;
-      for (let i of this.state.CommentTargetList) {
-        if ((i.Target == target) && (i.ID == id)) {
-          show = i.value;
+    addCommentListItem(target, id, title) {
+        let commentTargetList = this.state.CommentTargetList;
+        let found = false;
+        for (let i of commentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                found = true;
+            }
         }
-      }
-      console.log('show', show);
-      this.setState({CommentTarget: show, TabSelected: tab});
-      this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
+        if (!found) {
+            commentTargetList.push({ Target: target, ID: id, value: commentTargetList.length, label: title });
+            this.setState({ CommentTargetList: commentTargetList });
+        }
+    }
+
+    showComments(target, id, tab) {
+        let show;
+        for (let i of this.state.CommentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                show = i.value;
+            }
+        }
+        console.log('show', show);
+        this.setState({CommentTarget: show, TabSelected: tab});
+        this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
     hideBox() {
@@ -341,11 +461,11 @@ class TemplateContainer extends React.Component {
     render() {
         let renderView = null;
         if (this.state.Error) {
-			// if there was an error in the data fetching calls, show the Error Component
+            // if there was an error in the data fetching calls, show the Error Component
             return <ErrorComponent />;
         }
         if (!this.state.Loaded) {
-			// while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
+            // while the data hasn't been loaded, show nothing. This fixes a flickering issue in the animation.
             return <div />;
         }
 
@@ -423,62 +543,62 @@ class TemplateContainer extends React.Component {
                     margin={0}
                 />)}
 
-                {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
-                    if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
-                        if ((index + 1) < array.length) {
-                            return (
-                                  <CommentComponent
-                                    key={comment.CommentsID}
-                                    Comment={comment}
-                                    Update={this.getCommentData.bind(this)}
-                                    CurrentUser={this.props.UserID}
-                                    NextParent={array[index + 1].Parents}
-                                    NextStatus={array[index + 1].Status}
-                                    UserType={this.props.UserType}
-                                    Admin={this.props.Admin}
-                                    ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
-                                    scroll={this.showSingleComment.bind(this)}
-                                    Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
-                                    CommentTargetList={this.state.CommentTargetList}
-                                    />
-                            );}
-                        else {
-                            return (
-                                <CommentComponent
-                                  key={comment.CommentsID}
-                                  Comment={comment}
-                                  Update={this.getCommentData.bind(this)}
-                                  CurrentUser={this.props.UserID}
-                                  NextParent={null}
-                                  UserType={this.props.UserType}
-                                  Admin={this.props.Admin}
-                                  ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
-                                  scroll={this.showSingleComment.bind(this)}
-                                  Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
-                                  CommentTargetList={this.state.CommentTargetList}
-                                  />
-                            );
-                        }
-                    }
-                }))}
+                        {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
+                            if ((array[index].Status == 'submitted') || (array[index].UserID == this.props.UserID)) {
+                                if ((index + 1) < array.length) {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={array[index + 1].Parents}
+                                            NextStatus={array[index + 1].Status}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                            ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
+                                            scroll={this.showSingleComment.bind(this)}
+                                            Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
+                                            CommentTargetList={this.state.CommentTargetList}
+                                        />
+                                    );}
+                                else {
+                                    return (
+                                        <CommentComponent
+                                            key={comment.CommentsID}
+                                            Comment={comment}
+                                            Update={this.getCommentData.bind(this)}
+                                            CurrentUser={this.props.UserID}
+                                            NextParent={null}
+                                            UserType={this.props.UserType}
+                                            Admin={this.props.Admin}
+                                            ref={(CommentComponent) => { this[comment.CommentsID] = CommentComponent;}}
+                                            scroll={this.showSingleComment.bind(this)}
+                                            Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
+                                            CommentTargetList={this.state.CommentTargetList}
+                                        />
+                                    );
+                                }
+                            }
+                        }))}
 
-                {this.state.CommentTarget != undefined &&
+                        {this.state.CommentTarget != undefined &&
                   (<div id = "nc">
-                    <CommentEditorComponent
-                      UserID={this.props.UserID}
-                      Update={this.getCommentData.bind(this)}
-                      ReplyLevel={0}
-                      Parents={null}
-                      CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
-                      TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
-                      AssignmentInstanceID={this.state.AssignmentInstanceID}
-                      TaskID={this.props.TaskID}
-                      CommentTargetList={this.state.CommentTargetList}
-                      CommentTargetOnList={this.state.CommentTarget}
-                      Emphasize={false}
-                    />
+                      <CommentEditorComponent
+                          UserID={this.props.UserID}
+                          Update={this.getCommentData.bind(this)}
+                          ReplyLevel={0}
+                          Parents={null}
+                          CommentTarget={this.state.CommentTargetList[this.state.CommentTarget].Target}
+                          TargetID={this.state.CommentTargetList[this.state.CommentTarget].ID}
+                          AssignmentInstanceID={this.state.AssignmentInstanceID}
+                          TaskID={this.props.TaskID}
+                          CommentTargetList={this.state.CommentTargetList}
+                          CommentTargetOnList={this.state.CommentTarget}
+                          Emphasize={false}
+                      />
                   </div>)
-                }
+                        }
 
                     </TabPanel>
 

@@ -60,7 +60,6 @@ class SuperComponent extends React.Component {
         };
     }
 
-
     componentWillMount() {
         let tdata = this.props.TaskData;
         const tAdata = this.props.TaskActivityFields;
@@ -94,7 +93,7 @@ class SuperComponent extends React.Component {
         if ((Object.keys(latestVersion).length === 0 && latestVersion.constructor === Object) || latestVersion == null) {
             latestVersion.number_of_fields = tAdata.number_of_fields;
             for (let i = 0; i < tAdata.number_of_fields; i++) {
-                if(tAdata[i].default_refers_to[0] !== null){
+                if (tAdata[i].default_refers_to[0] !== null) {
                     latestVersion[i] = this.props.getLinkedTaskValues(tAdata[i].default_refers_to[0], tAdata[i].default_refers_to[1]);
                 } else {
                     latestVersion[i] = tAdata[i].default_content;
@@ -107,7 +106,6 @@ class SuperComponent extends React.Component {
 
         let filesUploadedCount = this.props.Files !== null ? filesUploadedCount = this.props.Files.length : 0;
         const filesSatisfied = filesUploadedCount >= this.props.FileUpload.mandatory;
-
         this.setState({
             TaskData: tdata,
             TaskActivityFields: tAdata,
@@ -118,7 +116,7 @@ class SuperComponent extends React.Component {
         });
     }
 
-    fetchNewFileUploads(){
+    fetchNewFileUploads() {
         return;
         apiCall.get(`/taskFileReferences/${this.props.TaskID}`, (err, res, body) => {
             this.setState({
@@ -132,24 +130,31 @@ class SuperComponent extends React.Component {
         // also check the justification field
         // returns false if any field is null and true if all fields are filled
         for (let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++) {
+            //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
                 if ((this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')) {
                     return false;
                 }
             }
+
+            //checks for blank response
             if (this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') {
                 return false;
             }
 
+            //validate numeric input, check for valid int and boundaries
             if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment')) {
                 if (isNaN(this.state.TaskResponse[i][0])) {
+                    console.log('isNan error');
                     return false;
                 }
                 if (this.state.TaskResponse[i][0] < parseInt(this.state.TaskActivityFields[i].numeric_min) || this.state.TaskResponse[i][0] > parseInt(this.state.TaskActivityFields[i].numeric_max)) {
+                    console.log('min max error');
                     return false;
                 }
             }
-            if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0] > 45000) { // checks to see if the input is a reasonable length
+            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+                console.log('strin length error');
                 return false;
             }
 
@@ -207,7 +212,7 @@ class SuperComponent extends React.Component {
         }
 
         //check if submit is in progress
-        if(this.state.LockSubmit){
+        if (this.state.LockSubmit) {
             return;
         }
 
@@ -225,19 +230,21 @@ class SuperComponent extends React.Component {
             apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
                 console.log(body);
                 if (res.statusCode != 200) {
-                    this.setState({ InputError: true,
-                        LockSubmit: false });
+                    this.setState({
+                        InputError: true,
+                        LockSubmit: false
+                    });
                 } else {
                     this.setState({
-                        TaskStatus: 'Complete'
+                        TaskStatus: 'Complete',
+                        SubmitSuccess: true
                     });
 
                     showMessage(this.props.Strings.SubmitSuccessMessage);
-
-                    setTimeout(()=> {
+                    setTimeout(()=>{
                         window.location.replace('/');
-
                     }, 1000);
+
                 }
             });
         } else {
@@ -245,7 +252,11 @@ class SuperComponent extends React.Component {
                 LockSubmit: false
             });
 
-            showMessage(this.props.Strings.InputErrorMessage);
+            if (!this.state.FileUploadsSatisfied) {
+                showMessage(this.props.Strings.InsufficientFileErrorMessage);
+            } else {
+                showMessage(this.props.Strings.InputErrorMessage);
+            }
         }
     }
 
@@ -283,12 +294,12 @@ class SuperComponent extends React.Component {
         });
     }
 
-    handleRadioChange(index, val){
+    handleRadioChange(index, val) {
         let newData = this.state.TaskResponse;
         newData[index][0] = val;
         this.setState({ TaskResponse: newData });
     }
-    handleSelectChange(index, val){
+    handleSelectChange(index, val) {
         let newData = this.state.TaskResponse;
         newData[index][0] = val.value;
         this.setState({
@@ -338,45 +349,105 @@ class SuperComponent extends React.Component {
     }
 
     willDispute() {
+
         this.setState({
             DisputeStatus: true,
         });
     }
 
     willNotDispute() {
+        showMessage(this.props.Strings.DidNotDisputeMessage);
+        this.setState({
+            DisputeStatus: false,
+        });
         const options = {
             userid: this.props.UserID,
         };
 
         apiCall.get(`/skipDispute/${this.props.TaskID}`, options, (err, res, body) => {
-            //console.log(err, res, body);
-            window.location.href= '/';
+            console.log(err, res, body);
+            this.setState({
+                SubmitSuccess: true
+            });
+            window.location.replace('/');
 
         });
 
     }
 
-    rejectRevision(){
+    rejectRevision() {
+        showMessage(this.props.Strings.RejectRevisionMessage);
         this.setState({
             RevisionStatus: false
         });
-        let opts = {};
-        apiCall.get('', opts, (err, res, body) => {
-            //window.location.href= '/';
 
-        });
+        if (this.state.LockSubmit) {
+            return;
+        }
+
+        // check if input is valid
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.post('/revise', options, (err, res, body) => {
+                this.setState({
+                    SubmitSuccess: true
+                });
+                window.location.replace('/');
+
+            });
+
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
+
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+
+
     }
 
-    approveRevision(){
+    approveRevision() {
+        showMessage(this.props.Strings.ApproveRevisionMessage);
         this.setState({
             RevisionStatus: true
         });
 
-        let opts = {};
-        apiCall.get('', opts, (err, res, body) => {
-            //window.location.href= '/';
+        const validData = this.isValidData();
+        if (validData) {
+            const options = {
+                ti_id: this.props.TaskID,
+                userid: this.props.UserID,
+                data: this.state.TaskResponse,
+            };
+            this.setState({
+                LockSubmit: true
+            });
+            apiCall.post('/approved', options, (err, res, body) => {
+                this.setState({
+                    SubmitSuccess: true
+                });
+                window.location.replace('/');
 
-        });
+
+            });
+
+        } else {
+            this.setState({
+                LockSubmit: false
+            });
+
+            showMessage(this.props.Strings.InputErrorMessage);
+        }
+
     }
 
     render() {
@@ -501,21 +572,44 @@ class SuperComponent extends React.Component {
                 </div>);
         }
 
-        if(this.state.IsRevision){
-            revisionRejectView =  <button className="revision-buttons"
-                onClick={this.rejectRevision.bind(this)}>
-                {this.props.Strings.RejectRevision}
-            </button>;
+        if (this.props.IsRevision) {
+            let rejectButtonText = this.state.SubmitSuccess ? this.props.Strings.RejectButtonSuccess : this.props.Strings.RejectRevision;
+            let approveButtonText = this.state.SubmitSuccess ? this.props.Strings.ApproveButtonSuccess : this.props.Strings.ApproveRevision;
+            if ([TASK_TYPES.COMMENT].includes(this.props.Type)) {
+                revisionRejectView = <button className="revision-buttons"
+                    onClick={this.rejectRevision.bind(this)}>
+                    {rejectButtonText}
+                </button>;
+                revisionApproveView = <button className="revision-buttons"
+                    onClick={this.approveRevision.bind(this)}>
+                    {approveButtonText}
+                </button>;
+                formButtons = (
+                    <div>
+                        <br />
+                        {revisionRejectView}
+                        {revisionApproveView}
+                    </div>);
+            }
+
+        }
+        if ([TASK_TYPES.EDIT].includes(this.props.Type)) {
+            let approveButtonText = this.state.SubmitSuccess ? this.props.Strings.ApproveButtonSuccess : this.props.Strings.ApproveRevision;
+
             revisionApproveView = <button className="revision-buttons"
                 onClick={this.approveRevision.bind(this)}>
-                {this.props.Strings.ApproveRevision}
+                {approveButtonText}
             </button>;
             formButtons = (
                 <div>
                     <br />
-                    {revisionRejectView}
                     {revisionApproveView}
                 </div>);
+        }
+
+
+        if (this.props.TaskStatus.includes('complete')) {
+            formButtons = (<div></div>);
         }
 
         // creating all input fields here

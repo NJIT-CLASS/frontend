@@ -24,24 +24,24 @@ class HeaderComponent extends React.Component {
     }
 
     render() {
-      return ( <div className="section card-2" style={{marginLeft: this.props.margin}}>
-                  {!this.props.oneBox &&
+        return ( <div className="section card-2" style={{marginLeft: this.props.margin}}>
+            {!this.props.oneBox &&
                   (<div>
-                    <h2 className = "title template-header" >{this.props.Assignment.DisplayName} </h2>
-                    <CommentInfoComponent
-                      TargetID = {this.props.AssignmentInstanceID}
-                      Target = {'AssignmentInstance'}
-                      ComponentTitle = {this.props.Assignment.DisplayName}
-                      showComments = {this.props.showComments.bind(this)}
-                    />
+                      <h2 className = "title template-header" >{this.props.Assignment.DisplayName} </h2>
+                      <CommentInfoComponent
+                          TargetID = {this.props.AssignmentInstanceID}
+                          Target = {'AssignmentInstance'}
+                          ComponentTitle = {this.props.Assignment.DisplayName}
+                          showComments = {this.props.showComments.bind(this)}
+                      />
                   </div>)}
-                    <div className = "section-content section-header" >
-                      <div name = "course-title" className = "regular-text" >
-                      <b> {this.props.Strings.Course}: </b>{this.props.CourseNumber} - {this.props.SectionName} - {this.props.CourseName} - {this.props.SemesterName}
-                        <div className="assignment-description">{this.props.Assignment.Instructions}</div>
-                    </div>
-                  </div>
+            <div className = "section-content section-header" >
+                <div name = "course-title" className = "regular-text" >
+                    <b> {this.props.Strings.Course}: </b>{this.props.CourseNumber} - {this.props.SectionName} - {this.props.CourseName} - {this.props.SemesterName}
+                    <div className="assignment-description">{this.props.Assignment.Instructions}</div>
                 </div>
+            </div>
+        </div>
         );
     }
 }
