@@ -15,6 +15,10 @@
     overflow: visible;
   }
 
+  .task-late{
+    color:red;
+  }
+
   @media screen and (max-width: $mobile-brk) {
     #left-half{
       text-align: center;
