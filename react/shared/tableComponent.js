@@ -5,9 +5,14 @@ export default ({data, columns, noDataText}) => {
     return <ReactTable
         defaultPageSize={10}
         className="-striped -highlight"
-        resizable="true"
+        resizable={true}
         data={data}
         columns={columns}
         noDataText={noDataText}
+        expanderDefaults= {{
+            sortable: true,
+            resizable: true,
+            filterable: false,
+        }}
     />;
 };
