@@ -46,7 +46,7 @@ class FileManagerComponent extends Component {
     render() {
         let {Files} = this.state;
         let {Strings, View,InitialNumberUploaded, PostVars, MinUploads,endpoint,MaxUploads, ViewOnly} = this.props;
-        let fileUpload = ViewOnly !== true ? (
+        let fileUpload = (ViewOnly !== true || endpoint !== '') ? (
             <FileUpload
                 View={View}
                 InitialNumberUploaded={InitialNumberUploaded}
@@ -71,7 +71,7 @@ FileManagerComponent.defaultProps = {
     View: 'button',
     MinUploads: 0,
     MaxUploads: 0,
-    endpoint: '/'
+    endpoint: ''
 };
 
 export default FileManagerComponent;

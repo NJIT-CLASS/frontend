@@ -1775,27 +1775,23 @@ class AssignmentEditorContainer extends React.Component {
                     if(taskChildrenNodes.length ==0){
                         this.dropTask('reflect', taskIndex, workflowIndex);
                     } else {
-                        let messageDiv = `The following tasks will be dropped:
+                        let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
                                 <br />
                                 <ul>
-                                ${taskChildrenNodes.map((task)=>{
-        return (`<li>${task}</li>`);
-    }).reduce((val, acc) => {
-        return acc + val;
-    }, '')}
+                                ${taskChildrenNodes.map((task)=>{ return (`<li>${task}</li>`);}).reduce((val, acc) => { return acc + val;}, '')}
                             </ul>
                             <br />
-                            Are you sure you want to continue?`;
+                            ${this.state.Strings.AreYouSureYouWantToContinue}?`;
                         confirmModal({
                             confirmation: messageDiv,
                             list: taskChildrenNodes,
-                            okLabel: 'OK',
-                            cancelLabel: 'Cancel',
-                            title: 'Dropping Multiple Tasks'
+                            okLabel: this.state.Strings.Ok,
+                            cancelLabel: this.state.Strings.Cancel,
+                            title: this.state.Strings.DroppingMultipleTask
                         }).then(()=>{
                             this.dropTask('reflect', taskIndex, workflowIndex);
                         }, () => {
-                        });
+                        }).catch(() => { });;
                     }
 
                 } else {
@@ -1812,27 +1808,23 @@ class AssignmentEditorContainer extends React.Component {
                     if(taskChildrenNodes.length == 0){
                         this.dropTask('assess', taskIndex, workflowIndex);
                     } else {
-                        let messageDiv = `The following tasks will be dropped:
+                        let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
                                 <br />
                                 <ul>
-                            ${taskChildrenNodes.map((task)=>{
-        return (`<li>${task}</li>`);
-    }).reduce((val, acc) => {
-        return acc + val;
-    }, '')}
-                                </ul>
-                                <br />
-                                Are you sure you want to continue?`;
+                            ${taskChildrenNodes.map((task) => { return (`<li>${task}</li>`); }).reduce((val, acc) => { return acc + val; }, '')}
+                            </ul>
+                            <br />
+                            ${this.state.Strings.AreYouSureYouWantToContinue}?`;
                         confirmModal({
                             confirmation: messageDiv,
                             list: taskChildrenNodes,
-                            okLabel: 'OK',
-                            cancelLabel: 'Cancel',
-                            title: 'Dropping Multiple Tasks'
-                        }).then(()=>{
+                            okLabel: this.state.Strings.Ok,
+                            cancelLabel: this.state.Strings.Cancel,
+                            title: this.state.Strings.DroppingMultipleTask
+                        }).then(() => {
                             this.dropTask('assess', taskIndex, workflowIndex);
                         }, () => {
-                        });
+                        }).catch(() => { });;
                     }
                 } else {
                     newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
@@ -1849,27 +1841,23 @@ class AssignmentEditorContainer extends React.Component {
                     if(taskChildrenNodes.length ==0){
                         this.dropTask('create', taskIndex, workflowIndex);
                     } else {
-                        let messageDiv = `The following tasks will be dropped:
+                        let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
                                 <br />
                                 <ul>
-                            ${taskChildrenNodes.map((task)=>{
-        return (`<li>${task}</li>`);
-    }).reduce((val, acc) => {
-        return acc + val;
-    }, '')}
+                            ${taskChildrenNodes.map((task) => { return (`<li>${task}</li>`); }).reduce((val, acc) => { return acc + val; }, '')}
                             </ul>
                             <br />
-                            Are you sure you want to continue?`;
+                            ${this.state.Strings.AreYouSureYouWantToContinue}?`;
                         confirmModal({
                             confirmation: messageDiv,
                             list: taskChildrenNodes,
-                            okLabel: 'OK',
-                            cancelLabel: 'Cancel',
-                            title: 'Dropping Multiple Tasks'
-                        }).then(()=>{
+                            okLabel: this.state.Strings.Ok,
+                            cancelLabel: this.state.Strings.Cancel,
+                            title: this.state.Strings.DroppingMultipleTask
+                        }).then(() => {
                             this.dropTask('create', taskIndex, workflowIndex);
                         }, () => {
-                        });
+                        }).catch(() => { });;
                     }
                 } else {
                     newData = this.addTask(newData, this.CREATE_IDX, taskIndex, workflowIndex);
@@ -1884,27 +1872,23 @@ class AssignmentEditorContainer extends React.Component {
                     if(taskChildrenNodes.length == 0){
                         this.dropTask('solve', taskIndex, workflowIndex);
                     } else {
-                        let messageDiv = `The following tasks will be dropped:
+                        let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
                                 <br />
                                 <ul>
-                            ${taskChildrenNodes.map((task)=>{
-        return (`<li>${task}</li>`);
-    }).reduce((val, acc) => {
-        return acc + val;
-    }, '')}
-                                </ul>
-                                <br />
-                                Are you sure you want to continue?`;
+                            ${taskChildrenNodes.map((task) => { return (`<li>${task}</li>`); }).reduce((val, acc) => { return acc + val; }, '')}
+                            </ul>
+                            <br />
+                            ${this.state.Strings.AreYouSureYouWantToContinue}?`;
                         confirmModal({
                             confirmation: messageDiv,
                             list: taskChildrenNodes,
-                            okLabel: 'OK',
-                            cancelLabel: 'Cancel',
-                            title: 'Dropping Multiple Tasks'
-                        }).then(()=>{
+                            okLabel: this.state.Strings.Ok,
+                            cancelLabel: this.state.Strings.Cancel,
+                            title: this.state.Strings.DroppingMultipleTask
+                        }).then(() => {
                             this.dropTask('solve', taskIndex, workflowIndex);
                         }, () => {
-                        });
+                        }).catch(() => { });;
                     }
                 } else {
                     newData = this.addTask(newData, this.SOLVE_IDX, taskIndex, workflowIndex);

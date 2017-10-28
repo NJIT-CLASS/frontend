@@ -10,7 +10,7 @@ function formatBytes(a, b) {
 const FileLinksComponent = ({Files, apiUrl, Strings}) => {
     const downloadLink = `${window.location.protocol}//${window.location.host}/api/file/download/`;
 
-    if(Files === null){
+    if(Files === null || Files.length <= 0){
         return <div></div>;
     }
 
