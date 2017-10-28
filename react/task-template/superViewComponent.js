@@ -10,6 +10,7 @@ import VersionView from './individualFieldVersionsComponent';
 import CommentInfoComponent from './commentInfoComponent';
 import apiCall from '../shared/apiCall';
 import FileLinksComponent from './fileLinksComponent';
+import FileManagerComponent from './fileManagerComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 import {  isEmpty } from 'lodash';
@@ -97,17 +98,17 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <TransitionGroup>
-              <CSSTransition
-                timeout={{enter: 500, exit: 300}}
-                classNames="example"
-                appear
-                enter
-                exit>
-              {TA_rubric_content}
-              </CSSTransition>
-            </TransitionGroup>
+                <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+                <TransitionGroup>
+                    <CSSTransition
+                        timeout={{enter: 500, exit: 300}}
+                        classNames="example"
+                        appear
+                        enter
+                        exit>
+                        {TA_rubric_content}
+                    </CSSTransition>
+                </TransitionGroup>
             </div>);
         }
 
@@ -153,23 +154,23 @@ class SuperViewComponent extends React.Component {
                 }
 
                 fieldRubric = (<div key={1200}>
-                  <button
-                    type="button"
-                    className="float-button in-line"
-                    onClick={this.toggleFieldRubric.bind(this, index)}
-                  >
-                    {rubricButtonText}
-                  </button>
-                  <TransitionGroup>
-                  <CSSTransition
-                    timeout={{enter: 500, exit: 300}}
-                    classNames="example"
-                    appear
-                    enter
-                    exit>
-                  {rubric_content}
-                  </CSSTransition>
-                </TransitionGroup>
+                    <button
+                        type="button"
+                        className="float-button in-line"
+                        onClick={this.toggleFieldRubric.bind(this, index)}
+                    >
+                        {rubricButtonText}
+                    </button>
+                    <TransitionGroup>
+                        <CSSTransition
+                            timeout={{enter: 500, exit: 300}}
+                            classNames="example"
+                            appear
+                            enter
+                            exit>
+                            {rubric_content}
+                        </CSSTransition>
+                    </TransitionGroup>
                 </div>
                 );
             }
@@ -208,25 +209,28 @@ class SuperViewComponent extends React.Component {
             <div key={this.props.index + 2003} className="section-content">
                 {TA_instructions}
                 {TA_rubric}
-                <FileLinksComponent Files={this.props.Files} />
+                <FileManagerComponent TaskID={this.props.TaskID}
+                    ViewOnly={true}
+                    UserID={this.props.UserID}
+                    Strings={this.props.Strings} />
                 {fields}
                 <br key={this.props.index + 2005} />
             </div>);
 
         return (
-          <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
-            {!this.props.oneBox &&
+            <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
+                {!this.props.oneBox &&
             (<div>
-              <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
-              <CommentInfoComponent
-                TargetID = {this.props.TaskID}
-                Target = {'TaskInstance'}
-                ComponentTitle = {this.props.ComponentTitle}
-                showComments = {this.props.showComments}
-              />
-             </div>)}
-            {content}
-          </div>
+                <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <CommentInfoComponent
+                    TargetID = {this.props.TaskID}
+                    Target = {'TaskInstance'}
+                    ComponentTitle = {this.props.ComponentTitle}
+                    showComments = {this.props.showComments}
+                />
+            </div>)}
+                {content}
+            </div>
         );
     }
 }
