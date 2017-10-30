@@ -6,7 +6,7 @@
     &.masquerading {
         background-color: #D3927E;
 
-        .left-nav a {
+        .left-nav {
             color: #fff;
         }
     }
@@ -28,9 +28,9 @@
 
     .left-nav {
         margin-left: auto;
+            color: #999c9e;
 
         a {
-            color: #999c9e;
             font-size: 14px;
             margin-left: 10px;
         }

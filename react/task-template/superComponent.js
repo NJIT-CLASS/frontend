@@ -10,6 +10,7 @@ import Select from 'react-select';
 import Rater from 'react-rater';
 import { RadioGroup, Radio } from 'react-radio-group';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import DisputeModal from './disputeModal';
 
 import FileUpload from '../shared/fileUpload';
 import MarkupText from '../shared/markupTextView';
@@ -56,7 +57,8 @@ class SuperComponent extends React.Component {
             LockSubmit: false,
             NewFilesUploaded: [],
             IsRevision: false,
-            RevisionStatus: false
+            RevisionStatus: false,
+            ShowDisputeModal: true,
         };
     }
 
@@ -234,6 +236,8 @@ class SuperComponent extends React.Component {
                         InputError: true,
                         LockSubmit: false
                     });
+                    showMessage(this.props.Strings.InputErrorMessage);
+                    
                 } else {
                     this.setState({
                         TaskStatus: 'Complete',
@@ -457,7 +461,7 @@ class SuperComponent extends React.Component {
         let disputeButton = null;
         let TA_instructions = null;
         let formButtons = null;
-        let fileUploadView = null;
+        let fileManagerView = null;
         let revisionRejectView = null;
         let revisionApproveView = null;
 
@@ -471,17 +475,17 @@ class SuperComponent extends React.Component {
 
         if (this.state.InputError) {
             infoMessage = (
-                <span className="message-view" onClick={() => { this.setState({ InputError: false }); }}>{this.props.Strings.InputErrorMessage}</span>
+                <div className="message-view error-component" onClick={() => { this.setState({ InputError: false }); }}>{this.props.Strings.InputErrorMessage}</div>
             );
             // old Modal style:
             // infoMessage = (<Modal title="Submit Error"  close={this.modalToggle.bind(this)}>Please check your work and try again</Modal>);
         }
 
         if (this.state.SaveSuccess) {
-            infoMessage = (<span className="message-view" onClick={() => { this.setState({ SaveSuccess: false }); }}>{this.props.Strings.SaveSuccessMessage}</span>);
+            infoMessage = (<div className="message-view success-component" onClick={() => { this.setState({ SaveSuccess: false }); }}>{this.props.Strings.SaveSuccessMessage}</div>);
         }
         if (this.state.SubmitSuccess) {
-            infoMessage = (<span className="message-view" onClick={() => { this.setState({ SubmitSuccess: false }); }}>{this.props.Strings.SubmitSuccessMessage}</span>);
+            infoMessage = (<div className="message-view success-component" onClick={() => { this.setState({ SubmitSuccess: false }); }}>{this.props.Strings.SubmitSuccessMessage}</div>);
         }
 
 
@@ -524,7 +528,7 @@ class SuperComponent extends React.Component {
             </div>);
         }
         if (this.props.FileUpload !== null && (this.props.FileUpload.mandatory !== 0 || this.props.FileUpload.optional !== 0)) {
-            fileUploadView = (
+            fileManagerView = (
                 <div>
                     <FileManagerComponent TaskID={this.props.TaskID}
                         View='button'
@@ -539,6 +543,15 @@ class SuperComponent extends React.Component {
                         MaxUploads={this.props.FileUpload.mandatory + this.props.FileUpload.optional}
                         onChange={this.handleFileUploads.bind(this)}
                         Strings={this.props.Strings}/>
+                </div>
+            );
+        } else {
+            fileManagerView = (
+                <div>
+                    <FileManagerComponent TaskID={this.props.TaskID}
+                        UserID={this.props.UserID}
+                        Strings={this.props.Strings}
+                        ViewOnly={true} />
                 </div>
             );
         }
@@ -564,8 +577,23 @@ class SuperComponent extends React.Component {
                         </div>
                         <div className="section-content">
                             {TA_instructions}
-                            {fileLinksView}
-                            <button className="dispute-buttons" onClick={this.willNotDispute.bind(this)}>{this.props.Strings.WillNotDispute}</button>
+                            {fileManagerView}
+                            
+                            <button className="dispute-buttons" onClick={() => {
+                                DisputeModal({
+                                    confirmation: this.props.Strings.ConfirmSkipDisputeText,
+                                    okLabel: this.props.Strings.Confirm,
+                                    cancelLabel: this.props.Strings.Cancel,
+                                    title: this.props.Strings.WillNotDispute
+                                }).then(() => {
+                                    this.willNotDispute();
+                                }, void(0))
+                                    .catch(() => {});
+                            }
+
+                            }>{this.props.Strings.WillNotDispute}</button>
+                            
+                            
                             <button className="dispute-buttons" onClick={this.willDispute.bind(this)}>{this.props.Strings.WillDispute}</button>
                         </div>
                     </div>
@@ -796,7 +824,7 @@ class SuperComponent extends React.Component {
             content = (<div className="section-content">
                 {TA_instructions}
                 {TA_rubric}
-                {fileUploadView}
+                {fileManagerView}
                 {fields}
                 {formButtons}
             </div>);
@@ -804,6 +832,7 @@ class SuperComponent extends React.Component {
             content = (<div />);
         }
 
+        
         return ( // main render return()
             <div>
                 {infoMessage}

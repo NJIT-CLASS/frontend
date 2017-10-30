@@ -42,6 +42,8 @@
     "react-checkbox-list": "^0.0.2",
     "react-collapsible": "^2.0.3",
     "react-confirm": "^0.1.16",
+    "react-confirm-bootstrap": "^4.0.0",
+    "react-confirm-dialog": "^1.0.5",
     "react-date": "^2.0.0",
     "react-datepicker": "^0.56.0",
     "react-dates": "^14.0.0",

@@ -16,6 +16,10 @@ exports.LANGUAGES = [{
 {
     language: 'Português',
     locale: 'pt'
+},
+{
+    language: ' ελληνικά',
+    locale: 'el'
 }];
 
 

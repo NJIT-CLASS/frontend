@@ -67,6 +67,10 @@ let strings = {
     Revision: 'Revision',
     Original: 'Original',
     UploadFiles: 'Files Uploads',
+    Confirm: 'Confirm',
+    Cancel: 'Cancel',
+    ConfirmSkipDisputeText: 'Are you sure you want to skip this dispute?',
+    
     
 };
 

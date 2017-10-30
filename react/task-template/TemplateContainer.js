@@ -552,7 +552,8 @@ class TemplateContainer extends React.Component {
                     Strings={this.state.Strings}
                     TaskID={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskInstanceID}
                     oneBox={true}
-                    index={5000}
+                    index={5000}                                    TaskID={task.TaskInstanceID}
+
                     margin={0}
                 />)}
 
