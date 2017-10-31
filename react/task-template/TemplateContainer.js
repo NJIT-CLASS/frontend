@@ -88,6 +88,7 @@ class TemplateContainer extends React.Component {
         const options2 = {
             userID: this.props.UserID,
         };
+        let commentsTaskList = [];
 
         apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
             if (res.statusCode != 200) {
@@ -174,6 +175,17 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
+                        parseTaskList.forEach((task, index) => {
+                            if (task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
+                                return;
+                            }
+                            else {
+                                commentsTaskList.push(task);
+                            }
+                        }, this);
+
+                        commentsTaskList.push(currentTask);
+
 
                         if ([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)) {
                             /** Check if the current task is a revision task
@@ -216,8 +228,8 @@ class TemplateContainer extends React.Component {
                             /** Check if current consolidation is acting on an Revision edit task
                              *  If it is, show revision buttons
                              *  Else, show normal buttons
-                             * 
-                             * 
+                             *
+                             *
                              */
 
                             apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
@@ -295,6 +307,7 @@ class TemplateContainer extends React.Component {
                         Data: taskList,
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
+                        CommentsTaskList: commentsTaskList,
                     });
                     this.createCommentList();
                     console.log(commentsTaskList, body.assignment);
@@ -539,8 +552,7 @@ class TemplateContainer extends React.Component {
                     Strings={this.state.Strings}
                     TaskID={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskInstanceID}
                     oneBox={true}
-                    index={5000}                                    TaskID={task.TaskInstanceID}
-
+                    index={5000}
                     margin={0}
                 />)}
 
