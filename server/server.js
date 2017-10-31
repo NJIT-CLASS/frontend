@@ -430,10 +430,11 @@ app.get('/api/file/download/:fileId', function(req, res) {
 });
 
 
-app.post('/api/file/delete/', function(req,res){
+app.delete('/api/file/delete/', function(req,res){
     //probably verify authorization and owner first
     var file_id = req.body.fileId;
-
+    var postVars = req.body;
+    postVars.userId = req.App.user.userId;
     if(!file_id){
         return res.status(400).end();
     }
@@ -441,7 +442,8 @@ app.post('/api/file/delete/', function(req,res){
     request({
         uri: `${react_consts.API_URL}/api/file/delete/${file_id}`,
         method: 'DELETE',
-        json: true
+        json: true,
+        body: postVars
     }, (err,response,body) => {
         var file_ref = body.Info;
         let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
@@ -515,9 +517,9 @@ app.use((req, res, next) => {
                     continue;
                 }
             } else if (
-				req.App.user.type == 'teacher' &&
+                req.App.user.type == 'teacher' &&
 				req.App.user.admin == 0
-			) {
+            ) {
                 if (currentRoute.access.instructors) {
                     sidebarNavItems.push(currentRoute);
                 } else {

@@ -20,7 +20,7 @@ class FileUpload extends React.Component{
             Files:[],
             NumberUploaded: this.props.InitialNumberUploaded || 0,
             HasFiles: false,
-            NumberJustUploaded: 0
+            NumberJustUploaded: 0,
         };
 
         this.uploadFiles = this.uploadFiles.bind(this);
@@ -30,48 +30,41 @@ class FileUpload extends React.Component{
 
 
     uploadFiles(files){
-        if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
+        if(this.props.AllowUploads!== true){
             return;
         }
 
-        this.setState({
-            UploadStatus: 'pending'
-        });
+        ////## Send files to server
         let formData = new FormData();
-
         Object.keys(this.props.PostVars).forEach(key => {
             formData.append(key, this.props.PostVars[key]);
         });
-
         let filesAr = [];
         let upperLimit = 0;
-
-        if(files === undefined){ //regular button
-            upperLimit = this.uploadRef.files.length;
-            if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
-                [].forEach.call(this.uploadRef.files, function (file) {
-                    filesAr.push(file);
-                    formData.append('files', file);
-                });
-            }
-            else{
-                let totalUploads = this.state.NumberUploaded;
-                upperLimit = this.uploadRef.files.length < (this.props.MaxUploads - totalUploads) ? this.uploadRef.files.length : (this.props.MaxUploads - totalUploads);
-                for(let i = 0; i < upperLimit; i++){
-                    filesAr.push(this.uploadRef.files[i]);
-                    formData.append('files', this.uploadRef.files[i]);
-                }
-            }
-        } else{
-            //DropZone
-            upperLimit = files.length;
+        console.log('Maximum:', this.props.MaxUploads, this.props.MaxUploads === null || this.props.MaxUploads === undefined, typeof this.props.MaxUploads);
+        upperLimit = files.length;
+        if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
+            console.log('No limit found');
             [].forEach.call(files, function (file) {
-                formData.append('files', file);
                 filesAr.push(file);
+                formData.append('files', file);
             });
         }
+        else{
+            console.log('limit found');
+                
+            let totalUploads = this.state.NumberUploaded;
+            upperLimit = files.length < (this.props.MaxUploads - totalUploads) ?files.length : (this.props.MaxUploads - totalUploads);
+            console.log('limit:', upperLimit, files.length < (this.props.MaxUploads - totalUploads) );
+            for(let i = 0; i < upperLimit; i++){
+                filesAr.push(files[i]);
+                formData.append('files', files[i]);
+            }
+        }
 
+        
         this.setState({
+            UploadStatus: 'pending',
             Files: filesAr,
             NumberJustUploaded: upperLimit
         });
@@ -83,30 +76,33 @@ class FileUpload extends React.Component{
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {
                 if(this.status == 200){
-                    let newNum = x.state.NumberUploaded + x.state.NumberJustUploaded;
+                    let netChangeInFiles = upperLimit;
+                    let newNum = x.state.NumberUploaded + netChangeInFiles;
+                    console.log('num vars', netChangeInFiles, newNum);
                     x.setState({
                         UploadStatus: 'success',
                         Response: this.responseText,
-                        NumberUploaded: newNum
+                        NumberUploaded: newNum,
+                        NumberJustUploaded: 0
                     });
-                    let changedConditions = {
-                        conditionsMet: (x.state.NumberUploaded >= x.props.MinUploads) && (x.state.NumberUploaded <= x.props.MaxUploads),
-                        numberOfUploads: newNum
-                    };
-                    console.log(changedConditions);
-                    x.props.onChange(changedConditions);
+
+                    x.props.onChange(netChangeInFiles);
                 }
                 else{
                     x.setState({
                         UploadStatus: 'error',
-                        Response: this.responseText
+                        Response: this.responseText,
+                        NumberJustUploaded: 0
+                        
                     });
                 }
             }
             else{
                 x.setState({
                     UploadStatus: 'pending',
-                    Response: this.responseText
+                    Response: this.responseText,
+                    NumberJustUploaded: 0
+                    
                 });
             }
 
@@ -125,7 +121,7 @@ class FileUpload extends React.Component{
         let uploadView = null;
         let uploadStatus = this.state.UploadStatus;
         
-        if(this.props.MaxUploads && this.state.NumberUploaded >= this.props.MaxUploads){
+        if(!this.props.AllowUploads){
             uploadStatus = 'full';
         }
 
@@ -167,6 +163,7 @@ FileUpload.defaultProps = {
     },
     MinUploads: 0,
     MaxUploads: 1,
+    AllowUploads: true,
     onChange: function(newNum){}
 
 };

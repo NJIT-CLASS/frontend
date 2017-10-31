@@ -45,7 +45,7 @@ class FileManagerComponent extends Component {
 
     render() {
         let {Files} = this.state;
-        let {Strings, View,InitialNumberUploaded, PostVars, MinUploads,endpoint,MaxUploads, ViewOnly} = this.props;
+        let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads} = this.props;
         let fileUpload = (ViewOnly !== true || endpoint !== '') ? (
             <FileUpload
                 View={View}
@@ -56,6 +56,7 @@ class FileManagerComponent extends Component {
                 MaxUploads={MaxUploads}
                 onChange={this.handleUpload}
                 Strings={Strings}
+                AllowUploads={AllowUploads}
             />
         ): <div></div>;
         return (

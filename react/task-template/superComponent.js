@@ -55,7 +55,6 @@ class SuperComponent extends React.Component {
             DisputeStatus: null,
             FileUploadsSatisfied: false,
             LockSubmit: false,
-            NewFilesUploaded: [],
             IsRevision: false,
             RevisionStatus: false,
             ShowDisputeModal: true,
@@ -197,13 +196,15 @@ class SuperComponent extends React.Component {
         });
     }
 
-    handleFileUploads({ conditionsMet, numberOfUploads }) {
-        console.log(conditionsMet, numberOfUploads);
+    handleFileUploads(netFileUploadChange){
+        
+        let newNumOfFiles = this.state.NumberFilesStored + netFileUploadChange;
+        const satisfyCondition = (newNumOfFiles >= (this.props.FileUpload.mandatory)) && (newNumOfFiles <= (this.props.FileUpload.mandatory + this.props.FileUpload.optional));
 
         this.setState({
-            FileUploadsSatisfied: conditionsMet,
+            NumberFilesStored: newNumOfFiles,
+            FileUploadsSatisfied: satisfyCondition
         });
-        this.fetchNewFileUploads();
     }
 
     submitData(e) {
@@ -537,6 +538,7 @@ class SuperComponent extends React.Component {
                             userId: this.props.UserID,
                             taskInstanceId: this.props.TaskID
                         }}
+                        AllowUploads={this.state.NumberFilesStored < (this.props.FileUpload.mandatory + this.props.FileUpload.optional)}
                         UserID={this.props.UserID}
                         MinUploads={this.props.FileUpload.mandatory}
                         endpoint={'/api/file/upload/task'}
