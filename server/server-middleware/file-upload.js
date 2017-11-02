@@ -54,4 +54,63 @@ function uploadFile(file, type, userId, postVars){
     });
 }
 
-module.exports = {uploadFile};
+
+function uploadFiles(fileArray, type, userId, postVars) {
+    let successfulFiles = [];
+    let unsuccessfulFiles = [];
+    return new Promise(function (resolve, reject) {
+        
+        let newFileArray = fileArray.map(file => {
+            let { path, destination, ...usefulFileInfo } = file;
+            return usefulFileInfo;
+        });
+        let fullPostVars = {
+            ...postVars,
+            userId: userId,
+            files: newFileArray,
+        };
+        request({
+            uri: `${react_consts.API_URL}/api/files/upload/${type}`,
+            method: 'POST',
+            body: fullPostVars,
+            json: true
+        }, (err, response, body) => {
+            console.log('Files api resposne', body);
+            body = typeof body == 'string' ? JSON.parse(body) : body;
+            fileArray.forEach(file => {
+                let oldPath = file.path;
+                let newPath = consts.UPLOAD_DIRECTORY_PATH + `/${file.filename}`;
+
+                // let newFileID = body.FileID;
+                // console.log('Good response', newFileID);
+
+                mv(oldPath, newPath, { mkdirp: true }, function (e) {
+                    console.log('done moving file response', e);
+
+                    if (e) {
+                        console.error(e);
+                        unsuccessfulFiles.push({
+                            file: file,
+                            error: e
+                        });
+
+                    } else {
+                        console.log('Good response', file);
+                        successfulFiles.push({
+                            file: file,
+                            //FileID: newFileID
+                        });
+                    }
+                });
+            });
+
+            resolve ({successfulFileMoves: successfulFiles,
+                unsuccessfulFileMoves: unsuccessfulFiles,
+                successfulFiles: body.successfulFiles,
+                unsuccessfulFiles: body.unsuccessfulFiles
+            });
+               
+        });
+    });
+}
+module.exports = {uploadFiles};

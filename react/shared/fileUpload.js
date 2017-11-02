@@ -79,6 +79,7 @@ class FileUpload extends React.Component{
                     let netChangeInFiles = upperLimit;
                     let newNum = x.state.NumberUploaded + netChangeInFiles;
                     console.log('num vars', netChangeInFiles, newNum);
+                    console.log(JSON.parse(this.responseText));
                     x.setState({
                         UploadStatus: 'success',
                         Response: this.responseText,

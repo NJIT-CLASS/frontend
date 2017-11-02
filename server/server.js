@@ -16,7 +16,7 @@ const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
-import {uploadFile} from './server-middleware/file-upload';
+import {uploadFiles} from './server-middleware/file-upload';
 
 const app = express();
 const redisClient = redis.createClient({
@@ -372,6 +372,31 @@ app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
         successfulFiles: [],
         failedFiles: []
     };
+
+    uploadFiles(req.files, type, req.App.user.userId, postVars).then(resultsObject => {
+        console.log('File Upload API response', resultsObject);
+        uploadStatus.successfulFiles = resultsObject.successfulFiles;
+        uploadStatus.failedFiles = resultsObject.unsuccessfulFiles;
+        if (uploadStatus.failedFiles.length == 0) {
+            return res.status(200).json(uploadStatus);
+        } else {
+            return res.status(400).json(uploadStatus);
+
+        }
+    });
+});
+
+/*app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    //maybe check for authorization before continuing
+    let type = req.params.type || '';
+    delete postVars.endpoint;
+    const listOfErrors = [];
+    const uploadStatus = {
+        successfulFiles: [],
+        failedFiles: []
+    };
     let filesToUpload = req.files.map( file =>
         uploadFile(file, type, req.App.user.userId, postVars));
     
@@ -386,7 +411,7 @@ app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
         }
     });
 });
-
+*/
 app.get('/api/file/download/:fileId', function(req, res) {
     // router.post('/download/file/:fileId', function (req, res) {
     // router.get('/download/file', function (req, res) {
