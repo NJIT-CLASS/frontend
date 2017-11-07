@@ -53,7 +53,7 @@ class FileUpload extends React.Component{
         else{
             console.log('limit found');
                 
-            let totalUploads = this.state.NumberUploaded;
+            let totalUploads = this.props.NumberUploaded;
             upperLimit = files.length < (this.props.MaxUploads - totalUploads) ?files.length : (this.props.MaxUploads - totalUploads);
             console.log('limit:', upperLimit, files.length < (this.props.MaxUploads - totalUploads) );
             for(let i = 0; i < upperLimit; i++){
@@ -77,7 +77,7 @@ class FileUpload extends React.Component{
             if(this.readyState == 4) {
                 if(this.status == 200){
                     let netChangeInFiles = upperLimit;
-                    let newNum = x.state.NumberUploaded + netChangeInFiles;
+                    let newNum = x.props.NumberUploaded + netChangeInFiles;
                     console.log('num vars', netChangeInFiles, newNum);
                     console.log(JSON.parse(this.responseText));
                     x.setState({
@@ -129,7 +129,7 @@ class FileUpload extends React.Component{
         switch(this.props.View){
         case 'button':
             uploadView = (<ButtonView uploadFiles={this.uploadFiles} Strings={this.props.Strings} UploadStatus={uploadStatus}
-                NumberUploaded={this.state.NumberUploaded} MinUploads={this.props.MinUploads}
+                NumberUploaded={this.props.NumberUploaded} MinUploads={this.props.MinUploads}
                 MaxUploads={this.props.MaxUploads} selectClick={this.selectClick}
                 uploadRef={el => this.uploadRef = el} HasFiles={this.state.HasFiles}
 

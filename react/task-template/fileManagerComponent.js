@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FileLinksComponent from './fileLinksComponent';
+import FileLinksRemoveComponent from './fileLinksWithRemoveComponent';
 import FileUpload from '../shared/fileUpload';
 import apiCall from '../shared/apiCall';
 
@@ -43,9 +44,13 @@ class FileManagerComponent extends Component {
         this.fetchFiles();
     }
 
+
     render() {
         let {Files} = this.state;
-        let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads} = this.props;
+        let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads, TaskID} = this.props;
+        let fileLinksView = ViewOnly === true ? <FileLinksComponent Files={Files} Strings={Strings} /> :
+            <FileLinksRemoveComponent Files={Files} Strings={Strings} TaskID={TaskID} onChange={this.handleUpload}/>;
+
         let fileUpload = (ViewOnly !== true || endpoint !== '') ? (
             <FileUpload
                 View={View}
@@ -57,11 +62,12 @@ class FileManagerComponent extends Component {
                 onChange={this.handleUpload}
                 Strings={Strings}
                 AllowUploads={AllowUploads}
+                NumberUploaded={Files.length}
             />
         ): <div></div>;
         return (
             <div>
-                <FileLinksComponent Files={Files} Strings={Strings}/>
+                {fileLinksView}
                 {fileUpload}
             </div>
         );
