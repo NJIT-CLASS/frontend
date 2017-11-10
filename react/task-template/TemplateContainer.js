@@ -327,27 +327,28 @@ class TemplateContainer extends React.Component {
         });
     }
 
-    getCommentData(target, ID) {
-        //if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
-        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-            console.log('Comment data fetched');
-            let list = [];
-            if (body != undefined ) {
-                for (let com of body.Comments) {
-                    list.push(com);
-                }
-                this.setState({
-                    commentList: list
-                });
-            }
-            else {
-                console.log('No comment data received.');
-                this.setState({
-                    commentList: list
-                });
-            }
-        });
-        //}
+    getCommentData(target, ID, type) {
+        console.log(this.state.CommentTargetList[this.state.CommentTarget].Target, target, this.state.CommentTargetList[this.state.CommentTarget].ID, ID)
+        if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
+          apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+              console.log('Comment data fetched');
+              let list = [];
+              if (body != undefined ) {
+                  for (let com of body.Comments) {
+                      list.push(com);
+                  }
+                  this.setState({
+                      commentList: list
+                  });
+              }
+              else {
+                  console.log('No comment data received.');
+                  this.setState({
+                      commentList: list
+                  });
+              }
+          });
+        }
     }
 
 
@@ -435,7 +436,7 @@ class TemplateContainer extends React.Component {
 
     handleChangeTarget(event) {
         this.setState({CommentTarget: event.value});
-        this.getCommentData(event.Target, event.ID);
+        this.getCommentData(event.Target, event.ID, 'change');
         if (this.state.BoxHide) {
             this.hideBox();
         }

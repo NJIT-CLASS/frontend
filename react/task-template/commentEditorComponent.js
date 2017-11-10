@@ -17,7 +17,6 @@ class CommentEditorComponent extends React.Component {
             NewCommentFlagValue: 0,
             NewCommentFlagColor: 'black',
             NewCommentType: this.props.SetFlag ? 'flag' : 'comment',
-            NewCommentTarget: this.props.CommentTargetOnList
         };
     }
     getEditData() {
@@ -31,10 +30,15 @@ class CommentEditorComponent extends React.Component {
       }
     }
 
-    componentWillMount() {
+    componentDidMount() {
       if (this.props.Edit) {
+        this.editCommentTarget(this.props.CommentTarget, this.props.TargetID);
         this.getEditData();
       }
+      else {
+        this.setState({NewCommentTarget: this.props.CommentTargetOnList})
+      }
+
       if (this.props.Type != undefined) {
           this.setState({NewCommentType: this.props.Type});
       }
@@ -43,12 +47,8 @@ class CommentEditorComponent extends React.Component {
       }
     }
 
-    componentDidMount() {
-      this.editCommentTarget();
-    }
-
     componentWillReceiveProps(nextProps) {
-      if (nextProps.CommentTargetOnList != this.state.NewCommentTarget) {
+      if ((nextProps.CommentTargetOnList != this.state.NewCommentTarget) && !this.props.Edit) {
         this.setState({NewCommentTarget: this.props.CommentTargetOnList});
       }
     }
@@ -86,7 +86,7 @@ class CommentEditorComponent extends React.Component {
         const commentParameters = {
             UserID: this.props.UserID,
             AssignmentInstanceID: this.props.AssignmentInstanceID,
-            TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID),
+            TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : this.props.CommentTargetList[this.state.NewCommentTarget].ID,
             Flag: this.state.NewCommentFlagValue,
             CommentsText: this.state.NewCommentValue,
             Rating: this.state.NewCommentRating,
@@ -95,7 +95,7 @@ class CommentEditorComponent extends React.Component {
             Time: moment().format('YYYY-MM-DD HH:mm:ss'),
             Status: 'submitted',
             CommentsID: this.props.CommentsID,
-            CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target),
+            CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : this.props.CommentTargetList[this.state.NewCommentTarget].Target,
             Type: this.state.NewCommentType,
             OriginTaskInstanceID: this.props.TaskID,
         };
@@ -111,7 +111,7 @@ class CommentEditorComponent extends React.Component {
                 if(!body.Error) {
                     console.log('Successfully edited comment.');
                     this.setState({CommentBlank: false});
-                    this.props.Update(commentParameters.Status);
+                    this.props.Update(commentParameters.Status, commentParameters.Target, commentParameters.TargetID);
                 }
                 else {
                     console.log('Error editing comment.');
@@ -234,6 +234,7 @@ class CommentEditorComponent extends React.Component {
       for (let i of this.props.CommentTargetList) {
         if ((i.Target == target) && (i.ID == id)) {
           m = i.value;
+          console.log('ect', m);
         }
       }
       this.setState({NewCommentTarget: m});
@@ -297,8 +298,8 @@ class CommentEditorComponent extends React.Component {
           <form role="form">
               <div className="title-no-hover">{IntroText}</div>
                   <div style={{width: 110, display: 'inline-flex'}}><Select placeholder='' style={{width: 100}} options={[{value: 'comment', label: strings.Comment}, {value: 'flag', label: strings.Flag}]} value={this.state.NewCommentType} onChange={this.handleChangeType.bind(this)} clearable={false}/></div>
-                  {(this.props.ReplyLevel == 0 && !this.props.Edit) && (<span style={{padding: 10}}>{strings.OnText}</span>)}
-                  {(this.props.ReplyLevel == 0 && !this.props.Edit) &&
+                  {(this.props.ReplyLevel == 0) && (<span style={{padding: 10}}>{strings.OnText}</span>)}
+                  {(this.props.ReplyLevel == 0) &&
                   (<div style={{width: 320, display: 'inline-flex'}}>
                     <Select options={this.props.CommentTargetList} value={this.state.NewCommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true} required/>
                   </div>)}
