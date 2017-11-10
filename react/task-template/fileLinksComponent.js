@@ -19,7 +19,7 @@ const FileLinksComponent = ({Files, apiUrl, Strings}) => {
         {
             Files.map((file) => {
                 return <div key={`file-${file.FileID}`} className="file-link">
-                    <a target="_blank" href={downloadLink+file.FileID}>{file.filename} - {formatBytes(file.size)}</a><br/>
+                    <a target="_blank" href={downloadLink+file.FileID}>{file.filename} - {this.formatBytes(file.size)}</a><br/>
                 </div>;
             })
         }

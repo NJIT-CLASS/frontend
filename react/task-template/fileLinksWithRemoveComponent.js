@@ -1,20 +1,28 @@
-import React from 'react';
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import apiCall from '../shared/apiCall';
+import serverCall from '../shared/serverCall';
 
 class FileLinkRemoveComponent extends Component {
     constructor(props){
         super(props);
+        
+        
     }
 
     formatBytes(a, b) {
         if (0 == a) return '0 Bytes'; var c = 1024, d = b || 2, e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'], f = Math.floor(Math.log(a) / Math.log(c)); return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
     }
 
-    deleteFile(){
-        
+    deleteFile(file){
+        const postVars = {
+            taskId: this.props.TaskID,
+            fileId: file.FileID
+        };
+
+        serverCall.delete('/api/file/delete/', postVars, (err,res,body)=> {
+            console.log(body);
+            this.props.onChange(-1);
+        });
     }
 
     render() {
@@ -30,7 +38,9 @@ class FileLinkRemoveComponent extends Component {
             {
                 Files.map((file) => {
                     return <div key={`file-${file.FileID}`} className="file-link">
-                        <a target="_blank" href={downloadLink + file.FileID}>{file.filename} - {formatBytes(file.size)}</a><br />
+                        <a target="_blank" href={downloadLink + file.FileID}>{file.filename} - {this.formatBytes(file.size)}</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a key={`file-delete-${file.FileID}`} onClick={this.deleteFile.bind(this,file)}>DELETE</a><br />
                     </div>;
                 })
             }

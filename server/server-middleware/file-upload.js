@@ -106,8 +106,8 @@ function uploadFiles(fileArray, type, userId, postVars) {
 
             resolve ({successfulFileMoves: successfulFiles,
                 unsuccessfulFileMoves: unsuccessfulFiles,
-                successfulFiles: body.successfulFiles,
-                unsuccessfulFiles: body.unsuccessfulFiles
+                successfulFiles: body.SuccessfulFiles,
+                unsuccessfulFiles: body.UnsuccessfulFiles
             });
                
         });

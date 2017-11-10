@@ -35,7 +35,12 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglify())
+                //.pipe(babel({
+                //    presets: ['es2015']
+                //}))
+                //.pipe(uglify())
+                //.on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+
                 .pipe(gulp.dest('./.build/static'));
 
         } else{

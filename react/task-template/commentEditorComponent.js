@@ -20,14 +20,14 @@ class CommentEditorComponent extends React.Component {
         };
     }
     getEditData() {
-      this.setState({
-        NewCommentValue: this.props.CommentsText,
-        NewCommentRating: this.props.Rating,
-        NewCommentFlagValue: this.props.Flag
-      })
-      if (this.props.Flag == 1) {
-        this.setState({NewFlagColor: 'red'});
-      }
+        this.setState({
+            NewCommentValue: this.props.CommentsText,
+            NewCommentRating: this.props.Rating,
+            NewCommentFlagValue: this.props.Flag
+        });
+        if (this.props.Flag == 1) {
+            this.setState({NewFlagColor: 'red'});
+        }
     }
 
     componentDidMount() {
@@ -101,10 +101,10 @@ class CommentEditorComponent extends React.Component {
         };
 
         if (this.props.Edit) {
-          if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
-            console.log('Edit comment: Text and rating cannot both be blank.');
-            this.setState({CommentBlank: true});
-          }
+            if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
+                console.log('Edit comment: Text and rating cannot both be blank.');
+                this.setState({CommentBlank: true});
+            }
 
           else if (((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent)) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
             apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
@@ -119,88 +119,88 @@ class CommentEditorComponent extends React.Component {
             });
           }
 
-          else{
-            console.log('Editing access denied / The comment cannot be edited because there is already a reply.')
-          }
+            else{
+                console.log('Editing access denied / The comment cannot be edited because there is already a reply.');
+            }
         }
 
         else {
 
-          if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
-            console.log('Add comment: Text and rating cannot both be blank.');
-            this.setState({CommentBlank: true});
-          }
+            if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
+                console.log('Add comment: Text and rating cannot both be blank.');
+                this.setState({CommentBlank: true});
+            }
 
-          else {
-            apiCall.post('/comments/add', commentParameters, (err, res, body) => {
-                if(res.statusCode == 200) {
-                    console.log('Successfully added comment.');
-                    this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false, SubmitSuccess: true, Error: false});
-                    this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
-                } else if (res.statusCode == 400) {
-                    this.setState({SubmitSuccess: false, Error: true});
-                    console.log('Error submitting comments.');
-                } else {
-                    this.setState({SubmitSuccess: false, Error: true});
-                    console.log('/comments/add: An error occurred.');
-                }
-            });
-          }
+            else {
+                apiCall.post('/comments/add', commentParameters, (err, res, body) => {
+                    if(res.statusCode == 200) {
+                        console.log('Successfully added comment.');
+                        this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false, SubmitSuccess: true, Error: false});
+                        this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
+                    } else if (res.statusCode == 400) {
+                        this.setState({SubmitSuccess: false, Error: true});
+                        console.log('Error submitting comments.');
+                    } else {
+                        this.setState({SubmitSuccess: false, Error: true});
+                        console.log('/comments/add: An error occurred.');
+                    }
+                });
+            }
         }
     }
 
     handleSave(event) {
-      event.preventDefault();
-      const commentParameters = {
-          UserID: this.props.UserID,
-          AssignmentInstanceID: this.props.AssignmentInstanceID,
-          TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID),
-          Flag: this.state.NewCommentFlagValue,
-          CommentsText: this.state.NewCommentValue,
-          Rating: this.state.NewCommentRating,
-          ReplyLevel: this.props.ReplyLevel,
-          Parents: this.props.Parents,
-          Time: moment().format('YYYY-MM-DD HH:mm:ss'),
-          Status: 'saved',
-          CommentsID: this.props.CommentsID,
-          Type: this.state.NewCommentType,
-          CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target),
-          OriginTaskInstanceID: this.props.TaskID,
-      };
+        event.preventDefault();
+        const commentParameters = {
+            UserID: this.props.UserID,
+            AssignmentInstanceID: this.props.AssignmentInstanceID,
+            TargetID: (this.props.ReplyLevel > 0) ? this.props.TargetID : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].ID),
+            Flag: this.state.NewCommentFlagValue,
+            CommentsText: this.state.NewCommentValue,
+            Rating: this.state.NewCommentRating,
+            ReplyLevel: this.props.ReplyLevel,
+            Parents: this.props.Parents,
+            Time: moment().format('YYYY-MM-DD HH:mm:ss'),
+            Status: 'saved',
+            CommentsID: this.props.CommentsID,
+            Type: this.state.NewCommentType,
+            CommentTarget: (this.props.ReplyLevel > 0) ? this.props.CommentTarget : (this.props.Edit ? null : this.props.CommentTargetList[this.state.NewCommentTarget].Target),
+            OriginTaskInstanceID: this.props.TaskID,
+        };
 
         if ((commentParameters.CommentsText == '') && (commentParameters.Rating == null)) {
-          console.log('Save comment: Text and rating cannot both be blank.');
-          this.setState({CommentBlank: true});
+            console.log('Save comment: Text and rating cannot both be blank.');
+            this.setState({CommentBlank: true});
         }
 
         else if (commentParameters.CommentsID == null) {
-          apiCall.post('/comments/add/', commentParameters, (err, res, body) => {
-              if(res.statusCode == 200) {
-                  console.log('Successfully saved comment.');
-                  this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false, SaveSuccess: true, Error: false});
-                  this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
-              } else if (res.statusCode == 400) {
-                  console.log('Error saving comments.');
-                  this.setState({SaveSuccess: false, Error: true});
-              } else {
-                  console.log('/comments/add: An error occurred.');
-                  this.setState({SaveSuccess: false, Error: true});
-              }
-          });
+            apiCall.post('/comments/add/', commentParameters, (err, res, body) => {
+                if(res.statusCode == 200) {
+                    console.log('Successfully saved comment.');
+                    this.setState({NewCommentValue: '', NewCommentRating: null, NewCommentFlagColor: 'black', NewCommentFlagValue: 0, CommentBlank: false, SaveSuccess: true, Error: false});
+                    this.props.Update(commentParameters.CommentTarget, commentParameters.TargetID);
+                } else if (res.statusCode == 400) {
+                    console.log('Error saving comments.');
+                    this.setState({SaveSuccess: false, Error: true});
+                } else {
+                    console.log('/comments/add: An error occurred.');
+                    this.setState({SaveSuccess: false, Error: true});
+                }
+            });
         }
 
         else {
-          apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
-              if(!body.Error) {
-                  console.log('Successfully edited saved comment.');
-                  this.setState({CommentBlank: false, SaveSuccess: true});
-                  this.props.Update(commentParameters.Status);
-              }
-              else {
-                  console.log('Error editing comment.');
-                  this.setState({SaveSuccess: false});
-              }
-          });
+            apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
+                if(!body.Error) {
+                    console.log('Successfully edited saved comment.');
+                    this.setState({CommentBlank: false, SaveSuccess: true});
+                    this.props.Update(commentParameters.Status);
+                }
+                else {
+                    console.log('Error editing comment.');
+                    this.setState({SaveSuccess: false});
+                }
+            });
         }
     }
 
@@ -236,8 +236,7 @@ class CommentEditorComponent extends React.Component {
           m = i.value;
           console.log('ect', m);
         }
-      }
-      this.setState({NewCommentTarget: m});
+        this.setState({NewCommentTarget: m});
     }
 
     render() {
@@ -273,27 +272,27 @@ class CommentEditorComponent extends React.Component {
         }
 
         return (
-          <div className="comment">
-          {
-            (this.state.CommentBlank) && (<div className="error form-error">
-            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.BlankMessage}</span>
-            </div>)
-          }
-          {
-            (this.state.SaveSuccess) && (<div className="success form-success">
-            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.SuccessMessage}</span>
-            </div>)
-          }
-          {
-            (this.state.SubmitSuccess) && (<div className="success form-success">
-            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.SubmitSuccessMessage}</span>
-            </div>)
-          }
-          {
-            (this.state.Error) && (<div className="error form-error">
-            <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.ErrorMessage}</span>
-            </div>)
-          }
+            <div className="comment">
+                {
+                    (this.state.CommentBlank) && (<div className="error form-error">
+                        <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.BlankMessage}</span>
+                    </div>)
+                }
+                {
+                    (this.state.SaveSuccess) && (<div className="success form-success">
+                        <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.SuccessMessage}</span>
+                    </div>)
+                }
+                {
+                    (this.state.SubmitSuccess) && (<div className="success form-success">
+                        <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.SubmitSuccessMessage}</span>
+                    </div>)
+                }
+                {
+                    (this.state.Error) && (<div className="error form-error">
+                        <i className="fa fa-exclamation-circle" style={{paddingRight: 7}}></i><span>{strings.ErrorMessage}</span>
+                    </div>)
+                }
 
           <form role="form">
               <div className="title-no-hover">{IntroText}</div>
@@ -301,17 +300,17 @@ class CommentEditorComponent extends React.Component {
                   {(this.props.ReplyLevel == 0) && (<span style={{padding: 10}}>{strings.OnText}</span>)}
                   {(this.props.ReplyLevel == 0) &&
                   (<div style={{width: 320, display: 'inline-flex'}}>
-                    <Select options={this.props.CommentTargetList} value={this.state.NewCommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true} required/>
+                      <Select options={this.props.CommentTargetList} value={this.state.NewCommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true} required/>
                   </div>)}
-              {(this.state.NewCommentType == 'comment') && <label style={{padding: 10}}>{strings.RatingLabel}</label>}
-              {(this.state.NewCommentType == 'comment') && <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>}
-              <div className="regular-text comtext">
-                  <input placeholder={inputPlaceholderText} type="text" maxLength="255" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
-                  <button onClick={this.handleSubmit.bind(this)}>{strings.ButtonText0}</button>
-                  {(this.props.Status != 'submitted') && (<button onClick={this.handleSave.bind(this)}>{strings.ButtonText1}</button>)}
-              </div>
-          </form>
-          </div>
+                    {(this.state.NewCommentType == 'comment') && <label style={{padding: 10}}>{strings.RatingLabel}</label>}
+                    {(this.state.NewCommentType == 'comment') && <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>}
+                    <div className="regular-text comtext">
+                        <input placeholder={inputPlaceholderText} type="text" maxLength="255" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
+                        <button onClick={this.handleSubmit.bind(this)}>{strings.ButtonText0}</button>
+                        {(this.props.Status != 'submitted') && (<button onClick={this.handleSave.bind(this)}>{strings.ButtonText1}</button>)}
+                    </div>
+                </form>
+            </div>
         );
     }
 }

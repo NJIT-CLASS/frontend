@@ -470,7 +470,7 @@ app.delete('/api/file/delete/', function(req,res){
         json: true,
         body: postVars
     }, (err,response,body) => {
-        var file_ref = body.Info;
+        var file_ref = typeof body.Info == 'string' ? JSON.parse(body.Info) : body.Info;
         let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
         fs.unlink(filePath, (err)=> {
             if(err){
