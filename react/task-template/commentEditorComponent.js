@@ -237,6 +237,7 @@ class CommentEditorComponent extends React.Component {
           console.log('ect', m);
         }
         this.setState({NewCommentTarget: m});
+      }
     }
 
     render() {
