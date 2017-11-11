@@ -6,7 +6,7 @@ class FileLinkRemoveComponent extends Component {
     constructor(props){
         super(props);
         
-        
+        this.formatBytes = this.formatBytes.bind(this);
     }
 
     formatBytes(a, b) {
@@ -18,11 +18,13 @@ class FileLinkRemoveComponent extends Component {
             taskId: this.props.TaskID,
             fileId: file.FileID
         };
-
-        serverCall.delete('/api/file/delete/', postVars, (err,res,body)=> {
-            console.log(body);
-            this.props.onChange(-1);
-        });
+        if(confirm('Are you sure you want to delete this file?')){
+            serverCall.delete('/api/file/delete/', postVars, (err, res, body) => {
+                console.log(body);
+                this.props.onChange(-1);
+            });
+        }
+        
     }
 
     render() {
@@ -37,12 +39,13 @@ class FileLinkRemoveComponent extends Component {
             <label>{Strings.UploadFiles}:</label><br />
             {
                 Files.map((file) => {
+                    let bytes = this.formatBytes(file.size);
                     return <div key={`file-${file.FileID}`} className="file-link">
-                        <a target="_blank" href={downloadLink + file.FileID}>{file.filename} - {this.formatBytes(file.size)}</a>
+                        <a target="_blank" href={downloadLink + file.FileID}>{file.filename} - {bytes}</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a key={`file-delete-${file.FileID}`} onClick={this.deleteFile.bind(this,file)}>DELETE</a><br />
+                        <a key={`file-delete-${file.FileID}`} onClick={this.deleteFile.bind(this, file)}><i class="fa fa-times" aria-hidden="true"></i></a><br />
                     </div>;
-                })
+                }, this)
             }
         </div>;
     }
