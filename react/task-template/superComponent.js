@@ -144,7 +144,7 @@ class SuperComponent extends React.Component {
             }
 
             //validate numeric input, check for valid int and boundaries
-            if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment')) {
+            if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || this.state.TaskActivityFields[i].assessment_type == 'grade' || this.state.TaskActivityFields[i].assessment_type == 'rating')) {
                 if (isNaN(this.state.TaskResponse[i][0])) {
                     console.log('isNan error');
                     return false;
