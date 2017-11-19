@@ -114,8 +114,9 @@ class TaskDetailsComponent extends React.Component {
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
+        console.log('Getting stuff:', this.props.workflowIndex, this.props.index, this.props.TaskActivityData)
         const title = this.props.TaskActivityData.TA_display_name;
-
+ 
         if (!this.props.isOpen) {
             return (
                 <div className="section card-1" key={`Mini View of Task ${this.props.index}`}>

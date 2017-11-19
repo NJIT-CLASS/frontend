@@ -549,6 +549,8 @@ class AssignmentEditorContainer extends React.Component {
                     if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
                         return;
                     }
+                    this.makeTaskParameterTemplates();
+                
                     this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
                     return this.setState({ Loaded: true});
 
@@ -1207,6 +1209,8 @@ class AssignmentEditorContainer extends React.Component {
     createNewTask(stateData, taskType, index, workflowIndex, string) {
         let prevTaskName = stateData[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
+        console.log(stateData, taskType, index, workflowIndex, string);
+        console.log('New task:',newTask)
         let newText = string + ' ' + prevTaskName;
         if (newText.length > 254) { //need to do this because of database limit
             switch (taskType.TA_type) {
@@ -2670,7 +2674,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     handleSelect(value) { //need this for the tabs that appear on multiple workflows
-        this.setState({CurrentWorkflowIndex: value});
+        this.setState({CurrentWorkflowIndex: value,SelectedTask: 0});
     }
 
     changeWorkflowData(stateField, workflowIndex, value) {
