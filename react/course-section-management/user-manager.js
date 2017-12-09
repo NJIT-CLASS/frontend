@@ -69,10 +69,10 @@ class User extends React.Component {
         });
     }
 
-    toggleStatus(){
+    toggleStatus(option){
         let postVars = {
             VolunteerPoolID: this.state.VolunteerPoolID,
-            status: this.state.Status === 'Approved' ? 'Inactive' : 'Approved'
+            status: option.value
         };
         let endpoint = '/VolunteerPool/individualStatusUpdate';
 
@@ -90,18 +90,28 @@ class User extends React.Component {
         //	<td>{this.props.volunteer ? 'Yes' : 'No'}</td>
         let volunteerToggle = null;
         let statusToggle = null;
+        let statusList = [{label:this.props.strings,Pending,value:'Pending'},{label:this.props.strings.Approved,value:'Approved'},{label:this.props.strings.Inactive,value:'Inactive'}];
+        
+        
         if(this.props.role === 'Student'){
             volunteerToggle = (<td>
                 <Toggle isClicked={this.state.Volunteer}
                     click={this.toggleVolunteer}
                 />
             </td>);
-            statusToggle = (<td>
-                <Toggle isClicked={this.state.Status !== 'Inactive' }
-                    click={this.toggleStatus}
-                    disabled={!this.state.Volunteer}
-                />
-            </td>);
+
+            if(this.state.Volunteer){
+                statusToggle = (<td>
+                    <Select className="small-select" options={statusList} value={this.state.Status} onChange={this.toggleStatus} resetValue={''} clearable={false} searchable={false}/>
+                </td>);
+            } else {
+                statusToggle = (<td>
+                <Select className="small-select" disabled={true} options={statusList}  resetValue={''} clearable={false} searchable={false}/>
+                    
+            </td>)
+                
+            }
+            
         }
         console.log('Status: ', this.state.Status);
         return (

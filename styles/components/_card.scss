@@ -51,18 +51,31 @@
 		margin-top: 20px;
 	}
 	.Select-control, form > input {
-		min-width: 600px !important;
-		width: 100% !important;
+		min-width: 600px ;
+		width: 100% ;
 	}
 	.Select, input {
 		margin: 0;
 	}
 	.Select-menu-outer {
-		min-width: 600px !important;
-		width: 100% !important;
+		min-width: 600px;
+		width: 100% ;
 	}
 	.Select-value {
 		line-height: 1.7;
+	}
+
+	.small-select{
+		min-width: 150px;
+		max-width: 150px;
+		.Select-control, form > input {
+			min-width: 150px ;
+			width: 100% ;
+		}
+		.Select-menu-outer {
+			min-width: 150px;
+			width: 100% ;
+		}
 	}
 	.button-area{
 		text-align: right;
