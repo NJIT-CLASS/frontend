@@ -179,7 +179,7 @@ gulp.task('create-route', () => {
         const routeViewFilePath = `${__dirname}/server/views/${routeFileName}.html`;
         const routeCSSFilePath = `${__dirname}/styles//pages/_${routeFileName.replace(/-/g, '_')}.scss`;
         const reactFolderPath = `${__dirname}/react/${routeFileName}`;
-        
+        const reactMainFileName = `${__dirname}/react/${routeFileName}/main-container.js`;
         const configContents =
 `const handler = require('../route-handlers/${routeFileName}');
 
@@ -202,7 +202,7 @@ module.exports = {
 `
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-      res.redirect('/');
+        return res.redirect(\`/?url=${encodeURIComponent(req.originalUrl)}\`);
     }
     res.render('${routeFileName}', {
         scripts: ['/static/react_apps.js'],
@@ -225,6 +225,24 @@ exports.get = (req, res) => {
     }
     `; 
 
+        const reactContent = 
+    `
+    import React, { Component } from 'react';
+    import PropTypes from 'prop-types';
+    
+    class ${routeFileName}PageContainer extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {  }
+        }
+        render() { 
+            return (<div></div> )
+        }
+    }
+     
+    export default ${routeFileName}PageContainer;
+    `;
+
         fs.writeFileSync(routeConfigFilePath, configContents);
         fs.writeFileSync(routeHandlerFilePath, routeContents);
         fs.writeFileSync(routeViewFilePath, viewContents);
@@ -235,6 +253,8 @@ exports.get = (req, res) => {
         } catch(err){
             gutil.log('React folder already exists. Skipping ....\n');
         }
+        fs.writeFileSync(reactMainFileName, reactContent);
+        
         const routesFileName = `${__dirname}/server/routes/routes.js`;
 
         const currentRoutesContents = fs.readFileSync(routesFileName);

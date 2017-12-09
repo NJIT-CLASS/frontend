@@ -25,10 +25,12 @@ class SuperViewComponent extends React.Component {
             FieldRubrics: [],
             Ready: false,
             Error: false,
-            IsBypassedDispute: false
+            IsBypassedDispute: false,
+            TaskHistory: null
             
         };
     }
+    
 
     toggleContent() {
         const bool = !this.state.ShowContent;
@@ -65,13 +67,26 @@ class SuperViewComponent extends React.Component {
         }
     }
 
+    fetchTaskVersions(){
+        let history = new Array();
+        this.setState({
+            TaskHistory: history
+        });
+        return;
+    }
+
     render() {
+        console.log('View Data',this.props);
         let content = null;
         let TA_rubric = null;
         let TA_instructions = null;
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
-
-
+        const latestVersion = [this.props.TaskData[this.props.TaskData.length -1]];
+        let pastVersions = new Array();
+        if(this.props.TaskData.length > 1){
+            pastVersions = this.props.TaskData.slice(0, this.props.TaskData.length);
+            
+        }
         if(this.state.IsBypassedDispute === true){
             return (<div key={this.props.index + 2001} className="section card-2" >
                 <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
@@ -79,7 +94,10 @@ class SuperViewComponent extends React.Component {
         }
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
-                <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
+                    <span className="fa fa-angle-down" style={{float: 'right'}}></span>
+
+                </h2>
             </div>);
         }
 
@@ -127,6 +145,7 @@ class SuperViewComponent extends React.Component {
             let fieldInstructions = null;
             let fieldRubric = null;
             let justificationInstructions = null;
+            
 
             if (this.props.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
                 fieldTitleText = field;
@@ -201,7 +220,8 @@ class SuperViewComponent extends React.Component {
                 {fieldRubric}
 
                 <br />
-                <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                <VersionView Versions={pastVersions} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);
 
@@ -221,7 +241,8 @@ class SuperViewComponent extends React.Component {
             <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
                 {!this.props.oneBox &&
             (<div>
-                <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
+                    <span className="fa fa-angle-up" style={{float: 'right'}}></span></h2>
                 <CommentInfoComponent
                     TargetID = {this.props.TaskID}
                     Target = {'TaskInstance'}

@@ -20,9 +20,7 @@ class FileManagerComponent extends Component {
     }
 
     fetchFiles(){
-        console.log('fileURL:', `/task/files/${this.props.TaskID}`);
         apiCall.get(`/task/files/${this.props.TaskID}`, (err, res, body)=> {
-            console.log('Loaded files', body);
             let filesArr = typeof body.Files == 'string' ? JSON.parse(body.Files) : body.Files;
             filesArr = filesArr.map(file => {
                 let newFileInfo = JSON.parse(file.Info);

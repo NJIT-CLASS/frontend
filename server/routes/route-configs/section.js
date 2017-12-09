@@ -1,13 +1,13 @@
 const handler = require('../route-handlers/section');
 
 module.exports = {
-    route: '/sections',
-    title: 'Sections',
+    route: '/section/:sectionId',
+    title: 'Section',
     routeHandler: handler,
     access: {
         admins: true,
         instructors: true,
-        students: false,
+        students: true,
         loggedOut: false
     },
     icon: '',

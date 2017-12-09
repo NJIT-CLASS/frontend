@@ -1,8 +1,12 @@
-const consts = require('../../utils/constants');
+
 exports.get = (req, res) => {
-  res.render('sections', {
-    scripts: ['/static/react_apps.js'],
-    userId: req.App.user.userId,
-    apiUrl: consts.API_URL
-  });
-}
+    if(req.App.user === undefined){
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+    }
+    res.render('section', {
+        scripts: ['/static/react_apps.js'],
+        userId: req.App.user.userId,
+        sectionId: req.params.sectionId,
+        showHeader: false,
+    });
+};

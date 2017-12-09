@@ -29,6 +29,8 @@ import EveryonesWorkMain from './everyones-work/main-container';
 import Reallocation from './reallocation/reallocation-container';
 import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
+import SectionPage from './section/main-container';
+
 const translationFunction = (objOfStrings, cb) => {
     const options = {
         method: 'POST',
@@ -137,5 +139,7 @@ case 'everyones-work':
 case 'reallocation-container':
     ReactDOM.render(<Reallocation UserID={userId} />, reactElem);
     break;
+case 'section':
+    ReactDOM.render(<SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />, reactElem);
 }
 

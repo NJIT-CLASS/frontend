@@ -30,7 +30,7 @@ const pages = [
     'everyones-work',
     'reallocation',
     'about',
-    
+    'section',
 ];
 
 var pageConfigs = [];

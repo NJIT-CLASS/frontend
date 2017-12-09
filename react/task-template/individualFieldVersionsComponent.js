@@ -53,12 +53,16 @@ class FieldVersionView extends React.Component{
             let justification = null;
             let contentView = null;
             let fieldVersion = versionArray[this.props.FieldIndex];
+
             let versionSubheaderText = '';
-            if(vIndex === 0){
-                versionSubheaderText = this.props.Strings.Original;
-            } else {
-                versionSubheaderText = `${this.props.Strings.Revision} ${vIndex}`;
+            if(this.props.Versions.length > 1){
+                if(vIndex === 0){
+                    versionSubheaderText = this.props.Strings.Original;
+                } else {
+                    versionSubheaderText = `${this.props.Strings.Revision} ${vIndex}`;
+                }
             }
+            
 
             if(taskField.requires_justification){
                 if(fieldVersion[1] == ''){
@@ -121,12 +125,30 @@ class FieldVersionView extends React.Component{
 
             }
 
+            let fieldsComments = null;
+            if(versionArray.revise_and_resubmit !== undefined){
+                fieldsComments = new Array();
+
+                for(let i = 0; i< versionArray.revise_and_resubmit.data.number_of_fields;i++){
+                    fieldsComments.push(
+                        <div>
+                            <label style={{fontSize: '12px', color: '#777777'}}>{versionSubheaderText} {this.props.Strings.Comments}</label><br/>
+                            <MarkupText classNames="faded-big" content={versionArray.revise_and_resubmit.data[i][0]} /><br/>
+                        </div>
+                    );
+                    
+                }
+            }
+
             return <div className="version-block">
                 <label style={{fontSize: '12px', color: '#777777'}}>{versionSubheaderText}</label><br/>
 
                 {fieldContentBlock}
+                
                 <br key={this.props.FieldIndex + vIndex+500}/>
                 {justification}
+                
+                {fieldsComments}
             </div>;
 
         }, this);
