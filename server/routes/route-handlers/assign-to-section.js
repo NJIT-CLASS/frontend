@@ -2,7 +2,7 @@ import {API_URL} from '../../utils/react_constants';
 
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        res.redirect('/');
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     res.render('./assign-to-section', {
         scripts: ['/static/react_apps.js'],

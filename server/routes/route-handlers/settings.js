@@ -1,7 +1,7 @@
 import {API_URL} from '../../utils/react_constants';
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        return res.redirect('/');
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     res.render('settings', {
         userId: req.App.user.userId,
@@ -29,7 +29,7 @@ exports.post = (req, res) => {
     if (req.body.what_was_changed=='name') {
         req.App.api.put('/update/name', {firstname: req.body.field_firstName, lastname:req.body.field_lastName, userid:req.App.user.userId}, (err, statusCode, body) => {
             // if(body.Message=='Success') {       // success
-                // TODO: check contents of reply to see if name change actually succeeded
+            // TODO: check contents of reply to see if name change actually succeeded
             options.statuscode = statusCode;
             options.namechangesucceeded = true;
             options.userFirstName = body.FirstName;

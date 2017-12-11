@@ -114,7 +114,7 @@ class TaskDetailsComponent extends React.Component {
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
-        console.log('Getting stuff:', this.props.workflowIndex, this.props.index, this.props.TaskActivityData)
+        console.log('Getting stuff:', this.props.workflowIndex, this.props.index, this.props.TaskActivityData);
         const title = this.props.TaskActivityData.TA_display_name;
  
         if (!this.props.isOpen) {
@@ -417,7 +417,7 @@ class TaskDetailsComponent extends React.Component {
                                 <label>{strings.DefaultContentForField}</label>
                                 <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                                 <Select
-                                    key={idx + 1000}
+                                    key={index + 1000}
                                     options={labels}
                                     selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                     value={this.props.TaskActivityData.TA_fields[index].default_content[0]}

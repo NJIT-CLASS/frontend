@@ -569,86 +569,86 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use(function(req, res, next) {
-    const allowedRouteMethods = [
-        'get',
-        'post',
-        'put',
-        'head',
-        'delete',
-        'options',
-        'trace',
-        'copy',
-        'lock',
-        'mkcol',
-        'move',
-        'purge',
-        'propfind',
-        'proppatch',
-        'unlock',
-        'report',
-        'mkactivity',
-        'checkout',
-        'merge',
-        'm-search',
-        'notify',
-        'subscribe',
-        'unsubscribe',
-        'patch',
-        'search',
-        'connect'
-    ];
-    for (const route of routes) {
-        for (const method in route.routeHandler) {
-            // if the method is allowed then bind the route to it
-            if (allowedRouteMethods.indexOf(method) !== -1) {
-                app[method](
-                    route.route,
-                    (function() {
-                        return (req, res, next) => {
-                            const previousRender = res.render;
-                            res.render = (function() {
-                                return function(template, options, cb) {
-                                    options = options ? options : {};
-                                    options.loggedOut = route.access.loggedOut;
-                                    options.route = route.route;
-                                    options.student = route.access.students;
-                                    options.teacher = route.access.instructors;
-                                    options.admin = route.access.admins;
-                                    // if the render doesn't set the title then set it by the route
-                                    if (!('title' in options)) {
-                                        options.title = `${route.title} | CLASS Learning System`;
-                                    }
 
-                                    // set the page header to be the route title if the pageHeader is not set
-                                    if (!('pageHeader' in options)) {
-                                        options.pageHeader = route.title;
-                                    }
+const allowedRouteMethods = [
+    'get',
+    'post',
+    'put',
+    'head',
+    'delete',
+    'options',
+    'trace',
+    'copy',
+    'lock',
+    'mkcol',
+    'move',
+    'purge',
+    'propfind',
+    'proppatch',
+    'unlock',
+    'report',
+    'mkactivity',
+    'checkout',
+    'merge',
+    'm-search',
+    'notify',
+    'subscribe',
+    'unsubscribe',
+    'patch',
+    'search',
+    'connect'
+];
+for (const route of routes) {
+    for (const method in route.routeHandler) {
+        // if the method is allowed then bind the route to it
+        if (allowedRouteMethods.indexOf(method) !== -1) {
+            app[method](
+                route.route,
+                (function() {
+                    return (req, res, next) => {
+                        const previousRender = res.render;
+                        res.render = (function() {
+                            return function(template, options, cb) {
+                                options = options ? options : {};
+                                options.loggedOut = route.access.loggedOut;
+                                options.route = route.route;
+                                options.student = route.access.students;
+                                options.teacher = route.access.instructors;
+                                options.admin = route.access.admins;
+                                // if the render doesn't set the title then set it by the route
+                                if (!('title' in options)) {
+                                    options.title = `${route.title} | CLASS Learning System`;
+                                }
 
-                                    // pass masquerading info to template
-                                    if (req.session.masqueraderId && options.route !== '/') {
-                                        options.masquerading = true;
-                                        options.userEmail = req.App.user.email;
-                                    }
+                                // set the page header to be the route title if the pageHeader is not set
+                                if (!('pageHeader' in options)) {
+                                    options.pageHeader = route.title;
+                                }
 
-                                    previousRender.call(
-                                        this,
-                                        template,
-                                        options,
-                                        cb
-                                    );
-                                };
-                            })();
-                            next();
-                        };
-                    })(),
-                    route.routeHandler[method]
-                );
-            }
+                                // pass masquerading info to template
+                                if (req.session.masqueraderId && options.route !== '/') {
+                                    options.masquerading = true;
+                                    options.userEmail = req.App.user.email;
+                                }
+
+                                previousRender.call(
+                                    this,
+                                    template,
+                                    options,
+                                    cb
+                                );
+                            };
+                        })();
+                        next();
+
+                    };
+                })(),
+                route.routeHandler[method]
+            );
         }
     }
-    next();
-});
+}
+
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

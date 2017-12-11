@@ -1,7 +1,7 @@
 
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-        res.redirect('/');
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
     res.render('everyones-work', {
         scripts: ['/static/react_apps.js'],
