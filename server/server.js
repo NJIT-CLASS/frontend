@@ -1,3 +1,6 @@
+const http = require('http');
+const https = require('https');
+const forceSSL = require('express-force-ssl');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -44,9 +47,10 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-
 app.use(session(redisClient));
-
+if(process.env.NODE_ENV === 'production'){
+    app.use(forceSSL);
+}
 app.use((req, res, next) => {
     req.App = {};
 
@@ -55,48 +59,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
-/*
-app.post('/api/file/upload', upload.array('files'), (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    const formData = new FormData();
-    req.files.forEach(file => {
-        console.log(file);
-        formData.append('files', fs.createReadStream(file.path));
-        //
-        //{
-        //     value:  fs.createReadStream(file.path),
-        //     options: {
-        //         filename: file.originalname,
-        //         contentType: file.mimetype
-        //     }
-        // }
-    });
-    Object.keys(postVars).forEach(function(key){
-        formData.append(`${key}`, postVars[key]);
-    });
-
-    var xhr = new XMLHttpRequest();
-    xhr.open( 'POST', `${consts.API_URL}/api/upload/profile-picture`, true);
-    xhr.onreadystatechange = function(){
-        if(this.readyState == 4) {
-            if(this.status == 200){
-                console.log('Success', this.responseText);
-
-            }
-            else{
-                console.log('Sorry, there was an error', this.responseText);
-            }
-        }
-        else{
-            console.log('Uploading...');
-        }
-
-    };
-    xhr.send(formData);
-});*/
 
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
@@ -657,6 +619,20 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(consts.FRONTEND_PORT, () => {
-    console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
-});
+
+
+//Activate https server only if in production
+if(process.env.NODE_ENV === 'production'){
+    var key = fs.readFileSync(consts.PRIVATE_KEY);
+    var cert = fs.readFileSync(consts.CERT);
+    var options = {
+        key: key,
+        cert: cert
+    };
+    https.createServer(options,app).listen(consts.FRONTEND_PORT);
+} else {
+    http.createServer(app).listen(consts.FRONTEND_PORT);
+}
+
+console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
+
