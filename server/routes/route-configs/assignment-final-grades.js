@@ -2,7 +2,7 @@ const handler = require('../route-handlers/assignment-final-grades');
 
 module.exports = {
     route: '/assignment-grade-report/all/:assignmentId',
-    title: 'Assignment Final Grades',
+    title: 'Grade Report',
     routeHandler: handler,
     access: {
         admins: true,
@@ -11,5 +11,5 @@ module.exports = {
         loggedOut: false
     },
     icon: '',
-    sidebar: false
+    sidebar: true
 };

@@ -2,31 +2,97 @@ import React, {Component} from 'react';
 import apiCall from '../shared/apiCall';
 import ToggleSwitch from '../shared/toggleSwitch';
 import strings from './strings';
+import ReactTable from 'react-table';
+import Select from 'react-select';
 
 class UserManagementContainer extends Component{
 
     constructor(props){
         super(props);
+
+        this.componentData = {
+            instructorList: [],
+            users:[],
+            blockedNotification:null,
+            removeNotification:null,
+            addInstructorNotification:null,
+            passwordResetNotification:null
+        }
+
         this.state = {
             instructorEmail: '',
-            instructorList: [],
-            addInstructorSuccess: null,
-            promoteInstructorSuccess: null,
-            addInstructorErrMessage: '',
             loaded: false
         };
     }
 
     componentDidMount(){
-        this.fetchInstructors();
+        this.fetchUsers();
     }
 
-    fetchInstructors(){
-        apiCall.getAsync('/instructor/all',{}).then(body => {
-            this.setState({
-                instructorList: body.data.Instructors
-            });
+    fetchUsers(){
+        apiCall.getAsync('/usermanagement',{}).then(body => {
+            this.componentData.users = body.data.Assignments;
+            this.setState({loaded:true});
         });
+    }
+
+    changeBlockedStatus(userID, email, isBlocked){
+        var endpoint = '';
+
+        if(isBlocked){
+            endpoint = '/usermanagement/unblocked/';
+        } else {
+            endpoint = '/usermanagement/blocked/';
+        }
+
+        apiCall.getAsync(endpoint+userID,{}).then(body => {
+            if(body.status === 200){
+                this.componentData.blockedStatus = true;
+                if(isBlocked){
+                    this.componentData.blockedNotification = this.notification("success form-success", email+strings.unblockedSuccess);
+                } else {
+                    this.componentData.blockedNotification = this.notification("success form-success", email+strings.blockedSucess);
+                }
+            } else {   
+                this.componentData.blockedStatus = false;
+                if(isBlocked){
+                    this.componentData.blockedNotification = this.notification("error form-error", email+strings.unblockedFailure);
+                } else {
+                    this.componentData.blockedNotification = this.notification("error form-error", email+strings.blockedFailure);
+                }                       
+            }
+            this.fetchUsers();
+        });
+    }
+
+    resetPassword(email){
+        console.log(email);
+
+        apiCall.post('/password/reset',(err,status,body)=>{
+            if(status.statusCode === 200){
+                this.componentData.passwordResetNotification = this.notification("success form-success", email+strings.pwResetSuccess);
+            } else {
+                this.componentData.passwordResetNotification = this.notification("error form-error", email+strings.pwResetFailure);
+            }
+            this.forceUpdate();
+        });
+    }
+
+    removeUser(userID, email){
+        console.log(userID);
+
+        apiCall.delete(`/delete/user/${userID}`,{},(err, status, body) =>{
+            if(status.statusCode === 200){
+                this.componentData.removeNotification = this.notification("success form-success",email+strings.removeSuccess);
+            } else {
+                this.componentData.removeNotification = this.notification("error form-error",email+strings.removeFailure);
+            }
+            this.fetchUsers();
+        });
+    }
+
+    changeRole(){
+
     }
 
     onChangeInstructorEmail(email){
@@ -34,40 +100,13 @@ class UserManagementContainer extends Component{
     }
 
     onSubmitEmail(){
-        console.log(this.state.instructorEmail);
         apiCall.put('/instructor/new', {email: this.state.instructorEmail}, (err, status, body) => {
-            if(status.statusCode != 200){
-                this.setState({addInstructorSuccess: false});
+            if(status.statusCode === 200){
+                this.componentData.addInstructorNotification = this.notification("success form-success",strings.instructorAddedSuccess);
             } else {
-                this.setState({addInstructorSuccess: true});
+                this.componentData.addInstructorNotification = this.notification("error form-error", strings.instructorAddedFailure);
             }
-        });
-    }
-
-    onPromoteInstructor(isAdmin, userID, fullName){
-        console.log("promoted");
-        let endpoint = '';
-
-        if(isAdmin){
-            endpoint = '/makeUserNotAdmin/';
-        } else {
-            endpoint = '/makeUserAdmin/';
-        }
-
-        apiCall.put(endpoint,{ UserID: userID }, (err, res, body) => {
-            if(res.statusCode != 200){
-                this.setState({promoteInstructorSuccess: false});
-            } else {
-                this.setState({promoteInstructorSuccess: true});
-            }
-        });
-
-        this.fetchInstructors();
-    }
-
-    fetchInstructorEmail(userID, cb){
-        apiCall.getAsync(`/generalUser/${userID}`,{}).then(body => {
-            cb({email: body.data.User.UserLogin.Email});
+            this.forceUpdate();
         });
     }
 
@@ -81,54 +120,86 @@ class UserManagementContainer extends Component{
     }
 
     render(){
-        let instructors = this.state.instructorList;
-        let addInstructorSuccess = this.state.addInstructorSuccess;
-        let promoteInstructorSuccess = this.state.promoteInstructorSuccess;
+        let instructors = this.componentData.instructorList;
+        let users = this.componentData.users;
+        let blockedNotification = this.componentData.blockedNotification;
+        let removeNotification = this.componentData.removeNotification;
+        let resetPasswordNotification = this.componentData.passwordResetNotification;
+        let addInstructorResultView = this.componentData.addInstructorNotification;
+        let tableData = null;
+        let status = null;
 
-        // Creates rows for the Promote Instructor from
-        let instructorView = instructors.map( instructor => {
+        if(!this.state.loaded){
+            return (
+                <div className="placeholder center-spinner">
+                    <i className=" fa fa-cog fa-spin fa-4x fa-fw"></i>
+                </div>
+            );
+        }
 
+        // Forming rows for the user management table =====================================================
+        tableData = users.map(user=>{
+            console.log(user);
+            var organizationGroup = user.OrganizationGroup;
+            var isBlocked = user.UserLogin.Blocked;
+            var timeout = user.UserLogin.Timeout;
+            var userID = user.UserID;
+            var email = user.UserContact.Email;
 
-            let fullName = instructor.FirstName + " " + instructor.LastName;
-            let isAdmin = instructor.Admin;
-            let userID = instructor.UserID;
-            let email = '';
+            var selectOptions = [{value:"Admin", label:strings.admin},{value:"Instructor",label:strings.instructor},{value:"Admin & Instructor",label:strings.admin+" & "+strings.instructor},{value:"Student",label:strings.student},{value:"Unknown",label:strings.unknown}];
+            
+            var initialValue = "";
+            if(user.Admin && user.Instructor){ initialValue = "Admin & Instructor"; } 
+            else if(user.Admin){ initialValue = "Admin";}
+            else if(user.Instructor){initialValue = "Instructor";}
+            else {initialValue="Unknown";}
 
-            /*
-            this.fetchInstructorEmail(userID, (retrievedEmail)=>{
-                email = retrievedEmail.email;
-            });
-            */
+            if(organizationGroup === null){
+                organizationGroup = "N/A";
+            }
 
-            return (<tr>
-                    <td>
-                        <h1 >{fullName}</h1>
-                    </td>
-                    <td>
-                        <ToggleSwitch className="promote-instructor-toggle" isClicked={isAdmin} click={this.onPromoteInstructor.bind(this, isAdmin, userID, fullName)} />
-                    </td>
-            </tr>);
+            if(timeout === null){
+                timeout = "-";
+            }
+
+            return {
+                email: email,
+                firstName: user.FirstName,
+                lastName: user.LastName,
+                organization: organizationGroup,
+                systemRole:(<Select clearable={false} searchable={false} value={initialValue} options={selectOptions}/>),
+                blockedStatus: (<ToggleSwitch isClicked={isBlocked} click={this.changeBlockedStatus.bind(this, userID, email, isBlocked)} />),
+                resetPassword: (<button type='button' onClick={this.resetPassword.bind(this, email)}>Reset</button>),
+                removeUser: (<button type='button' onClick={this.removeUser.bind(this, userID, email)}>Remove</button>),
+                timeoutStatus:timeout
+            };
         });
+        //===================================================================================================
 
-        // Displays success or error in Add New Instructor form, if the user submitted data
-        let addInstructorResultView = null;
-        if(addInstructorSuccess !== null){
-            if(addInstructorSuccess){
-                addInstructorResultView = this.notification("success form-success",strings.instructorAddedSuccess);
-            } else {
-                addInstructorResultView = this.notification("error form-error",strings.instructorAddedFailure);
-            }
+        // Checking status for various operations and displays appropriate notifications ====================
+
+        // Display status of blocked operation
+        if(blockedNotification){
+            status = blockedNotification;
+            this.componentData.blockedNotification = null;
         }
 
-        // Displays success or failure in Promote Instructor Form
-        let promoteInstructorResultView = null;
-        if(promoteInstructorSuccess !== null){
-            if(promoteInstructorSuccess){
-                promoteInstructorResultView = this.notification("success form-success",strings.instructorPromotedSuccess);
-            } else {
-                promoteInstructorResultView = this.notification("error form-error",strings.instructorPromotedFailure);
-            }
+        // Display status of remove notification
+        if(removeNotification){
+            status = removeNotification;
+            this.componentData.removeNotification = null;
         }
+
+        if(resetPasswordNotification){
+            status = resetPasswordNotification;
+            this.componentData.resetPasswordNotification = null;
+        }
+
+        // Display status of add instructor operation
+        if(addInstructorResultView){
+            this.componentData.addInstructorNotification = null;
+        }
+        //=================================================================================================
 
         // Total content returned
         return ( 
@@ -152,27 +223,66 @@ class UserManagementContainer extends Component{
                         </div>
                 </form>
 
-                <form name="form_promoteInstructorToAdmin" role="form" className="section" method="POST" action="#">
-                        <h2 className="title">{strings.titlePromoteInstructor}</h2>
-                        <div className="section-content promote-instructor-table">
+                <form name="user_management_table" role="form" className="section" method="post">
+                    <div className="section-content">
+                        <h2 className="title">Manage Users</h2>
 
-                            {promoteInstructorResultView}
+                        {status}
 
-                            <table>
-                                <thead>
-                                        <td>
-                                            <h1>{strings.instructor}</h1>
-                                        </td>
-                                        <td>
-                                            <h1>{strings.status}</h1>
-                                        </td>
-                                </thead>
-
-                                <tbody>
-                                    {instructorView}
-                                </tbody>
-                            </table>
-                        </div>
+                        <ReactTable
+                        defaultPageSize={10}
+                        className="-striped -highlight"
+                        resizable={true}
+                        data={tableData}
+                        columns={[
+                        {
+                        Header: strings.email,
+                        accessor: 'email',
+                        },
+                        {
+                        Header: strings.fn,
+                        accessor: 'firstName',
+                        },
+                        {
+                        Header: strings.ln,
+                        accessor: 'lastName'
+                        },
+                        {
+                        Header: strings.organization,
+                        accessor: 'organization',
+                        },
+                        {
+                        Header: strings.sysRole,
+                        accessor: 'systemRole',
+                        },
+                        {
+                        Header: strings.testUser,
+                        accessor: 'testUser',
+                        },
+                        {
+                        Header: strings.blocked,
+                        accessor: 'blockedStatus',
+                        },
+                        {
+                        Header: strings.lastLogin,
+                        accessor: 'lastLogin',
+                        },
+                        {
+                        Header: strings.timeout,
+                        accessor: 'timeoutStatus',
+                        },
+                        {
+                        Header: strings.resetPW,
+                        accessor: 'resetPassword',
+                        },
+                        {
+                        Header: strings.removeUser,
+                        accessor: 'removeUser',
+                        },
+                        ]} 
+                        noDataText={strings.noUsers}
+                        />
+                    </div>
                 </form>
             </div>
         );
