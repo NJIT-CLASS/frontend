@@ -273,9 +273,7 @@ exports.get = (req, res) => {
 
 gulp.task('node-babel', () => {
     return gulp.src(['server/**/*.js', '!server/{views,views/**}'])
-        .pipe(babel({
-            plugins: ['transform-flow-strip-types']
-        }))
+        .pipe(babel())
         .pipe(gulp.dest('.build'));
 });
 
@@ -460,6 +458,5 @@ gulp.task('default', [
     'build-views:watch',
     'sass:watch',
     'react:watch',
-    'flowtype:watch',
     'start'
 ]);
