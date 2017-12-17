@@ -8,7 +8,6 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
-const uglify = require('gulp-uglify');
 const flow = require('gulp-flowtype');
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -19,10 +18,11 @@ const runSequence = require('run-sequence');
 const file = require('gulp-file');
 const postcss      = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
+let uglifyes = require('gulp-uglify-es').default;
 
 
 const compileReact = (rootFile, outputName, watch) => {
-    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
+    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }));
 
     function rebundle() {
 
@@ -35,17 +35,13 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                //.pipe(babel({
-                //    presets: ['es2015']
-                //}))
-                //.pipe(uglify())
-                //.on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
-
+                .pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'));
 
         } else{
 
-            bundler.bundle()
+            bundler.transform(babelify)
+                .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
                     gutil.beep();

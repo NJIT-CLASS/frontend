@@ -2,7 +2,6 @@
 
 //PROPS:
 //Files
-//apiUrl
 import React, { Component } from 'react';
 
 
@@ -18,7 +17,7 @@ class FileLinksComponent extends Component {
     }
     render() {
         const downloadLink = `${window.location.protocol}//${window.location.host}/api/file/download/`;
-        let { Files, apiUrl, Strings } = this.props;
+        let { Files, Strings } = this.props;
         if (Files === null || Files.length <= 0) {
             return <div></div>;
         }

@@ -328,26 +328,26 @@ class TemplateContainer extends React.Component {
     }
 
     getCommentData(target, ID, type) {
-        console.log(this.state.CommentTargetList[this.state.CommentTarget].Target, target, this.state.CommentTargetList[this.state.CommentTarget].ID, ID)
+        console.log(this.state.CommentTargetList[this.state.CommentTarget].Target, target, this.state.CommentTargetList[this.state.CommentTarget].ID, ID);
         if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
-          apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-              console.log('Comment data fetched');
-              let list = [];
-              if (body != undefined ) {
-                  for (let com of body.Comments) {
-                      list.push(com);
-                  }
-                  this.setState({
-                      commentList: list
-                  });
-              }
-              else {
-                  console.log('No comment data received.');
-                  this.setState({
-                      commentList: list
-                  });
-              }
-          });
+            apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+                console.log('Comment data fetched');
+                let list = [];
+                if (body != undefined ) {
+                    for (let com of body.Comments) {
+                        list.push(com);
+                    }
+                    this.setState({
+                        commentList: list
+                    });
+                }
+                else {
+                    console.log('No comment data received.');
+                    this.setState({
+                        commentList: list
+                    });
+                }
+            });
         }
     }
 
@@ -492,7 +492,6 @@ class TemplateContainer extends React.Component {
                 TaskID={this.props.TaskID}
                 UserID={this.props.UserID}
                 Strings={this.state.Strings}
-                apiUrl={this.props.apiUrl}
                 showComments={this.showComments.bind(this)}
                 TaskStatus={this.state.TaskStatus}
                 IsRevision={this.state.IsRevision}

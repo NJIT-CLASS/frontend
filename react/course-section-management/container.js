@@ -122,7 +122,6 @@ class Container extends React.Component {
         output.push(
             <OrganizationManager
                 key={1}
-                apiUrl={this.props.apiUrl}
                 changeID={this.changeOrganizationID.bind(this)}
                 strings={this.strings}
                 userID={this.props.UserID}
@@ -132,7 +131,6 @@ class Container extends React.Component {
             output.push(
                 <CourseManager
                     key={2}
-                    apiUrl={this.props.apiUrl}
                     changeID={this.changeCourseID.bind(this)}
                     strings={this.strings}
                     userID={this.props.UserID}
@@ -142,7 +140,6 @@ class Container extends React.Component {
             output.push(
                 <SemesterManager
                     key={3}
-                    apiUrl={this.props.apiUrl}
                     changeID={this.changeSemesterID.bind(this)}
                     strings={this.strings}
                     userID={this.props.UserID}
@@ -154,7 +151,6 @@ class Container extends React.Component {
             output.push(
                 <SectionManager
                     key={4}
-                    apiUrl={this.props.apiUrl}
                     organizationID={this.state.organizationID}
                     changeID={this.changeSectionID.bind(this)}
                     strings={this.strings}
@@ -172,7 +168,6 @@ class Container extends React.Component {
             output.push(
                 <UserManager
                     key={5}
-                    apiUrl={this.props.apiUrl}
                     strings={this.strings}
                     userID={this.props.UserID}
                     sectionID={this.state.sectionID}
@@ -183,7 +178,6 @@ class Container extends React.Component {
             output.push(
                 <UserManager
                     key={6}
-                    apiUrl={this.props.apiUrl}
                     strings={this.strings}
                     userID={this.props.UserID}
                     sectionID={this.state.sectionID}
@@ -194,7 +188,6 @@ class Container extends React.Component {
             output.push(
                 <UserManager
                     key={7}
-                    apiUrl={this.props.apiUrl}
                     strings={this.strings}
                     userID={this.props.UserID}
                     sectionID={this.state.sectionID}

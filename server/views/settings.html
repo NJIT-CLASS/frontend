@@ -139,7 +139,7 @@
 	</form> <!-- End of 'change password' panel -->
 
 
-	<form name="uploadImage" role="form" class="section" method="POST" enctype="multipart/form-data" action="/settings" onsubmit="uploadFiles(event, '{{apiUrl}}', {userId: {{userId}} });">
+	<form name="uploadImage" role="form" class="section" method="POST" enctype="multipart/form-data" action="/settings" onsubmit="uploadFiles(event, '', {userId: {{userId}} });">
 	  <input type="hidden" name="what_was_changed" value="upload-img" />
 	  <h2 class="title">{{__ "Upload Profile Picture"}}</h2>
 	  <div class="section-content">

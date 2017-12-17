@@ -22,13 +22,13 @@ class Sections extends React.Component{
             let sectionArray = [];
             console.log(body.Sections);
             sectionArray = body.Sections.map(function(section){
-              return ({value: section.SectionID, label: section.Section.Course.Number + '-' + section.Section.Name  });
-          });
+                return ({value: section.SectionID, label: section.Section.Course.Number + '-' + section.Section.Name  });
+            });
 
             this.setState({
-              sections: sectionArray,
-              sectionsData: body.Sections
-          });
+                sections: sectionArray,
+                sectionsData: body.Sections
+            });
         });
     }
 
@@ -41,18 +41,18 @@ class Sections extends React.Component{
         let sectionSelected = null;
         if (this.state.selectedValue != null){
             sectionSelected = (
-        <div>
-          <VolunteerPool sectionID={this.state.selectedValue} userRole={'Instructor'} apiUrl={this.props.apiUrl}/>
-        </div>
-      );
+                <div>
+                    <VolunteerPool sectionID={this.state.selectedValue} userRole={'Instructor'} />
+                </div>
+            );
         }
 
 
         return(
-      <div className="Sections">
-        <Select options={this.state.sections} value={this.state.selectedValue} onChange={this.selectedSection.bind(this)} />
-        {sectionSelected}
-      </div>
+            <div className="Sections">
+                <Select options={this.state.sections} value={this.state.selectedValue} onChange={this.selectedSection.bind(this)} />
+                {sectionSelected}
+            </div>
 
         );
     }

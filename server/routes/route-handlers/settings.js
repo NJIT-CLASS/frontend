@@ -1,4 +1,3 @@
-import {API_URL} from '../../utils/react_constants';
 exports.get = (req, res) => {
     if(req.App.user === undefined){
         return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
@@ -10,8 +9,7 @@ exports.get = (req, res) => {
         userLastName: req.App.user.lastName,
         userCountry: req.App.user.country,
         userCity: req.App.user.city,
-        userIsAdmin: true,
-        apiUrl: API_URL
+        userIsAdmin: true
     });
 };
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import ButtonView from './fileUploadViews/buttonView';
 import DropzoneView from './fileUploadViews/dropzoneView';
-import { API_URL } from '../../server/utils/react_constants';
 
 class FileUpload extends React.Component{
     constructor(props){
@@ -71,7 +70,6 @@ class FileUpload extends React.Component{
         
         const x = this;
         var xhr = new XMLHttpRequest();
-        //xhr.open( 'POST',`${API_URL}${this.props.endpoint}`, true);
         xhr.open( 'POST', `${window.location.protocol}//${window.location.host}${this.props.endpoint}`, true);
         xhr.onreadystatechange = function(){
             if(this.readyState == 4) {

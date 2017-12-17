@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { API_URL } from '../../server/utils/react_constants';
 
 class ClassPageContainer extends React.Component {
     constructor() {
@@ -12,7 +11,7 @@ class ClassPageContainer extends React.Component {
         const appDataAttributes = appContainerEl.dataset;
 
         return {
-            backendApiUrl: API_URL,
+            backendApiUrl: '',
             frontendApiUrl: `${window.location.protocol}//${window.location.host}`
         };
     }

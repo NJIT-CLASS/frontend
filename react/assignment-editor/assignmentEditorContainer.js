@@ -27,7 +27,6 @@ class AssignmentEditorContainer extends React.Component {
         Props:
             - UserID
             - CourseID
-            - apiUrl
       */
         //These are the indexes of the nodes in the tree.
         // Defines as consants in case they need to be changed later.
@@ -1210,7 +1209,7 @@ class AssignmentEditorContainer extends React.Component {
         let prevTaskName = stateData[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
         console.log(stateData, taskType, index, workflowIndex, string);
-        console.log('New task:',newTask)
+        console.log('New task:',newTask);
         let newText = string + ' ' + prevTaskName;
         if (newText.length > 254) { //need to do this because of database limit
             switch (taskType.TA_type) {

@@ -28,7 +28,7 @@ class FileLinkRemoveComponent extends Component {
     }
 
     render() {
-        let { Files, apiUrl, Strings } = this.props;
+        let { Files, Strings } = this.props;
         const downloadLink = `${window.location.protocol}//${window.location.host}/api/file/download/`;
         
         if (Files === null || Files.length <= 0) {

@@ -12,7 +12,7 @@ class TasksList extends React.Component{
     }
 
     render(){
-        let { TasksArray, TaskID, UserID, Strings, apiUrl, getLinkedTaskValues } = this.props;
+        let { TasksArray, TaskID, UserID, Strings, getLinkedTaskValues } = this.props;
 
         return <div>
             {
@@ -78,7 +78,6 @@ class TasksList extends React.Component{
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
         						Strings={Strings}
-        						apiUrl={apiUrl}
                                     showComments={this.props.showComments.bind(this)}
                                     IsRevision={this.props.IsRevision}
         					/>

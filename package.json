@@ -107,6 +107,7 @@
     "gulp-postcss": "^7.0.0",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0",
+    "gulp-uglify-es": "^0.1.9",
     "inquirer": "^3.3.0",
     "node-sass": "^4.5.3",
     "nodemon": "^1.12.1",

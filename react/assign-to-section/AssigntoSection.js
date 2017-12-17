@@ -21,7 +21,6 @@ class AssignToSectionContainer extends React.Component
         super(props);
         /*
       Props:
-            - apiUrl
             - CourseID
             - AssignmentID
     */
