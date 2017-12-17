@@ -629,10 +629,19 @@ if(process.env.NODE_ENV === 'production'){
         key: key,
         cert: cert
     };
+    /*var http = express.createServer();
+    
+    http.get('*', function(req, res) {  
+        res.redirect('https://' + req.headers.host + req.url);
+    
+    });
+    
+    http.listen(8080);*/
     https.createServer(options,app).listen(consts.FRONTEND_PORT);
-} else {
+}  else {
     http.createServer(app).listen(consts.FRONTEND_PORT);
 }
+
 
 console.log(`Server running at http://localhost:${consts.FRONTEND_PORT}`);
 
