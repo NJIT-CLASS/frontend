@@ -365,6 +365,11 @@ class SuperComponent extends React.Component {
         });
     }
 
+    cancelDispute(){
+        this.setState({
+            DisputeStatus: false,
+        });
+    }
     willNotDispute() {
         showMessage(this.props.Strings.DidNotDisputeMessage);
         if (this.state.LockSubmit) {
@@ -512,9 +517,14 @@ class SuperComponent extends React.Component {
 
 
         if (!this.props.TaskStatus.includes('complete')) {
+            let cancelDisputeView = null;
+            if(this.state.DisputeStatus === true){
+                cancelDisputeView = <button type="button" ><i className="fa fa-times-circle"></i>{this.props.Strings.CancelDispute}</button>;
+            }
             formButtons = (<div>
                 <br />
-                <button type="submit"  className="divider"><i className="fa fa-check" />{this.props.Strings.Submit}</button>
+                {cancelDisputeView}
+                <button type="submit"  className="divider" onClick={this.cancelDispute}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
                 {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
             </div>);
         }

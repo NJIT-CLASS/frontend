@@ -314,7 +314,7 @@ class AssignmentEditorContainer extends React.Component {
                     list_of_labels: [strings.Easy,strings.Medium,strings.Difficult],
                     field_type: 'assessment',
                     requires_justification: true,
-                    revise_and_resubmit: '',                    
+                    revise_and_resubmit: '',
                     instructions: strings.GradeCompletenessInstructions,
                     rubric: '',
                     justification_instructions: '',
@@ -549,7 +549,7 @@ class AssignmentEditorContainer extends React.Component {
                         return;
                     }
                     this.makeTaskParameterTemplates();
-                
+
                     this.onLoad(JSON.parse(assignBody.PartialAssignment.Data));
                     return this.setState({ Loaded: true});
 
@@ -878,7 +878,7 @@ class AssignmentEditorContainer extends React.Component {
                     newGradeDist[taskKey] = workflow.WA_grade_distribution[taskKey];
                 } else {
                     newGradeDist[mapping[taskKey]] = workflow.WA_grade_distribution[taskKey];
-                    
+
                 }
             });
 
@@ -960,7 +960,7 @@ class AssignmentEditorContainer extends React.Component {
         return node;
     }
 
-    
+
 
     addConsolidation(stateData, parentIndex, workflowIndex) {
         console.log(stateData, parentIndex, workflowIndex);
@@ -983,8 +983,8 @@ class AssignmentEditorContainer extends React.Component {
         let newNeedsConsolIndex = stateData[workflowIndex].Workflow.length - 2;
         let newConsolIndex = stateData[workflowIndex].Workflow.length - 1;
 
-       
-        
+
+
         let needsConsolidateNode = this.tree.parse({
             id: newNeedsConsolIndex
         });
@@ -1157,7 +1157,7 @@ class AssignmentEditorContainer extends React.Component {
         }
         let newTaskIndex = stateData[workflowIndex].Workflow.length;
         stateData[workflowIndex].Workflow.push(newTask);
-        
+
 
         var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == index;
@@ -1185,12 +1185,12 @@ class AssignmentEditorContainer extends React.Component {
             tasksToAvoid.forEach((task) => {
                 stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
             });
-            
+
             //add default consolidation task and dispte task
             stateData = this.changeDataCheck('Assess_Consolidate', index, workflowIndex, stateData);
             stateData = this.changeDataCheck('Assess_Dispute', index, workflowIndex, stateData);
-            
-           
+
+
             break;
         case this.REFLECT_IDX:
             break;
@@ -1204,7 +1204,7 @@ class AssignmentEditorContainer extends React.Component {
         }
         return stateData;
     }
-   
+
     createNewTask(stateData, taskType, index, workflowIndex, string) {
         let prevTaskName = stateData[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
@@ -1294,7 +1294,7 @@ class AssignmentEditorContainer extends React.Component {
             }).parent.model.id;
 
         newName += (' ' + stateData[workflowIndex].Workflow[previousTaskIndex].TA_display_name);
-        
+
         return newName;
     }
     /**
@@ -1608,11 +1608,11 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData});
     }
 
-    
 
-    
 
-  
+
+
+
 
     /**
      * setReflectNumberofParticipants
@@ -2113,7 +2113,7 @@ class AssignmentEditorContainer extends React.Component {
         if(stateData == null){
             console.log('no data passed', newData);
             return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
-            
+
         } else {
             console.log('data passed', newData);
             return newData;
@@ -2449,6 +2449,23 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
+    toggleDefaultFieldRefersTo(fieldIndex,taskIndex, workflowIndex){
+      let newData = this.state.WorkflowDetails;
+      if(newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null){
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [0,null];
+      } else {
+        newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [null,null];
+      }
+      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+    }
+
+    isDefaultFieldRefersToToggled(fieldIndex,taskIndex, workflowIndex){
+      if(this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null)
+        return false;
+       else
+        return true;
+    }
+
     getConsolidateValue(taskIndex, workflowIndex, isAssess) {
         let targetIndex = null;
         targetIndex = this.getConsolidationIndex(!isAssess, taskIndex, workflowIndex);
@@ -2458,6 +2475,11 @@ class AssignmentEditorContainer extends React.Component {
         } else {
             return null;
         }
+    }
+
+    getFieldDefaultContentValue(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex){
+      console.log(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex)
+      return this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defaultFieldIndex];
     }
 
     getSeeSibblings(taskIndex, workflowIndex, isAssess){
@@ -2566,7 +2588,7 @@ class AssignmentEditorContainer extends React.Component {
 
     /**
 	 * Handler to change the Assignment's Grade Distribution of Workflows
-	 * @param {number} workflowIndex 	Index of workflow that will be updated 
+	 * @param {number} workflowIndex 	Index of workflow that will be updated
 	 * @param {number} value 	New value for the weight
 	 */
     changeAssignmentGradeDist(workflowIndex, value){
@@ -2594,7 +2616,7 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({
             AssignmentActivityData: newData
         });
-	   
+
     }
 
 
@@ -2605,8 +2627,8 @@ class AssignmentEditorContainer extends React.Component {
 
     /** Will make a new, clean version of the workflow grade distribution.
      *  Clean means the points are distributed mostly evenly
-     * @param {object} stateData 
-     * @param {number} workflowIndex 
+     * @param {object} stateData
+     * @param {number} workflowIndex
      */
     refreshGradeDist(stateData, workflowIndex)  {
         let gradedTasks = this.getFinalGradeTasksArray(workflowIndex, stateData);
@@ -2616,7 +2638,7 @@ class AssignmentEditorContainer extends React.Component {
             gradedTasks.push('simple');
         }
         let count = gradedTasks.length;
-        
+
 
         gradedTasks.forEach(function(task) {
             newGradeDist[task] = Math.floor(100 / count);
@@ -2994,7 +3016,7 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-                    
+
                     <HeaderComponent Strings={this.state.Strings} />
                     <div className="section-button-area add-margin-for-button">
                         {submitButtonView}
@@ -3010,7 +3032,7 @@ class AssignmentEditorContainer extends React.Component {
                             Strings={this.state.Strings}
                         />
                         <br />
-                   
+
                         {workflowsView}
                         <br/>
                         {infoMessage}

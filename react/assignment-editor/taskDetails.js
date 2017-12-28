@@ -116,7 +116,7 @@ class TaskDetailsComponent extends React.Component {
 
         console.log('Getting stuff:', this.props.workflowIndex, this.props.index, this.props.TaskActivityData);
         const title = this.props.TaskActivityData.TA_display_name;
- 
+
         if (!this.props.isOpen) {
             return (
                 <div className="section card-1" key={`Mini View of Task ${this.props.index}`}>
@@ -145,13 +145,13 @@ class TaskDetailsComponent extends React.Component {
         if(this.state.ShowTaskLevelParams){
         // TA_display_name
             const displayName = (
-                <TaskDisplayName workflowIndex={this.props.workflowIndex} 
+                <TaskDisplayName workflowIndex={this.props.workflowIndex}
                     index={this.props.index}
                     value={this.props.TaskActivityData.TA_display_name}
-                    strings={strings} 
+                    strings={strings}
                     callTaskFunction={this.callTaskFunction}
                 />
-            
+
             );
 
             // TA_file_upload
@@ -310,7 +310,9 @@ class TaskDetailsComponent extends React.Component {
                 ));
                 const fieldSelection = (
                     <RadioGroup
-                        selectedValue={this.state.CurrentFieldSelection} key={`taskFieldDefault${1}`} onChange={(value) => {
+                        selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 1,index, this.props.index, this.props.workflowIndex )}
+                        key={`taskFieldDefault${1}`}
+                        onChange={(value) => {
                             this.setState({ CurrentFieldSelection: value });
                             this.props.callTaskFunction('setDefaultField', 1, index, this.props.index, this.props.workflowIndex, value);
                         }}
@@ -322,9 +324,12 @@ class TaskDetailsComponent extends React.Component {
                 const defaultContentWrapper = (
                     <div>
                         <RadioGroup
-                            key={`taskFieldDefault${2}`} selectedValue={this.state.CurrentTaskFieldSelection} onChange={(value) => {
-                                this.setState({ CurrentTaskFieldSelection: value });
-                                //this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
+                            key={`taskFieldDefault${2}`}
+                            selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 0,index, this.props.index, this.props.workflowIndex)}
+                            onChange={(value) => {
+                                this.setState({ CurrentTaskFieldSelection: value, CurrentFieldSelection: 0 });
+
+                                this.props.callTaskFunction('setDefaultField', 0, index, this.props.index, this.props.workflowIndex, value);
                             }}
                         >
                             {taskCreatedList.map(task => (
@@ -335,7 +340,7 @@ class TaskDetailsComponent extends React.Component {
                         </RadioGroup>
                     </div>
                 );
-                if (this.state.DefaultFieldForeign[index]) {
+                if (this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)) {
                     defaultContentView = (
                         <div className="inner block">
                             <label>{strings.DefaultContentFromOtherTasks}</label>
@@ -367,10 +372,8 @@ class TaskDetailsComponent extends React.Component {
                         <Tooltip Text={strings.TaskGetFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-get-field-content-tooltip`} />
 
                         <Checkbox
-                            isClicked={this.state.DefaultFieldForeign[index]} click={() => {
-                                const newData = this.state.DefaultFieldForeign;
-                                newData[index] = !newData[index];
-                                this.setState({ DefaultFieldForeign: newData });
+                            isClicked={this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)} click={() => {
+                                this.props.callTaskFunction('toggleDefaultFieldRefersTo', index, this.props.index, this.props.workflowIndex);
                             }}
                         />
 
@@ -433,7 +436,7 @@ class TaskDetailsComponent extends React.Component {
                     case 'pass':
                         defaultContentView = (<div className="true-checkbox">
                             <RadioGroup
-                                selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]} 
+                                selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                 onChange={(val) => {
                                     this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val);
                                 }}
@@ -576,19 +579,19 @@ class TaskDetailsComponent extends React.Component {
         let advancedOptionsView = (
             <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
                 <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}
-                    <span className={'fa fa-angle-down'} style={{float: 'right'}}></span> 
-                    
+                    <span className={'fa fa-angle-down'} style={{float: 'right'}}></span>
+
                 </h2>
             </div>);
         if (this.state.ShowAdvanced) {
             const firstAssigneeConstr = this.props.TaskActivityData.TA_assignee_constraints[0];
-            
+
             const dueType = (
                 <div className="inner">
 
                     <label>{strings.DefaultTaskDuration}</label>
                     <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
-                               
+
                     <label>{strings.ShouldTaskEndAtCertainTime}</label>
                     <Tooltip Text={strings.TaskDueTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-due-type-tooltip`} />
 
@@ -748,7 +751,7 @@ class TaskDetailsComponent extends React.Component {
                             <Tooltip Text={strings.TaskCanConsolidateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-can-consolidate-tooltip`} />
 
                             <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)} />
-                            <br /> 
+                            <br />
                             {assessConsolidateOptions}
                             <div>
                                 <label>{strings.SeeSibblingsInParent}</label>
@@ -780,7 +783,7 @@ class TaskDetailsComponent extends React.Component {
                 allowAssesmentOptions = this.props.TaskActivityData.TA_allow_assessment != 'none'
                     ? (
                         <div>
-                            
+
                             <div className="inner">
                                 <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
                                 <label>{strings.WhoCanAssess}</label>
@@ -788,14 +791,14 @@ class TaskDetailsComponent extends React.Component {
 
                                 <br />
                                 <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', false, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
-                            </div>                            
+                            </div>
                             <div>
                                 {numberOfAssessView}
                             </div>
-                            <br /> 
+                            <br />
                             <div className="inner">
                                 {assessShowDispute}
-                            </div>                            
+                            </div>
                         </div>
                     )
                     : null;
@@ -807,8 +810,8 @@ class TaskDetailsComponent extends React.Component {
                     index={this.props.index}
                     workflowIndex={this.props.workflowIndex}
                     callTaskFunction={this.callTaskFunction}/>
-                    
-                
+
+
             );
 
 
@@ -854,9 +857,9 @@ class TaskDetailsComponent extends React.Component {
                         <label>{strings.AllowRevision}</label>
                         <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
                         <Checkbox isClicked={this.props.callTaskFunction('getTaskRevisioninChild', this.props.index, this.props.workflowIndex)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions-child', this.props.index, this.props.workflowIndex)} />
-                    </div> 
+                    </div>
                 ) : null;
-                
+
                 numberOfReflectorsView = (reflectConstr == 'student' || reflectConstr == 'both')
                     ? (
                         <div>
@@ -871,34 +874,34 @@ class TaskDetailsComponent extends React.Component {
                     )
                     : null;
                 allowReflectionOptions = (
-                    
+
                     <div className="inner">
-                        <Select options={reflectionValues} 
+                        <Select options={reflectionValues}
                             onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection', this.props.index, this.props.workflowIndex)}
-                            value={this.props.TaskActivityData.TA_allow_reflection[0]} 
-                            clearable={false} 
+                            value={this.props.TaskActivityData.TA_allow_reflection[0]}
+                            clearable={false}
                             searchable={false} />
                         <br />
                         <label>{strings.ShouldReflectBlock}</label><br />
                         <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
-                        <Select options={reflectWaitValues} 
+                        <Select options={reflectWaitValues}
                             value={this.props.TaskActivityData.TA_allow_reflection[1]}
                             onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_reflection_wait', this.props.index, this.props.workflowIndex)}
-                            clearable={false} 
+                            clearable={false}
                             searchable={false} />
                         <br />
-                        <label>{strings.WhoCanReflect}</label>                    
+                        <label>{strings.WhoCanReflect}</label>
                         <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                         <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
-                   
+
                         <br /> {showDispute}
                     </div>
-                    
-                    
+
+
                 );
             }
 
-          
+
             // TA_allow_revisions
             const allowRevision = [/*TASK_TYPES.EDIT,*/ TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
                 <div className="inner">
@@ -907,7 +910,7 @@ class TaskDetailsComponent extends React.Component {
                     <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
                 </div>
             ) : null;
-            
+
             const allowReflection = (
                 <div>
                     <div className="inner">
@@ -923,7 +926,7 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
-            
+
 
             const versionEvaluation = this.props.TaskActivityData.TA_allow_revisions === true ? (
                 <div className="inner">
@@ -936,7 +939,7 @@ class TaskDetailsComponent extends React.Component {
             // TA_assignee_constraints
             let assigneeConstraints = null;
             let assigneeRelations = null;
-            
+
             if (this.props.index != 0) { // if it's the first task or an instructor task, don't show assignee contraint relation part
                 if (firstAssigneeConstr != 'instructor') {
                     const sameAsOptions = this.showAssigneeSection('same_as')
@@ -947,7 +950,7 @@ class TaskDetailsComponent extends React.Component {
                                 }}
                             >
                                 <label className="faded-message-text">{strings.SameAs}</label>
-                          
+
                                 {taskCreatedList.map(function (task) {
                                     return (
                                         <div>
@@ -968,7 +971,7 @@ class TaskDetailsComponent extends React.Component {
                                 }}
                             >
                                 <label className="faded-message-text">{strings.InSameGroupAs}</label>
-                          
+
                                 {taskCreatedList.map(function (task) {
                                     return (
                                         <div>
@@ -990,7 +993,7 @@ class TaskDetailsComponent extends React.Component {
                                 }}
                             >
                                 <label className="faded-message-text">{strings.NotIn}</label>
-                          
+
                                 {taskCreatedList.map(function (task) {
                                     return (
                                         <div className="assignee-contraint-section">
@@ -1138,12 +1141,12 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
-            
+
             advancedOptionsView = (
                 <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
                     <h2 className="title" onClick={this.toggleAdvanced}>{strings.AdvancedTaskParamHeader}
-                        <span className={'fa fa-angle-up'} style={{float: 'right'}}></span> 
-                        
+                        <span className={'fa fa-angle-up'} style={{float: 'right'}}></span>
+
                     </h2>
                     <div className="section-content">
                         <div className="advanced">
@@ -1180,22 +1183,22 @@ class TaskDetailsComponent extends React.Component {
                                 {seeSibblings}
                                 {assigneeConstraints}
                             </div>
-                            
-                            
+
+
                         </div>
                     </div>
                 </div>
             );
-            
-            
+
+
         }
-         
+
 
         let  userInputFields = (
             <div key={`User Input Fields for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
                 <h2 className="title" onClick={this.toggleUserFields}>{strings.UserFieldHeader}
-                    <span className="fa fa-angle-down" style={{float: 'right'}}></span> 
-                    
+                    <span className="fa fa-angle-down" style={{float: 'right'}}></span>
+
                 </h2>
 
             </div>);
@@ -1205,7 +1208,7 @@ class TaskDetailsComponent extends React.Component {
                 <div key={`User Input Fields for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
                     <h2 className="title" onClick={this.toggleUserFields}>{strings.UserFieldHeader}
                         <Tooltip Text={strings.TaskInputFieldsHeaderMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-input-fields-header-tooltip`} />
-                        <span className="fa fa-angle-up" style={{float: 'right'}}></span> 
+                        <span className="fa fa-angle-up" style={{float: 'right'}}></span>
                     </h2>
                     <div className="section-content">
                         {inputFields}
