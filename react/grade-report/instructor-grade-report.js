@@ -3,13 +3,14 @@ import apiCall from '../shared/apiCall';
 import strings from './strings';
 import ReactTable from 'react-table';
 import Collapsible from 'react-collapsible';
+import Workbook from 'react-excel-workbook';
 
 class InstructorGradeReport extends React.Component {
 
     constructor(props) {
         super(props);
 
-        var componentData = {
+        this.componentData = {
             userID: props.UserID,
             sectionID: null,
             sections:[],
@@ -27,18 +28,18 @@ class InstructorGradeReport extends React.Component {
     }
 
     componentDidMount() {
+        console.log("hello");
         this.getSections(this.componentData.userID);
     }
 
     getSections(userID){
-        apiCall.get(`/SectionsByUser/${this.componentData.userID}`,{},(err,status,body)=>{
-        //apiCall.get(`/sections/instructor/${this.componentData.userID}`,{},(err,status,body)=>{
+        apiCall.get(`/sections/instructor/${this.componentData.userID}`,{},(err,status,body)=>{
 
             if(status.statusCode === 200){
                 if(Object.keys(body.Sections).length === 0){
                     this.setState({loaded:true});
                 } else {
-                    componentData.sections = body.Sections;
+                    this.componentData.sections = body.Sections;
                     this.getAssignmentsBySection(body.Sections);
                 }
             } else {
@@ -106,6 +107,10 @@ class InstructorGradeReport extends React.Component {
             this.componentData.assignmentDetails = body;
             this.setState({loadedAssignmentDetails:true,loadedOverviewDetails:false});
         });
+    }
+
+    exportGrades(){
+
     }
 
     notification(classType, message){
@@ -253,7 +258,7 @@ class InstructorGradeReport extends React.Component {
                 }
             });
 
-            tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2></div>);
+            tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/><button type="button" onClick={this.exportGrades.bind(this)}>Export Grades</button></div>);
 
             tableView = (<ReactTable
             defaultPageSize={10}

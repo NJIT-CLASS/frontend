@@ -20,6 +20,17 @@ class UserManagementContainer extends Component{
         }
 
         this.state = {
+            addTestUserData:{
+                selectValue:"",
+                email:"",
+                fn:"",
+                ln:"",
+                organization:"",
+                access:"",
+                pw:"",
+                pwInputType:"password",
+                hidePW:true,
+            },
             instructorEmail: '',
             loaded: false
         };
@@ -110,6 +121,41 @@ class UserManagementContainer extends Component{
         });
     }
 
+    onTestUserInput(source, input){
+        this.state.addTestUserData[source]=input.target.value;
+        this.setState({addTestUserData:this.state.addTestUserData});
+    }
+
+    createTestUser(){
+
+    }
+
+    cancelTestUser(){
+
+    }
+
+    updateTestUserSelect(newValue){
+        this.state.addTestUserData.access = newValue.value;
+        this.state.addTestUserData.selectValue = newValue;
+        this.setState({addTestUserData:this.state.addTestUserData});
+    }
+
+    generatePassword(){
+        var generator = require('generate-password');
+        this.state.addTestUserData.pw = generator.generate({length: 10,numbers: true});
+        this.setState({addTestUserData:this.state.addTestUserData});
+    }
+
+    toggleHidePW(){
+        this.state.addTestUserData.hidePW = !this.state.addTestUserData.hidePW;
+        if(this.state.addTestUserData.hidePW){
+            this.state.addTestUserData.pwInputType = "password";
+        } else{
+            this.state.addTestUserData.pwInputType = "text";
+        }
+        this.setState({addTestUserData:this.state.addTestUserData});
+    }
+
     notification(classType, message){
         return (
             <div className={classType} role="alert">
@@ -139,14 +185,14 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
-            console.log(user);
+
             var organizationGroup = user.OrganizationGroup;
             var isBlocked = user.UserLogin.Blocked;
             var timeout = user.UserLogin.Timeout;
             var userID = user.UserID;
             var email = user.UserContact.Email;
 
-            var selectOptions = [{value:"Admin", label:strings.admin},{value:"Instructor",label:strings.instructor},{value:"Admin & Instructor",label:strings.admin+" & "+strings.instructor},{value:"Student",label:strings.student},{value:"Unknown",label:strings.unknown}];
+            var selectOptions = [{value:"Admin", label:strings.admin},{value:"Enhanced",label:strings.enhanced},{value:"Participant",label:strings.participant},{value:"Guest",label:strings.guest},{value:"Unknown",label:strings.unknown}];
             
             var initialValue = "";
             if(user.Admin && user.Instructor){ initialValue = "Admin & Instructor"; } 
@@ -200,7 +246,7 @@ class UserManagementContainer extends Component{
             this.componentData.addInstructorNotification = null;
         }
         //=================================================================================================
-
+        console.log(this.state.addTestUserData);
         // Total content returned
         return ( 
             <div>
@@ -220,6 +266,24 @@ class UserManagementContainer extends Component{
                                 onClick={this.onSubmitEmail.bind(this)}
                                 className=""
                                 > {strings.submit} </button>
+                        </div>
+                </form>
+
+                <form name="create_test_user" role="form" className="section" method="POST">
+                        <h2 className="title">Create Test User</h2>
+                        <div className="section-content" >
+                            <table className="promote-instructor-table">
+                                <tbody>
+                                    <tr><td>Email </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"email")}/></td></tr>
+                                    <tr><td>First Name </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"fn")}/></td></tr>
+                                    <tr><td>Last Name </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"ln")}/></td></tr>
+                                    <tr><td>Organization </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"organization")} /></td></tr>
+                                    <tr><td>Access Level </td><td><Select clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"enhanced",label:"Enhanced"},{value:"admin",label:"Admin"},{value:"participant",label:"Participant"},{value:"guest",label:"Guest"}]}/></td></tr>
+<tr><td>Password <button type="button" onClick={this.generatePassword.bind(this)}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this)} type="radio" /> </td><td><input type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onTestUserInput.bind(this,"pw")}/></td></tr>
+                                    <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>
+                                </tbody>
+                            </table>
+            
                         </div>
                 </form>
 
@@ -262,10 +326,6 @@ class UserManagementContainer extends Component{
                         {
                         Header: strings.blocked,
                         accessor: 'blockedStatus',
-                        },
-                        {
-                        Header: strings.lastLogin,
-                        accessor: 'lastLogin',
                         },
                         {
                         Header: strings.timeout,

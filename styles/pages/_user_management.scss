@@ -1,14 +1,18 @@
-.promote-instructor-table table, .promote-instructor-table td  {
+.promote-instructor-table table, .promote-instructor-table tbody, .promote-instructor-table td  {
 	border:none;
 }
 
 .promote-instructor-table td {
 	text-align:center; 
+	border-left: none;
+	border-right: none;
 	vertical-align:middle;
 }
 
 .promote-instructor-table tr {
 	border-top: 1px solid #EFF3F5;
+	border-left: none;
+	border-right: none;
 	padding-above: 3px;
 	padding-below: 3px;
 }

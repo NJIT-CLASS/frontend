@@ -8,7 +8,7 @@ exports.get = (req, res) => {
     return res.render('taskGrade', {
         scripts: ['/static/react_apps.js'],
         //userId: req.App.user.userId,
-        userId: 69,
+        userId: 3,
         assignmentId: req.params.assignmentId
     });
     req.App.api.post('/getAssignmentGrades/' + req.params.ai_id, (err, statusCode, body) => {
