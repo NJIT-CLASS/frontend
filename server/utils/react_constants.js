@@ -1,6 +1,5 @@
 const path = require('path');
 
-exports.API_URL = process.env.serverPort || 'http://localhost:4000';
 //Language Options
 exports.LANGUAGES = [{
     language: 'English',

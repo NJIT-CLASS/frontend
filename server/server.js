@@ -385,7 +385,7 @@ app.get('/api/file/download/:fileId', function(req, res) {
     }
 
     request({
-        uri: `${react_consts.API_URL}/api/file/download/${file_id}`,
+        uri: `${consts.API_URL}/api/file/download/${file_id}`,
         method: 'GET',
         json: true
     }, (err,response,body) => {
@@ -427,7 +427,7 @@ app.delete('/api/file/delete/', function(req,res){
     }
     
     request({
-        uri: `${react_consts.API_URL}/api/file/delete/${file_id}`,
+        uri: `${consts.API_URL}/api/file/delete/${file_id}`,
         method: 'DELETE',
         json: true,
         body: postVars
