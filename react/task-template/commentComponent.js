@@ -81,9 +81,9 @@ class CommentComponent extends React.Component{
       this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
     }
 
-    endEdit(response) {
+    endEdit(status, target, targetID) {
       this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
-      if (response != 'saved') {
+      if (status != 'saved') {
         this.setState({editExistingComment: false});
       }
     }
@@ -400,6 +400,7 @@ class CommentComponent extends React.Component{
                     Admin={this.props.Admin}
                     Status={this.props.Comment.Status}
                     CommentTarget={this.props.Comment.CommentTarget}
+                    CommentTargetList={this.props.CommentTargetList}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                     Type={this.props.Comment.Type}
                     Edit={true}

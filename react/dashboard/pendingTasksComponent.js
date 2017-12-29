@@ -42,18 +42,36 @@ export default class PendingTaskComponent extends Component {
         return <a  href={`/task/${original.TaskID}`}>{value}</a>;
     }
     makeDate({ original, row, value }) {
-        return <span>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
+        let css = '';
+        if (original.Status[3] === 'late') {
+            css = 'task-late';
+        }
+        return <span class={css}>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
     }
 
     makeRevisionLabel({original, row, value}){
         //if(original.Status.indexOf('submitted_for_approval') != -1 || original.Status.indexOf('being_revised') != -1){
+        
+        let txt = `${value}`;
+        let css = '';
         if(original.Revision == true ||
            original.Status[2].indexOf('submitted_for_approval') != -1 ||
            original.Status[2].indexOf('being_revised') != -1 )  
         {
 
-            return <div>({this.props.Strings.Revision}){value}</div>;
+            txt = `(${this.props.Strings.Revision}) ${value}`;
         
+        }
+
+        if (original.Status[3] === 'late'){
+            css='task-late';
+        }
+        return <div className={css}>{txt}</div>;
+    }
+
+    makeCourse({ original, row, value }){
+        if (original.Status[3] === 'late') {
+            return <div className="task-late">{value}</div>;
         }
         return <div>{value}</div>;
     }
@@ -91,7 +109,8 @@ export default class PendingTaskComponent extends Component {
                                 {         
                                     Header: Strings.Course,
                                     accessor: 'Course',
-                                    resizable:true,                                    
+                                    resizable:true,    
+                                    Cell:this.makeCourse                                
                                 },{
                                     Header: Strings.DueDate,
                                     resizable:true,

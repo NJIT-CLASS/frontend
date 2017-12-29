@@ -83,6 +83,7 @@
                     {{/if}}
                     {{#if masquerading}}
                     <div class="left-nav">
+                        <span>{{user.firstName}} {{user.lastName}}</span> 
                         <a href="/stop-masquerading" class="link">
                             <i class="fa fa-sign-out"></i>
                             {{ __ "Stop Masquerading" }}
@@ -90,6 +91,7 @@
                     </div>
                     {{else}}
                     <div class="left-nav">
+                        <span >{{user.firstName}} {{user.lastName}}</span>
                         <a href="/logout" class="link">
                             <i class="fa fa-sign-out"></i>
                             {{ __ "Log out" }}

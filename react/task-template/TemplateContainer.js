@@ -88,6 +88,7 @@ class TemplateContainer extends React.Component {
         const options2 = {
             userID: this.props.UserID,
         };
+        let commentsTaskList = [];
 
         apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
             if (res.statusCode != 200) {
@@ -174,6 +175,17 @@ class TemplateContainer extends React.Component {
                         currentTaskStatus = currentTask.Status;
                         taskList.push(currentTask);
 
+                        parseTaskList.forEach((task, index) => {
+                            if (task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
+                                return;
+                            }
+                            else {
+                                commentsTaskList.push(task);
+                            }
+                        }, this);
+
+                        commentsTaskList.push(currentTask);
+
 
                         if ([TASK_TYPES.COMMENT].includes(currentTask.TaskActivity.Type)) {
                             /** Check if the current task is a revision task
@@ -216,8 +228,8 @@ class TemplateContainer extends React.Component {
                             /** Check if current consolidation is acting on an Revision edit task
                              *  If it is, show revision buttons
                              *  Else, show normal buttons
-                             * 
-                             * 
+                             *
+                             *
                              */
 
                             apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
@@ -295,6 +307,7 @@ class TemplateContainer extends React.Component {
                         Data: taskList,
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
+                        CommentsTaskList: commentsTaskList,
                     });
                     this.createCommentList();
                     console.log(commentsTaskList, body.assignment);
@@ -314,27 +327,28 @@ class TemplateContainer extends React.Component {
         });
     }
 
-    getCommentData(target, ID) {
-        //if ((this.state.CommentTargetList[this.state.CommentTarget].Target == target && this.state.CommentTargetList[this.state.CommentTarget].ID == ID) || type == 'refresh') {
-        apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-            console.log('Comment data fetched');
-            let list = [];
-            if (body != undefined ) {
-                for (let com of body.Comments) {
-                    list.push(com);
+    getCommentData(target, ID, type) {
+        console.log(this.state.CommentTargetList[this.state.CommentTarget].Target, target, this.state.CommentTargetList[this.state.CommentTarget].ID, ID);
+        if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
+            apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
+                console.log('Comment data fetched');
+                let list = [];
+                if (body != undefined ) {
+                    for (let com of body.Comments) {
+                        list.push(com);
+                    }
+                    this.setState({
+                        commentList: list
+                    });
                 }
-                this.setState({
-                    commentList: list
-                });
-            }
-            else {
-                console.log('No comment data received.');
-                this.setState({
-                    commentList: list
-                });
-            }
-        });
-        //}
+                else {
+                    console.log('No comment data received.');
+                    this.setState({
+                        commentList: list
+                    });
+                }
+            });
+        }
     }
 
 
@@ -422,7 +436,7 @@ class TemplateContainer extends React.Component {
 
     handleChangeTarget(event) {
         this.setState({CommentTarget: event.value});
-        this.getCommentData(event.Target, event.ID);
+        this.getCommentData(event.Target, event.ID, 'change');
         if (this.state.BoxHide) {
             this.hideBox();
         }
@@ -478,7 +492,6 @@ class TemplateContainer extends React.Component {
                 TaskID={this.props.TaskID}
                 UserID={this.props.UserID}
                 Strings={this.state.Strings}
-                apiUrl={this.props.apiUrl}
                 showComments={this.showComments.bind(this)}
                 TaskStatus={this.state.TaskStatus}
                 IsRevision={this.state.IsRevision}

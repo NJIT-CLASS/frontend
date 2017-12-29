@@ -10,6 +10,7 @@ import VersionView from './individualFieldVersionsComponent';
 import CommentInfoComponent from './commentInfoComponent';
 import apiCall from '../shared/apiCall';
 import FileLinksComponent from './fileLinksComponent';
+import FileManagerComponent from './fileManagerComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 import {  isEmpty } from 'lodash';
@@ -24,10 +25,12 @@ class SuperViewComponent extends React.Component {
             FieldRubrics: [],
             Ready: false,
             Error: false,
-            IsBypassedDispute: false
+            IsBypassedDispute: false,
+            TaskHistory: null
             
         };
     }
+    
 
     toggleContent() {
         const bool = !this.state.ShowContent;
@@ -64,13 +67,26 @@ class SuperViewComponent extends React.Component {
         }
     }
 
+    fetchTaskVersions(){
+        let history = new Array();
+        this.setState({
+            TaskHistory: history
+        });
+        return;
+    }
+
     render() {
+        console.log('View Data',this.props);
         let content = null;
         let TA_rubric = null;
         let TA_instructions = null;
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
-
-
+        const latestVersion = [this.props.TaskData[this.props.TaskData.length -1]];
+        let pastVersions = new Array();
+        if(this.props.TaskData.length > 1){
+            pastVersions = this.props.TaskData.slice(0, this.props.TaskData.length);
+            
+        }
         if(this.state.IsBypassedDispute === true){
             return (<div key={this.props.index + 2001} className="section card-2" >
                 <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
@@ -78,7 +94,10 @@ class SuperViewComponent extends React.Component {
         }
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
-                <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
+                <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
+                    <span className="fa fa-angle-down" style={{float: 'right'}}></span>
+
+                </h2>
             </div>);
         }
 
@@ -97,17 +116,17 @@ class SuperViewComponent extends React.Component {
             }
 
             TA_rubric = (<div key={'rub'}>
-              <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
-              <TransitionGroup>
-              <CSSTransition
-                timeout={{enter: 500, exit: 300}}
-                classNames="example"
-                appear
-                enter
-                exit>
-              {TA_rubric_content}
-              </CSSTransition>
-            </TransitionGroup>
+                <button type="button" className="in-line float-button" onClick={this.toggleRubric.bind(this)} key={'button'}> {TA_rubricButtonText}</button>
+                <TransitionGroup>
+                    <CSSTransition
+                        timeout={{enter: 500, exit: 300}}
+                        classNames="example"
+                        appear
+                        enter
+                        exit>
+                        {TA_rubric_content}
+                    </CSSTransition>
+                </TransitionGroup>
             </div>);
         }
 
@@ -126,6 +145,7 @@ class SuperViewComponent extends React.Component {
             let fieldInstructions = null;
             let fieldRubric = null;
             let justificationInstructions = null;
+            
 
             if (this.props.TaskActivityFields[index].show_title) { // shoudl the title be displayed or not
                 fieldTitleText = field;
@@ -153,23 +173,23 @@ class SuperViewComponent extends React.Component {
                 }
 
                 fieldRubric = (<div key={1200}>
-                  <button
-                    type="button"
-                    className="float-button in-line"
-                    onClick={this.toggleFieldRubric.bind(this, index)}
-                  >
-                    {rubricButtonText}
-                  </button>
-                  <TransitionGroup>
-                  <CSSTransition
-                    timeout={{enter: 500, exit: 300}}
-                    classNames="example"
-                    appear
-                    enter
-                    exit>
-                  {rubric_content}
-                  </CSSTransition>
-                </TransitionGroup>
+                    <button
+                        type="button"
+                        className="float-button in-line"
+                        onClick={this.toggleFieldRubric.bind(this, index)}
+                    >
+                        {rubricButtonText}
+                    </button>
+                    <TransitionGroup>
+                        <CSSTransition
+                            timeout={{enter: 500, exit: 300}}
+                            classNames="example"
+                            appear
+                            enter
+                            exit>
+                            {rubric_content}
+                        </CSSTransition>
+                    </TransitionGroup>
                 </div>
                 );
             }
@@ -200,7 +220,8 @@ class SuperViewComponent extends React.Component {
                 {fieldRubric}
 
                 <br />
-                <VersionView Versions={this.props.TaskData} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                <VersionView Versions={pastVersions} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);
 
@@ -208,25 +229,29 @@ class SuperViewComponent extends React.Component {
             <div key={this.props.index + 2003} className="section-content">
                 {TA_instructions}
                 {TA_rubric}
-                <FileLinksComponent Files={this.props.Files} />
+                <FileManagerComponent TaskID={this.props.TaskID}
+                    ViewOnly={true}
+                    UserID={this.props.UserID}
+                    Strings={this.props.Strings} />
                 {fields}
                 <br key={this.props.index + 2005} />
             </div>);
 
         return (
-          <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
-            {!this.props.oneBox &&
+            <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
+                {!this.props.oneBox &&
             (<div>
-              <h2 key={this.props.index + 2002}className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}</h2>
-              <CommentInfoComponent
-                TargetID = {this.props.TaskID}
-                Target = {'TaskInstance'}
-                ComponentTitle = {this.props.ComponentTitle}
-                showComments = {this.props.showComments}
-              />
-             </div>)}
-            {content}
-          </div>
+                <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
+                    <span className="fa fa-angle-up" style={{float: 'right'}}></span></h2>
+                <CommentInfoComponent
+                    TargetID = {this.props.TaskID}
+                    Target = {'TaskInstance'}
+                    ComponentTitle = {this.props.ComponentTitle}
+                    showComments = {this.props.showComments}
+                />
+            </div>)}
+                {content}
+            </div>
         );
     }
 }

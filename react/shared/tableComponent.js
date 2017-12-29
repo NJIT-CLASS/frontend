@@ -9,5 +9,10 @@ export default ({data, columns, noDataText}) => {
         data={data}
         columns={columns}
         noDataText={noDataText}
+        expanderDefaults= {{
+            sortable: true,
+            resizable: true,
+            filterable: false,
+        }}
     />;
 };

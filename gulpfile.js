@@ -8,7 +8,6 @@ const watchify = require('watchify');
 const babelify = require('babelify');
 const babel = require('gulp-babel');
 const gutil = require('gulp-util');
-const uglify = require('gulp-uglify');
 const flow = require('gulp-flowtype');
 const inquirer = require('inquirer');
 const fs = require('fs');
@@ -19,10 +18,11 @@ const runSequence = require('run-sequence');
 const file = require('gulp-file');
 const postcss      = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
+let uglifyes = require('gulp-uglify-es').default;
 
 
 const compileReact = (rootFile, outputName, watch) => {
-    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }).transform(babelify));
+    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }));
 
     function rebundle() {
 
@@ -35,12 +35,13 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglify())
+                .pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'));
 
         } else{
 
-            bundler.bundle()
+            bundler.transform(babelify)
+                .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
                     gutil.beep();
@@ -174,7 +175,7 @@ gulp.task('create-route', () => {
         const routeViewFilePath = `${__dirname}/server/views/${routeFileName}.html`;
         const routeCSSFilePath = `${__dirname}/styles//pages/_${routeFileName.replace(/-/g, '_')}.scss`;
         const reactFolderPath = `${__dirname}/react/${routeFileName}`;
-        
+        const reactMainFileName = `${__dirname}/react/${routeFileName}/main-container.js`;
         const configContents =
 `const handler = require('../route-handlers/${routeFileName}');
 
@@ -197,7 +198,7 @@ module.exports = {
 `
 exports.get = (req, res) => {
     if(req.App.user === undefined){
-      res.redirect('/');
+        return res.redirect(\`/?url=${encodeURIComponent(req.originalUrl)}\`);
     }
     res.render('${routeFileName}', {
         scripts: ['/static/react_apps.js'],
@@ -220,6 +221,24 @@ exports.get = (req, res) => {
     }
     `; 
 
+        const reactContent = 
+    `
+    import React, { Component } from 'react';
+    import PropTypes from 'prop-types';
+    
+    class ${routeFileName}PageContainer extends Component {
+        constructor(props) {
+            super(props);
+            this.state = {  }
+        }
+        render() { 
+            return (<div></div> )
+        }
+    }
+     
+    export default ${routeFileName}PageContainer;
+    `;
+
         fs.writeFileSync(routeConfigFilePath, configContents);
         fs.writeFileSync(routeHandlerFilePath, routeContents);
         fs.writeFileSync(routeViewFilePath, viewContents);
@@ -230,6 +249,8 @@ exports.get = (req, res) => {
         } catch(err){
             gutil.log('React folder already exists. Skipping ....\n');
         }
+        fs.writeFileSync(reactMainFileName, reactContent);
+        
         const routesFileName = `${__dirname}/server/routes/routes.js`;
 
         const currentRoutesContents = fs.readFileSync(routesFileName);
@@ -252,9 +273,7 @@ exports.get = (req, res) => {
 
 gulp.task('node-babel', () => {
     return gulp.src(['server/**/*.js', '!server/{views,views/**}'])
-        .pipe(babel({
-            plugins: ['transform-flow-strip-types']
-        }))
+        .pipe(babel())
         .pipe(gulp.dest('.build'));
 });
 
@@ -362,6 +381,11 @@ gulp.task('generate:build-fallback-settings', () => {
             name: 'server-port',
             message: 'server port (local port that frontend server will run on):'
         },
+        {
+            type: 'input',
+            name: 'api-url',
+            message: 'API URL (url for backend server):'
+        },
     ];
 
     return inquirer.prompt(questions).then((answers) => {
@@ -372,10 +396,8 @@ exports.REDIS_HOST = '${answers['redis-host']}';
 exports.REDIS_PORT = ${answers['redis-port']};
 exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
-
-// ###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###
+exports.API_URL = ${answers['api-url']};
 `;
-        console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
             .pipe(gulp.dest(argv.location || '../build'));
     });
@@ -439,6 +461,5 @@ gulp.task('default', [
     'build-views:watch',
     'sass:watch',
     'react:watch',
-    'flowtype:watch',
     'start'
 ]);

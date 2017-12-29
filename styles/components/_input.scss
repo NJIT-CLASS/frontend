@@ -82,8 +82,11 @@ textarea {
 
 .react-rater {
   display: inline-block;
-  line-height: normal;
-  margin-left: 10px;}
+  margin-left: 10px;
+}
+.react-rater div {
+  display: inline-block;
+}
 
 .react-rater a {
   cursor: pointer;
@@ -95,7 +98,6 @@ textarea {
 .react-rater a.is-active {
   color: #fc6; }
 .react-rater a.is-disabled {
-  color: #ccc;
   cursor: not-allowed; }
 .react-rater.is-disabled a {
   cursor: default; }
