@@ -10,6 +10,6 @@ module.exports = {
         students: false,
         loggedOut: false
     },
-    icon: '',
+    icon: 'address-book',
     sidebar: true
 };
