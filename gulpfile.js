@@ -381,6 +381,11 @@ gulp.task('generate:build-fallback-settings', () => {
             name: 'server-port',
             message: 'server port (local port that frontend server will run on):'
         },
+        {
+            type: 'input',
+            name: 'api-url',
+            message: 'API URL (url for backend server):'
+        },
     ];
 
     return inquirer.prompt(questions).then((answers) => {
@@ -391,10 +396,8 @@ exports.REDIS_HOST = '${answers['redis-host']}';
 exports.REDIS_PORT = ${answers['redis-port']};
 exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
-
-// ###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###
+exports.API_URL = ${answers['api-url']};
 `;
-        console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
             .pipe(gulp.dest(argv.location || '../build'));
     });
