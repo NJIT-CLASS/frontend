@@ -19,7 +19,7 @@ const file = require('gulp-file');
 const postcss      = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 let uglifyes = require('gulp-uglify-es').default;
-
+let cleanCSS = require('gulp-clean-css');
 
 const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }));
@@ -296,13 +296,16 @@ gulp.task('setup-static', () => {
 });
 
 gulp.task('sass', () => {
-    return gulp.src('./styles/**/*.scss')
+    let sassStream = gulp.src('./styles/**/*.scss')
         .pipe(sass().on('error', function (error) {
             sass.logError.call(this, error);
             gutil.beep();
         }))
-        .pipe(postcss([ autoprefixer() ]))
-        .pipe(gulp.dest('./.build/static'));
+        .pipe(postcss([ autoprefixer() ]));
+    if(process.env.NODE_ENV == 'production'){
+        sassStream = sassStream.pipe(cleanCSS({compatibility: 'ie8'}));
+    }
+    return sassStream.pipe(gulp.dest('./.build/static'));
 });
 
 gulp.task('flowtype', () => {
@@ -429,7 +432,12 @@ gulp.task('generate:fallback-settings', () => {
             type: 'input',
             name: 'server-port',
             message: 'server port (local port that frontend server will run on):'
-        }
+        },
+        {
+            type: 'input',
+            name: 'api-url',
+            message: 'API URL (url for backend server):'
+        },
     ];
 
     return inquirer.prompt(questions).then((answers) => {
@@ -440,11 +448,10 @@ exports.REDIS_HOST = '${answers['redis-host']}';
 exports.REDIS_PORT = ${answers['redis-port']};
 exports.REDIS_AUTH = '${answers['redis-auth']}';
 exports.FRONTEND_PORT = ${answers['server-port']};
+exports.API_URL = ${answers['api-url']};
 
-// ###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###
 
 `;
-        console.log('###!! You need to add the fallback API URL to server/utils/react_constants.js  !!###');
         return file('fallback_settings.js', content)
             .pipe(gulp.dest(__dirname));
     });

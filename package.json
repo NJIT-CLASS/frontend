@@ -103,6 +103,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-changed": "^3.1.1",
+    "gulp-clean-css": "^3.9.2",
     "gulp-file": "^0.3.0",
     "gulp-flowtype": "^1.0.0",
     "gulp-install": "^1.1.0",
