@@ -59,6 +59,7 @@ app.use((req, res, next) => {
     next();
 });
 
+//Checks that Redis is working properly
 app.use(function(req,res,next){
     if(req.session === undefined){
         //Could not connect to Redis so return error page
@@ -68,6 +69,7 @@ app.use(function(req,res,next){
     next();
 });
 
+//Translation APIs
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
 
@@ -139,7 +141,7 @@ app.post('/api/translations', (req, res) => {
     res.status(200).end();
 });
 
-
+//Admin Change API
 app.post('/api/change-admin-status', (req, res) => {
     const userId = req.body.userId;
     const makeAdmin = req.body.makeAdmin;
@@ -207,7 +209,7 @@ app.use((req, res, next) => {
 var __;
 
 
-
+//Sets up the Handlebars template engine for Express
 app.use((req, res, next) => {
     translation(redisClient).setupTranslations(res.locale, translateFunc => {
         __ = translateFunc;
@@ -220,6 +222,7 @@ app.use((req, res, next) => {
     });
 });
 
+//Stores the user session Id into req.App.user object
 app.use((req, res, next) => {
     if ('userId' in req.session) {
         req.App.user = {};
@@ -228,6 +231,7 @@ app.use((req, res, next) => {
     next();
 });
 
+//Stores token from session into req.App.user object
 app.use((req, res, next) => {
     if('token' in req.session){
         req.App.user.token = req.session.token;
@@ -236,23 +240,16 @@ app.use((req, res, next) => {
     next();
 });
 
+//Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-
-            // if(statusCode === 500){
-            //     delete req.session.userId;
-            //     res.send('Sorry, the website is experiencing errors');
-            //     return;
-            // }
-
             if (err || statusCode !== 200) {
                 delete req.session.userId;
+                console.log('Had trouble fetching user profile. Check the backend server or API_URL');
                 res.redirect('/');
                 return;
             }
-
-
 
             if (body.User == undefined) {
                 delete req.session.userId;
@@ -267,13 +264,13 @@ app.use((req, res, next) => {
             req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
             next();
-        }
-        );
+        });
     }
 
     next();
 });
 
+// APIs to access backend API routes through frontend server
 app.get('/api/generalCall', (req, res) => {
     let queryStrings = req.query;
     let endpoint = `${req.query.endpoint}`;
@@ -332,6 +329,7 @@ app.post('/api/generalCall', (req, res) => {
     });
 });
 
+//API for file uploading
 app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
@@ -357,36 +355,8 @@ app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
     });
 });
 
-/*app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    //maybe check for authorization before continuing
-    let type = req.params.type || '';
-    delete postVars.endpoint;
-    const listOfErrors = [];
-    const uploadStatus = {
-        successfulFiles: [],
-        failedFiles: []
-    };
-    let filesToUpload = req.files.map( file =>
-        uploadFile(file, type, req.App.user.userId, postVars));
-    
-    return Promise.all(filesToUpload).then(resultsArray => {
-        uploadStatus.successfulFiles = resultsArray.filter(file => file.FileID !== undefined);
-        uploadStatus.failedFiles = resultsArray.filter(file => file.FileID === undefined);
-        if(uploadStatus.failedFiles.length == 0){
-            return res.status(200).json(uploadStatus);
-        } else {
-            return res.status(400).json(uploadStatus);
-            
-        }
-    });
-});
-*/
+//API for file downloading
 app.get('/api/file/download/:fileId', function(req, res) {
-    // router.post('/download/file/:fileId', function (req, res) {
-    // router.get('/download/file', function (req, res) {
-    
     var file_id = req.body.fileId || req.params.fileId;
     
     if (file_id == null) {
@@ -425,7 +395,7 @@ app.get('/api/file/download/:fileId', function(req, res) {
     });
 });
 
-
+//API for file deleting
 app.delete('/api/file/delete/', function(req,res){
     //probably verify authorization and owner first
     var file_id = req.body.fileId;
@@ -453,11 +423,8 @@ app.delete('/api/file/delete/', function(req,res){
         });
     });
 });
-/**
-    ***** 
- **********/
 
-
+//Prepares render function to support options specified in route configs
 app.use((req, res, next) => {
     const render = res.render;
 
@@ -539,8 +506,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// routes
-
+// Setup routes 
 const allowedRouteMethods = [
     'get',
     'post',
@@ -620,7 +586,7 @@ for (const route of routes) {
     }
 }
 
-
+//General Error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if(!res.headerSent){
@@ -630,8 +596,6 @@ app.use((err, req, res, next) => {
     }
     
 });
-
-
 
 //Activate https server only if in production
 if(process.env.NODE_ENV === 'production'){
