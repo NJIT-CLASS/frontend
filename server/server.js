@@ -59,6 +59,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(function(req,res,next){
+    if(req.session === undefined){
+        //Could not connect to Redis so return error page
+        console.log('Couldn\'t find session. Probably an issue with Redis.');
+        return res.sendFile(`${__dirname}/views/not_found.html`);
+    }
+    next();
+});
 
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
@@ -197,6 +205,7 @@ app.use((req, res, next) => {
 });
 
 var __;
+
 
 
 app.use((req, res, next) => {

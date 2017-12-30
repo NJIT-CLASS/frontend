@@ -300,10 +300,10 @@ gulp.task('sass', () => {
         .pipe(sass().on('error', function (error) {
             sass.logError.call(this, error);
             gutil.beep();
-        }))
-        .pipe(postcss([ autoprefixer() ]));
+        }));
+        
     if(process.env.NODE_ENV == 'production'){
-        sassStream = sassStream.pipe(cleanCSS({compatibility: 'ie8'}));
+        sassStream = sassStream.pipe(postcss([ autoprefixer() ])).pipe(cleanCSS({compatibility: 'ie8'}));
     }
     return sassStream.pipe(gulp.dest('./.build/static'));
 });
