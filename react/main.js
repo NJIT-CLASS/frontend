@@ -30,6 +30,7 @@ import Reallocation from './reallocation/reallocation-container';
 import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
 import SectionPage from './section/main-container';
+import ErrorComponent from './shared/ErrorComponent';
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -57,12 +58,14 @@ const sectionId = reactElem.dataset.sectionId;
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
+
+let componentForCurrentPage = null;
 switch (currentPage) {
 case 'dashboard-container':
-    ReactDOM.render(<DashboardMain UserID={userId}  __={translationFunction}/>,reactElem);
+    componentForCurrentPage =<DashboardMain UserID={userId}  __={translationFunction}/>;
     break;
 case 'add-user-container':
-    ReactDOM.render(<AddUserContainer userId={userId} userType={userType} __={translationFunction}/>,reactElem);
+    componentForCurrentPage = <AddUserContainer userId={userId} userType={userType} __={translationFunction}/>;
     break;
 
 case 'translation-container':
@@ -71,14 +74,13 @@ case 'translation-container':
             <TranslationContainer />
         </ClassPageContainer>
     );
-    ReactDOM.render(translationApp, reactElem);
+    componentForCurrentPage = translationApp;
     break;
-
 case 'template-container':
     const taskId = reactElem.dataset.taskId;
     const isAdmin = reactElem.dataset.isAdmin;
     const visitorId = reactElem.dataset.visitorId;
-    ReactDOM.render(
+    componentForCurrentPage =
         <TemplateContainer
             SectionID={sectionId}
             CourseID={courseId}
@@ -88,58 +90,68 @@ case 'template-container':
             Admin={isAdmin}
             VisitorID={visitorId}
             __={translationFunction}
-        />, reactElem);
+        />;
     break;
 
 case 'assignment-editor-container':
     const partialAssignmentId = reactElem.dataset.partialAssignmentId;
-    ReactDOM.render(<AssignmentEditorContainer UserID={userId} CourseID={courseId} AssignmentID={assignmentId} PartialAssignmentID={partialAssignmentId} __={translationFunction} />, reactElem);
+    componentForCurrentPage = <AssignmentEditorContainer UserID={userId} 
+        CourseID={courseId} 
+        AssignmentID={assignmentId} 
+        PartialAssignmentID={partialAssignmentId}
+        __={translationFunction} />;
     break;
 
 case 'assign-to-section-container':
-    ReactDOM.render(<AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId}  __={translationFunction}/>,reactElem);
+    componentForCurrentPage = <AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId}  __={translationFunction}/>;
     break;
 
 case 'testing-container':
-    ReactDOM.render(<TestingGroundContainer />, reactElem);
+    componentForCurrentPage =<TestingGroundContainer />;
     break;
 
 case 'assignment-record-container':
-    ReactDOM.render(<QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
+    componentForCurrentPage = <QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
     break;
 
 case 'course-section-management':
-    ReactDOM.render(<CourseSectionManagement UserID={userId} __={translationFunction} />, reactElem);
+    componentForCurrentPage = <CourseSectionManagement UserID={userId} __={translationFunction} />;
     break;
 
 case 'account':
-    ReactDOM.render(<AccountManagement UserID={userId}  __={translationFunction} />, reactElem);
+    componentForCurrentPage = <AccountManagement UserID={userId}  __={translationFunction} />;
     break;
 case 'about':
-    ReactDOM.render(<AboutContainer />, reactElem);
+    componentForCurrentPage = <AboutContainer />;
     break;
 case 'forgot-password':
-    ReactDOM.render(<ForgotPasswordContainer />, reactElem);
+    componentForCurrentPage = <ForgotPasswordContainer />;
     break;
 case 'sections':
-    ReactDOM.render(<SectionsContainer  UserID={userId}/>, reactElem);
+    componentForCurrentPage = <SectionsContainer  UserID={userId}/>;
     break;
 case 'user-grade-report':
-    ReactDOM.render( <UserGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
+    componentForCurrentPage =  <UserGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
     break;
 case 'volunteer-pool':
-    ReactDOM.render(<VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />, reactElem);
+    componentForCurrentPage = <VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />;
     break;
 case 'user-management':
-    ReactDOM.render(<UserManagementContainer UserID={userId} __={translationFunction} />, reactElem);
+    componentForCurrentPage = <UserManagementContainer UserID={userId} __={translationFunction} />;
     break;
 case 'everyones-work':
-    ReactDOM.render(<MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>, reactElem);
+    componentForCurrentPage = <MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
     break;
 case 'reallocation-container':
-    ReactDOM.render(<Reallocation UserID={userId} />, reactElem);
+    componentForCurrentPage = <Reallocation UserID={userId} />;
     break;
 case 'section':
-    ReactDOM.render(<SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />, reactElem);
+    componentForCurrentPage = <SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />;
+    break;
 }
 
+// let fullComponentToRender = <ErrorComponent>
+//     {componentForCurrentPage}
+// </ErrorComponent>;
+
+ReactDOM.render(componentForCurrentPage,reactElem);

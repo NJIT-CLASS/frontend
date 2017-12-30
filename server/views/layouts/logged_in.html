@@ -17,9 +17,9 @@
             <div class="sidebar collapsed">
                 <h2 onclick="(function(e){
                   location.href = '/'
-                })(event)"><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
-
-                  <ul>
+                })(event)" ><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
+                <div class="icons-wrapper">
+                  <ul id="sidebar-icons">
                       {{#each sidebarNavItems}}
                           <li
                               {{#if selected }}
@@ -52,21 +52,23 @@
                           </a>
                       </li>-->
                   </ul>
-
-                <div id="language-picker" class="hidden" onclick="document.getElementById('language-picker').classList.toggle('hidden')">
+                </div>
+                <div  id="language-picker" class="hidden">
                     {{#each languageOptions}}
                         <a onclick="addLanguageQuery('lang={{locale}}');">
-                            <i class="fa fa-globe"></i>
+                            
                             {{ language }}
                         </a>
                     {{/each}}
-                    <a class="selected">
+                    
+                </div>
+                <div  onclick="document.getElementById('language-picker').classList.toggle('hidden')" id="language-toggle">
+                    <div class="selected" >
                         <i class="fa fa-globe"></i>
                         <div class="selected-language-text">{{ language }}</div>
                         
-                    </a>
+                    </div>
                 </div>
-
             </div>
             <div class="content">
                 <div id="message-view" class="closed"></div>
@@ -106,8 +108,6 @@
                     <div class="container">
                 {{/showHTMLBasedOnBoolean}}
 
-
-
                     {{{body}}}
 
                 {{#showHTMLBasedOnBoolean showHeader}}
@@ -129,7 +129,11 @@
                 {{/showHTMLBasedOnBoolean}}
             </div>
         </div>
+        <script>
+            var child = document.getElementById('sidebar-icons');
+            child.style.right = "-" + (child.offsetWidth - child.clientWidth) + "px";
 
+        </script>
         {{#each scripts}}
             <script src="{{this}}" type="text/javascript" charset="utf-8" defer></script>
         {{/each}}

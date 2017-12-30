@@ -1,11 +1,10 @@
 .sidebar {
-    flex: 0 0 210px;
     transition: flex-basis ease .3s;
     overflow: auto;
     display: flex;
     flex-direction: column;
     -ms-overflow-style: none;
-
+    flex: 0 0 210px;
     h2 {
         font-size: 25px;
         text-align: center;
@@ -57,16 +56,91 @@
     }
     .selected-language-text{
         display: inline-block;
+        color:white;
+        .fa{
+            font-size: 25px;
+        }
     }
 
+    .hidden {
+        display: none;
+    }
     
     #language-picker {
+        position: absolute;
+        bottom: 0;
+        left:180px;
+        z-index: 1;
+        a {
+            font-size: 16px;
+            padding: 10px 15px;
+        }  
+        text-align: center;
         width: fit-content;
             .fa{
                 font-size: 25px;
             }
             transition: margin-left 0.2s ease-in-out;
         }
+    
+    
+    #language-toggle {
+        text-align: center;
+        .fa{
+            font-size: 28px;
+        }
+        div{
+            color: #a7b1c2;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        div:hover{
+            background-color: #293847;
+            border-color: #293847;
+            cursor: pointer;
+            color: #ffffff;
+        }
+    }
+
+    .fa.arrow {
+        float: right;
+
+        &:before {
+            content: "\f104";
+        }
+    }
+
+    .icons-wrapper{
+        height: 75%;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    #sidebar-icons {
+        height: 100%;
+        overflow: auto;
+        position: absolute
+    }
+
+    &.collapsed{
+        
+        .selected-language-text{
+            display: none;
+        }
+        #language-picker {
+            left: 60px;
+        }
+
+        #language-toggle{
+            > div {
+                margin-top:50%;
+            }
+        }
+        .icons-wrapper{
+            height: 80%;
+        }
+
+    }
 
     &.collapsed:not(.transition) {
         @media screen and (max-width: $mobile-brk) {
@@ -76,7 +150,6 @@
 
         a {
             font-size: 25px;
-            padding-left: 11px;
         }
 
         i {
@@ -100,35 +173,10 @@
             }
         }
 
-        #language-picker {
-            position: absolute;
-            bottom: 0;
-            left:0;
-            z-index: 1;
-
-            
-            a {
-                font-size: 16px;
-            }   
-
-            &.hidden{
-                width: 30px;
-                
-                .selected-language-text{
-                opacity: 0;
-                }
-            }
-            
-        }
+        
     }
 
-    .fa.arrow {
-        float: right;
-
-        &:before {
-            content: "\f104";
-        }
-    }
+    
 }
 
 .sidebar::-webkit-scrollbar {
