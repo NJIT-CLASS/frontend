@@ -9,7 +9,7 @@
     "create-route": "gulp create-route",
     "lint": "eslint . --fix",
     "babel-node": "babel-node --plugins transform-flow-strip-types",
-    "build-production": "gulp build-production"
+    "build-production": "gulp build-production --location=../frontend-production-build"
   },
   "author": "",
   "dependencies": {
