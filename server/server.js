@@ -589,7 +589,7 @@ for (const route of routes) {
 //General Error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    if(!res.headerSent){
+    if(!res.headersSent){
         res.status(404).render('not_found', {
             title: 'Not Found'
         });

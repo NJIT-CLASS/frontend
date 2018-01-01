@@ -28,23 +28,20 @@ const compileReact = (rootFile, outputName, watch) => {
 
         if(process.env.NODE_ENV === 'production'){
 
-            bundler.bundle()
+            bundler.transform(babelify)
+                .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
                     gutil.beep();
                     this.emit('end');
                 })
                 .pipe(source(`${outputName}.js`))
-                .pipe(uglifyes())
-                
                 .pipe(buffer())
-                
-                .on('error', function(err) {
-                    gutil.log(err);
-                    gutil.beep();
-                    this.emit('end');
-                })
-                .pipe(gulp.dest('./.build/static'));
+                .pipe(uglifyes())
+                .pipe(gulp.dest('./.build/static'))
+                .on('end', function(){
+                    console.log('-> Done rebundling React. Ready to go.');
+                });;
 
         } else{
 
@@ -57,7 +54,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglifyes())
+                //.pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
@@ -465,7 +462,7 @@ exports.API_URL = ${answers['api-url']};
 });
 
 gulp.task('build-production', () => {
-    return runSequence([/*'apply-prod-environment',*/'build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build'],function(){
+    return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build'],function(){
         console.log('-> Done moving files. Ready to go.');
     });
         
