@@ -13,7 +13,7 @@ exports.post = (req, res) => {
 
     const email = req.body.email;
 
-    req.App.api.get(`/getUserId/${email}`, (err, statusCode, body) => {
+    req.App.api.get(`/getUserId/${email}`,{token: req.session.token}, (err, statusCode, body) => {
         if (body.UserID !== -1) {
             console.log('Masquerade results', body, email);
             const currentUserId = req.session.userId;

@@ -29,7 +29,7 @@ exports.post = (req, res) => {
             return res.status(404).end();;
         }
 
-        req.App.api.post('/adduser', {
+        req.App.api.post('/addInitialUser', {
             firstname: firstname,
             lastname: lastname,
             email: email,
@@ -40,17 +40,17 @@ exports.post = (req, res) => {
         }, (err,statusCode, body) => {
             switch(statusCode){
             case 400:
-          //missing field
+                //missing field
                 return res.render('onboarding', {
                     fieldsMissing: true
                 });
             case 500:
-          //server error
+                //server error
                 return res.render('onboarding', {
                     serverError: true
                 });
             default:
-        //success
+                //success
                 return res.redirect('/');
             }
         });

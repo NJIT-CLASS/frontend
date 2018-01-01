@@ -11,7 +11,7 @@ apiMethods.get = function(endpoint, queryParameters, cb) {
         var cb = queryParameters;
         queryParameters = {};
     }
-
+    
     const options = {
         method: 'GET',
         uri: apiUrl(endpoint),

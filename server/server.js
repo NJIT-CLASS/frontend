@@ -154,7 +154,8 @@ app.post('/api/change-admin-status', (req, res) => {
     req.App.api.put(
         '/makeUserAdmin/',
         {
-            UserID: userId
+            UserID: userId,
+            token: req.session.token
         },
         (err, statusCode, body) => {
             res.status(statusCode).end();
@@ -232,18 +233,21 @@ app.use((req, res, next) => {
 });
 
 //Stores token from session into req.App.user object
-app.use((req, res, next) => {
-    if('token' in req.session){
-        req.App.user.token = req.session.token;
-    }
+// app.use((req, res, next) => {
+//     if(req.App.user !== undefined){
+//         if('token' in req.session){
+//             req.App.user.token = req.session.token;
+//         }
+//     }
+    
 
-    next();
-});
+//     next();
+// });
 
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
-        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`,{token: req.session.token},(err, statusCode, body) => {
             if (err || statusCode !== 200) {
                 delete req.session.userId;
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
@@ -275,7 +279,7 @@ app.get('/api/generalCall', (req, res) => {
     let queryStrings = req.query;
     let endpoint = `${req.query.endpoint}`;
     delete queryStrings.endpoint;
-
+    queryStrings.token = req.session.token;
     req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
         res.status(statusCode).json(body);
         res.end();
@@ -286,7 +290,7 @@ app.post('/api/generalCall', (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
-
+    postVars.token = req.session.token;
     req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
         res.status(statusCode).json(body);
         res.end();
@@ -298,7 +302,7 @@ app.delete('/api/generalCall', (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
-
+    postVars.token = req.session.token;
     req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
         res.status(statusCode).json(body);
         res.end();
@@ -310,7 +314,7 @@ app.put('/api/generalCall', (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
-
+    postVars.token = req.session.token;
     req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
         res.status(statusCode).json(body);
         res.end();
@@ -321,7 +325,7 @@ app.post('/api/generalCall', (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
-
+    postVars.token = req.session.token;
     req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
         res.status(statusCode).json(body);
         res.end();
@@ -333,6 +337,8 @@ app.post('/api/generalCall', (req, res) => {
 app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
     let postVars = req.body;
     let endpoint = `${req.body.endpoint}`;
+    postVars.token = req.session.token;
+
     //maybe check for authorization before continuing
     let type = req.params.type || '';
     delete postVars.endpoint;
@@ -362,9 +368,13 @@ app.get('/api/file/download/:fileId', function(req, res) {
     if (file_id == null) {
         return res.status(400).end();
     }
+    let queryStrings = {
+        token: req.session.token
+    };
 
     request({
         uri: `${consts.API_URL}/api/file/download/${file_id}`,
+        qs: queryStrings,
         method: 'GET',
         json: true
     }, (err,response,body) => {
@@ -401,6 +411,8 @@ app.delete('/api/file/delete/', function(req,res){
     var file_id = req.body.fileId;
     var postVars = req.body;
     postVars.userId = req.App.user.userId;
+    postVars.token = req.session.token;
+
     if(!file_id){
         return res.status(400).end();
     }

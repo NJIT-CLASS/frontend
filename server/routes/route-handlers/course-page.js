@@ -10,12 +10,12 @@ exports.get = (req, res) => {
     if(req.App.user.type === 'student'){
         coursesUrl = '/getActiveEnrolledSections/';
     }
-    req.App.api.get(`${coursesUrl}${req.params.Id}?studentID=${req.App.user.userId}`, (err, statusCode, body) =>{
+    req.App.api.get(`${coursesUrl}${req.params.Id}?studentID=${req.App.user.userId}`, {token: req.session.token},(err, statusCode, body) =>{
         const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
 
-        req.App.api.get('/getAssignments/' + req.params.Id, (err, statusCode, assignmentsBody) => {
+        req.App.api.get('/getAssignments/' + req.params.Id,{token: req.session.token}, (err, statusCode, assignmentsBody) => {
             let assignmentsArray = [];
-            req.App.api.get(`/partialAssignments/all/${req.App.user.userId}?courseId=${req.params.Id}`, (err,statusCode, partialAssignmentsBody) => {
+            req.App.api.get(`/partialAssignments/all/${req.App.user.userId}?courseId=${req.params.Id}`,{token: req.session.token}, (err,statusCode, partialAssignmentsBody) => {
 
 
                 assignmentsArray =  assignmentsBody.Assignments;
@@ -26,8 +26,8 @@ exports.get = (req, res) => {
                 for (var i=0; i<body.Sections.length; i++){
 
                     sectionList.push(body.Sections[i]);
-                    sectionAssignmentsCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this, '/getActiveAssignmentsForSection/' + body.Sections[i].SectionID);
-                    apiCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this,'/course/getsection/' + body.Sections[i].SectionID);
+                    sectionAssignmentsCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this, '/getActiveAssignmentsForSection/' + body.Sections[i].SectionID, {token: req.session.token});
+                    apiCalls[body.Sections[i].SectionID] = req.App.api.get.bind(this,'/course/getsection/' + body.Sections[i].SectionID, {token: req.session.token});
 
                 }
 
