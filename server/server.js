@@ -14,7 +14,7 @@ const mv = require('mv');
 const session = require('./server-middleware/session');
 const translation = require('./server-middleware/translation');
 const templates = require('./server-middleware/templates');
-const apiMethods = require('./server-middleware/api').apiMethods;
+const apiMethodInit = require('./server-middleware/api').apiMethodsInit;
 const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
 const consts = require('./utils/constants');
@@ -53,8 +53,7 @@ if(process.env.NODE_ENV === 'production'){
 }
 app.use((req, res, next) => {
     req.App = {};
-
-    req.App.api = apiMethods;
+    req.App.api = apiMethodInit(req,res,next);
 
     next();
 });
