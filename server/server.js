@@ -20,6 +20,10 @@ const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
 import {uploadFiles} from './server-middleware/file-upload';
+const loginGetRoute = require('./routes/route-handlers/login').get;
+const loginPostRoute = require('./routes/route-handlers/login').post;
+const loggedOutRoutes = routes.filter(route => route.access.loggedOut);
+const loggedInRoutes = routes.filter(route => !route.access.loggedOut);
 
 const app = express();
 const redisClient = redis.createClient({
@@ -30,27 +34,63 @@ const redisClient = redis.createClient({
 
 
 const multer = require('multer'); //TODO: we may need to limit the file upload size
-var storage = multer({
+const storage = multer({
     dest: './tempFiles/',
     limits: { //Max 3 files and total of 50MB
         fileSize: consts.FILE_SIZE,
         files: consts.MAX_NUM_FILES
     }
 });
-
-
+const allowedRouteMethods = [
+    'get',
+    'post',
+    'put',
+    'head',
+    'delete',
+    'options',
+    'trace',
+    'copy',
+    'lock',
+    'mkcol',
+    'move',
+    'purge',
+    'propfind',
+    'proppatch',
+    'unlock',
+    'report',
+    'mkactivity',
+    'checkout',
+    'merge',
+    'm-search',
+    'notify',
+    'subscribe',
+    'unsubscribe',
+    'patch',
+    'search',
+    'connect'
+];
+//Setup static files
 app.use('/static', express.static(`${__dirname}/static`));
 app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`)
 );
+//Setup request parsing
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
+
+//Setup Redis session
 app.use(session(redisClient));
+
+//Optionally redirect http to https
 if(process.env.NODE_ENV === 'production'){
     app.use(forceSSL);
 }
+
+////Begin Middleware
+
+//Setup API methods
 app.use((req, res, next) => {
     req.App = {};
     req.App.api = apiMethodInit(req,res,next);
@@ -222,6 +262,10 @@ app.use((req, res, next) => {
     });
 });
 
+//Login page
+// app.get('/',loginGetRoute);
+// app.post('/',loginPostRoute);
+
 //Stores the user session Id into req.App.user object
 app.use((req, res, next) => {
     if ('userId' in req.session) {
@@ -230,6 +274,8 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+
 
 //Stores token from session into req.App.user object
 // app.use((req, res, next) => {
@@ -245,10 +291,13 @@ app.use((req, res, next) => {
 
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
+    console.log();
     if (req.App.user && req.App.user.userId) {
-        return req.App.api.get(`/generalUser/${req.App.user.userId}`,{token: req.session.token},(err, statusCode, body) => {
-            if (err || statusCode !== 200) {
-                delete req.session.userId;
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
+            console.log('statusCode: ', statusCode);
+
+            if (err || statusCode === 500) {
+                delete req.session.userId; 
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
                 res.redirect('/');
                 return;
@@ -271,168 +320,6 @@ app.use((req, res, next) => {
     }
 
     next();
-});
-
-// APIs to access backend API routes through frontend server
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
-    queryStrings.token = req.session.token;
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    postVars.token = req.session.token;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.delete('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    postVars.token = req.session.token;
-    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.put('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    postVars.token = req.session.token;
-    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    postVars.token = req.session.token;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-//API for file uploading
-app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    postVars.token = req.session.token;
-
-    //maybe check for authorization before continuing
-    let type = req.params.type || '';
-    delete postVars.endpoint;
-    const listOfErrors = [];
-    const uploadStatus = {
-        successfulFiles: [],
-        failedFiles: []
-    };
-
-    uploadFiles(req.files, type, req.App.user.userId, postVars).then(resultsObject => {
-        console.log('File Upload API response', resultsObject);
-        uploadStatus.successfulFiles = resultsObject.successfulFiles;
-        uploadStatus.failedFiles = resultsObject.unsuccessfulFiles;
-        if (uploadStatus.failedFiles.length == 0) {
-            return res.status(200).json(uploadStatus);
-        } else {
-            return res.status(400).json(uploadStatus);
-
-        }
-    });
-});
-
-//API for file downloading
-app.get('/api/file/download/:fileId', function(req, res) {
-    var file_id = req.body.fileId || req.params.fileId;
-    
-    if (file_id == null) {
-        return res.status(400).end();
-    }
-    let queryStrings = {
-        token: req.session.token
-    };
-
-    request({
-        uri: `${consts.API_URL}/api/file/download/${file_id}`,
-        qs: queryStrings,
-        method: 'GET',
-        json: true
-    }, (err,response,body) => {
-        var file_ref = body;
-
-        if (!file_ref) {
-            return res.status(400).end();
-        }
-        file_ref = JSON.parse(file_ref.Info);
-        console.log(file_ref);
-        let contDispFirstHalf = file_ref.mimetype.match('image') ? 'inline' : 'attachment';
-        let contDispSecondHalf = file_ref.originalname;
-        var content_headers = {
-            'Content-Type': file_ref.mimetype,
-            'Content-Length': file_ref.size,
-            'Content-Disposition': `${contDispFirstHalf};filename=${contDispSecondHalf}`,
-        };
-        res.writeHead(200, content_headers);
-        const readStream = fs.createReadStream(`${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
-        console.log('path', `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
-        readStream.on('open', () => {
-            readStream.pipe(res);
-        });
-        readStream.on('error', (err) => {
-            console.error(err);
-            res.status(400).end();
-        });
-    });
-});
-
-//API for file deleting
-app.delete('/api/file/delete/', function(req,res){
-    //probably verify authorization and owner first
-    var file_id = req.body.fileId;
-    var postVars = req.body;
-    postVars.userId = req.App.user.userId;
-    postVars.token = req.session.token;
-
-    if(!file_id){
-        return res.status(400).end();
-    }
-    
-    request({
-        uri: `${consts.API_URL}/api/file/delete/${file_id}`,
-        method: 'DELETE',
-        json: true,
-        body: postVars
-    }, (err,response,body) => {
-        var file_ref = typeof body.Info == 'string' ? JSON.parse(body.Info) : body.Info;
-        let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
-        fs.unlink(filePath, (err)=> {
-            if(err){
-                console.error(err);
-                return res.status(400).end();
-            } 
-            return res.status(200).end();
-            
-        });
-    });
 });
 
 //Prepares render function to support options specified in route configs
@@ -517,36 +404,236 @@ app.use((req, res, next) => {
     next();
 });
 
+
+//Setup up logged out routes
+for (const route of loggedOutRoutes) {
+    for (const method in route.routeHandler) {
+        // if the method is allowed then bind the route to it
+        if (allowedRouteMethods.indexOf(method) !== -1) {
+            app[method](
+                route.route,
+                (function() {
+                    return (req, res, next) => {
+                        const previousRender = res.render;
+                        res.render = (function() {
+                            return function(template, options, cb) {
+                                options = options ? options : {};
+                                options.loggedOut = route.access.loggedOut;
+                                options.route = route.route;
+                                options.student = route.access.students;
+                                options.teacher = route.access.instructors;
+                                options.admin = route.access.admins;
+                                // if the render doesn't set the title then set it by the route
+                                if (!('title' in options)) {
+                                    options.title = `${route.title} | CLASS Learning System`;
+                                }
+
+                                // set the page header to be the route title if the pageHeader is not set
+                                if (!('pageHeader' in options)) {
+                                    options.pageHeader = route.title;
+                                }
+
+                                // pass masquerading info to template
+                                if (req.session.masqueraderId && options.route !== '/') {
+                                    options.masquerading = true;
+                                    options.userEmail = req.App.user.email;
+                                }
+
+                                previousRender.call(
+                                    this,
+                                    template,
+                                    options,
+                                    cb
+                                );
+                            };
+                        })();
+                        next();
+
+                    };
+                })(),
+                route.routeHandler[method]
+            );
+        }
+    }
+}
+
+app.use((req,res,next) => {
+    
+    if( !'userId' in req.session)
+        return  res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+    
+    if(!'token' in req.session)
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+        
+    next();
+
+
+});
+
+// APIs to access backend API routes through frontend server
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+//API for file uploading
+app.post('/api/file/upload/:type?', storage.array('files'), (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    postVars.token = req.session.token;
+
+    //maybe check for authorization before continuing
+    let type = req.params.type || '';
+    delete postVars.endpoint;
+    const listOfErrors = [];
+    const uploadStatus = {
+        successfulFiles: [],
+        failedFiles: []
+    };
+
+    uploadFiles(req.files, type, req.App.user.userId, postVars).then(resultsObject => {
+        console.log('File Upload API response', resultsObject);
+        uploadStatus.successfulFiles = resultsObject.successfulFiles;
+        uploadStatus.failedFiles = resultsObject.unsuccessfulFiles;
+        if (uploadStatus.failedFiles.length == 0) {
+            return res.status(200).json(uploadStatus);
+        } else {
+            return res.status(400).json(uploadStatus);
+
+        }
+    });
+});
+
+//API for file downloading
+app.get('/api/file/download/:fileId', function(req, res) {
+    var file_id = req.body.fileId || req.params.fileId;
+    
+    if (file_id == null) {
+        return res.status(400).end();
+    }
+    let queryStrings = {
+        token: req.session.token
+    };
+
+    request({
+        uri: `${consts.API_URL}/api/file/download/${file_id}`,
+        qs: queryStrings,
+        method: 'GET',
+        json: true
+    }, (err,response,body) => {
+        var file_ref = body;
+
+        if (!file_ref) {
+            return res.status(400).end();
+        }
+        file_ref = JSON.parse(file_ref.Info);
+        console.log(file_ref);
+        let contDispFirstHalf = file_ref.mimetype.match('image') ? 'inline' : 'attachment';
+        let contDispSecondHalf = file_ref.originalname;
+        var content_headers = {
+            'Content-Type': file_ref.mimetype,
+            'Content-Length': file_ref.size,
+            'Content-Disposition': `${contDispFirstHalf};filename=${contDispSecondHalf}`,
+        };
+        res.writeHead(200, content_headers);
+        const readStream = fs.createReadStream(`${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        console.log('path', `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`);
+        readStream.on('open', () => {
+            readStream.pipe(res); 
+        });
+        readStream.on('error', (err) => {
+            console.error(err);
+            res.status(400).end();
+        });
+    });
+});
+
+//API for file deleting
+app.delete('/api/file/delete/', function(req,res){
+    //probably verify authorization and owner first
+    var file_id = req.body.fileId;
+    var postVars = req.body;
+    postVars.userId = req.App.user.userId;
+    postVars.token = req.session.token;
+
+    if(!file_id){
+        return res.status(400).end();
+    }
+    
+    request({
+        uri: `${consts.API_URL}/api/file/delete/${file_id}`,
+        method: 'DELETE',
+        json: true,
+        body: postVars
+    }, (err,response,body) => {
+        var file_ref = typeof body.Info == 'string' ? JSON.parse(body.Info) : body.Info;
+        let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
+        fs.unlink(filePath, (err)=> {
+            if(err){
+                console.error(err);
+                return res.status(400).end();
+            } 
+            return res.status(200).end();
+            
+        });
+    });
+});
+
+
+
 // Setup routes 
-const allowedRouteMethods = [
-    'get',
-    'post',
-    'put',
-    'head',
-    'delete',
-    'options',
-    'trace',
-    'copy',
-    'lock',
-    'mkcol',
-    'move',
-    'purge',
-    'propfind',
-    'proppatch',
-    'unlock',
-    'report',
-    'mkactivity',
-    'checkout',
-    'merge',
-    'm-search',
-    'notify',
-    'subscribe',
-    'unsubscribe',
-    'patch',
-    'search',
-    'connect'
-];
-for (const route of routes) {
+
+
+
+for (const route of loggedInRoutes) {
     for (const method in route.routeHandler) {
         // if the method is allowed then bind the route to it
         if (allowedRouteMethods.indexOf(method) !== -1) {
