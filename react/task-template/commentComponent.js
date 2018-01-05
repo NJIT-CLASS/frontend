@@ -81,9 +81,9 @@ class CommentComponent extends React.Component{
       this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
     }
 
-    endEdit(response) {
+    endEdit(status, target, targetID) {
       this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
-      if (response != 'saved') {
+      if (status != 'saved') {
         this.setState({editExistingComment: false});
       }
     }
@@ -279,6 +279,8 @@ class CommentComponent extends React.Component{
             typeName = strings.FlagLabel;
         }
 
+        console.log(this.props.TaskID, 'this one');
+
         return (
             <div style={{margin: '0 auto'}}>
             {(!this.state.editExistingComment && (this.props.Comment.HideType != 'comment')) &&
@@ -379,14 +381,13 @@ class CommentComponent extends React.Component{
 
               </div>)
           }
-
             {this.state.editExistingComment &&
               (<div style={{marginLeft: this.props.Comment.ReplyLevel*30}} className="comment">
                   <CommentEditorComponent
                     UserID={this.props.Comment.UserID}
                     CurrentUser={this.props.CurrentUser}
                     TargetID={this.props.Comment.TargetID}
-                    TaskID={this.props.Comment.TaskID}
+                    TaskID={this.props.TaskID}
                     Update={this.endEdit.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel}
                     Parents={this.props.Comment.Parents}
@@ -400,6 +401,7 @@ class CommentComponent extends React.Component{
                     Admin={this.props.Admin}
                     Status={this.props.Comment.Status}
                     CommentTarget={this.props.Comment.CommentTarget}
+                    CommentTargetList={this.props.CommentTargetList}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                     Type={this.props.Comment.Type}
                     Edit={true}
@@ -415,7 +417,7 @@ class CommentComponent extends React.Component{
                   <CommentEditorComponent
                     UserID={this.props.CurrentUser}
                     TargetID={this.props.Comment.TargetID}
-                    TaskID={this.props.Comment.TaskID}
+                    TaskID={this.props.TaskID}
                     Update={this.endReply.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel + 1}
                     Parents={this.props.Comment.CommentsID}
@@ -432,18 +434,18 @@ class CommentComponent extends React.Component{
                   <CommentEditorComponent
                     UserID={this.props.CurrentUser}
                     TargetID={this.props.Comment.TargetID}
-                    TaskID={this.props.Comment.TaskID}
+                    TaskID={this.props.TaskID}
                     Update={this.endReply.bind(this)}
                     ReplyLevel={this.props.Comment.ReplyLevel + 1}
                     Parents={this.props.Comment.CommentsID}
                     CommentTarget={this.props.Comment.CommentTarget}
                     AssignmentInstanceID={this.props.Comment.AssignmentInstanceID}
                     SetFlag={true}
-                    CommentTargetList={this.props.CommentTargetList}
+                      CommentTargetList={this.props.CommentTargetList}
                   />
                   <div className="title"><a onClick={this.displayNewFlagEditor.bind(this)}>{strings.CancelFlagLabel}</a></div>
-                </div>)
-            }
+              </div>)
+          }
 
           </div>
         );
