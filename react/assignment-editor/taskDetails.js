@@ -101,6 +101,16 @@ class TaskDetailsComponent extends React.Component {
             ShowTaskLevelParams: !this.state.ShowTaskLevelParams
         });
     }
+
+    mapFieldDistToOptions(){
+        console.log('Feild Dist:', this.props.TaskActivityData.TA_fields.field_distribution);
+        return Object.keys(this.props.TaskActivityData.TA_fields.field_distribution).map(function(field, index){
+            return {id: field, name: this.props.TaskActivityData.TA_fields[field].title, weight: this.props.TaskActivityData.TA_fields.field_distribution[field]};
+        },this);
+
+
+    }
+
     render() {
         const strings = this.props.Strings;
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
@@ -114,7 +124,6 @@ class TaskDetailsComponent extends React.Component {
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
-        console.log('Getting stuff:', this.props.workflowIndex, this.props.index, this.props.TaskActivityData);
         const title = this.props.TaskActivityData.TA_display_name;
 
         if (!this.props.isOpen) {
@@ -1203,6 +1212,24 @@ class TaskDetailsComponent extends React.Component {
 
             </div>);
 
+        let fieldDistWeights = this.mapFieldDistToOptions();
+        let fieldDistView = null;
+        if(fieldDistWeights.length > 1){
+            fieldDistView = <ul>
+                {
+                    fieldDistWeights.map((fieldObject) => {
+                        return <li className="thin-number-field" key={'workflowWeight' + fieldObject.id}>
+                            <label>{fieldObject.name}</label>
+                            <NumberField  key = {'probDet-NumF '+fieldObject.id} allowDecimals={false}
+                                min={0} max={100}
+                                onChange={this.props.callTaskFunction.bind(this,'changeTaskFieldDist', fieldObject.id, this.props.index, this.props.workflowIndex)}
+                                value={fieldObject.weight} />
+                        </li>;
+                    })
+                }
+            </ul>;
+        }
+
         if(this.state.ShowUserFields){
             userInputFields = (
                 <div key={`User Input Fields for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
@@ -1211,6 +1238,7 @@ class TaskDetailsComponent extends React.Component {
                         <span className="fa fa-angle-up" style={{float: 'right'}}></span>
                     </h2>
                     <div className="section-content">
+                        {fieldDistView}
                         {inputFields}
                         <div className="inner block" >
                             {fieldButton}

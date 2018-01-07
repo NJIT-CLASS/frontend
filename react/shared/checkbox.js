@@ -45,7 +45,7 @@ class Checkbox extends React.Component{
     }
 }
 
-Checkbox.PropTypes = {
+Checkbox.propTypes = {
     click: PropTypes.func,
     isClicked: PropTypes.bool,
     style: PropTypes.object,

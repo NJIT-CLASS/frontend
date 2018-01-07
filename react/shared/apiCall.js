@@ -16,6 +16,9 @@ const getCall = function(endpoint, queryStrings, cb){
     };
 
     request(options, (err, status, body) => {
+        if(status.statusCode === 410 || status.statusCode === 401){
+            return window.location.href = '/';
+        }
         cb(err, status, body);
     });
 };
@@ -36,6 +39,9 @@ const postCall = function(endpoint, postVars, cb ){
     };
 
     request(options, (err, status, body) => {
+        if(status.statusCode === 410 || status.statusCode === 401){
+            return window.location.href = '/';
+        }
         cb(err, status, body);
     });
 
@@ -57,6 +63,9 @@ const putCall = function(endpoint, postVars, cb ){
     };
 
     request(options, (err, status, body) => {
+        if(status.statusCode === 410 || status.statusCode === 401){
+            return window.location.href = '/';
+        }
         cb(err, status, body);
     });
 
@@ -79,6 +88,9 @@ const deleteCall = function(endpoint, postVars, cb ){
     };
 
     request(options, (err, status, body) => {
+        if(status.statusCode === 410 || status.statusCode === 401){
+            return window.location.href = '/';
+        }
         cb(err, status, body);
     });
 
