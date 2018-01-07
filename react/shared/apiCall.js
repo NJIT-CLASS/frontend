@@ -16,7 +16,7 @@ const getCall = function(endpoint, queryStrings, cb){
     };
 
     request(options, (err, status, body) => {
-        if(status.statusCode === 410 || status.statusCode === 401){
+        if(status.statusCode === 410 || status.statusCode === 401 || status.statusCode === 403){
             return window.location.href = '/';
         }
         cb(err, status, body);

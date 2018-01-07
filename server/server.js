@@ -291,10 +291,8 @@ app.use((req, res, next) => {
 
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
-    console.log();
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-            console.log('statusCode: ', statusCode);
 
             if (err || statusCode === 500) {
                 delete req.session.userId; 
