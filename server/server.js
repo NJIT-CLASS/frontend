@@ -290,117 +290,10 @@ app.use((req, res, next) => {
 // });
 
 //Gets user profile details from backend(also checks for issues with connecting to backend)
-app.use((req, res, next) => {
-    if (req.App.user && req.App.user.userId) {
-        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
 
-            if (err || statusCode === 500) {
-                delete req.session.userId; 
-                console.log('Had trouble fetching user profile. Check the backend server or API_URL');
-                res.redirect('/');
-                return;
-            }
-
-            if (body.User == undefined) {
-                delete req.session.userId;
-                res.send('Not Found').end();
-                return;
-            }
-
-            const user = body.User; // JV - grabbed user's information
-            req.App.user.email = user.UserLogin.Email;
-            req.App.user.firstName = user.FirstName;
-            req.App.user.lastName = user.LastName;
-            req.App.user.type = user.Instructor ? 'teacher' : 'student';
-            req.App.user.admin = user.Admin;
-            next();
-        });
-    }
-
-    next();
-});
 
 //Prepares render function to support options specified in route configs
-app.use((req, res, next) => {
-    const render = res.render;
 
-    res.render = function(template, options, cb) {
-        options = options ? options : {};
-
-        options.template = template;
-        options.user = req.App.user;
-        
-        if (!('showHeader' in options)) {
-            options.showHeader = true;
-        }
-
-        options.language = req.App.lang;
-        options.languageOptions = req.App.langOptions;
-        
-
-        if (options.loggedOut) {
-            options.layout = 'logged_out';
-
-            return render.call(this, template, options, cb);
-        }
-        if (req.App.user && !options[req.App.user.type]) {
-            if (req.App.user.admin && options.admin) {
-            } else {
-                return res.sendStatus(404);
-            }
-        }
-        options.showMasqueradingOption = req.App.user.admin
-            ? req.App.user.admin
-            : false; //new value, not working yet
-
-        var sidebarNavItems = [];
-
-        for (const route in routes) {
-            var currentRoute = _.clone(routes[route]);
-            if (!currentRoute.sidebar) {
-                continue;
-            }
-
-            if (currentRoute.route === options.route) {
-                currentRoute.selected = true;
-            } else {
-                currentRoute.selected = false;
-            }
-
-            currentRoute.title = __(currentRoute.title);
-
-            if (req.App.user.type === 'student') {
-                if (currentRoute.access.students) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else if (
-                req.App.user.type == 'teacher' &&
-				req.App.user.admin == 0
-            ) {
-                if (currentRoute.access.instructors) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else {
-                sidebarNavItems.push(currentRoute);
-            }
-        }
-
-        options.sidebarNavItems = sidebarNavItems;
-
-        // only allow logged out users access to pages that are meant for logged out users
-        if (!req.App.user || !req.App.user.userId) {
-            return res.sendStatus(404);
-        }
-
-        render.call(this, template, options, cb);
-    };
-
-    next();
-});
 
 
 //Setup up logged out routes
@@ -418,9 +311,8 @@ for (const route of loggedOutRoutes) {
                                 options = options ? options : {};
                                 options.loggedOut = route.access.loggedOut;
                                 options.route = route.route;
-                                options.student = route.access.students;
-                                options.teacher = route.access.instructors;
-                                options.admin = route.access.admins;
+                                options.language = req.App.lang;
+                                options.languageOptions = req.App.langOptions;
                                 // if the render doesn't set the title then set it by the route
                                 if (!('title' in options)) {
                                     options.title = `${route.title} | CLASS Learning System`;
@@ -432,10 +324,7 @@ for (const route of loggedOutRoutes) {
                                 }
 
                                 // pass masquerading info to template
-                                if (req.session.masqueraderId && options.route !== '/') {
-                                    options.masquerading = true;
-                                    options.userEmail = req.App.user.email;
-                                }
+                                
 
                                 previousRender.call(
                                     this,
@@ -457,6 +346,7 @@ for (const route of loggedOutRoutes) {
 
 app.use((req,res,next) => {
     
+    console.log('Session check', req.session);
     if( !'userId' in req.session)
         return  res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     
@@ -466,6 +356,38 @@ app.use((req,res,next) => {
     next();
 
 
+});
+
+app.use((req, res, next) => {
+    if (req.App.user && req.App.user.userId) {
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
+
+            if (err || statusCode === 500) {
+                delete req.session.userId; 
+                delete req.session.token;
+                console.log('Had trouble fetching user profile. Check the backend server or API_URL');
+                res.redirect('/');
+                return;
+            }
+
+            if (body.User == undefined) {
+                delete req.session.userId;
+                delete req.session.token;
+                res.send('Not Found').end();
+                return;
+            }
+
+            const user = body.User; // JV - grabbed user's information
+            req.App.user.email = user.UserLogin.Email;
+            req.App.user.firstName = user.FirstName;
+            req.App.user.lastName = user.LastName;
+            req.App.user.type = user.Instructor ? 'teacher' : 'student';
+            req.App.user.admin = user.Admin;
+            next();
+        });
+    }
+
+    next();
 });
 
 // APIs to access backend API routes through frontend server
@@ -629,6 +551,86 @@ app.delete('/api/file/delete/', function(req,res){
 
 // Setup routes 
 
+app.use((req, res, next) => {
+    const render = res.render;
+
+    res.render = function(template, options, cb) {
+        options = options ? options : {};
+
+        options.template = template;
+        options.user = req.App.user;
+        
+        if (!('showHeader' in options)) {
+            options.showHeader = true;
+        }
+
+        options.language = req.App.lang;
+        options.languageOptions = req.App.langOptions;
+        
+
+        if (options.loggedOut) {
+            options.layout = 'logged_out';
+
+            return render.call(this, template, options, cb);
+        }
+        if (req.App.user && !options[req.App.user.type]) {
+            if (req.App.user.admin && options.admin) {
+            } else {
+                return res.sendStatus(404);
+            }
+        }
+        options.showMasqueradingOption = req.App.user.admin
+            ? req.App.user.admin
+            : false; //new value, not working yet
+
+        var sidebarNavItems = [];
+
+        for (const route in routes) {
+            var currentRoute = _.clone(routes[route]);
+            if (!currentRoute.sidebar) {
+                continue;
+            }
+
+            if (currentRoute.route === options.route) {
+                currentRoute.selected = true;
+            } else {
+                currentRoute.selected = false;
+            }
+
+            currentRoute.title = __(currentRoute.title);
+
+            if (req.App.user.type === 'student') {
+                if (currentRoute.access.students) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            } else if (
+                req.App.user.type == 'teacher' &&
+				req.App.user.admin == 0
+            ) {
+                if (currentRoute.access.instructors) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            } else {
+                sidebarNavItems.push(currentRoute);
+            }
+        }
+
+        options.sidebarNavItems = sidebarNavItems;
+
+        // only allow logged out users access to pages that are meant for logged out users
+        if (!req.App.user || !req.App.user.userId) {
+            return res.sendStatus(404);
+        }
+
+        render.call(this, template, options, cb);
+    };
+
+    next();
+});
 
 
 for (const route of loggedInRoutes) {
