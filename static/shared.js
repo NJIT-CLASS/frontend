@@ -16,52 +16,6 @@ function addLanguageQuery(str) {
     }
 }
 
-function uploadFiles(e, url, vars){
-    e.preventDefault();
-
-    if(!document.getElementById('upload-input')){
-        return;
-    }
-
-    let formData = new FormData();
-    formData.append('uploadTarget', e.target.name);
-    [].forEach.call(document.getElementById('upload-input').files, function (file) {
-        formData.append('files', file);
-    });
-
-    if(vars !== undefined){
-        Object.keys(vars).forEach(function(key){
-            formData.append(`${key}`, vars[key]);
-        });
-    }
-    let inputParent = document.getElementById('upload-input').parentNode;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open( 'POST', `${url}/api/upload/profile-picture`, true);
-    xhr.onreadystatechange = function(){
-        if(this.readyState == 4) {
-            if(this.status == 200){
-                console.log('Uploads successful', this.responseText);
-                inputParent = document.getElementById('upload-started').parentNode;
-                inputParent.removeChild(document.getElementById('upload-started'));
-                inputParent.insertAdjacentHTML('beforeend','<div id="upload-finished">Upload Complete</div>');
-            }
-            else{
-                console.log('Sorry, there was an error', this.responseText);
-            }
-        }
-        else{
-            console.log('Uploading...');
-        }
-
-    };
-    xhr.send(formData);
-    inputParent.removeChild(document.getElementById('upload-input'));
-    inputParent.insertAdjacentHTML('beforeend','<div id="upload-started"><i class="fa fa-spinner" aria-hidden="true"></i></div>');
-
-    //e.submit();
-
-}
 
 function showMessage(message){
     document.getElementById('message-view').innerText = message;
