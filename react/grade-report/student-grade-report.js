@@ -5,53 +5,57 @@ import ReactTable from 'react-table';
 import Collapsible from 'react-collapsible';
 import TableComponent from '../shared/tableComponent';
 
-var componentData = {
-    userID: '',
-    sections:{},
-    assignments:{},
-};
 
 class StudentGradeReport extends React.Component {
 
     constructor(props) {
         super(props);
 
-        componentData.userID = props.UserID;
-
         this.state = {
-            loaded: false
+            loaded: false,
+            userID: props.UserID,
+            sections:[],
         };
     }
 
     componentDidMount() {
-        this.getSections(componentData.userID);
+        this.getSections(this.state.userID);
     }
 
     getSections(userID){
-            apiCall.get(`/getActiveEnrolledSections/${componentData.userID}`,{},(err,status,body)=>{
-                componentData.sections = body.Sections;
-                this.getAssignments(body);
+        //Add 'SectionID' field to Section model at corresponding endpoint
+            apiCall.get(`/getActiveEnrolledCourses/${this.state.userID}`,{},(err,status,body)=>{
+                if(status.statusCode === 200){
+                    body.Courses.forEach(course=>{
+                        if(course.Role=="Student"){
+                            course.Section["assignments"]=[];
+                            this.state.sections.push(course.Section);
+                        }
+                    });
+                    this.getAssignments();
+                }
             });
     }
 
-    getAssignments(body){
-        var numSections = Object.keys(body.Sections).length;
-
+    getAssignments(){
+        var numSections = this.state.sections.length;
+        var index=0;
         if(numSections === 0){
             this.setState({loaded:true});
             return;
         }
 
-        body.Sections.forEach(section=>{
+        this.state.sections.forEach(section=>{  
             var sectionID = section.SectionID;
             apiCall.get(`/getActiveAssignmentsForSection/${sectionID}`,{},(err,status,body)=>{
                 if(body.Assignments.length != 0){
-                    componentData.assignments[sectionID]=body.Assignments;
+                    this.state.assignments[index++]=body.Assignments;
                 } else {
-                    componentData.assignments[sectionID]=[];
+                    this.state.assignments[index++]=[];
                 }
-                if(Object.keys(componentData.assignments).length === numSections){
-                    this.setState({loaded:true});
+                if(index === numSections){
+                    console.log(this.state.sections);
+                    //this.setState({loaded:true});
                 }
             });
         });        
@@ -62,9 +66,9 @@ class StudentGradeReport extends React.Component {
     }
 
     render(){
-        let sections = componentData.sections;
-        let assignments = componentData.assignments;
-        let assignmentDetails = componentData.assignmentDetails;
+        let sections = this.state.sections;
+        let assignments = this.state.assignments;
+        let assignmentDetails = this.state.assignmentDetails;
         let loaded = this.state.loaded;
         let loadedAssignmentDetails = this.state.loadedAssignmentDetails;
         let loadedOverviewDetails = this.state.loadedOverviewDetails;

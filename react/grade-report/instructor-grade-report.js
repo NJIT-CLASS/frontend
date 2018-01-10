@@ -28,7 +28,6 @@ class InstructorGradeReport extends React.Component {
     }
 
     componentDidMount() {
-        console.log("hello");
         this.getSections(this.componentData.userID);
     }
 
@@ -43,7 +42,7 @@ class InstructorGradeReport extends React.Component {
                     this.getAssignmentsBySection(body.Sections);
                 }
             } else {
-                this.setState({error:notification("error form-error","Unable to retrieve sections, please wait and try again.")})
+                this.setState({error:this.notification("error form-error","Unable to retrieve sections, please wait and try again.")})
             }
         });
     }
@@ -78,7 +77,13 @@ class InstructorGradeReport extends React.Component {
         this.componentData.assignments[sectionID].forEach(assignment => {
             apiCall.post(`/getAssignmentGrades/${assignment.AssignmentInstanceID}`,{},(err,status,body)=>{
                 body.SectionUsers.forEach(user => {
-                    this.componentData.enrolledStudents[user.UserID].gradedAssignments.push({assignmentName:body.AssignmentInstance.Assignment.DisplayName,assignmentGrade:user.assignmentGrade.Grade});
+                    if(user.Role === "Student"){
+                        var ag = "-";
+                        if(user.assignmentGrade){
+                            ag = user.assignmentGrade.Grade;
+                        }
+                        this.componentData.enrolledStudents[user.UserID].gradedAssignments.push({assignmentName:body.AssignmentInstance.Assignment.DisplayName,assignmentGrade:ag});
+                    }
                 });
                 this.setState({loadedOverviewDetails:true,loadedAssignmentDetails:false});
             });
@@ -98,19 +103,22 @@ class InstructorGradeReport extends React.Component {
                 }
             });
 
+            console.log(this.componentData);
+
             this.getAssignmentsByStudent(sectionID);
         });
     }
 
     assignmentOnClick(AssignmentInstanceID){
         apiCall.post(`/getAssignmentGrades/${AssignmentInstanceID}`,{},(err,status,body)=>{
+            console.log(body);
             this.componentData.assignmentDetails = body;
             this.setState({loadedAssignmentDetails:true,loadedOverviewDetails:false});
         });
     }
 
     exportGrades(){
-
+        console.log(this.componentData);
     }
 
     notification(classType, message){
@@ -127,6 +135,7 @@ class InstructorGradeReport extends React.Component {
         let sections = this.componentData.sections;
         let assignments = this.componentData.assignments;
         let assignmentDetails = this.componentData.assignmentDetails;
+        let enrolledStudents = this.componentData.enrolledStudents;
         let loaded = this.state.loaded;
         let loadedAssignmentDetails = this.state.loadedAssignmentDetails;
         let loadedOverviewDetails = this.state.loadedOverviewDetails;
@@ -139,6 +148,7 @@ class InstructorGradeReport extends React.Component {
                             {Header: "",accessor: 'Course',},
                             {Header: "",accessor: 'Date',}
                         ]} noDataText="Please choose an assignment or overview"/>);
+        let excelSheet = null;
 
         //Make sure component has loaded
         if(!loaded){
@@ -157,7 +167,14 @@ class InstructorGradeReport extends React.Component {
             const tableData = assignmentDetails.SectionUsers.map( user => {
 
                 if(!user.assignmentGrade){
-                    return null;
+                    nestedTables.push(<div><h3>No grade data</h3></div>);
+                    return {
+                        firstName: user.User.FirstName,
+                        lastName: user.User.LastName,
+                        //email:user.User.UserContact.Email,
+                        email:"example@example.com",
+                        grade:"-"
+                    };
                 }
 
                 var regularGrades = [];
@@ -205,10 +222,12 @@ class InstructorGradeReport extends React.Component {
                 return {
                     firstName: user.User.FirstName,
                     lastName: user.User.LastName,
-                    email:user.User.UserContact.Email,
+                    //email:user.User.UserContact.Email,
+                    email:"example@example.com",
                     grade:user.assignmentGrade.Grade
                 };
             });
+            console.log(tableData);
 
             let assignmentName = assignmentDetails.AssignmentInstance.Assignment.DisplayName;
             let section = assignmentDetails.AssignmentInstance.Section.Course.Number + " " + assignmentDetails.AssignmentInstance.Section.Course.Name + " " + assignmentDetails.AssignmentInstance.Section.Name;
@@ -234,14 +253,14 @@ class InstructorGradeReport extends React.Component {
 
                  var nestedTableRows = [];
                  this.componentData.enrolledStudents[studentID].gradedAssignments.forEach(assignment=>{
-                     nestedTableRows.push((<tr><td>{assignment.assignmentName}</td><td></td><td>{assignment.assignmentGrade}</td></tr>));
+                     nestedTableRows.push((<tr><td>{assignment.assignmentName}</td><td>{assignment.assignmentGrade}</td></tr>));
                  });
 
                 nestedTables.push( 
                     <table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
                             <tr>
-                                <th>Assignment</th><th>Weight</th><th>Final Grade</th>
+                                <th>Assignment</th><th>Final Grade</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,7 +277,7 @@ class InstructorGradeReport extends React.Component {
                 }
             });
 
-            tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/><button type="button" onClick={this.exportGrades.bind(this)}>Export Grades</button></div>);
+            
 
             tableView = (<ReactTable
             defaultPageSize={10}
@@ -278,6 +297,29 @@ class InstructorGradeReport extends React.Component {
             noDataText="Please choose an assignment or overview"
             SubComponent={(row) => {return nestedTables[row.index]; }}
             />);
+
+            // Build export page ===============================================================================
+            var collumns = [];
+            collumns = assignments[this.componentData.sectionID].map(assignment =>{
+                return (<Workbook.Column label={assignment.Assignment.DisplayName} value={assignment.Assignment.DisplayName}/>);
+            });
+            collumns.unshift(<Workbook.Column label="Name" value="Name"/>);
+
+            var excelData = [];
+            for(var key in enrolledStudents){
+                var row = {Name:enrolledStudents[key].User.FirstName+" "+enrolledStudents[key].User.LastName};
+                enrolledStudents[key].gradedAssignments.forEach(assignment=>{
+                    row[assignment.assignmentName]=assignment.assignmentGrade;
+                });
+                excelData.push(row);
+            }
+            var exportGrades = (<Workbook filename={sectionName+".xlsx"} element={<button type="button">Export Grades</button>}>
+                <Workbook.Sheet data={excelData} name={sectionName}>
+                    {collumns}
+                </Workbook.Sheet>
+            </Workbook>);
+            //==================================================================================================
+            tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/>{exportGrades}</div>);
         }
 
 
@@ -299,7 +341,7 @@ class InstructorGradeReport extends React.Component {
                     return(<li className="select-class-element"><a href="#" onClick={this.assignmentOnClick.bind(this,assignment.AssignmentInstanceID)}>{assignment.Assignment.DisplayName}</a></li>);
                 });
 
-                return(<Collapsible trigger={sectionName} transitionTime="200" className="select-class" openedClassName="select-class">
+                return(<Collapsible trigger={sectionName} transitionTime={200} className="select-class" openedClassName="select-class">
                         {nestedOverview}
                         {nestedAssignments}
                     </Collapsible>

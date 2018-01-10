@@ -29,7 +29,7 @@ export default {
     blockedSuccess:' was blocked successfully',
     unblockedFailure:' was unable to be unblocked',
     blockedFailure:' was unable to be blocked',
-    pwResetSuccess:': password was reset successfully',
+    pwResetSuccess:': email sent to reset password',
     pwResetFailure:': password was unable to be reset',
     removeSuccess:' was removed successfully',
     removeFailure:' is unable to be removed'

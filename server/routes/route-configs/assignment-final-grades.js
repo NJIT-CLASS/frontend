@@ -7,7 +7,7 @@ module.exports = {
     access: {
         admins: true,
         instructors: true,
-        students: false,
+        students: true,
         loggedOut: false
     },
     icon: 'address-book',

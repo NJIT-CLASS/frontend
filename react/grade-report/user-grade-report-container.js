@@ -28,7 +28,7 @@ class GradeReport extends React.Component {
             if(isInstructor){
                 this.setState({instructor:true, loaded:true});
             }
-            else if(!isAdmin){
+            else{
                 this.setState({student:true, loaded:true});
             }
         });

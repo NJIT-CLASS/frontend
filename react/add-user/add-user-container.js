@@ -106,7 +106,8 @@ class AddUserContainer extends React.Component {
 
 
         apiCall.post('/addUser', vars, (err, res, body) => {
-            
+            console.log(body);
+            console.log(status);
             if (res.statusCode != 200){
                 showMessage(this.state.Strings.SubmitError);
             } else {
