@@ -22,15 +22,15 @@ let uglifyes = require('gulp-uglify-es').default;
 let cleanCSS = require('gulp-clean-css');
 
 const compileReact = (rootFile, outputName, watch) => {
-    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true })).transform(babelify/*, {
-        global: true,
-    }*/);
+    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }));
 
     function rebundle() {
 
         if(process.env.NODE_ENV === 'production'){
 
-            bundler
+            bundler.transform(babelify/*, {
+                global: true,
+            }*/)
                 .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
@@ -39,7 +39,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglifyes())
+                //.pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
@@ -47,7 +47,7 @@ const compileReact = (rootFile, outputName, watch) => {
 
         } else{
 
-            bundler
+            bundler.transform(babelify)
                 .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
@@ -56,7 +56,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglifyes())
+                //.pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');

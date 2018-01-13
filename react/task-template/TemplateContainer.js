@@ -57,6 +57,7 @@ class TemplateContainer extends React.Component {
             TabSelected: 0,
             Strings: strings,
             NotAllowed: false,
+            NotAllowedMessage: '',
             IsRevision: false,
             CommentTargetList: [],
             BoxHide: false
@@ -108,9 +109,9 @@ class TemplateContainer extends React.Component {
                     let currentTaskStatus = '';
 
                     if (bod.error === true) {
-                        console.log('Error message', bod.message);
                         return this.setState({
                             NotAllowed: true,
+                            NotAllowedMessage: bod.message,
                             Loaded: true,
                         });
                     } else {
@@ -484,7 +485,7 @@ class TemplateContainer extends React.Component {
         }
 
         if (this.state.NotAllowed === true) {
-            renderView = (<div>{this.state.Strings.NotAllowed}</div>);
+            return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
         } else {
             renderView = (<TasksList
                 TasksArray={this.state.Data}

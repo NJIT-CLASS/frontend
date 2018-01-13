@@ -104,6 +104,9 @@ class TaskDetailsComponent extends React.Component {
 
     mapFieldDistToOptions(){
         console.log('Feild Dist:', this.props.TaskActivityData.TA_fields.field_distribution);
+        if(this.props.TaskActivityData.TA_fields.field_distribution === undefined){
+            return [];
+        }
         return Object.keys(this.props.TaskActivityData.TA_fields.field_distribution).map(function(field, index){
             return {id: field, name: this.props.TaskActivityData.TA_fields[field].title, weight: this.props.TaskActivityData.TA_fields.field_distribution[field]};
         },this);
@@ -718,41 +721,40 @@ class TaskDetailsComponent extends React.Component {
                         <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, false)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Dispute', this.props.index, this.props.workflowIndex)} />
                     </div>
                 );
-                assessConsolidateOptions = this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)
-                    ? (
-                        <div>
-                            <label>{strings.GradingThreshold}</label>
-                            <Tooltip Text={strings.TaskConsolidateThresholdMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-grading-threshold-tooltip`} />
+                if(this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)){
+                    assessConsolidateOptions = <div>
+                        <label>{strings.GradingThreshold}</label>
+                        <Tooltip Text={strings.TaskConsolidateThresholdMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-grading-threshold-tooltip`} />
 
-                            <br />
-                            <RadioGroup
-                                selectedValue={this.props.callTaskFunction('getTriggerConsolidationRadioOption', this.props.index, this.props.workflowIndex, false)} onChange={(val) => {
-                                    this.props.callTaskFunction('changeRadioData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex, val);
-                                    const newGrades = this.state.GradingThreshold;
-                                    newGrades[1] = val;
-                                    this.setState({ GradingThreshold: newGrades });
-                                }}
-                            >
-                                <label>
-                                    {strings.Points}
-                                    <Radio value="points" />
-                                </label>
-                                <label>
-                                    {strings.Percent}
-                                    <Radio value="percent" />
-                                </label>
+                        <br />
+                        <RadioGroup
+                            selectedValue={this.props.callTaskFunction('getTriggerConsolidationRadioOption', this.props.index, this.props.workflowIndex, false)} onChange={(val) => {
+                                this.props.callTaskFunction('changeRadioData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex, val);
+                                const newGrades = this.state.GradingThreshold;
+                                newGrades[1] = val;
+                                this.setState({ GradingThreshold: newGrades });
+                            }}
+                        >
+                            <label>
+                                {strings.Points}
+                                <Radio value="points" />
+                            </label>
+                            <label>
+                                {strings.Percent}
+                                <Radio value="percent" />
+                            </label>
 
-                            </RadioGroup>
-                            <br />
-                            <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
-                            <br />
-                            <label>{strings.ToBeConsolidatedAssessment}</label>
-                            <Tooltip Text={strings.TaskConsolidateFunctionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-consolidation-function-tooltip`} />
+                        </RadioGroup>
+                        <br />
+                        <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
+                        <br />
+                        <label>{strings.ToBeConsolidatedAssessment}</label>
+                        <Tooltip Text={strings.TaskConsolidateFunctionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-consolidation-function-tooltip`} />
 
-                            <Select options={consolidationTypeValues} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
-                        </div>
-                    )
-                    : null;
+                        <Select options={consolidationTypeValues} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
+                    </div>;
+                   
+                }
                 assessShowConsol = this.props.callTaskFunction('getAssessNumberofParticipants', this.props.index, this.props.workflowIndex) > 1
                     ? (
                         <div>

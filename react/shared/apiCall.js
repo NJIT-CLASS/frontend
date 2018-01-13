@@ -16,8 +16,10 @@ const getCall = function(endpoint, queryStrings, cb){
     };
 
     request(options, (err, status, body) => {
+        console.log('Front status', status.statusCode, status.statusMessage);
         if(status.statusCode === 410){
-            return window.location.href = '/';
+            let currentLocation = window.location.href.replace(`${window.location.protocol}//${window.location.host}/`, '');
+            return window.location.href = `/?url=${encodeURIComponent(currentLocation)}`;
         }
         cb(err, status, body);
     });
@@ -39,8 +41,9 @@ const postCall = function(endpoint, postVars, cb ){
     };
 
     request(options, (err, status, body) => {
-        if(status.statusCode === 410 || status.statusCode === 401){
-            return window.location.href = '/';
+        if(status.statusCode === 410 ){
+            let currentLocation = window.location.href.replace(`${window.location.protocol}//${window.location.host}/`, '');
+            return window.location.href = `/?url=${encodeURIComponent(currentLocation)}`;
         }
         cb(err, status, body);
     });
@@ -63,8 +66,9 @@ const putCall = function(endpoint, postVars, cb ){
     };
 
     request(options, (err, status, body) => {
-        if(status.statusCode === 410 || status.statusCode === 401){
-            return window.location.href = '/';
+        if(status.statusCode === 410 ){
+            let currentLocation = window.location.href.replace(`${window.location.protocol}//${window.location.host}/`, '');
+            return window.location.href = `/?url=${encodeURIComponent(currentLocation)}`;
         }
         cb(err, status, body);
     });

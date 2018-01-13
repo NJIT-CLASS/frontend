@@ -108,6 +108,179 @@ app.use(function(req,res,next){
     next();
 });
 
+// set the language cookie if it has a lang query param
+app.use((req, res, next) => {
+    // language options
+    const languages = react_consts.LANGUAGES;
+    // default language
+    res.locale = 'en';
+
+    if(req.headers['accept-language']){
+        //set language to user's browser configuration
+        let locales = languages.map(lang => lang.locale);
+        let browserLangs = req.headers['accept-language'].match(/[a-z]{2}/g);
+        for(let idx = 0; idx < browserLangs.length; idx +=1){
+            if(browserLangs[idx] in locales){
+                res.locale = browserLangs[idx];
+            }
+        }
+
+        locales = null;
+        browserLangs = null;
+
+    }
+
+    if ('lang' in req.query) {
+        req.session.lang = req.query.lang;
+        res.locale = req.query.lang;
+    }
+
+    if ('lang' in req.session) {
+        res.locale = req.session.lang;
+    }
+
+    req.App.langOptions = [];
+
+    for (const lang of languages) {
+        if (lang.locale === res.locale) {
+            req.App.lang = lang.language;
+        } else {
+            req.App.langOptions.push(lang);
+        }
+    }
+
+    next();
+});
+
+var __;
+
+
+//Sets up the Handlebars template engine for Express
+app.use((req, res, next) => {
+    translation(redisClient).setupTranslations(res.locale, translateFunc => {
+        __ = translateFunc;
+
+        app.set('views', `${__dirname}/views/`);
+        app.engine('.html', templates.setup(__).engine);
+        app.set('view engine', '.html');
+
+        next();
+    });
+});
+
+//Login page
+// app.get('/',loginGetRoute);
+// app.post('/',loginPostRoute);
+
+//Stores the user session Id into req.App.user object
+app.use((req, res, next) => {
+    if ('userId' in req.session) {
+        req.App.user = {};
+        req.App.user.userId = req.session.userId;
+    }
+    next();
+});
+
+
+//Prepares render function to support options specified in route configs
+
+
+
+//Setup up logged out routes
+for (const route of loggedOutRoutes) {
+    for (const method in route.routeHandler) {
+        // if the method is allowed then bind the route to it
+        if (allowedRouteMethods.indexOf(method) !== -1) {
+            app[method](
+                route.route,
+                (function() {
+                    return (req, res, next) => {
+                        const previousRender = res.render;
+                        res.render = (function() {
+                            return function(template, options, cb) {
+                                options = options ? options : {};
+                                options.loggedOut = route.access.loggedOut;
+                                options.route = route.route;
+                                options.language = req.App.lang;
+                                options.languageOptions = req.App.langOptions;
+                                // if the render doesn't set the title then set it by the route
+                                if (!('title' in options)) {
+                                    options.title = `${route.title} | CLASS Learning System`;
+                                }
+
+                                // set the page header to be the route title if the pageHeader is not set
+                                if (!('pageHeader' in options)) {
+                                    options.pageHeader = route.title;
+                                }
+
+                                // pass masquerading info to template
+                                
+
+                                previousRender.call(
+                                    this,
+                                    template,
+                                    options,
+                                    cb
+                                );
+                            };
+                        })();
+                        next();
+
+                    };
+                })(),
+                route.routeHandler[method]
+            );
+        }
+    }
+}
+
+app.use((req,res,next) => {
+    
+    if( !'userId' in req.session)
+        return  res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+    
+    if(!'token' in req.session)
+        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
+        
+    next();
+
+
+});
+
+//Gets user profile details from backend(also checks for issues with connecting to backend)
+app.use((req, res, next) => {
+    if (req.App.user && req.App.user.userId) {
+        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
+
+            if (err || statusCode === 500) {
+                delete req.session.userId; 
+                delete req.session.token;
+                console.log('Had trouble fetching user profile. Check the backend server or API_URL');
+                res.redirect('/');
+                return;
+            }
+
+            if (body.User == undefined) {
+                delete req.session.userId;
+                delete req.session.token;
+                res.send('Not Found').end();
+                return;
+            }
+
+            const user = body.User; // JV - grabbed user's information
+            req.App.user.email = user.UserLogin.Email;
+            req.App.user.firstName = user.FirstName;
+            req.App.user.lastName = user.LastName;
+            req.App.user.type = user.Instructor ? 'teacher' : 'student';
+            req.App.user.admin = user.Admin;
+            next();
+        });
+    }
+
+    next();
+});
+
+
 //Translation APIs
 app.get('/api/getTranslatedString', (req, res) => {
     let locale = 'en';
@@ -200,194 +373,6 @@ app.post('/api/change-admin-status', (req, res) => {
             res.status(statusCode).end();
         }
     );
-});
-
-// set the language cookie if it has a lang query param
-app.use((req, res, next) => {
-    // language options
-    const languages = react_consts.LANGUAGES;
-    // default language
-    res.locale = 'en';
-
-    if(req.headers['accept-language']){
-        //set language to user's browser configuration
-        let locales = languages.map(lang => lang.locale);
-        let browserLangs = req.headers['accept-language'].match(/[a-z]{2}/g);
-        for(let idx = 0; idx < browserLangs.length; idx +=1){
-            if(browserLangs[idx] in locales){
-                res.locale = browserLangs[idx];
-            }
-        }
-
-        locales = null;
-        browserLangs = null;
-
-    }
-
-    if ('lang' in req.query) {
-        req.session.lang = req.query.lang;
-        res.locale = req.query.lang;
-    }
-
-    if ('lang' in req.session) {
-        res.locale = req.session.lang;
-    }
-
-    req.App.langOptions = [];
-
-    for (const lang of languages) {
-        if (lang.locale === res.locale) {
-            req.App.lang = lang.language;
-        } else {
-            req.App.langOptions.push(lang);
-        }
-    }
-
-    next();
-});
-
-var __;
-
-
-//Sets up the Handlebars template engine for Express
-app.use((req, res, next) => {
-    translation(redisClient).setupTranslations(res.locale, translateFunc => {
-        __ = translateFunc;
-
-        app.set('views', `${__dirname}/views/`);
-        app.engine('.html', templates.setup(__).engine);
-        app.set('view engine', '.html');
-
-        next();
-    });
-});
-
-//Login page
-// app.get('/',loginGetRoute);
-// app.post('/',loginPostRoute);
-
-//Stores the user session Id into req.App.user object
-app.use((req, res, next) => {
-    if ('userId' in req.session) {
-        req.App.user = {};
-        req.App.user.userId = req.session.userId;
-    }
-    next();
-});
-
-
-
-//Stores token from session into req.App.user object
-// app.use((req, res, next) => {
-//     if(req.App.user !== undefined){
-//         if('token' in req.session){
-//             req.App.user.token = req.session.token;
-//         }
-//     }
-    
-
-//     next();
-// });
-
-//Gets user profile details from backend(also checks for issues with connecting to backend)
-
-
-//Prepares render function to support options specified in route configs
-
-
-
-//Setup up logged out routes
-for (const route of loggedOutRoutes) {
-    for (const method in route.routeHandler) {
-        // if the method is allowed then bind the route to it
-        if (allowedRouteMethods.indexOf(method) !== -1) {
-            app[method](
-                route.route,
-                (function() {
-                    return (req, res, next) => {
-                        const previousRender = res.render;
-                        res.render = (function() {
-                            return function(template, options, cb) {
-                                options = options ? options : {};
-                                options.loggedOut = route.access.loggedOut;
-                                options.route = route.route;
-                                options.language = req.App.lang;
-                                options.languageOptions = req.App.langOptions;
-                                // if the render doesn't set the title then set it by the route
-                                if (!('title' in options)) {
-                                    options.title = `${route.title} | CLASS Learning System`;
-                                }
-
-                                // set the page header to be the route title if the pageHeader is not set
-                                if (!('pageHeader' in options)) {
-                                    options.pageHeader = route.title;
-                                }
-
-                                // pass masquerading info to template
-                                
-
-                                previousRender.call(
-                                    this,
-                                    template,
-                                    options,
-                                    cb
-                                );
-                            };
-                        })();
-                        next();
-
-                    };
-                })(),
-                route.routeHandler[method]
-            );
-        }
-    }
-}
-
-app.use((req,res,next) => {
-    
-    console.log('Session check', req.session);
-    if( !'userId' in req.session)
-        return  res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
-    
-    if(!'token' in req.session)
-        return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
-        
-    next();
-
-
-});
-
-app.use((req, res, next) => {
-    if (req.App.user && req.App.user.userId) {
-        return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-
-            if (err || statusCode === 500) {
-                delete req.session.userId; 
-                delete req.session.token;
-                console.log('Had trouble fetching user profile. Check the backend server or API_URL');
-                res.redirect('/');
-                return;
-            }
-
-            if (body.User == undefined) {
-                delete req.session.userId;
-                delete req.session.token;
-                res.send('Not Found').end();
-                return;
-            }
-
-            const user = body.User; // JV - grabbed user's information
-            req.App.user.email = user.UserLogin.Email;
-            req.App.user.firstName = user.FirstName;
-            req.App.user.lastName = user.LastName;
-            req.App.user.type = user.Instructor ? 'teacher' : 'student';
-            req.App.user.admin = user.Admin;
-            next();
-        });
-    }
-
-    next();
 });
 
 // APIs to access backend API routes through frontend server
