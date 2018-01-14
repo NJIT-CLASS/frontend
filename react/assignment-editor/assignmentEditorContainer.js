@@ -54,6 +54,10 @@ class AssignmentEditorContainer extends React.Component {
             Loaded: false,
             Courses: null,
             Semesters: null,
+            CourseSelected: {
+                Name: '',
+                Number: ''
+            },
             PartialAssignmentID: this.props.PartialAssignmentID != '' ? this.props.PartialAssignmentID : null,
             Strings: Strings
         };
@@ -535,16 +539,25 @@ class AssignmentEditorContainer extends React.Component {
 
                 apiCall.get(`/course/getCourses/${this.props.UserID}`, (err, res, bod) => {
                     coursesArray = bod.Courses.map(function(course) {
-                        return ({value: course.CourseID, label: course.Name});
+                        return ({value: course.CourseID, label: course.Name, number: course.Number});
                     });
                     this.setState({
                         Courses: coursesArray
                     });
                 });
             }else{
-                this.setState({
-                    CourseID: this.props.CourseID
+                apiCall.get(`/course/${this.props.CourseID}`, (err, res, bod2) => {
+
+                    this.setState({
+                        CourseID: this.props.CourseID,
+                        CourseSelected: {
+                            Name: bod2.Course.Name,
+                            Number: bod2.Course.Number
+                        }
+                    });
                 });
+
+                
             }
 
             //Load partially made assignment from the database
@@ -2543,7 +2556,10 @@ class AssignmentEditorContainer extends React.Component {
         let newFieldDist = new Object();
         
         let count = assessedFields.length;
-
+        if(count === 0){
+            stateData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution = {};
+            return stateData;
+        }
 
         assessedFields.forEach(function(task) {
             newFieldDist[task.value] = Math.floor(100 / count);
@@ -2628,8 +2644,15 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentDropdown(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        newData[fieldName] = event.value;
-        this.setState({AssignmentActivityData: newData});
+        console.log(event);
+        if(fieldName === 'AA_course'){
+            newData[fieldName] = event.value;
+            this.setState({AssignmentActivityData: newData, CourseSelected: {Name: event.label, Number: event.number}});
+        }else {
+            newData[fieldName] = event.value;
+            this.setState({AssignmentActivityData: newData});
+        }
+        
     }
 
     changeAssignmentNumeric(fieldName, value) {
@@ -3110,7 +3133,9 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-
+                    <div className="page-header">
+                        <h2 className="title">{this.state.Strings.AssignmentEditor}&nbsp;&nbsp;&nbsp;{this.state.CourseSelected.Number} {this.state.CourseSelected.Name} </h2>
+                    </div>
                     <HeaderComponent Strings={this.state.Strings} />
                     <div className="section-button-area add-margin-for-button">
                         {submitButtonView}

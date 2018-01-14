@@ -9,6 +9,8 @@ exports.get = (req, res) => {
         userId: req.App.user.userId,
         courseId: req.params.courseId || '*',
         partialAssignmentId: req.query.partialAssignmentId,
-        assignmentId: req.query.assignmentId
+        assignmentId: req.query.assignmentId,
+        showHeader:false
+
     });
 };

@@ -92,11 +92,12 @@ class MyCommentsComponent extends Component { //create a class for the component
         };
 
         let returnLoaded = (
-            <div className="card">
+            <div className="section">
                 <div style={{paddingBottom: 10}}>
                     <h2 className="title">{strings.TitleText}</h2>
                     <Tooltip Text={strings.TooltipText}/>
                 </div>
+                
                 <ReactTable
                     data = {this.state.Data}
                     minRows = {0}
