@@ -25,6 +25,12 @@
     padding-right: 6px;
 }
 
+.account {
+  input{
+    height: 30px;
+  }
+}
+
 .account .account-table{
   table {
     width: 100%;
@@ -48,4 +54,6 @@
   b {
       font-weight: bold;
   }
+
+  
 }
