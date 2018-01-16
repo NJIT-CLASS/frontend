@@ -519,6 +519,10 @@ app.delete('/api/file/delete/', function(req,res){
         json: true,
         body: postVars
     }, (err,response,body) => {
+        if(response.statusCode === 400 || body === undefined ){
+            console.error(err);
+            return res.status(400).end();
+        }
         var file_ref = typeof body.Info == 'string' ? JSON.parse(body.Info) : body.Info;
         let filePath = `${consts.UPLOAD_DIRECTORY_PATH}/${file_ref.filename}`;
         fs.unlink(filePath, (err)=> {
