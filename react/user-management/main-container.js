@@ -387,10 +387,6 @@ class UserManagementContainer extends Component{
                         Header: strings.resetPW,
                         accessor: 'resetPassword',
                         },
-                        {
-                        Header: strings.removeUser,
-                        accessor: 'removeUser',
-                        },
                         ]} 
                         noDataText={strings.noUsers}
                         />
