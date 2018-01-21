@@ -16,7 +16,9 @@ class UserManagementContainer extends Component{
             blockedNotification:null,
             removeNotification:null,
             addInstructorNotification:null,
-            passwordResetNotification:null
+            passwordResetNotification:null,
+            changeUserRoleNotification:null,
+            addTestUserNotification:null
         }
 
         this.state = {
@@ -31,6 +33,7 @@ class UserManagementContainer extends Component{
                 pwInputType:"password",
                 hidePW:true,
             },
+            changeUserRoleNotification:null,
             instructorEmail: '',
             loaded: false
         };
@@ -58,14 +61,12 @@ class UserManagementContainer extends Component{
 
         apiCall.getAsync(endpoint+userID,{}).then(body => {
             if(body.status === 200){
-                this.componentData.blockedStatus = true;
                 if(isBlocked){
                     this.componentData.blockedNotification = this.notification("success form-success", email+strings.unblockedSuccess);
                 } else {
-                    this.componentData.blockedNotification = this.notification("success form-success", email+strings.blockedSucess);
+                    this.componentData.blockedNotification = this.notification("success form-success", email+strings.blockedSuccess);
                 }
             } else {   
-                this.componentData.blockedStatus = false;
                 if(isBlocked){
                     this.componentData.blockedNotification = this.notification("error form-error", email+strings.unblockedFailure);
                 } else {
@@ -77,9 +78,8 @@ class UserManagementContainer extends Component{
     }
 
     resetPassword(email){
-        console.log(email);
 
-        apiCall.post('/password/reset',(err,status,body)=>{
+        apiCall.post('/password/reset',{email:email},(err,status,body)=>{
             if(status.statusCode === 200){
                 this.componentData.passwordResetNotification = this.notification("success form-success", email+strings.pwResetSuccess);
             } else {
@@ -102,8 +102,17 @@ class UserManagementContainer extends Component{
         });
     }
 
-    changeRole(){
-
+    changeRole(userID,name,oldRole,newRole){
+        console.log(newRole,userID);
+        apiCall.post('/usermanagement/role',{Role:newRole.value,UserID:userID},(err,status,body)=>{
+            if(status.statusCode === 200){
+                this.state.changeUserRoleNotification = this.notification("success form-success",name+": role changed from "+oldRole+" to "+newRole.value);
+                this.fetchUsers();
+            } else {
+                this.state.changeUserRoleNotification = this.notification("error form-error",name+": Unable to change user role");
+                this.forceUpdate();
+            }   
+        });
     }
 
     onChangeInstructorEmail(email){
@@ -127,7 +136,28 @@ class UserManagementContainer extends Component{
     }
 
     createTestUser(){
-
+        var testUserInfo = this.state.addTestUserData;
+        var isInstructor = false;
+        var isAdmin = false;
+        if(!testUserInfo.fn || !testUserInfo.ln || !testUserInfo.pw || !testUserInfo.access){
+            this.componentData.addTestUserNotification = this.notification("error form-error","Fields marked with a * cannot be left blank");
+            this.forceUpdate();
+            return;
+        }
+        if(testUserInfo.access == "instructor"){
+            isInstructor = true;
+        }
+        if(testUserInfo.access == "admin"){
+            isAdmin=true;
+        }
+        apiCall.post('/adduser',{email:testUserInfo.email,firstname:testUserInfo.fn,lastname:testUserInfo.ln,password:testUserInfo.pw,instructor:isInstructor,admin:isAdmin,Test:true},(err,status,body)=>{
+            if(status.statusCode === 200){
+                this.componentData.addTestUserNotification = this.notification("success form-success","Test User Successfully Created");
+            } else {
+                this.componentData.addTestUserNotification = this.notification("error form-error","Test User could not be created");
+            }
+            this.forceUpdate();
+        });
     }
 
     cancelTestUser(){
@@ -172,6 +202,8 @@ class UserManagementContainer extends Component{
         let removeNotification = this.componentData.removeNotification;
         let resetPasswordNotification = this.componentData.passwordResetNotification;
         let addInstructorResultView = this.componentData.addInstructorNotification;
+        let changeRoleNotification = this.state.changeUserRoleNotification;
+        let addTestUserNotification = this.componentData.addTestUserNotification;
         let tableData = null;
         let status = null;
 
@@ -185,20 +217,16 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
-
+            console.log(user);
             var organizationGroup = user.OrganizationGroup;
             var isBlocked = user.UserLogin.Blocked;
             var timeout = user.UserLogin.Timeout;
             var userID = user.UserID;
             var email = user.UserContact.Email;
+            var isTestUser = user.Test;
+            var userRole = user.Role;
 
             var selectOptions = [{value:"Admin", label:strings.admin},{value:"Enhanced",label:strings.enhanced},{value:"Participant",label:strings.participant},{value:"Guest",label:strings.guest},{value:"Unknown",label:strings.unknown}];
-            
-            var initialValue = "";
-            if(user.Admin && user.Instructor){ initialValue = "Admin & Instructor"; } 
-            else if(user.Admin){ initialValue = "Admin";}
-            else if(user.Instructor){initialValue = "Instructor";}
-            else {initialValue="Unknown";}
 
             if(organizationGroup === null){
                 organizationGroup = "N/A";
@@ -208,12 +236,23 @@ class UserManagementContainer extends Component{
                 timeout = "-";
             }
 
+            if(isTestUser){
+                isTestUser = "Yes";
+            } else {
+                isTestUser = "No";
+            }
+
+            if(!userRole){
+                userRole = "No Role";
+            }
+
             return {
                 email: email,
                 firstName: user.FirstName,
                 lastName: user.LastName,
                 organization: organizationGroup,
-                systemRole:(<Select clearable={false} searchable={false} value={initialValue} options={selectOptions}/>),
+                testUser:isTestUser,
+                systemRole:(<Select className="change-role-select" cssClassNamePrefix="user-manage-" onChange={this.changeRole.bind(this,userID,user.FirstName+" "+user.LastName,userRole)} clearable={false} searchable={false} value={userRole} options={selectOptions}/>),
                 blockedStatus: (<ToggleSwitch isClicked={isBlocked} click={this.changeBlockedStatus.bind(this, userID, email, isBlocked)} />),
                 resetPassword: (<button type='button' onClick={this.resetPassword.bind(this, email)}>Reset</button>),
                 removeUser: (<button type='button' onClick={this.removeUser.bind(this, userID, email)}>Remove</button>),
@@ -238,18 +277,28 @@ class UserManagementContainer extends Component{
 
         if(resetPasswordNotification){
             status = resetPasswordNotification;
-            this.componentData.resetPasswordNotification = null;
+            this.componentData.passwordResetNotification = null;
         }
 
         // Display status of add instructor operation
         if(addInstructorResultView){
             this.componentData.addInstructorNotification = null;
         }
+
+        if(addTestUserNotification){
+            this.componentData.addTestUserNotification = null;
+        }
+
+        //Display result of user role change
+        if(changeRoleNotification){
+            status = changeRoleNotification;
+            this.state.changeUserRoleNotification = null;
+        }
         //=================================================================================================
-        console.log(this.state.addTestUserData);
         // Total content returned
         return ( 
             <div>
+                <div>
                 <form name="form_addInstructor" role="form" className="section" method="POST">
                         <h2 className="title">{strings.titleAddNewInstructor}</h2>
                         <div className="section-content" >
@@ -273,19 +322,22 @@ class UserManagementContainer extends Component{
                         <h2 className="title">Create Test User</h2>
                         <div className="section-content" >
                             <table className="promote-instructor-table">
+                                {addTestUserNotification}
                                 <tbody>
-                                    <tr><td>Email </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"email")}/></td></tr>
-                                    <tr><td>First Name </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"fn")}/></td></tr>
-                                    <tr><td>Last Name </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"ln")}/></td></tr>
+                                    <tr><td>Email* </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"email")}/></td></tr>
+                                    <tr><td>First Name* </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"fn")}/></td></tr>
+                                    <tr><td>Last Name* </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"ln")}/></td></tr>
+                                    <tr><td>User Role* </td><td><Select clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"instructor",label:"Instructor"},{value:"admin",label:"Admin"}]}/></td></tr>
                                     <tr><td>Organization </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"organization")} /></td></tr>
-                                    <tr><td>Access Level </td><td><Select clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"enhanced",label:"Enhanced"},{value:"admin",label:"Admin"},{value:"participant",label:"Participant"},{value:"guest",label:"Guest"}]}/></td></tr>
-<tr><td>Password <button type="button" onClick={this.generatePassword.bind(this)}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this)} type="radio" /> </td><td><input type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onTestUserInput.bind(this,"pw")}/></td></tr>
+                                    <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this)}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this)} type="radio" /> </td><td><input type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onTestUserInput.bind(this,"pw")}/></td></tr>
                                     <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>
                                 </tbody>
                             </table>
             
                         </div>
                 </form>
+                </div>
+                <div>
 
                 <form name="user_management_table" role="form" className="section" method="post">
                     <div className="section-content">
@@ -335,15 +387,12 @@ class UserManagementContainer extends Component{
                         Header: strings.resetPW,
                         accessor: 'resetPassword',
                         },
-                        {
-                        Header: strings.removeUser,
-                        accessor: 'removeUser',
-                        },
                         ]} 
                         noDataText={strings.noUsers}
                         />
                     </div>
                 </form>
+                </div>
             </div>
         );
     }
