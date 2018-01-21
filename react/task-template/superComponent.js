@@ -330,14 +330,17 @@ class SuperComponent extends React.Component {
         });
     }
 
-    handleStarChange(index, value) {
+    handleStarChange(index, value, other, one) {
         // updates rating grade in taskdata
-        let newResponse = this.state.TaskResponse;
-        newResponse[index][0] = value.rating;
-
-        this.setState({
-            TaskResponse: newResponse,
-        });
+        if(value.type == 'click'){
+            let newResponse = this.state.TaskResponse;
+            newResponse[index][0] = value.rating;
+    
+            this.setState({
+                TaskResponse: newResponse,
+            });
+        }
+        
     }
 
     toggleFieldRubric(index) {

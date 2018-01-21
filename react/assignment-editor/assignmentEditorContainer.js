@@ -1734,7 +1734,7 @@ class AssignmentEditorContainer extends React.Component {
             workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
         }
         if(oldFieldDistribution !== undefined){
-            let oldFieldDistFields = oldFieldDistribution.keys();
+            let oldFieldDistFields =Object.keys(oldFieldDistribution);
             oldFieldDistFields.forEach((key) => {
                 workflowData[taskIndex].TA_fields[linkedNumberOfFields + key] = oldFieldDistribution[key];
             });
