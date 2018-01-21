@@ -3,7 +3,6 @@ This file loads all the React pages. It checks to see which element id is on the
 It also gets the data(connected from the page's html and route-handler file) and passes it down as props.
 If a new react page is created , it will need to be added here.
 */
-
 import React from 'react';
 import request from 'request';
 import ReactDOM from 'react-dom';

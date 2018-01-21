@@ -75,24 +75,28 @@ class AssignmentDetailsComponent extends React.Component{
         }
 
         return (
-            <div className="section card-2" >
-                <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{strings.AssignmentHeader}</h2>
-                <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
-                    <div className="section-divider">
-                        <div className="inner">
-                            <label>{strings.AssignmentName}</label>
-                            <Tooltip Text={strings.AssigmentNameMessage} ID={'AA_name_tooltip'}/>
+            <div>
+                
 
-                            <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
-                                onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
-                            ></input>
-                        </div>
+                <div className="section card-2" >
+                    <h2 className="title" onClick={() => {this.setState({ShowContent: this.state.ShowContent ? false : true});}}>{strings.AssignmentHeader}</h2>
+                    <div className={this.state.ShowContent ? 'section-content' : 'task-hiding'}>
+                    
+                        <div className="section-divider">
+                            <div className="inner">
+                                <label>{strings.AssignmentName}</label>
+                                <Tooltip Text={strings.AssigmentNameMessage} ID={'AA_name_tooltip'}/>
 
-                        <div className="inner">
-                            {coursesView}
-                        </div>
+                                <input placeholder={strings.Name} type="text" value={this.props.AssignmentActivityData.AA_name}
+                                    onChange={this.props.changeAssignmentInput.bind(this, 'AA_name') }
+                                ></input>
+                            </div>
 
-                        {/* Hiding Assignment Type for now
+                            <div className="inner">
+                                {coursesView}
+                            </div>
+
+                            {/* Hiding Assignment Type for now
                         <div className="inner">
                           <label>{strings.AssignmentType}</label>
                           <Tooltip Text={strings.AssigmentTypeMessage} ID={'AA_type_tooltip'}/>
@@ -105,31 +109,31 @@ class AssignmentDetailsComponent extends React.Component{
                         </div>
                         */}
 
-                        {/*set numericinput max to real world limit of numebr of max problems*/}
-                        <div className='inner'>
-                            <label>{strings.HowManyDifferentTypesOfProblems}</label>
-                            <Tooltip Text={strings.AssignmentNumberProblemsMessage} ID={'AA_number_of_workflows_tooltips'} />
+                            {/*set numericinput max to real world limit of numebr of max problems*/}
+                            <div className='inner'>
+                                <label>{strings.HowManyDifferentTypesOfProblems}</label>
+                                <Tooltip Text={strings.AssignmentNumberProblemsMessage} ID={'AA_number_of_workflows_tooltips'} />
+                                <br />
+                                <NumberField min={1}
+                                    max={100}
+                                    value={this.props.AssignmentActivityData.NumberofWorkflows}
+                                    onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')} />
+
+                            </div>
+
+                            <div className="inner block">
+                                <label>{strings.AssignmentInstructions}</label>
+                                <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
+                                <br />
+                                <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
+                                    onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
+                            </div>
+
+                            <div className="inner block">
+                                {workflowDistView}                
+                            </div>
                             <br />
-                            <NumberField min={1}
-                                max={100}
-                                value={this.props.AssignmentActivityData.NumberofWorkflows}
-                                onChange={this.props.changeAssignmentNumeric.bind(this, 'NumberofWorkflows')} />
-
-                        </div>
-
-                        <div className="inner block">
-                            <label>{strings.AssignmentInstructions}</label>
-                            <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
-                            <br />
-                            <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
-                                onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
-                        </div>
-
-                        <div className="inner block">
-                            {workflowDistView}                
-                        </div>
-                        <br />
-                        {/*
+                            {/*
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <div className="toggle-switch false" style={{float:'right', clear: 'right', margin: '8px 0px' }} onClick={() => {
@@ -139,8 +143,8 @@ class AssignmentDetailsComponent extends React.Component{
                 <div className="text-true">Yes</div>
                 <div className="text-false">No</div>
               </div>*/}
-                        <br />
-                        {/*}
+                            <br />
+                            {/*}
               <label style={{display: 'inline-block', float:'right'}}>Show Advanced Options?</label>
               <br />
               <ToggleSwitch click={ ()=> {
@@ -149,10 +153,12 @@ class AssignmentDetailsComponent extends React.Component{
               <br />
               */}
               
-                    </div>
+                        </div>
 
+                    </div>
                 </div>
             </div>
+            
         );
     }
 }

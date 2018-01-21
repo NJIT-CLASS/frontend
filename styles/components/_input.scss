@@ -80,27 +80,7 @@ textarea {
   margin:0px;
 }
 
-.react-rater {
-  display: inline-block;
-  margin-left: 10px;
-}
-.react-rater div {
-  display: inline-block;
-}
 
-.react-rater a {
-  cursor: pointer;
-  font-size: 28px;
-  color: #262626;
-}
-.react-rater a.will-be-active {
-  color: #ffdd99; }
-.react-rater a.is-active {
-  color: #fc6; }
-.react-rater a.is-disabled {
-  cursor: not-allowed; }
-.react-rater.is-disabled a {
-  cursor: default; }
 
 
 .true-checkbox{

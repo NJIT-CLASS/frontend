@@ -1,10 +1,10 @@
 exports.get = (req, res) => {
 
-  //make call to check if user is actually Pending
+    //make call to check if user is actually Pending
     if(req.App.user === undefined){
         return res.redirect('/');
     }
-    req.App.api.get('/user/pendingStatus/' + req.App.user.userId, (err, statusCode, body) => {
+    req.App.api.get('/user/pendingStatus/' + req.App.user.userId, {token: req.session.token},(err, statusCode, body) => {
         if(statusCode === 401){
             return res.status(404).end();
         }else{
@@ -17,7 +17,7 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
     let {currentpassword, newpassword, confirmpassword} = req.body;
 
-    req.App.api.get('/user/pendingStatus/' + req.App.user.userId, (err, statusCode, body) => {
+    req.App.api.get('/user/pendingStatus/' + req.App.user.userId,{token: req.session.token}, (err, statusCode, body) => {
         if(statusCode === 401){
             return res.status(404).end();
         }

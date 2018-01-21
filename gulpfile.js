@@ -27,7 +27,11 @@ const compileReact = (rootFile, outputName, watch) => {
     function rebundle() {
 
         if(process.env.NODE_ENV === 'production'){
-            bundler.bundle()
+
+            bundler.transform(babelify/*, {
+                global: true,
+            }*/)
+                .bundle()
                 .on('error', function(err) {
                     gutil.log(err);
                     gutil.beep();
@@ -35,8 +39,11 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                .pipe(uglifyes())
-                .pipe(gulp.dest('./.build/static'));
+                //.pipe(uglifyes())
+                .pipe(gulp.dest('./.build/static'))
+                .on('end', function(){
+                    console.log('-> Done rebundling React. Ready to go.');
+                });;
 
         } else{
 
@@ -49,6 +56,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
+                //.pipe(uglifyes())
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
@@ -301,10 +309,11 @@ gulp.task('sass', () => {
             sass.logError.call(this, error);
             gutil.beep();
         }));
-        
-    if(process.env.NODE_ENV == 'production'){
-        sassStream = sassStream.pipe(postcss([ autoprefixer() ])).pipe(cleanCSS({compatibility: 'ie8'}));
+    if(process.env.NODE_ENV === 'production'){
+        sassStream.pipe(postcss([ autoprefixer() ])).pipe(cleanCSS({compatibility: 'ie8'}));
     }
+        
+    
     return sassStream.pipe(gulp.dest('./.build/static'));
 });
 
@@ -458,7 +467,10 @@ exports.API_URL = ${answers['api-url']};
 });
 
 gulp.task('build-production', () => {
-    return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build']);
+    return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build'],function(){
+        console.log('-> Done moving files. Ready to go.');
+    });
+        
 });
 
 gulp.task('default', [

@@ -14,16 +14,16 @@ exports.post = (req, res) => {
             blankField: true
         });
     }
-    req.App.api.post('/password/reset', {email: email}, (err, statusCode, body) => {
+    req.App.api.post('/password/reset', {email: email,token: req.session.token}, (err, statusCode, body) => {
         if(statusCode === 200){
             return res.render('home', {
-              passwordReset: true
-          });
+                passwordReset: true
+            });
         }
         else {
             return res.render('password_reset', {
-              error: true
-          });
+                error: true
+            });
         }
     });
 };

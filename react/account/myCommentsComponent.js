@@ -97,6 +97,7 @@ class MyCommentsComponent extends Component { //create a class for the component
                     <h2 className="title">{strings.TitleText}</h2>
                     <Tooltip Text={strings.TooltipText}/>
                 </div>
+                
                 <ReactTable
                     data = {this.state.Data}
                     minRows = {0}
@@ -228,6 +229,7 @@ class MyCommentsComponent extends Component { //create a class for the component
                                     isOutsideRange={() => false}
                                     withPortal={true}
                                     showClearDates={true}
+                                    noBorder={true}
                                 />
                             ),
                             filterMethod: (filter, row) => {

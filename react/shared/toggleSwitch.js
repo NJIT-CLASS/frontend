@@ -37,7 +37,7 @@ ToggleSwitch.defaultProps = {
     yesLabel: 'Yes',
     noLabel: 'No'
 };
-ToggleSwitch.PropTypes = {
+ToggleSwitch.propTypes = {
     isClicked: PropTypes.bool,
     yesLabel: PropTypes.string,
     noLabel: PropTypes.string,

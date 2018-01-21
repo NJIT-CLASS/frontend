@@ -497,7 +497,7 @@ class Container extends React.Component {
         // account view, buttons to change password or edit account info
         // display fields in table
         let accountView = (
-            <div className="card">
+            <div className="card account-table">
                 <h2 className="title">
                     {name == '' ? this.strings.account : name} 
                 </h2> 
@@ -538,7 +538,7 @@ class Container extends React.Component {
         // account editing card, prepopulated with existing information
         // photo upload Dropzone components are not functional
         let accountEdit = (
-            <div className="card">
+            <div className="card account-table">
                 <h2 className="title"> {this.strings.editAccount} </h2> 
                 <button type="button" onClick={this.update.bind(this)}>
                     {this.strings.save} 

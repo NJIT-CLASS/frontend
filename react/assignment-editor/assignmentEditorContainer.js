@@ -54,6 +54,10 @@ class AssignmentEditorContainer extends React.Component {
             Loaded: false,
             Courses: null,
             Semesters: null,
+            CourseSelected: {
+                Name: '',
+                Number: ''
+            },
             PartialAssignmentID: this.props.PartialAssignmentID != '' ? this.props.PartialAssignmentID : null,
             Strings: Strings
         };
@@ -94,7 +98,9 @@ class AssignmentEditorContainer extends React.Component {
                 TA_overall_rubric: '',
                 TA_fields: {
                     number_of_fields: 0,
-                    field_titles: []
+                    field_titles: [],
+                    field_distribution: {},
+                    
                 },
                 SimpleGradePointReduction: 0,
                 StartDelay: false,
@@ -157,6 +163,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 1,
                 field_titles: [strings.CreateDefaultFieldTitle],
+                field_distribution: {},
                 0: {
                     title: strings.CreateDefaultFieldTitle,
                     show_title: false,
@@ -194,6 +201,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 1,
                 field_titles: [strings.EditFieldTitle],
+                field_distribution: {},
                 0: {
                     title: strings.EditFieldTitle,
                     show_title: true,
@@ -234,6 +242,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 1,
                 field_titles: [strings.Field],
+                field_distribution: {},
                 0: cloneDeep(this.defaultFields)
             }
         });
@@ -249,6 +258,7 @@ class AssignmentEditorContainer extends React.Component {
             ],
             TA_fields: {
                 number_of_fields: 1,
+                field_distribution: {},
                 field_titles: [strings.SolveDefaultFieldTitle],
                 0: {
                     title: strings.SolveDefaultFieldTitle,
@@ -285,6 +295,10 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 2,
                 field_titles: [strings.GradeCorrectnessTitle,strings.GradeCompletenessTitle],
+                field_distribution: {
+                    0: 50,
+                    1: 50
+                },
                 0: {
                     title: strings.GradeCorrectnessTitle,
                     show_title: true,
@@ -340,6 +354,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 1,
                 field_titles: [strings.CritiqueFieldTitle],
+                field_distribution: { 0: 100},
                 0: {
                     title: strings.CritiqueFieldTitle,
                     show_title: false,
@@ -389,7 +404,8 @@ class AssignmentEditorContainer extends React.Component {
             TA_is_final_grade: true,
             TA_fields: {
                 number_of_fields: 0,
-                field_titles: []
+                field_titles: [],
+                field_distribution: {},
             }
         });
 
@@ -407,6 +423,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_fields: {
                 number_of_fields: 1,
                 field_titles: [strings.DisputeFieldName],
+                field_distribution: {},
                 0: {
                     title: strings.DisputeFieldName,
                     show_title: false,
@@ -441,7 +458,8 @@ class AssignmentEditorContainer extends React.Component {
             TA_is_final_grade: true,
             TA_fields: {
                 number_of_fields: 0,
-                field_titles: []
+                field_titles: [],
+                field_distribution: {},
             }
         });
 
@@ -521,16 +539,25 @@ class AssignmentEditorContainer extends React.Component {
 
                 apiCall.get(`/course/getCourses/${this.props.UserID}`, (err, res, bod) => {
                     coursesArray = bod.Courses.map(function(course) {
-                        return ({value: course.CourseID, label: course.Name});
+                        return ({value: course.CourseID, label: course.Name, number: course.Number});
                     });
                     this.setState({
                         Courses: coursesArray
                     });
                 });
             }else{
-                this.setState({
-                    CourseID: this.props.CourseID
+                apiCall.get(`/course/${this.props.CourseID}`, (err, res, bod2) => {
+
+                    this.setState({
+                        CourseID: this.props.CourseID,
+                        CourseSelected: {
+                            Name: bod2.Course.Name,
+                            Number: bod2.Course.Number
+                        }
+                    });
                 });
+
+                
             }
 
             //Load partially made assignment from the database
@@ -772,7 +799,7 @@ class AssignmentEditorContainer extends React.Component {
               6. Convert WorkflowStructure into flattened object for storage
                   in DB.
           C. Send to DB.
-      */
+        */
 
         if(this.state.SubmitSuccess === true){
             return;
@@ -1695,16 +1722,24 @@ class AssignmentEditorContainer extends React.Component {
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
         let linkedFields = cloneDeep(workflowData[linkedIndex].TA_fields);
         let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
-
+        let linkedFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
+        
         let oldFields = cloneDeep(workflowData[taskIndex].TA_fields);
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
-
+        let oldFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
+        
         workflowData[taskIndex].TA_fields = linkedFields;
-
         for(let i = 0; i < oldNumberOfFields; i++){
             workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
         }
+        if(oldFieldDistribution !== undefined){
+            let oldFieldDistFields = oldFieldDistribution.keys();
+            oldFieldDistFields.forEach((key) => {
+                workflowData[taskIndex].TA_fields[linkedNumberOfFields + key] = oldFieldDistribution[key];
+            });
+        }
+        
 
         workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedNumberOfFields;
         workflowData[taskIndex].TA_fields.field_titles = [...linkedFields.field_titles, ...oldFieldTitles];
@@ -1720,7 +1755,7 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_fields[newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields].title = titleString;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields += 1;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.push(titleString);
-
+        newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
@@ -1729,6 +1764,8 @@ class AssignmentEditorContainer extends React.Component {
         delete newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex];
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
         newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
+        newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
+        console.log('RemoveFieldButton: ',newData);
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
@@ -2094,7 +2131,6 @@ class AssignmentEditorContainer extends React.Component {
 
 
     checkAssigneeConstraintTasks(taskIndex, constraint, referId, workflowIndex, stateData) {
-        console.log('stateData type', stateData, stateData == null);
         let newData = stateData || this.state.WorkflowDetails;
         if (newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] == undefined) {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
@@ -2111,7 +2147,6 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         if(stateData == null){
-            console.log('no data passed', newData);
             return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
         } else {
@@ -2136,7 +2171,7 @@ class AssignmentEditorContainer extends React.Component {
             default:
                 break;
             }
-        } else if( stateField == 'fieldType'){
+        } else if( stateField == 'field_type'){
             switch(e.value){
             case 'text':
                 newData[workflowIndex].Workflow[taskIndex].TA_fields[field].default_content[0] = '';
@@ -2153,8 +2188,13 @@ class AssignmentEditorContainer extends React.Component {
                 break;
             }
         }
+        
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.value;
-
+        if( stateField == 'field_type'){
+            newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
+            console.log('Data after Refresh', newData);
+                
+        }
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
@@ -2406,6 +2446,10 @@ class AssignmentEditorContainer extends React.Component {
         return tasksPath;
     }
 
+    
+
+
+
     getTaskFields(currTaskIndex, workflowIndex) {
         let returnList = [];
         const taskTypesToUseParentIndex = [TASK_TYPES.EDIT];
@@ -2450,20 +2494,20 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     toggleDefaultFieldRefersTo(fieldIndex,taskIndex, workflowIndex){
-      let newData = this.state.WorkflowDetails;
-      if(newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null){
-        newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [0,null];
-      } else {
-        newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [null,null];
-      }
-      this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+        let newData = this.state.WorkflowDetails;
+        if(newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null){
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [0,null];
+        } else {
+            newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to = [null,null];
+        }
+        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
     isDefaultFieldRefersToToggled(fieldIndex,taskIndex, workflowIndex){
-      if(this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null)
-        return false;
-       else
-        return true;
+        if(this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0] == null)
+            return false;
+        else
+            return true;
     }
 
     getConsolidateValue(taskIndex, workflowIndex, isAssess) {
@@ -2478,13 +2522,79 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFieldDefaultContentValue(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex){
-      console.log(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex)
-      return this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defaultFieldIndex];
+        console.log(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex);
+        return this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defaultFieldIndex];
     }
 
     getSeeSibblings(taskIndex, workflowIndex, isAssess){
         const targetIndex = (isAssess ? this.getAssessIndex(taskIndex, workflowIndex) : this.getReflectIndex(taskIndex, workflowIndex));
         return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex].SeeSibblings;
+    }
+
+    getAssessmentFieldsForTask(taskIndex, workflowIndex, stateData){
+        let fieldsList = new Array();
+        const stateDataToCheck = stateData === undefined ?  this.state.WorkflowDetails : stateData;
+        let numberOfFields = stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields;
+
+        for(let i = 0; i < numberOfFields; i++){
+            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' ||
+                stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].assessment_type === 'self assessment') {
+                fieldsList.push({
+                    value: i,
+                    label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].title
+                });
+            }
+        }
+        
+        return fieldsList;
+
+    }
+
+    refreshTaskFieldDistribution(taskIndex, workflowIndex, stateData){
+        let assessedFields  = this.getAssessmentFieldsForTask(taskIndex,workflowIndex, stateData);
+        console.log('Assessed Fields' ,assessedFields);
+        let newFieldDist = new Object();
+        
+        let count = assessedFields.length;
+        if(count === 0){
+            stateData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution = {};
+            return stateData;
+        }
+
+        assessedFields.forEach(function(task) {
+            newFieldDist[task.value] = Math.floor(100 / count);
+        });
+        newFieldDist[assessedFields[count - 1].value] +=  (100 % count);
+        stateData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution = newFieldDist;
+        return stateData;
+    }
+
+    changeTaskFieldDist(fieldIndex, taskIndex,workflowIndex, value){
+        let newData = this.state.WorkflowDetails;
+        let lastIndex = Object.keys(newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution).length - 1;
+        newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution[fieldIndex] = value;
+
+        let sum = Object.values(newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution).reduce((cur, acc) => cur + acc, 0);
+        if(sum > 100){
+            let excess = sum - 100;
+            if(fieldIndex == lastIndex){
+                newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution[lastIndex - 1] -= excess;
+            }else{
+                newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution[lastIndex] -= excess;
+            }
+        } else if(sum < 100){
+            let deficit = 100 - sum;
+            if(fieldIndex == lastIndex){
+                newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution[lastIndex - 1] += deficit;
+            }else{
+                newData[workflowIndex].Workflow[taskIndex].TA_fields.field_distribution[lastIndex] += deficit;
+            }
+        }
+
+        this.setState({
+            WorkflowDetails: newData
+        });
+
     }
 
     setSeeSibblings(taskIndex, workflowIndex, isAssess){
@@ -2534,8 +2644,15 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentDropdown(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        newData[fieldName] = event.value;
-        this.setState({AssignmentActivityData: newData});
+        console.log(event);
+        if(fieldName === 'AA_course'){
+            newData[fieldName] = event.value;
+            this.setState({AssignmentActivityData: newData, CourseSelected: {Name: event.label, Number: event.number}});
+        }else {
+            newData[fieldName] = event.value;
+            this.setState({AssignmentActivityData: newData});
+        }
+        
     }
 
     changeAssignmentNumeric(fieldName, value) {
@@ -3016,7 +3133,9 @@ class AssignmentEditorContainer extends React.Component {
 
             return (
                 <div className="editor-container">
-
+                    <div className="page-header">
+                        <h2 className="title">{this.state.Strings.AssignmentEditor}&nbsp;&nbsp;&nbsp;{this.state.CourseSelected.Number} {this.state.CourseSelected.Name} </h2>
+                    </div>
                     <HeaderComponent Strings={this.state.Strings} />
                     <div className="section-button-area add-margin-for-button">
                         {submitButtonView}

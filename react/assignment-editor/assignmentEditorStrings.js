@@ -136,12 +136,13 @@ const assignmentStrings = {
     Instructions: 'Instructions',
     DefaultAssignmentName: 'Assignment',
     SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page',
+    AssignmentEditor: 'Assignment Editor'
     
 };
 
 const headerStrings = {
     AssignmentHeader: 'Parameters at the Assignment-level',
-    WorkflowHeader: 'Parameters for the Entire Problem Thread',
+    WorkflowHeader: 'Parameters for the Entire Problem',
     TaskHeader: 'Individual Task-level Parameters',
     MainHeader: `An assignment consists of one or more independent problems. Each problem has
     its own full thread of tasks. In this page you define an assignment that can be used

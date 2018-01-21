@@ -90,7 +90,7 @@ class User extends React.Component {
         //	<td>{this.props.volunteer ? 'Yes' : 'No'}</td>
         let volunteerToggle = null;
         let statusToggle = null;
-        let statusList = [{label:this.props.strings,Pending,value:'Pending'},{label:this.props.strings.Approved,value:'Approved'},{label:this.props.strings.Inactive,value:'Inactive'}];
+        let statusList = [{label:this.props.strings.Pending,value:'Pending'},{label:this.props.strings.Approved,value:'Approved'},{label:this.props.strings.Inactive,value:'Inactive'}];
         
         
         if(this.props.role === 'Student'){
@@ -106,9 +106,9 @@ class User extends React.Component {
                 </td>);
             } else {
                 statusToggle = (<td>
-                <Select className="small-select" disabled={true} options={statusList}  resetValue={''} clearable={false} searchable={false}/>
+                    <Select className="small-select" disabled={true} options={statusList}  resetValue={''} clearable={false} searchable={false}/>
                     
-            </td>)
+                </td>);
                 
             }
             
@@ -441,6 +441,7 @@ class UserManager extends React.Component {
                         status={user.status}
                         VolunteerPoolID={user.volunteerId}
                         SectionUserID={user.sectionUserId}
+                        strings={this.props.strings}
                     />
                 );
             });
