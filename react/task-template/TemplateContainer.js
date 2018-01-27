@@ -574,6 +574,7 @@ class TemplateContainer extends React.Component {
                                             scroll={this.showSingleComment.bind(this)}
                                             Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
                                             CommentTargetList={this.state.CommentTargetList}
+                                            TaskID={this.props.TaskID}
                                         />
                                     );}
                                 else {
@@ -590,6 +591,7 @@ class TemplateContainer extends React.Component {
                                             scroll={this.showSingleComment.bind(this)}
                                             Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
                                             CommentTargetList={this.state.CommentTargetList}
+                                            TaskID={this.props.TaskID}
                                         />
                                     );
                                 }

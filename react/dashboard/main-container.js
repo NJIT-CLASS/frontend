@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import CompletedTaskComponent from './completedTasksComponent';
 import PendingTaskComponent from './pendingTasksComponent';
 import CoursesComponent from './coursesComponent';
+import NotificationsContainer from './notificationsContainer';
+
 import strings from './strings';
 
 class DashboardMain extends Component {
@@ -29,6 +31,7 @@ class DashboardMain extends Component {
         return <div>
             <div id="left-half">
                 <CoursesComponent Strings={Strings} UserID={this.props.UserID}/>
+                <NotificationsContainer Strings={Strings} UserID={this.props.UserID}/>
 
             </div>
             <div id="right-half">

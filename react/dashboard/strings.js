@@ -11,6 +11,8 @@ export default {
     NoCompleted: 'No completed tasks',
     NoPending: 'No pending tasks',
     Revised: 'Revised',
-    Revision: 'Revision'
+    Revision: 'Revision',
+    Notifications: 'Notifications',
+    NoNotifications: 'You currently have no notifications'
     
 };
