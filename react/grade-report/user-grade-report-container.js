@@ -1,5 +1,5 @@
 import React from 'react';
-import StudentGradeReport from './student-grade-report';
+import UpdatedGradeReport from './student-grade-report';
 import InstructorGradeReport from './instructor-grade-report';
 import apiCall from '../shared/apiCall';
 
@@ -48,9 +48,9 @@ class GradeReport extends React.Component {
         if(this.state.instructor){
             gradeReport = (<InstructorGradeReport UserID={this.state.userID}/>);
         }
-        else if(this.state.student){
-            gradeReport = (<StudentGradeReport UserID={this.state.userID}/>);      
-        }
+
+        gradeReport = (<UpdatedGradeReport UserID={this.state.userID}/>);      
+        
 
         return(
             <div>

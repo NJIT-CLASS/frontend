@@ -18,6 +18,7 @@ export default {
     blocked:'Blocked',
     lastLogin:'Last Login',
     timeout:'Timeout',
+    lastlogin:'Last Login',
     resetPW:'Reset Password',
     removeUser:'Remove Users',
     noUsers:'No Users',
