@@ -7,7 +7,7 @@ export default {
     DueDate: 'Due Date',
     PendingTasks: 'Pending Tasks',
     CompletedTasks: 'Completed Tasks',
-    EndDate: 'End Date',
+    EndDate: 'Date Submitted',
     NoCompleted: 'No completed tasks',
     NoPending: 'No pending tasks',
     Revised: 'Revised',

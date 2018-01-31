@@ -195,37 +195,41 @@ for (const route of loggedOutRoutes) {
                 route.route,
                 (function() {
                     return (req, res, next) => {
-                        const previousRender = res.render;
-                        res.render = (function() {
-                            return function(template, options, cb) {
-                                options = options ? options : {};
-                                options.loggedOut = route.access.loggedOut;
-                                options.route = route.route;
-                                options.language = req.App.lang;
-                                options.languageOptions = req.App.langOptions;
-                                // if the render doesn't set the title then set it by the route
-                                if (!('title' in options)) {
-                                    options.title = `${route.title} | CLASS Learning System`;
-                                }
-
-                                // set the page header to be the route title if the pageHeader is not set
-                                if (!('pageHeader' in options)) {
-                                    options.pageHeader = route.title;
-                                }
-
-                                // pass masquerading info to template
-                                
-
-                                previousRender.call(
-                                    this,
-                                    template,
-                                    options,
-                                    cb
-                                );
-                            };
-                        })();
-                        next();
-
+                        try{
+                            const previousRender = res.render;
+                            res.render = (function() {
+                                return function(template, options, cb) {
+                                    options = options ? options : {};
+                                    options.loggedOut = route.access.loggedOut;
+                                    options.route = route.route;
+                                    options.language = req.App.lang;
+                                    options.languageOptions = req.App.langOptions;
+                                    // if the render doesn't set the title then set it by the route
+                                    if (!('title' in options)) {
+                                        options.title = `${route.title} | CLASS Learning System`;
+                                    }
+    
+                                    // set the page header to be the route title if the pageHeader is not set
+                                    if (!('pageHeader' in options)) {
+                                        options.pageHeader = route.title;
+                                    }
+    
+                                    // pass masquerading info to template
+                                    
+    
+                                    previousRender.call(
+                                        this,
+                                        template,
+                                        options,
+                                        cb
+                                    );
+                                };
+                            })();
+                            next();
+                        }
+                        catch(error){
+                            next(error);
+                        }
                     };
                 })(),
                 route.routeHandler[method]
@@ -630,41 +634,45 @@ for (const route of loggedInRoutes) {
                 route.route,
                 (function() {
                     return (req, res, next) => {
-                        const previousRender = res.render;
-                        res.render = (function() {
-                            return function(template, options, cb) {
-                                options = options ? options : {};
-                                options.loggedOut = route.access.loggedOut;
-                                options.route = route.route;
-                                options.student = route.access.students;
-                                options.teacher = route.access.instructors;
-                                options.admin = route.access.admins;
-                                // if the render doesn't set the title then set it by the route
-                                if (!('title' in options)) {
-                                    options.title = `${route.title} | CLASS Learning System`;
-                                }
-
-                                // set the page header to be the route title if the pageHeader is not set
-                                if (!('pageHeader' in options)) {
-                                    options.pageHeader = route.title;
-                                }
-
-                                // pass masquerading info to template
-                                if (req.session.masqueraderId && options.route !== '/') {
-                                    options.masquerading = true;
-                                    options.userEmail = req.App.user.email;
-                                }
-
-                                previousRender.call(
-                                    this,
-                                    template,
-                                    options,
-                                    cb
-                                );
-                            };
-                        })();
-                        next();
-
+                        try{
+                            const previousRender = res.render;
+                            res.render = (function() {
+                                return function(template, options, cb) {
+                                    options = options ? options : {};
+                                    options.loggedOut = route.access.loggedOut;
+                                    options.route = route.route;
+                                    options.student = route.access.students;
+                                    options.teacher = route.access.instructors;
+                                    options.admin = route.access.admins;
+                                    // if the render doesn't set the title then set it by the route
+                                    if (!('title' in options)) {
+                                        options.title = `${route.title} | CLASS Learning System`;
+                                    }
+    
+                                    // set the page header to be the route title if the pageHeader is not set
+                                    if (!('pageHeader' in options)) {
+                                        options.pageHeader = route.title;
+                                    }
+    
+                                    // pass masquerading info to template
+                                    if (req.session.masqueraderId && options.route !== '/') {
+                                        options.masquerading = true;
+                                        options.userEmail = req.App.user.email;
+                                    }
+    
+                                    previousRender.call(
+                                        this,
+                                        template,
+                                        options,
+                                        cb
+                                    );
+                                };
+                            })();
+                            next();
+                        }
+                        catch(error){
+                            next(error);
+                        }
                     };
                 })(),
                 route.routeHandler[method]

@@ -555,6 +555,7 @@ class TemplateContainer extends React.Component {
                     oneBox={true}
                     index={5000}
                     margin={0}
+                    Type={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskActivity.Type}
                 />)}
 
                         {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {

@@ -35,62 +35,61 @@ class Tasks extends React.Component {
         };
 
         if (this.props.Tasks.StartLater)
-  {
+        {
             CalendarView =
     (
-      <div style={{display: 'block', overflowX:'visible',overflow: 'visible',height: '400px'}}>
-        <Datetime
-              open={true}
-              defaultValue={moment(this.props.Tasks.Time, 'YYYY-MM-DD HH:mm:ss').format('MM/DD/YYYY hh:mm a')}
-              renderDay={this.renderDay}
-              renderMonth={this.renderMonth}
-              renderYear={this.renderYear}
-              isValidDate={ valid }
-              onChange={this.props.onChangeCalendarTasks.bind(this, this.props.index, this.props.workflowIndex)}
-        />
-      </div>
+        <div style={{display: 'block', overflowX:'visible',overflow: 'visible',height: '400px'}}>
+            <Datetime
+                open={true}
+                defaultValue={moment(this.props.Tasks.Time, 'YYYY-MM-DD HH:mm:ss').format('MM/DD/YYYY hh:mm a')}
+                renderDay={this.renderDay}
+                renderMonth={this.renderMonth}
+                renderYear={this.renderYear}
+                isValidDate={ valid }
+                onChange={this.props.onChangeCalendarTasks.bind(this, this.props.index, this.props.workflowIndex)}
+            />
+        </div>
     );
         }
 
         if (this.props.Tasks.StartNow)
-  {
+        {
             StartNow =
     (
-      <div>
-        <NumberField min={0} max={100} value= {this.props.Tasks.Time / 1440} onChange={this.props.onChangeMultipleTasks.bind(this,this.props.index, this.props.workflowIndex)}/>
-        <h6 style={style}> Days </h6>
-      </div>
+        <div>
+            <NumberField min={0} max={100} value= {this.props.Tasks.Time / 1440} onChange={this.props.onChangeMultipleTasks.bind(this,this.props.index, this.props.workflowIndex)}/>
+            <h6 style={style}> Days </h6>
+        </div>
     );
         }
-
         return (
-    <div className = "section">
-      <h1 className = "title"> {this.props.Tasks.Name} </h1>
+            <div className = "section">
+                <h1 className = "title"> {this.props.Tasks.DisplayName} </h1>
 
-      <div className = "section-content">
-        <div className='inner'>
-          <h6>{strings.WhenDue}</h6>
-          <form>
-            <input type="radio" checked={this.props.Tasks.StartNow} onChange={this.props.onChangeExpireNumberOfDaysTasks.bind(this,this.props.index, this.props.workflowIndex)}
-              name="Days" value="Days">
-            </input>
-            <label>{strings.ExpireAfter}</label>
-            {StartNow}
-          </form>
-        <div/>
+                <div className = "section-content">
+                    <div className='inner'>
+                        <h6>{strings.WhenDue}</h6>
+                        <form>
+                            <input type="radio" checked={this.props.Tasks.StartNow} onChange={this.props.onChangeExpireNumberOfDaysTasks.bind(this,this.props.index, this.props.workflowIndex)}
+                                name="Days" value="Days">
+                            </input>
+                            <label>{strings.ExpireAfter}</label>
+                            {StartNow}
+                        </form>
+                        <div/>
 
-        <div className='inner'>
-          <form>
-            <input type="radio" checked={this.props.Tasks.StartLater} onChange={this.props.onChangeCertainTimeTasks.bind(this,this.props.index, this.props.workflowIndex)}
-              name="Days" value="Days">
-            </input>
-            <label>{strings.ExpireAt}</label>
-            {CalendarView}
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+                        <div className='inner'>
+                            <form>
+                                <input type="radio" checked={this.props.Tasks.StartLater} onChange={this.props.onChangeCertainTimeTasks.bind(this,this.props.index, this.props.workflowIndex)}
+                                    name="Days" value="Days">
+                                </input>
+                                <label>{strings.ExpireAt}</label>
+                                {CalendarView}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         );
     }
 }

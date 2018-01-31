@@ -30,6 +30,16 @@ class SuperViewComponent extends React.Component {
             
         };
     }
+
+    componentDidMount(){
+        if(this.props.Type === TASK_TYPES.DISPUTE){
+            if(this.props.TaskData === undefined || this.props.TaskData[0] === undefined || isEmpty(this.props.TaskData[0])){
+                this.setState({
+                    IsBypassedDispute: true
+                });
+            }
+        }
+    }
     
 
     toggleContent() {

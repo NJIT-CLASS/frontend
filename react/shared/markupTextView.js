@@ -8,7 +8,12 @@ const MarkupText = ({content, classNames}) => {
         'b',
         'i',
         'em',
-        'strong'
+        'strong',
+        'br',
+        'ol',
+        'ul',
+        'li',
+        'quote'
     ];
 
     const options = {
@@ -18,7 +23,7 @@ const MarkupText = ({content, classNames}) => {
     // <Markup className={classNames} content={bleach.sanitize(content, options)}/>
 
     return(
-      <div className={classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(content, options)}}></div>
+        <div className={classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(content, options)}}></div>
     );
 
 

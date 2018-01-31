@@ -20,12 +20,15 @@ export default class PendingTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getPendingTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
+                console.log('Tasks', body);
                 let transformedTaskList = body.PendingTaskInstances.map(task => {
                     return {
                         Assignment: task.AssignmentInstance.Assignment.Name,
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         Course: task.AssignmentInstance.Section.Course.Name,
+                        CourseNumber: task.AssignmentInstance.Section.Course.Number,
+                        SectionName: task.AssignmentInstance.Section.Name,
                         Revision: task.TaskActivity.AllowRevision,
                         Status: typeof task.Status === 'string' ? JSON.parse(task.Status) : task.Status,//task.Status,
                         Date:task.EndDate,
@@ -70,10 +73,14 @@ export default class PendingTaskComponent extends Component {
     }
 
     makeCourse({ original, row, value }){
-        if (original.Status[3] === 'late') {
-            return <div className="task-late">{value}</div>;
+        let displayText = value;
+        if(original.CourseNumber != null && original.SectionName != null){
+            displayText = `${original.CourseNumber} - ${original.SectionName}`;
         }
-        return <div>{value}</div>;
+        if (original.Status[3] === 'late') {
+            return <div className="task-late">{displayText}</div>;
+        }
+        return <div>{displayText}</div>;
     }
     
     render() {
@@ -116,6 +123,12 @@ export default class PendingTaskComponent extends Component {
                                     resizable:true,
                                     accessor: 'Date',
                                     Cell: this.makeDate
+                                }
+                            ]}
+                            defaultSorted={[
+                                {
+                                    id: 'Date',
+                                    desc: false
                                 }
                             ]}
                             noDataText={Strings.NoPending}

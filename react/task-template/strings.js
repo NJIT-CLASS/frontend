@@ -73,6 +73,7 @@ let strings = {
     Cancel: 'Cancel',
     CancelDispute: 'Cancel Dispute',
     ConfirmSkipDisputeText: 'Are you sure you want to skip this dispute?',
+    DisputeSkipped: 'The dispute was skipped',
     
     
 };

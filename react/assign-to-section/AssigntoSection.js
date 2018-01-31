@@ -82,6 +82,7 @@ class AssignToSectionContainer extends React.Component
                             ID: task.taskActivityID,
                             Type:task.type,
                             Name: task.name,
+                            DisplayName: task.displayName,
                             StartNow:dueTypeArray[0] === 'duration',
                             StartLater:dueTypeArray[0] === 'specific time',
                             Time:dueTypeArray[1],
@@ -266,9 +267,17 @@ class AssignToSectionContainer extends React.Component
     onChangeCalendarTasks(index, workflowIndex, dateString) //index is task's index in the tasks array, workflowIndex is index in WorkFlow array
     // dateString automatically passed in by Datetime module
     {
+        console.log(index, workflowIndex, dateString);
         let newA = this.state.WorkFlow;
-        newA[workflowIndex].Tasks[index].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
-        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time];
+        
+        if(typeof dateString === 'string'){
+            newA[workflowIndex].Tasks[index].Time = dateString;
+        } else {
+            newA[workflowIndex].Tasks[index].Time = dateString.format('YYYY-MM-DD HH:mm:ss');
+
+        }
+        newA[workflowIndex].Tasks[index].TimeArray = ['specific time',newA[workflowIndex].Tasks[index].Time]; 
+
 
         this.setState({WorkFlow: newA});
     }

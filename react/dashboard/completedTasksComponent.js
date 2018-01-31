@@ -23,6 +23,8 @@ export default class CompletedTaskComponent extends Component {
                         Assignment: task.AssignmentInstance.Assignment.Name,
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
+                        CourseNumber: task.AssignmentInstance.Section.Course.Number,
+                        SectionName: task.AssignmentInstance.Section.Name,
                         Course: task.AssignmentInstance.Section.Course.Name,
                         Date: task.ActualEndDate,
                     };
@@ -41,6 +43,15 @@ export default class CompletedTaskComponent extends Component {
     makeDate({original, row, value}){
         return <span>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
     }
+
+    makeCourse({ original, row, value }){
+        let displayText = value;
+        if(original.CourseNumber != null && original.SectionName != null){
+            displayText = `${original.CourseNumber} - ${original.SectionName}`;
+        }
+        return <div>{displayText}</div>;
+    }
+
     render() {
         let {Strings} = this.props;
         let {CompletedTasks, CompletedTasksData} = this.state;
@@ -67,6 +78,8 @@ export default class CompletedTaskComponent extends Component {
                             {         
                                 Header: Strings.Course,
                                 accessor: 'Course',
+                                Cell:this.makeCourse                                
+
                             },{
                                 Header: Strings.EndDate,
                                 accessor: 'Date',

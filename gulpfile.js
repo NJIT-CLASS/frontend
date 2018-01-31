@@ -47,7 +47,10 @@ const compileReact = (rootFile, outputName, watch) => {
 
         } else{
 
-            bundler.transform(babelify)
+            bundler.transform(babelify, {
+                'presets': ['es2015', 'react', 'es2017'],
+                'plugins': ['transform-flow-strip-types', 'transform-object-rest-spread'],
+            })
                 .bundle()
                 .on('error', function(err) {
                     gutil.log(err);

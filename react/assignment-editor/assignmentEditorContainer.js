@@ -2522,8 +2522,13 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFieldDefaultContentValue(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex){
-        console.log(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex);
+        console.log('Get default field', defaultFieldIndex, this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to);
+        if(defaultFieldIndex === 1){
+            return `${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0]}:${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[1]}`;
+        } 
         return this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defaultFieldIndex];
+
+        
     }
 
     getSeeSibblings(taskIndex, workflowIndex, isAssess){
@@ -2538,7 +2543,7 @@ class AssignmentEditorContainer extends React.Component {
 
         for(let i = 0; i < numberOfFields; i++){
             if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' ||
-                stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].assessment_type === 'self assessment') {
+                stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'self assessment') {
                 fieldsList.push({
                     value: i,
                     label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].title

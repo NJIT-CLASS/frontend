@@ -32,7 +32,7 @@ let state = {
         '', '',
     ],
     DefaultFieldForeign: [false], // will be true if want to show Def Content from other tasks
-    CurrentTaskFieldSelection: null,
+    CurrentTaskFieldSelection: 0,
     ShowAssigneeConstraintSections: [
         false, false, false, false,
     ], // same as, in same group as, not in, choose from
@@ -313,13 +313,23 @@ class TaskDetailsComponent extends React.Component {
             }
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers) {
-
-                const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
-                    <label>
+                const defaultParentTaskId = this.props.callTaskFunction('getFieldDefaultContentValue', 0, index, this.props.index, this.props.workflowIndex);
+                console.log('Fields for', index, defaultParentTaskId, this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex));
+                const fieldSelectionList = this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex).map(field => {
+                    let parentId = field.value.split(':')[0];
+                    if(parentId != defaultParentTaskId){
+                        return <label>
+                            {field.label}
+                            <Radio value={field.value} />
+                            <span className="faded-message-text">({strings.DefaultContentLinked})</span>
+                        
+                        </label>;
+                    }
+                    return <label>
                         {field.label}
                         <Radio value={field.value} />
-                    </label>
-                ));
+                    </label>;
+                });
                 const fieldSelection = (
                     <RadioGroup
                         selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 1,index, this.props.index, this.props.workflowIndex )}
@@ -337,7 +347,7 @@ class TaskDetailsComponent extends React.Component {
                     <div>
                         <RadioGroup
                             key={`taskFieldDefault${2}`}
-                            selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 0,index, this.props.index, this.props.workflowIndex)}
+                            selectedValue={defaultParentTaskId}
                             onChange={(value) => {
                                 this.setState({ CurrentTaskFieldSelection: value, CurrentFieldSelection: 0 });
 
