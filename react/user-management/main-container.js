@@ -177,6 +177,10 @@ class UserManagementContainer extends Component{
         this.setState({addTestUserData:this.state.addTestUserData});
     }
 
+    retrieveTestUser(){
+
+    }
+
     toggleHidePW(){
         this.state.addTestUserData.hidePW = !this.state.addTestUserData.hidePW;
         if(this.state.addTestUserData.hidePW){
@@ -309,7 +313,7 @@ class UserManagementContainer extends Component{
                 </form>
 
                 <form name="create_test_user" role="form" className="section" method="POST">
-                        <h2 className="title">Create Test User</h2>
+                        <label><h2 className="title">Create Test User<button type="button" className="generate-test-user" onClick={this.retrieveTestUser.bind(this)}>Generate Data</button></h2></label>
                         <div className="section-content" >
                             <table className="promote-instructor-table">
                                 {addTestUserNotification}
@@ -336,8 +340,9 @@ class UserManagementContainer extends Component{
                         {status}
 
                         <ReactTable
+                        filterable
                         defaultPageSize={10}
-                        className="-striped -highlight"
+                        className="user-management-table"
                         resizable={true}
                         data={tableData}
                         columns={[

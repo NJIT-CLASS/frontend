@@ -108,6 +108,15 @@ class UpdatedGradeReport extends React.Component {
     instructorAssignmentOnClick(assignmentInstanceID){
         this.state.displayedSection.type="instructorAssignment";
         apiCall.post(`/getAssignmentGrades/${assignmentInstanceID}`,{},(err,status,body)=>{
+
+            body.SecionUsers = body.SectionUsers.filter(user => {
+                if(user.Role === "Student"){
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
             this.state.displayedSection.sectionData=body;
             this.setState({loaded:true});
         });
@@ -116,13 +125,18 @@ class UpdatedGradeReport extends React.Component {
     studentOverViewOnClick(section){
         this.state.displayedSection.type="studentoverview";
         apiCall.post('/getUserAssignmentGrades',{userID:this.state.userID,sectionID:section.SectionID},(err,status,body)=>{
-            this.state.displayedSection.sectionData=body.grades;
+            body["Section"]=section;
+            this.state.displayedSection.sectionData=body;
             this.setState({loaded:true});
         });
     }
 
     studentAssignmentOnClick(assignmentInstanceID){
-
+        this.state.displayedSection.type="studentassignment";
+        apiCall.post(`/getAssignmentGrades/${assignmentInstanceID}`,{},(err,status,body)=>{
+            this.state.displayedSection.sectionData=body;
+            this.setState({loaded:true});
+        });
     }
 
     render(){
@@ -211,7 +225,6 @@ class UpdatedGradeReport extends React.Component {
             SubComponent={(row) => {return nestedTables[row.index]; }}
             />);
 
-            console.log(sectionData);
             var collumns = [];
             collumns = sectionData.assignments.map(assignment =>{
                 return (<Workbook.Column label={assignment.Assignment.DisplayName} value={assignment.Assignment.DisplayName}/>);
@@ -241,6 +254,7 @@ class UpdatedGradeReport extends React.Component {
             //Begin mapping users for this section
             const tableData = sectionData.SectionUsers.map( user => {
 
+                console.log(user);
                 if(!user.assignmentGrade){
                     nestedTables.push(<div><h3>No grade data</h3></div>);
                     return {
@@ -271,11 +285,11 @@ class UpdatedGradeReport extends React.Component {
                 });
 
                 if(regularGrades.length == 0){
-                    regularGrades.push(<tr><td rowspan="6">No tasks completed</td></tr>);
+                    regularGrades.push(<tr><td rowSpan="6">No tasks completed</td></tr>);
                 }
 
                 if(extraCreditGrades.length == 0){
-                    extraCreditGrades.push(<tr><td rowspan="6">No extra credit tasks</td></tr>);
+                    extraCreditGrades.push(<tr><td rowSpan="6">No extra credit tasks</td></tr>);
                 }
 
                 nestedTables.push( 
@@ -319,10 +333,30 @@ class UpdatedGradeReport extends React.Component {
 
         }
         else if(displayType==="studentoverview"){
-            console.log(sectionData);
-        }
-        else if(displayType==="studentAssignment"){
 
+            const tableData = sectionData.grades.map(grade => {
+                return {
+                    name:grade.AssignmentDetails.DisplayName,
+                    grade:grade.Grade
+                }
+            });
+
+            let section = sectionData.Section.Section.Course.Number + " " + sectionData.Section.Section.Course.Name + " " + sectionData.Section.Name;
+
+            tableHeader = (<div><h2 className="title">{section}</h2></div>);
+            tableView = (<ReactTable defaultPageSize={10} className="-striped -highlight" resizable={true} data={tableData}
+            columns={[
+                {Header: "Assignment Name",accessor: 'name'},
+                {Header: "Grade",accessor: 'grade'},
+            ]} 
+            noDataText="No grade data"
+            />);
+
+
+
+        }
+        else if(displayType==="studentassignment"){
+            console.log(sectionData);
         }
 
         instructorSectionsCollapsible = instructorSections.map(section=>{

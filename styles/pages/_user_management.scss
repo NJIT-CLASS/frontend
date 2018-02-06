@@ -9,6 +9,10 @@
 	vertical-align:middle;
 }
 
+.user-management-table input {
+	height:50%;
+}
+
 .promote-instructor-table tr {
 	border-top: 1px solid #EFF3F5;
 	border-left: none;
@@ -24,8 +28,14 @@
 	position: relative; 
     	z-index: 1; 
 }
+
+.generate-test-user button {
+	float: right;
+}
+
 .Select-hey {
 	position: relative; 
     	z-index: 1; 
 }
+
 

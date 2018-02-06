@@ -103,8 +103,6 @@ class InstructorGradeReport extends React.Component {
                 }
             });
 
-            console.log(this.componentData);
-
             this.getAssignmentsByStudent(sectionID);
         });
     }
