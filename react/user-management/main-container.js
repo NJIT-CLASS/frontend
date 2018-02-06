@@ -4,6 +4,7 @@ import ToggleSwitch from '../shared/toggleSwitch';
 import strings from './strings';
 import ReactTable from 'react-table';
 import Select from 'react-select';
+var dateFormat = require('dateformat');
 
 class UserManagementContainer extends Component{
 
@@ -225,26 +226,14 @@ class UserManagementContainer extends Component{
             var email = user.UserContact.Email;
             var isTestUser = user.Test;
             var userRole = user.Role;
+            var lastLogin = user.UserLogin.LastLogin;
 
             var selectOptions = [{value:"Admin", label:strings.admin},{value:"Enhanced",label:strings.enhanced},{value:"Participant",label:strings.participant},{value:"Guest",label:strings.guest},{value:"Unknown",label:strings.unknown}];
-
-            if(organizationGroup === null){
-                organizationGroup = "N/A";
-            }
-
-            if(timeout === null){
-                timeout = "-";
-            }
-
-            if(isTestUser){
-                isTestUser = "Yes";
-            } else {
-                isTestUser = "No";
-            }
-
-            if(!userRole){
-                userRole = "No Role";
-            }
+            organizationGroup = organizationGroup ? organizationGroup : "N/A";
+            timeout = timeout ? dateFormat(timeout,"yyyy-mm-dd HH-MM-ss") : "-";
+            isTestUser = isTestUser ? "Yes" : "No";
+            userRole = userRole ? userRole : "No Role";
+            lastLogin = lastLogin ? dateFormat(lastLogin,"yyyy-mm-dd HH-MM-ss") : "-";
 
             return {
                 email: email,
@@ -256,7 +245,8 @@ class UserManagementContainer extends Component{
                 blockedStatus: (<ToggleSwitch isClicked={isBlocked} click={this.changeBlockedStatus.bind(this, userID, email, isBlocked)} />),
                 resetPassword: (<button type='button' onClick={this.resetPassword.bind(this, email)}>Reset</button>),
                 removeUser: (<button type='button' onClick={this.removeUser.bind(this, userID, email)}>Remove</button>),
-                timeoutStatus:timeout
+                timeoutStatus:timeout,
+                lastlogin:lastLogin
             };
         });
         //===================================================================================================
@@ -329,7 +319,7 @@ class UserManagementContainer extends Component{
                                     <tr><td>Last Name* </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"ln")}/></td></tr>
                                     <tr><td>User Role* </td><td><Select clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"instructor",label:"Instructor"},{value:"admin",label:"Admin"}]}/></td></tr>
                                     <tr><td>Organization </td><td><input type="text" onChange={this.onTestUserInput.bind(this,"organization")} /></td></tr>
-                                    <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this)}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this)} type="radio" /> </td><td><input type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onTestUserInput.bind(this,"pw")}/></td></tr>
+                                    <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this)}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this)} type="radio" /> </td><td><input disabled={true} type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onTestUserInput.bind(this,"pw")}/></td></tr>
                                     <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>
                                 </tbody>
                             </table>
@@ -382,6 +372,10 @@ class UserManagementContainer extends Component{
                         {
                         Header: strings.timeout,
                         accessor: 'timeoutStatus',
+                        },
+                        {
+                        Header: strings.lastlogin,
+                        accessor: 'lastlogin',
                         },
                         {
                         Header: strings.resetPW,
