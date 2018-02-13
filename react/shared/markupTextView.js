@@ -13,7 +13,8 @@ const MarkupText = ({content, classNames}) => {
         'ol',
         'ul',
         'li',
-        'quote'
+        'quote',
+        'p'
     ];
 
     const options = {
