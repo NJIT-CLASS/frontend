@@ -207,8 +207,7 @@ module.exports = {
 `;
 
         const routeContents =
-`
-exports.get = (req, res) => {
+`exports.get = (req, res) => {
     if(req.App.user === undefined){
         return res.redirect(\`/?url=\${encodeURIComponent(req.originalUrl)}\`);
     }
@@ -237,25 +236,25 @@ exports.get = (req, res) => {
         jsName = jsName.charAt(0).toUpperCase() + jsName.slice(1);
         const reactContent = 
     `import React, { Component } from 'react';
-    import PropTypes from 'prop-types';
-    import apiCall from '../shared/apiCall';
-    
-    class ${jsName}Container extends Component {
-        constructor(props) {
-            super(props);
-            this.state = { 
-                Strings: {
-                    HelloString: 'Hello'
-                }
-            };
-        }
-        render() { 
-            let {Strings} = this.state;
-            return (<div>{Strings.HelloString}</div> );
-        }
+import PropTypes from 'prop-types';
+import apiCall from '../shared/apiCall';
+
+class ${jsName}Container extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            Strings: {
+                HelloString: 'Hello'
+            }
+        };
     }
-         
-    export default ${jsName}Container;;
+    render() { 
+        let {Strings} = this.state;
+        return (<div>{Strings.HelloString}</div> );
+    }
+}
+        
+export default ${jsName}Container;
     `;
 
         fs.writeFileSync(routeConfigFilePath, configContents);
@@ -272,14 +271,14 @@ exports.get = (req, res) => {
         
         const reactMainFile = `${__dirname}/react/main.js`;
         const scssMainFile = `${__dirname}/styles/main.scss`;
-        const contentToInsertInCase = ` case '${routeFileName}':
+        const contentToInsertInCase = `case '${routeFileName}':
     componentForCurrentPage = <${jsName} UserID={userId} __={translationFunction} />;
     break;
 //>>INSERTCASE
         `;
 
         const contentToInsertInImport = `import ${jsName} from './${routeFileName}/main-container';
-        //>>INSERTIMPORT
+//>>INSERTIMPORT
         `;
         gulp.src(reactMainFile)
             .pipe(replace('//>>INSERTIMPORT', contentToInsertInImport))
@@ -288,7 +287,7 @@ exports.get = (req, res) => {
 
 
         const contentToInsertInSCSS = `@import 'pages/_${routeFileName.replace(/-/g, '_')}';
-        //>>INSERTSCSS
+//>>INSERTSCSS
         `;    
         gulp.src(scssMainFile)
             .pipe(replace('//>>INSERTSCSS', contentToInsertInSCSS))
