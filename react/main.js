@@ -30,6 +30,9 @@ import MainPageContainer from './everyones-work/main-container';
 import DashboardMain from './dashboard/main-container';
 import SectionPage from './section/main-container';
 import ErrorComponent from './shared/ErrorComponent';
+import AssignmentStatusTable from './assignment-status-table/main-container';
+import DatabaseMaintenance from './database-maintenance/main-container';
+//>>INSERTIMPORT
 
 const translationFunction = (objOfStrings, cb) => {
     const options = {
@@ -147,6 +150,15 @@ case 'reallocation-container':
 case 'section':
     componentForCurrentPage = <SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />;
     break;
+case 'assignment-status-table':
+    componentForCurrentPage = <AssignmentStatusTable UserID={userId}  __={translationFunction} />;
+    break; 
+case 'database-maintenance':
+    componentForCurrentPage = <DatabaseMaintenance UserID={userId}  __={translationFunction} />;
+    break;    
+//>>INSERTCASE
+
+
 }
 
 // let fullComponentToRender = <ErrorComponent>

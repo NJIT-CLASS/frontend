@@ -31,6 +31,8 @@ const pages = [
     'reallocation',
     'about',
     'section',
+    'assignment-status-table',
+    'database-maintenance'
 ];
 
 var pageConfigs = [];
