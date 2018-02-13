@@ -22,7 +22,13 @@ let uglifyes = require('gulp-uglify-es').default;
 let cleanCSS = require('gulp-clean-css');
 
 const compileReact = (rootFile, outputName, watch) => {
-    const bundler = watchify(browserify(`./react${rootFile}`, { debug: true }));
+    const bundler = watchify(browserify(`./react${rootFile}`, 
+        { 
+            debug: true,
+            cache: {},
+            packageCache: {},
+            fullPaths: true,
+        }));
 
     function rebundle() {
 
