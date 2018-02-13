@@ -226,6 +226,7 @@ for (const route of loggedOutRoutes) {
                                 };
                             })();
                             next();
+                            
                         }
                         catch(error){
                             next(error);
@@ -256,7 +257,7 @@ app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
 
-            if (err || statusCode === 500) {
+            if (err || statusCode === 500 ) {
                 delete req.session.userId; 
                 delete req.session.token;
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
@@ -264,7 +265,7 @@ app.use((req, res, next) => {
                 return;
             }
 
-            if (body.User == undefined) {
+            if (body === undefined || body.User === undefined) {
                 delete req.session.userId;
                 delete req.session.token;
                 res.send('Not Found').end();

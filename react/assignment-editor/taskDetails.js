@@ -118,11 +118,11 @@ class TaskDetailsComponent extends React.Component {
         const strings = this.props.Strings;
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
         const assessmentTypeValues = [{ value: 'grade', label: strings.NumericGrade }, { value: 'rating', label: strings.Rating }, { value: 'pass', label: strings.PassFail }, { value: 'evaluation', label: strings.EvaluationByLabels }];
-        const onTaskEndValues = [{ value: 'late', label: strings.Late }, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }];
+        const onTaskEndValues = [{ value: 'late', label: strings.Late }/*, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }*/];
         const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }, {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
-        const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
+        const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }/*, { value: 'both', label: strings.BothInstructorStudents }*/];
         const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
@@ -903,6 +903,7 @@ class TaskDetailsComponent extends React.Component {
                             clearable={false}
                             searchable={false} />
                         <br />
+                        {/*
                         <label>{strings.ShouldReflectBlock}</label><br />
                         <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
                         <Select options={reflectWaitValues}
@@ -911,6 +912,8 @@ class TaskDetailsComponent extends React.Component {
                             clearable={false}
                             searchable={false} />
                         <br />
+                        */}
+                        
                         <label>{strings.WhoCanReflect}</label>
                         <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                         <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
@@ -1114,9 +1117,9 @@ class TaskDetailsComponent extends React.Component {
                 ) : null;
             assigneeConstraints = (
                 <div>
-                    <label>{strings.AssigneeConstraints}</label>
-                    <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
-
+                    <b style={{textAlign: 'center'}}><label>{strings.AssigneeConstraints}</label>
+                        <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
+                    </b>
                     <br />
                     <label>{strings.WhoCanDoTask}</label>
                     <Tooltip Text={strings.TaskWhoCanDoMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-who-can-do-tooltip`} />

@@ -10,6 +10,7 @@ exports.get = (req, res) => {
   
 
     req.App.api.get('/initial', (err, statusCode, body) => {
+        console.log('calling initial');
         if(statusCode == 400){
             return res.redirect('/onboarding');
         }
@@ -49,6 +50,7 @@ exports.post = (req, res) => {
             } else {
                 return res.redirect(req.body.url || '/');
             }
+        case 400:
         case 401:
             if(body !== undefined){
                 if(body.Timeout){
@@ -84,6 +86,7 @@ exports.post = (req, res) => {
             }
 
         default:
+            console.log(statusCode);
             return res.send('Broked :\'(');
         }
     });
