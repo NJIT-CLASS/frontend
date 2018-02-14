@@ -4,6 +4,13 @@
 * request to get the initial data, and a POST request for final submission.
 */
 import React from 'react';
+
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/modern/theme';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import { Editor } from '@tinymce/tinymce-react';
+
 import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
@@ -136,7 +143,7 @@ class SuperComponent extends React.Component {
         for (let i = 0; i < this.state.TaskActivityFields.number_of_fields; i++) {
             //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
-                if ((this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') || (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '')) {
+                if (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') {
                     return false;
                 }
             }
@@ -195,7 +202,6 @@ class SuperComponent extends React.Component {
             if (res.statusCode != 200) {
                 showMessage(this.props.Strings.InputErrorMessage);
             } else {
-
                 showMessage(this.props.Strings.SaveSuccessMessage);
             }
         });
@@ -298,7 +304,7 @@ class SuperComponent extends React.Component {
         // updates task data with new user input in grading fields
 
         const newTaskResponse = this.state.TaskResponse;
-        newTaskResponse[index][0] = event.target.value;
+        newTaskResponse[index][0] = event.target.value || event.target.getContent();
         this.setState({
             TaskResponse: newTaskResponse,
         });
@@ -318,12 +324,12 @@ class SuperComponent extends React.Component {
     }
 
     handleJustificationChange(index, event) {
-        if (event.target.value.length > 45000) { // checks to see if input is reasosnable length, makes sure browser doesn't crash on long input
+        if (event.target.getContent().length > 45000) { // checks to see if input is reasosnable length, makes sure browser doesn't crash on long input
             return;
         }
         // updates task data with new user input in justification fields
         let newTaskResponse = this.state.TaskResponse;
-        newTaskResponse[index][1] = event.target.value;
+        newTaskResponse[index][1] = event.target.getContent();
 
         this.setState({
             TaskResponse: newTaskResponse,
@@ -764,14 +770,20 @@ class SuperComponent extends React.Component {
 
             if (this.state.TaskActivityFields[idx].requires_justification) {
                 justification = (<div>
-                    <div>{this.state.TaskActivityFields[idx].justification_instructions}</div>
-                    <textarea
+                    <div style={{margin: "5px"}}>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                    <Editor
                         key={idx + 100}
-                        className="big-text-field"
-                        value={latestVersion[idx][1]}
+                        initialvalue={latestVersion[idx][1]}
+                        init={{
+                            skin_url: '/static/tinymce_skins/lightgray',
+                            height: 150,
+                            width: 500,
+                            menubar: false,
+                            statusbar: false,
+                            plugins: ['textcolor lists'],
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                        }}
                         onChange={this.handleJustificationChange.bind(this, idx)}
-                        placeholder={this.props.Strings.JustificationPlaceholder}
-                        required
                     />
                 </div>);
             }
@@ -783,7 +795,7 @@ class SuperComponent extends React.Component {
                     latestVersionComment.push(
                         <div>
                             <label style={{fontSize: '12px', color: '#777777'}}>{this.props.Strings.Comments}</label><br/>
-                            <MarkupText classNames="faded-big" content={latestVersion.revise_and_resubmit.data[i][0]} />
+                            <MarkupText className="faded-big" content={latestVersion.revise_and_resubmit.data[i][0]} />
                         </div>);
                 }
             }
@@ -853,7 +865,20 @@ class SuperComponent extends React.Component {
                 }
                 break;
             case 'text':
-                fieldInput = (<textarea key={idx} className="big-text-field" value={latestVersion[idx][0]} onChange={this.handleContentChange.bind(this, idx)} placeholder={this.props.Strings.InputPlaceholder} required/>);
+                fieldInput = (<Editor
+                    key={idx}
+                    initialValue={latestVersion[idx][0]}
+                    init={{
+                        skin_url: '/static/tinymce_skins/lightgray',
+                        height: 150,
+                        width: 500,
+                        menubar: false,
+                        statusbar: false,
+                        plugins: ['textcolor lists'],
+                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                    }}
+                    onChange={this.handleContentChange.bind(this, idx)}
+                />);
 
                 break;
             case 'numeric':
