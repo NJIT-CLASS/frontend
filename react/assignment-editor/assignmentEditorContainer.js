@@ -2227,7 +2227,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value;
+            newVal = e.target.value || e.target.getContent();
         } else{
             newVal = e;
         }
@@ -2252,7 +2252,7 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[taskIndex][stateField] = e.target.value;
+        newData[workflowIndex].Workflow[taskIndex][stateField] = newVal;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
@@ -2260,7 +2260,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value;
+            newVal = e.target.value || e.target.getContent();
         } else{
             newVal = e;
         }
@@ -2633,17 +2633,18 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentInput(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        if (event.target.value.length > 45000) {
+        let content = event.target.value || event.target.getContent();
+        if (content.length > 45000) {
             return;
         }
         if (fieldName == 'AA_name') {
-            if (event.target.value.length > 254) {
+            if (content.length > 254) {
                 return;
             }
-            newData.AA_display_name = event.target.value;
+            newData.AA_display_name = content;
         }
 
-        newData[fieldName] = event.target.value;
+        newData[fieldName] = content;
         this.setState({AssignmentActivityData: newData});
     }
 
