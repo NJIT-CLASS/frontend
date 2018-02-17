@@ -221,15 +221,16 @@ class TaskDetailsComponent extends React.Component {
                         initialvalue={this.props.TaskActivityData.TA_overall_instructions}
                         init={{
                             skin_url: '/static/tinymce_skins/lightgray',
-                            height: 150,
-                            width: 500,
+                            height: '150px',
+                            width: '500px',
                             menubar: false,
-                            statusbar: false,
                             plugins: ['textcolor lists'],
                             toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                             content_css: '/static/main.css',
                             body_class: 'faded-big editor',
                             resize: 'both',
+                            branding: false,
+                            elementpath: false,
                         }}
                         onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} 
                     />
@@ -246,15 +247,16 @@ class TaskDetailsComponent extends React.Component {
                         initialvalue={this.props.TaskActivityData.TA_overall_rubric}
                         init={{
                             skin_url: '/static/tinymce_skins/lightgray',
-                            height: 150,
-                            width: 500,
+                            height: '150px',
+                            width: '500px',
                             menubar: false,
-                            statusbar: false,
                             plugins: ['textcolor lists'],
                             toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                             content_css: '/static/main.css',
                             body_class: 'faded-big editor',
                             resize: 'both',
+                            branding: false,
+                            elementpath: false,
                         }}
                         onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} 
                     />
@@ -294,15 +296,16 @@ class TaskDetailsComponent extends React.Component {
                             initialvalue={this.props.TaskActivityData.TA_fields[index].justification_instructions}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
-                                height: 150,
-                                width: 500,
+                                height: '150px',
+                                width: '500px',
                                 menubar: false,
-                                statusbar: false,
                                 plugins: ['textcolor lists'],
                                 toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                 content_css: '/static/main.css',
                                 body_class: 'faded-big editor',
                                 resize: 'both',
+                                branding: false,
+                                elementpath: false,
                             }}
                             onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} 
                     />
@@ -430,15 +433,16 @@ class TaskDetailsComponent extends React.Component {
                                 initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                 init={{
                                     skin_url: '/static/tinymce_skins/lightgray',
-                                    height: 150,
-                                    width: 500,
+                                    height: '150px',
+                                    width: '500px',
                                     menubar: false,
-                                    statusbar: false,
                                     plugins: ['textcolor lists'],
                                     toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                     content_css: '/static/main.css',
                                     body_class: 'faded-big editor',
                                     resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
                                 }}
                                 onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
                             />
@@ -538,18 +542,19 @@ class TaskDetailsComponent extends React.Component {
                                 <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                                 <Editor
                                     initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                init={{
-                                    skin_url: '/static/tinymce_skins/lightgray',
-                                    height: 150,
-                                    width: 500,
-                                    menubar: false,
-                                    statusbar: false,
-                                    plugins: ['textcolor lists'],
-                                    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
-                                    content_css: '/static/main.css',
-                                    body_class: 'faded-big editor',
-                                    resize: 'both',
-                                }}
+                                    init={{
+                                        skin_url: '/static/tinymce_skins/lightgray',
+                                        height: '150px',
+                                        width: '500px',
+                                        menubar: false,
+                                        plugins: ['textcolor lists'],
+                                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                                        content_css: '/static/main.css',
+                                        body_class: 'faded-big editor',
+                                        resize: 'both',
+                                        branding: false,
+                                        elementpath: false,
+                                    }}
                                     onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
                                 />
                             </div>
@@ -565,15 +570,16 @@ class TaskDetailsComponent extends React.Component {
                                 initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                 init={{
                                     skin_url: '/static/tinymce_skins/lightgray',
-                                    height: 150,
-                                    width: 500,
+                                    height: '150px',
+                                    width: '500px',
                                     menubar: false,
-                                    statusbar: false,
                                     plugins: ['textcolor lists'],
                                     toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                     content_css: '/static/main.css',
                                     body_class: 'faded-big editor',
                                     resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
                                 }}
                                 onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
                             />
@@ -638,15 +644,16 @@ class TaskDetailsComponent extends React.Component {
                             initialvalue={this.props.TaskActivityData.TA_fields[index].instructions}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
-                                height: 150,
-                                width: 500,
+                                height: '150px',
+                                width: '500px',
                                 menubar: false,
-                                statusbar: false,
                                 plugins: ['textcolor lists'],
                                 toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                 content_css: '/static/main.css',
                                 body_class: 'faded-big editor',
                                 resize: 'both',
+                                branding: false,
+                                elementpath: false,
                             }}
                             onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} 
                         />
@@ -659,15 +666,16 @@ class TaskDetailsComponent extends React.Component {
                             initialvalue={this.props.TaskActivityData.TA_fields[index].rubric}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
-                                height: 150,
-                                width: 500,
+                                height: '150px',
+                                width: '500px',
                                 menubar: false,
-                                statusbar: false,
                                 plugins: ['textcolor lists'],
                                 toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                 content_css: '/static/main.css',
                                 body_class: 'faded-big editor',
                                 resize: 'both',
+                                branding: false,
+                                elementpath: false,
                             }}
                             onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} 
                         />

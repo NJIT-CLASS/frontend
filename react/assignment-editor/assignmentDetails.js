@@ -134,15 +134,16 @@ class AssignmentDetailsComponent extends React.Component{
                                     initialvalue={this.props.AssignmentActivityData.AA_instructions}
                                     init={{
                                         skin_url: '/static/tinymce_skins/lightgray',
-                                        height: 150,
-                                        width: 500,
+                                        height: '150px',
+                                        width: '500px',
                                         menubar: false,
-                                        statusbar: false,
                                         plugins: ['textcolor lists'],
                                         toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
                                         content_css: '/static/main.css',
                                         body_class: 'faded-big editor',
                                         resize: 'both',
+                                        branding: false,
+                                        elementpath: false,
                                     }}
                                     onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')}
                                 />
