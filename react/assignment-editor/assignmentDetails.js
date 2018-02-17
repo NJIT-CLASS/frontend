@@ -140,6 +140,9 @@ class AssignmentDetailsComponent extends React.Component{
                                         statusbar: false,
                                         plugins: ['textcolor lists'],
                                         toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                                        content_css: '/static/main.css',
+                                        body_class: 'faded-big editor',
+                                        resize: 'both',
                                     }}
                                     onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')}
                                 />

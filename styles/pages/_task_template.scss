@@ -25,20 +25,53 @@
   margin: 0 auto;
 }
 
-.faded-big {
+.faded-big, .editor {
   background-color: #f2f2f3;
-  width:49%;
+  width: 500px;
   word-wrap: break-word;
   height: auto;
   font-size: 18px;
   box-sizing: border-box;
   display: grid;
   padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #e5e6e7;
   line-height: 1.5;
   overflow:auto;
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.editor {
+    background-color: white;
+    width: 100%;
+}
+
+.faded-big strong {
+  font-weight: bold;
+}
+
+.faded-big em {
+  font-style: italic;
+}
+
+.faded-big ul {
+    display: block;
+    list-style-type: disc;
+    padding: 0;
+    padding-left: 40px;
+}
+
+.faded-big ol {
+    display: block;
+    list-style-type: decimal;
+    padding: 0;
+    padding-left: 40px;
+}
+
+.faded-big ol li, .faded-big ul li {
+    display: list-item;
+    line-height: 1.5;
+    margin: 0;
+    padding: 5px;
+    font-size: 18px;
 }
 
 .multi-view-container{

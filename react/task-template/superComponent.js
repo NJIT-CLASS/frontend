@@ -4,13 +4,11 @@
 * request to get the initial data, and a POST request for final submission.
 */
 import React from 'react';
-
 import tinymce from 'tinymce/tinymce';
 import 'tinymce/themes/modern/theme';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/textcolor';
 import { Editor } from '@tinymce/tinymce-react';
-
 import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
@@ -782,6 +780,9 @@ class SuperComponent extends React.Component {
                             statusbar: false,
                             plugins: ['textcolor lists'],
                             toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                            content_css: '/static/main.css',
+                            body_class: 'faded-big editor',
+                            resize: 'both',
                         }}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                     />
@@ -876,6 +877,9 @@ class SuperComponent extends React.Component {
                         statusbar: false,
                         plugins: ['textcolor lists'],
                         toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                        content_css: '/static/main.css',
+                        body_class: 'faded-big editor',
+                        resize: 'both',
                     }}
                     onChange={this.handleContentChange.bind(this, idx)}
                 />);
