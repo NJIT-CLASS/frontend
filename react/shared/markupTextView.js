@@ -14,7 +14,8 @@ const MarkupText = ({content, classNames}) => {
         'ul',
         'li',
         'quote',
-        'p'
+        'p',
+        'span',
     ];
 
     const options = {
