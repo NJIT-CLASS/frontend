@@ -778,12 +778,15 @@ class SuperComponent extends React.Component {
                             width: '500px',
                             menubar: false,
                             plugins: ['textcolor lists'],
-                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
                             content_css: '/static/main.css',
                             body_class: 'faded-big editor',
                             resize: 'both',
                             branding: false,
                             elementpath: false,
+                            external_plugins: {
+                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                            },
                         }}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                     />
@@ -876,12 +879,15 @@ class SuperComponent extends React.Component {
                         width: '500px',
                         menubar: false,
                         plugins: ['textcolor lists'],
-                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
                         content_css: '/static/main.css',
                         body_class: 'faded-big editor',
                         resize: 'both',
                         branding: false,
                         elementpath: false,
+                        external_plugins: {
+                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                        },
                     }}
                     onChange={this.handleContentChange.bind(this, idx)}
                 />);
