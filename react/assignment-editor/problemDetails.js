@@ -20,7 +20,6 @@ class ProblemDetailsComponent extends React.Component{
     }
 
     mapTasksToOptions(){
-        console.log('GradeDistribution', this.props.WorkflowDetails.WA_grade_distribution);
         
         return Object.keys(this.props.WorkflowDetails.WA_grade_distribution).map(function(task, index){
             if(task === 'simple'){
@@ -124,7 +123,7 @@ class ProblemDetailsComponent extends React.Component{
 
                         {multipleWorkflowsView}
 
-                        <div className='inner'>
+                        {/*<div className='inner'>
                             <label>{strings.HowManyPeoplePerGroup}</label>
                             <Tooltip Text={strings.ProblemDefaultGroupSizeMessage} ID={`WA_default_group_size-${this.props.workflowIndex}-tooltip`}/>
                             <br />
@@ -132,7 +131,7 @@ class ProblemDetailsComponent extends React.Component{
                                 max={25}
                                 value={this.props.WorkflowDetails.WA_default_group_size}
                                 onChange={this.props.changeWorkflowData.bind(this,'WA_default_group_size',this.props.workflowIndex)}/>
-                        </div>
+                        </div>*/}
                         <div className='inner'>
                             <label>{strings.HowManyProblems}</label>
                             <Tooltip Text={strings.ProblemNumberOfSetsMessage} ID={`WA_number_of_sets-${this.props.workflowIndex}-tooltip`}/>

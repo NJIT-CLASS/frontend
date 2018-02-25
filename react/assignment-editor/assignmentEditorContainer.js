@@ -1204,13 +1204,14 @@ class AssignmentEditorContainer extends React.Component {
 
         stateData[workflowIndex].Workflow[newTaskIndex].TA_display_name = this.computeNewName(stateData,newTaskIndex, workflowIndex);
 
-        //swtich to add follow-on tasks
+        //This adds follow on tasks and specifies additional follow-on settings
+
         switch(type){
         case this.ASSESS_IDX:
             //add default assignee constraints
             let tasksToAvoid = this.getAlreadyCreatedTasks(newTaskIndex, workflowIndex, stateData);
             tasksToAvoid.forEach((task) => {
-                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
+                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', task.value, workflowIndex, stateData);
             });
 
             //add default consolidation task and dispte task
@@ -1222,6 +1223,8 @@ class AssignmentEditorContainer extends React.Component {
         case this.REFLECT_IDX:
             break;
         case this.CREATE_IDX:
+            stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', index, workflowIndex, stateData);
+        
             stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
             stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
             break;
@@ -2542,8 +2545,8 @@ class AssignmentEditorContainer extends React.Component {
         let numberOfFields = stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields;
 
         for(let i = 0; i < numberOfFields; i++){
-            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' ||
-                stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'self assessment') {
+            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' /*||
+        stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'self assessment'*/) {
                 fieldsList.push({
                     value: i,
                     label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].title

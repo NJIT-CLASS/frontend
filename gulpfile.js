@@ -20,6 +20,7 @@ const postcss      = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 let uglifyes = require('gulp-uglify-es').default;
 let cleanCSS = require('gulp-clean-css');
+var replace = require('gulp-replace');
 
 const compileReact = (rootFile, outputName, watch) => {
     const bundler = watchify(browserify(`./react${rootFile}`, 
@@ -192,7 +193,7 @@ gulp.task('create-route', () => {
         const routeViewFilePath = `${__dirname}/server/views/${routeFileName}.html`;
         const routeCSSFilePath = `${__dirname}/styles//pages/_${routeFileName.replace(/-/g, '_')}.scss`;
         const reactFolderPath = `${__dirname}/react/${routeFileName}`;
-        const reactMainFileName = `${__dirname}/react/${routeFileName}/main-container.js`;
+        const reactMainContainerName = `${__dirname}/react/${routeFileName}/main-container.js`;
         const configContents =
 `const handler = require('../route-handlers/${routeFileName}');
 
@@ -212,10 +213,9 @@ module.exports = {
 `;
 
         const routeContents =
-`
-exports.get = (req, res) => {
+`exports.get = (req, res) => {
     if(req.App.user === undefined){
-        return res.redirect(\`/?url=${encodeURIComponent(req.originalUrl)}\`);
+        return res.redirect(\`/?url=\${encodeURIComponent(req.originalUrl)}\`);
     }
     res.render('${routeFileName}', {
         scripts: ['/static/react_apps.js'],
@@ -238,22 +238,29 @@ exports.get = (req, res) => {
     }
     `; 
 
+        let jsName = routeFileName.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        jsName = jsName.charAt(0).toUpperCase() + jsName.slice(1);
         const reactContent = 
-    `
-    import React, { Component } from 'react';
-    import PropTypes from 'prop-types';
-    
-    class ${routeFileName}PageContainer extends Component {
-        constructor(props) {
-            super(props);
-            this.state = {  }
-        }
-        render() { 
-            return (<div></div> )
-        }
+    `import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import apiCall from '../shared/apiCall';
+
+class ${jsName}Container extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            Strings: {
+                HelloString: 'Hello'
+            }
+        };
     }
-     
-    export default ${routeFileName}PageContainer;
+    render() { 
+        let {Strings} = this.state;
+        return (<div>{Strings.HelloString}</div> );
+    }
+}
+        
+export default ${jsName}Container;
     `;
 
         fs.writeFileSync(routeConfigFilePath, configContents);
@@ -266,8 +273,32 @@ exports.get = (req, res) => {
         } catch(err){
             gutil.log('React folder already exists. Skipping ....\n');
         }
-        fs.writeFileSync(reactMainFileName, reactContent);
+        fs.writeFileSync(reactMainContainerName, reactContent);
         
+        const reactMainFile = `${__dirname}/react/main.js`;
+        const scssMainFile = `${__dirname}/styles/main.scss`;
+        const contentToInsertInCase = `case '${routeFileName}':
+    componentForCurrentPage = <${jsName} UserID={userId} __={translationFunction} />;
+    break;
+//>>INSERTCASE
+        `;
+
+        const contentToInsertInImport = `import ${jsName} from './${routeFileName}/main-container';
+//>>INSERTIMPORT
+        `;
+        gulp.src(reactMainFile)
+            .pipe(replace('//>>INSERTIMPORT', contentToInsertInImport))
+            .pipe(replace('//>>INSERTCASE', contentToInsertInCase))
+            .pipe(gulp.dest(`${__dirname}/react/`));
+
+
+        const contentToInsertInSCSS = `@import 'pages/_${routeFileName.replace(/-/g, '_')}';
+//>>INSERTSCSS
+        `;    
+        gulp.src(scssMainFile)
+            .pipe(replace('//>>INSERTSCSS', contentToInsertInSCSS))
+            .pipe(gulp.dest(`${__dirname}/styles`));
+
         const routesFileName = `${__dirname}/server/routes/routes.js`;
 
         const currentRoutesContents = fs.readFileSync(routesFileName);
