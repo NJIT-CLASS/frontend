@@ -753,8 +753,6 @@ class AssignmentEditorContainer extends React.Component {
 
         });
 
-        console.log(sendData);
-
         const options = {
             assignment: sendData,
             userId: this.props.UserID,
@@ -762,10 +760,11 @@ class AssignmentEditorContainer extends React.Component {
             courseId: this.state.AssignmentActivityData.AA_course
         };
 
+        let x = this;
+
         apiCall.post('/assignment/save', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
-                console.log(body);
                 showMessage(this.state.Strings.SaveSuccessMessage);
 
                 this.setState({
@@ -773,12 +772,26 @@ class AssignmentEditorContainer extends React.Component {
                     InfoMessage: this.state.Strings.SaveSuccessMessage,
                     InfoMessageType: 'success'
                 });
+
+                
+                setTimeout(function(){
+                    x.setState({
+                        InfoMessage: '',
+                        InfoMessageType: ''
+                    })
+                }, 8000)
             } else {
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
                     InfoMessage: this.state.Strings.ErrorMessage,
                     InfoMessageType: 'error'
                 });
+                setTimeout(function(){
+                    x.setState({
+                        InfoMessage: '',
+                        InfoMessageType: ''
+                    })
+                }, 8000)
             }
 
         });

@@ -268,10 +268,10 @@ class TaskDetailsComponent extends React.Component {
                 fieldTypeOptions = (
                     <div>
                         <label>{strings.Min}</label>
-                        <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
+                        <NumberField min={-10000} max={10000} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
                         <br />
                         <label>{strings.Max}</label>
-                        <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
+                        <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
                     </div>
                 );
             } else if (this.props.TaskActivityData.TA_fields[index].field_type == 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type == 'self assessment') {
@@ -281,14 +281,14 @@ class TaskDetailsComponent extends React.Component {
                             <label>{strings.Min}</label>
                             <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
                             <label>{strings.Max}</label>
-                            <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-100} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
+                            <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
                         </div>
                     );
                 } else if (this.props.TaskActivityData.TA_fields[index].assessment_type === 'rating') {
                     assessmentTypeView = (<div>
                         <label>{strings.MaxRatingLabel}</label>
                         <NumberField
-                            value={this.props.TaskActivityData.TA_fields[index].rating_max} min={-100} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'rating_max', this.props.index, index, this.props.workflowIndex)}
+                            value={this.props.TaskActivityData.TA_fields[index].rating_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'rating_max', this.props.index, index, this.props.workflowIndex)}
                         />
                     </div>);
                 } else if (this.props.TaskActivityData.TA_fields[index].assessment_type === 'evaluation') {
