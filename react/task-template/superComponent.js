@@ -768,7 +768,7 @@ class SuperComponent extends React.Component {
 
             if (this.state.TaskActivityFields[idx].requires_justification) {
                 justification = (<div>
-                    <div style={{margin: "5px"}}>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                    <div style={{margin: '5px'}}>{this.state.TaskActivityFields[idx].justification_instructions}</div>
                     <Editor
                         key={idx + 100}
                         initialvalue={latestVersion[idx][1]}
