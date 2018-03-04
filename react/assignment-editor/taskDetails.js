@@ -123,7 +123,7 @@ class TaskDetailsComponent extends React.Component {
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }/*, { value: 'both', label: strings.BothInstructorStudents }*/];
-        const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
+        const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }/*, { value: 'other', label: strings.Other }*/];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
@@ -645,7 +645,7 @@ class TaskDetailsComponent extends React.Component {
 
             );
 
-            const oneOrSeparate = this.props.index == 0 ? (
+            const oneOrSeparate = /*this.props.index == 0 ? (
                 <div className="inner">
                     <label>{strings.DoesEveryoneGetSameProblem}</label>
                     <Tooltip Text={strings.TaskOneOrSeparateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-one-or-separate-tooltip`} />
@@ -658,7 +658,7 @@ class TaskDetailsComponent extends React.Component {
                             {strings.Yes}</label>
                     </RadioGroup>
                 </div>
-            ) : null;
+            ) :*/ null;
 
             const seeSameActivity = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ? (
                 <div className="inner">

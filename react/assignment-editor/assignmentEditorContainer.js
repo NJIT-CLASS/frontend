@@ -946,6 +946,7 @@ class AssignmentEditorContainer extends React.Component {
             partialAssignmentId: this.state.PartialAssignmentID,
             courseId: sendData.AA_course
         };
+        
 
         apiCall.post('/assignment/create', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {

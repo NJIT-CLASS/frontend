@@ -7,7 +7,7 @@ const pages = [
     'course-section-management',
     'create-assignment',
     'assignment-editor',
-    'administrator',
+    //'administrator',
     'add-user',
     'settings',
     'account',

@@ -183,7 +183,87 @@ app.use((req, res, next) => {
 
 
 //Prepares render function to support options specified in route configs
+// Setup routes 
 
+app.use((req, res, next) => {
+    const render = res.render;
+
+    res.render = function(template, options, cb) {
+        options = options ? options : {};
+
+        options.template = template;
+        options.user = req.App.user;
+        
+        if (!('showHeader' in options)) {
+            options.showHeader = true;
+        }
+
+        options.language = req.App.lang;
+        options.languageOptions = req.App.langOptions;
+
+        if (options.loggedOut) {
+            options.layout = 'logged_out';
+
+            return render.call(this, template, options, cb);
+        }
+        if (req.App.user && !options[req.App.user.type]) {
+            if (req.App.user.admin && options.admin) {
+            } else {
+                return res.sendStatus(404);
+            }
+        }
+        options.showMasqueradingOption = req.App.user.admin
+            ? req.App.user.admin
+            : false; //new value, not working yet
+
+        var sidebarNavItems = [];
+
+        for (const route in routes) {
+            var currentRoute = _.clone(routes[route]);
+            if (!currentRoute.sidebar) {
+                continue;
+            }
+
+            if (currentRoute.route === options.route) {
+                currentRoute.selected = true;
+            } else {
+                currentRoute.selected = false;
+            }
+
+            currentRoute.title = __(currentRoute.title);
+
+            if (req.App.user.type === 'student') {
+                if (currentRoute.access.students) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            } else if (
+                req.App.user.type == 'teacher' &&
+				req.App.user.admin == 0
+            ) {
+                if (currentRoute.access.instructors) {
+                    sidebarNavItems.push(currentRoute);
+                } else {
+                    continue;
+                }
+            } else {
+                sidebarNavItems.push(currentRoute);
+            }
+        }
+
+        options.sidebarNavItems = sidebarNavItems;
+
+        // only allow logged out users access to pages that are meant for logged out users
+        if (!req.App.user || !req.App.user.userId) {
+            return res.sendStatus(404);
+        }
+
+        render.call(this, template, options, cb);
+    };
+
+    next();
+});
 
 
 //Setup up logged out routes
@@ -200,7 +280,7 @@ for (const route of loggedOutRoutes) {
                             res.render = (function() {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
-                                    options.loggedOut = route.access.loggedOut;
+                                    options.loggedOut = true;//route.access.loggedOut;
                                     options.route = route.route;
                                     options.language = req.App.lang;
                                     options.languageOptions = req.App.langOptions;
@@ -268,7 +348,7 @@ app.use((req, res, next) => {
             if (body === undefined || body.User === undefined) {
                 delete req.session.userId;
                 delete req.session.token;
-                res.send('Not Found').end();
+                res.redirect('/');
                 return;
             }
 
@@ -278,6 +358,7 @@ app.use((req, res, next) => {
             req.App.user.lastName = user.LastName;
             req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
+            req.App.user.info = user.UserContact;
             next();
         });
     }
@@ -543,88 +624,7 @@ app.delete('/api/file/delete/', function(req,res){
 
 
 
-// Setup routes 
 
-app.use((req, res, next) => {
-    const render = res.render;
-
-    res.render = function(template, options, cb) {
-        options = options ? options : {};
-
-        options.template = template;
-        options.user = req.App.user;
-        
-        if (!('showHeader' in options)) {
-            options.showHeader = true;
-        }
-
-        options.language = req.App.lang;
-        options.languageOptions = req.App.langOptions;
-        
-
-        if (options.loggedOut) {
-            options.layout = 'logged_out';
-
-            return render.call(this, template, options, cb);
-        }
-        if (req.App.user && !options[req.App.user.type]) {
-            if (req.App.user.admin && options.admin) {
-            } else {
-                return res.sendStatus(404);
-            }
-        }
-        options.showMasqueradingOption = req.App.user.admin
-            ? req.App.user.admin
-            : false; //new value, not working yet
-
-        var sidebarNavItems = [];
-
-        for (const route in routes) {
-            var currentRoute = _.clone(routes[route]);
-            if (!currentRoute.sidebar) {
-                continue;
-            }
-
-            if (currentRoute.route === options.route) {
-                currentRoute.selected = true;
-            } else {
-                currentRoute.selected = false;
-            }
-
-            currentRoute.title = __(currentRoute.title);
-
-            if (req.App.user.type === 'student') {
-                if (currentRoute.access.students) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else if (
-                req.App.user.type == 'teacher' &&
-				req.App.user.admin == 0
-            ) {
-                if (currentRoute.access.instructors) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else {
-                sidebarNavItems.push(currentRoute);
-            }
-        }
-
-        options.sidebarNavItems = sidebarNavItems;
-
-        // only allow logged out users access to pages that are meant for logged out users
-        if (!req.App.user || !req.App.user.userId) {
-            return res.sendStatus(404);
-        }
-
-        render.call(this, template, options, cb);
-    };
-
-    next();
-});
 
 
 for (const route of loggedInRoutes) {
@@ -640,7 +640,7 @@ for (const route of loggedInRoutes) {
                             res.render = (function() {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
-                                    options.loggedOut = route.access.loggedOut;
+                                    options.loggedOut = false;//route.access.loggedOut;
                                     options.route = route.route;
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
