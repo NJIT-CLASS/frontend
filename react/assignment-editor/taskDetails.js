@@ -1,6 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/modern/theme';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import { Editor } from '@tinymce/tinymce-react';
 const moment = require('moment');
 import Checkbox from '../shared/checkbox';
 import NumberField from '../shared/numberField';
@@ -213,8 +217,26 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner block">
                     <label>{strings.TaskInstructions}</label>
                     <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
-
-                    <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_instructions} />
+                    <Editor
+                        initialvalue={this.props.TaskActivityData.TA_overall_instructions}
+                        init={{
+                            skin_url: '/static/tinymce_skins/lightgray',
+                            height: '150px',
+                            width: '500px',
+                            menubar: false,
+                            plugins: ['textcolor lists'],
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                            content_css: '/static/main.css',
+                            body_class: 'faded-big editor',
+                            resize: 'both',
+                            branding: false,
+                            elementpath: false,
+                            external_plugins: {
+                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                            },
+                        }}
+                        onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} 
+                    />
                 </div>
 
             );
@@ -224,7 +246,26 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner block">
                     <label>{strings.TaskRubric}</label>
                     <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
-                    <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_rubric} />
+                    <Editor
+                        initialvalue={this.props.TaskActivityData.TA_overall_rubric}
+                        init={{
+                            skin_url: '/static/tinymce_skins/lightgray',
+                            height: '150px',
+                            width: '500px',
+                            menubar: false,
+                            plugins: ['textcolor lists'],
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                            content_css: '/static/main.css',
+                            body_class: 'faded-big editor',
+                            resize: 'both',
+                            branding: false,
+                            elementpath: false,
+                            external_plugins: {
+                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                            },
+                        }}
+                        onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} 
+                    />
                 </div>
             );
 
@@ -257,7 +298,23 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner block" key={index + 200}>
                         <label>{strings.FieldJustificationInstructions}</label>
                         <Tooltip Text={strings.TaskFieldJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
-                        <textarea className="big-text-field" placeholder={`${strings.TypeJustificationInstructions}...`} value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].justification_instructions}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} 
+                    />
                     </div>
                 )
                 : null; // justification textbox for the field
@@ -378,8 +435,26 @@ class TaskDetailsComponent extends React.Component {
                         <div className="inner block">
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-
-                            <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            <Editor
+                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                init={{
+                                    skin_url: '/static/tinymce_skins/lightgray',
+                                    height: '150px',
+                                    width: '500px',
+                                    menubar: false,
+                                    plugins: ['textcolor lists'],
+                                    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                    content_css: '/static/main.css',
+                                    body_class: 'faded-big editor',
+                                    resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
+                                    external_plugins: {
+                                        'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                    },
+                                }}
+                                onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                            />
                         </div>
                     );
                 }
@@ -474,7 +549,26 @@ class TaskDetailsComponent extends React.Component {
                             <div className="inner block">
                                 <label>{strings.DefaultContentForField}</label>
                                 <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                                <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                                <Editor
+                                    initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                    init={{
+                                        skin_url: '/static/tinymce_skins/lightgray',
+                                        height: '150px',
+                                        width: '500px',
+                                        menubar: false,
+                                        plugins: ['textcolor lists'],
+                                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                        content_css: '/static/main.css',
+                                        body_class: 'faded-big editor',
+                                        resize: 'both',
+                                        branding: false,
+                                        elementpath: false,
+                                        external_plugins: {
+                                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                        },
+                                    }}
+                                    onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                                />
                             </div>
                         );
                         break;
@@ -484,8 +578,26 @@ class TaskDetailsComponent extends React.Component {
                         <div className="inner block">
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-
-                            <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            <Editor
+                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                init={{
+                                    skin_url: '/static/tinymce_skins/lightgray',
+                                    height: '150px',
+                                    width: '500px',
+                                    menubar: false,
+                                    plugins: ['textcolor lists'],
+                                    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                    content_css: '/static/main.css',
+                                    body_class: 'faded-big editor',
+                                    resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
+                                    external_plugins: {
+                                        'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                    },
+                                }}
+                                onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                            />
                         </div>
                     );
                 }
@@ -543,15 +655,51 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner block">
                         <label>{strings.FieldInstructions} ({strings.Optional})</label>
                         <Tooltip Text={strings.TaskFieldInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-instructions-tooltip`} />
-
-                        <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].instructions} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].instructions}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                                external_plugins: {
+                                    'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                },
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} 
+                        />
                     </div>
 
                     <div className="inner block">
                         <label>{strings.FieldRubric}</label>
                         <Tooltip Text={strings.TaskFieldRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-tooltip`} />
-
-                        <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].rubric} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].rubric}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                                external_plugins: {
+                                    'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                },
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} 
+                        />
                     </div>
 
                     {justificationView}

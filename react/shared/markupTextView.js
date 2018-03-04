@@ -1,32 +1,82 @@
 import React from 'react';
-import { Markup } from 'interweave';
 import bleach from 'bleach';
 
-const MarkupText = ({content, classNames}) => {
-    const whitelist = [
-        'a',
-        'b',
-        'i',
-        'em',
-        'strong',
-        'br',
-        'ol',
-        'ul',
-        'li',
-        'quote'
-    ];
+class MarkupText extends React.Component {
+    constructor(props) {
+        super(props);
+        this.whitelist = [
+            'a',
+            'b',
+            'i',
+            'em',
+            'strong',
+            'br',
+            'ol',
+            'ul',
+            'li',
+            'quote',
+            'p',
+            'span',
+            'math',
+            'maction',
+            'maligngroup',
+            'malignmark',
+            'menclose',
+            'merror',
+            'mfenced',
+            'mfrac',
+            'mglyph',
+            'mi',
+            'mlablededtr',
+            'mlongdiv',
+            'mmultiscripts',
+            'mn',
+            'mo',
+            'mover',
+            'mpadded',
+            'mphantom',
+            'mroot',
+            'mrow',
+            'ms',
+            'mscarries',
+            'mscarry',
+            'msgroup',
+            'msline',
+            'mspace',
+            'msqrt',
+            'msrow',
+            'mstack',
+            'mstyle',
+            'msub',
+            'msup',
+            'msubsup',
+            'mtable',
+            'mtd',
+            'mtext',
+            'mtr',
+            'munder',
+            'munderover',
+        ];
 
-    const options = {
-        mode: 'white',
-        list: whitelist
-    };
-    // <Markup className={classNames} content={bleach.sanitize(content, options)}/>
+        this.options = {
+            mode: 'white',
+            list: this.whitelist
+        };
+    }
 
-    return(
-        <div className={classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(content, options)}}></div>
-    );
+    componentDidMount() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
 
+    componentDidUpdate() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
 
-};
+    render() {
+        return(
+            <div className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></div>
+        );
+    }
+}
 
 export default MarkupText;
