@@ -753,8 +753,6 @@ class AssignmentEditorContainer extends React.Component {
 
         });
 
-        console.log(sendData);
-
         const options = {
             assignment: sendData,
             userId: this.props.UserID,
@@ -762,10 +760,11 @@ class AssignmentEditorContainer extends React.Component {
             courseId: this.state.AssignmentActivityData.AA_course
         };
 
+        let x = this;
+
         apiCall.post('/assignment/save', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
-                console.log(body);
                 showMessage(this.state.Strings.SaveSuccessMessage);
 
                 this.setState({
@@ -773,12 +772,26 @@ class AssignmentEditorContainer extends React.Component {
                     InfoMessage: this.state.Strings.SaveSuccessMessage,
                     InfoMessageType: 'success'
                 });
+
+                
+                setTimeout(function(){
+                    x.setState({
+                        InfoMessage: '',
+                        InfoMessageType: ''
+                    })
+                }, 8000)
             } else {
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
                     InfoMessage: this.state.Strings.ErrorMessage,
                     InfoMessageType: 'error'
                 });
+                setTimeout(function(){
+                    x.setState({
+                        InfoMessage: '',
+                        InfoMessageType: ''
+                    })
+                }, 8000)
             }
 
         });
@@ -946,6 +959,7 @@ class AssignmentEditorContainer extends React.Component {
             partialAssignmentId: this.state.PartialAssignmentID,
             courseId: sendData.AA_course
         };
+        
 
         apiCall.post('/assignment/create', options, (err, res, body) => {
             if (err == null && res.statusCode == 200) {
@@ -1204,13 +1218,14 @@ class AssignmentEditorContainer extends React.Component {
 
         stateData[workflowIndex].Workflow[newTaskIndex].TA_display_name = this.computeNewName(stateData,newTaskIndex, workflowIndex);
 
-        //swtich to add follow-on tasks
+        //This adds follow on tasks and specifies additional follow-on settings
+
         switch(type){
         case this.ASSESS_IDX:
             //add default assignee constraints
             let tasksToAvoid = this.getAlreadyCreatedTasks(newTaskIndex, workflowIndex, stateData);
             tasksToAvoid.forEach((task) => {
-                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
+                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', task.value, workflowIndex, stateData);
             });
 
             //add default consolidation task and dispte task
@@ -1222,6 +1237,8 @@ class AssignmentEditorContainer extends React.Component {
         case this.REFLECT_IDX:
             break;
         case this.CREATE_IDX:
+            stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', index, workflowIndex, stateData);
+        
             stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
             stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
             break;
@@ -1734,7 +1751,7 @@ class AssignmentEditorContainer extends React.Component {
             workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
         }
         if(oldFieldDistribution !== undefined){
-            let oldFieldDistFields = oldFieldDistribution.keys();
+            let oldFieldDistFields =Object.keys(oldFieldDistribution);
             oldFieldDistFields.forEach((key) => {
                 workflowData[taskIndex].TA_fields[linkedNumberOfFields + key] = oldFieldDistribution[key];
             });
@@ -2227,7 +2244,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value;
+            newVal = e.target.value || e.target.getContent();
         } else{
             newVal = e;
         }
@@ -2252,7 +2269,7 @@ class AssignmentEditorContainer extends React.Component {
         }
 
         let newData = this.state.WorkflowDetails;
-        newData[workflowIndex].Workflow[taskIndex][stateField] = e.target.value;
+        newData[workflowIndex].Workflow[taskIndex][stateField] = newVal;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
@@ -2260,7 +2277,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value;
+            newVal = e.target.value || e.target.getContent();
         } else{
             newVal = e;
         }
@@ -2522,8 +2539,13 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFieldDefaultContentValue(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex){
-        console.log(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex);
+        console.log('Get default field', defaultFieldIndex, this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to);
+        if(defaultFieldIndex === 1){
+            return `${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0]}:${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[1]}`;
+        } 
         return this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[defaultFieldIndex];
+
+        
     }
 
     getSeeSibblings(taskIndex, workflowIndex, isAssess){
@@ -2537,8 +2559,8 @@ class AssignmentEditorContainer extends React.Component {
         let numberOfFields = stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields;
 
         for(let i = 0; i < numberOfFields; i++){
-            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' ||
-                stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].assessment_type === 'self assessment') {
+            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' /*||
+        stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'self assessment'*/) {
                 fieldsList.push({
                     value: i,
                     label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].title
@@ -2628,17 +2650,18 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentInput(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        if (event.target.value.length > 45000) {
+        let content = event.target.value || event.target.getContent();
+        if (content.length > 45000) {
             return;
         }
         if (fieldName == 'AA_name') {
-            if (event.target.value.length > 254) {
+            if (content.length > 254) {
                 return;
             }
-            newData.AA_display_name = event.target.value;
+            newData.AA_display_name = content;
         }
 
-        newData[fieldName] = event.target.value;
+        newData[fieldName] = content;
         this.setState({AssignmentActivityData: newData});
     }
 

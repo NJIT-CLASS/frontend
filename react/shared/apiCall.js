@@ -16,7 +16,6 @@ const getCall = function(endpoint, queryStrings, cb){
     };
 
     request(options, (err, status, body) => {
-        console.log('Front status', status.statusCode, status.statusMessage);
         if(status.statusCode === 410){
             let currentLocation = window.location.href.replace(`${window.location.protocol}//${window.location.host}/`, '');
             return window.location.href = `/?url=${encodeURIComponent(currentLocation)}`;

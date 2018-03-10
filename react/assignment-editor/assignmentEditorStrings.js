@@ -16,6 +16,7 @@ const taskStrings = {
     AssessmentType: 'Assessment Type',
     DefaultContentFromOtherTasks: 'Default content from other task',
     DefaultContentForField: 'Default content for the field (optional)',
+    DefaultContentLinked: 'Linked',
     GetDataFromAnotherTaskInstead: 'Get the data from another task instead',
     InputFields: 'Input Fields',
     FieldName: 'Field Name',

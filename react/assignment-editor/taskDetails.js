@@ -1,6 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/modern/theme';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import { Editor } from '@tinymce/tinymce-react';
 const moment = require('moment');
 import Checkbox from '../shared/checkbox';
 import NumberField from '../shared/numberField';
@@ -32,7 +36,7 @@ let state = {
         '', '',
     ],
     DefaultFieldForeign: [false], // will be true if want to show Def Content from other tasks
-    CurrentTaskFieldSelection: null,
+    CurrentTaskFieldSelection: 0,
     ShowAssigneeConstraintSections: [
         false, false, false, false,
     ], // same as, in same group as, not in, choose from
@@ -118,12 +122,12 @@ class TaskDetailsComponent extends React.Component {
         const strings = this.props.Strings;
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
         const assessmentTypeValues = [{ value: 'grade', label: strings.NumericGrade }, { value: 'rating', label: strings.Rating }, { value: 'pass', label: strings.PassFail }, { value: 'evaluation', label: strings.EvaluationByLabels }];
-        const onTaskEndValues = [{ value: 'late', label: strings.Late }, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }];
+        const onTaskEndValues = [{ value: 'late', label: strings.Late }/*, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }*/];
         const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }, {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
-        const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
-        const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }, { value: 'other', label: strings.Other }];
+        const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }/*, { value: 'both', label: strings.BothInstructorStudents }*/];
+        const consolidationTypeValues = [{ value: 'max', label: strings.Max }, { value: 'min', label: strings.Min }, { value: 'avg', label: strings.Average }/*, { value: 'other', label: strings.Other }*/];
         const versionEvaluationValues = [{ value: 'first', label: strings.First }, { value: 'last', label: strings.Last }, { value: 'whole', label: strings.WholeProcess }];
         const reflectWaitValues = [{value: 'wait', label: 'Wait'},{ value: 'don\'t wait', label: 'Don\'t Wait'}];
 
@@ -213,8 +217,26 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner block">
                     <label>{strings.TaskInstructions}</label>
                     <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
-
-                    <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_instructions} />
+                    <Editor
+                        initialvalue={this.props.TaskActivityData.TA_overall_instructions}
+                        init={{
+                            skin_url: '/static/tinymce_skins/lightgray',
+                            height: '150px',
+                            width: '500px',
+                            menubar: false,
+                            plugins: ['textcolor lists'],
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                            content_css: '/static/main.css',
+                            body_class: 'faded-big editor',
+                            resize: 'both',
+                            branding: false,
+                            elementpath: false,
+                            external_plugins: {
+                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                            },
+                        }}
+                        onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_instructions', this.props.index, this.props.workflowIndex)} 
+                    />
                 </div>
 
             );
@@ -224,7 +246,26 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner block">
                     <label>{strings.TaskRubric}</label>
                     <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
-                    <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_overall_rubric} />
+                    <Editor
+                        initialvalue={this.props.TaskActivityData.TA_overall_rubric}
+                        init={{
+                            skin_url: '/static/tinymce_skins/lightgray',
+                            height: '150px',
+                            width: '500px',
+                            menubar: false,
+                            plugins: ['textcolor lists'],
+                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                            content_css: '/static/main.css',
+                            body_class: 'faded-big editor',
+                            resize: 'both',
+                            branding: false,
+                            elementpath: false,
+                            external_plugins: {
+                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                            },
+                        }}
+                        onChange={this.props.callTaskFunction.bind(this, 'changeInputData', 'TA_overall_rubric', this.props.index, this.props.workflowIndex)} 
+                    />
                 </div>
             );
 
@@ -257,7 +298,23 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner block" key={index + 200}>
                         <label>{strings.FieldJustificationInstructions}</label>
                         <Tooltip Text={strings.TaskFieldJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
-                        <textarea className="big-text-field" placeholder={`${strings.TypeJustificationInstructions}...`} value={this.props.TaskActivityData.TA_fields[index].justification_instructions} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].justification_instructions}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} 
+                    />
                     </div>
                 )
                 : null; // justification textbox for the field
@@ -268,10 +325,10 @@ class TaskDetailsComponent extends React.Component {
                 fieldTypeOptions = (
                     <div>
                         <label>{strings.Min}</label>
-                        <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
+                        <NumberField min={-10000} max={10000} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
                         <br />
                         <label>{strings.Max}</label>
-                        <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
+                        <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
                     </div>
                 );
             } else if (this.props.TaskActivityData.TA_fields[index].field_type == 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type == 'self assessment') {
@@ -281,14 +338,14 @@ class TaskDetailsComponent extends React.Component {
                             <label>{strings.Min}</label>
                             <NumberField min={0} max={100} value={this.props.TaskActivityData.TA_fields[index].numeric_min} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_min', this.props.index, index, this.props.workflowIndex)} />
                             <label>{strings.Max}</label>
-                            <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-100} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
+                            <NumberField value={this.props.TaskActivityData.TA_fields[index].numeric_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'numeric_max', this.props.index, index, this.props.workflowIndex)} />
                         </div>
                     );
                 } else if (this.props.TaskActivityData.TA_fields[index].assessment_type === 'rating') {
                     assessmentTypeView = (<div>
                         <label>{strings.MaxRatingLabel}</label>
                         <NumberField
-                            value={this.props.TaskActivityData.TA_fields[index].rating_max} min={-100} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'rating_max', this.props.index, index, this.props.workflowIndex)}
+                            value={this.props.TaskActivityData.TA_fields[index].rating_max} min={-10000} max={10000} onChange={this.props.callTaskFunction.bind(this, 'changeNumericFieldData', 'rating_max', this.props.index, index, this.props.workflowIndex)}
                         />
                     </div>);
                 } else if (this.props.TaskActivityData.TA_fields[index].assessment_type === 'evaluation') {
@@ -313,13 +370,23 @@ class TaskDetailsComponent extends React.Component {
             }
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers) {
-
-                const fieldSelectionList = this.props.callTaskFunction('getTaskFields', this.state.CurrentTaskFieldSelection, this.props.workflowIndex).map(field => (
-                    <label>
+                const defaultParentTaskId = this.props.callTaskFunction('getFieldDefaultContentValue', 0, index, this.props.index, this.props.workflowIndex);
+                console.log('Fields for', index, defaultParentTaskId, this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex));
+                const fieldSelectionList = this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex).map(field => {
+                    let parentId = field.value.split(':')[0];
+                    if(parentId != defaultParentTaskId){
+                        return <label>
+                            {field.label}
+                            <Radio value={field.value} />
+                            <span className="faded-message-text">({strings.DefaultContentLinked})</span>
+                        
+                        </label>;
+                    }
+                    return <label>
                         {field.label}
                         <Radio value={field.value} />
-                    </label>
-                ));
+                    </label>;
+                });
                 const fieldSelection = (
                     <RadioGroup
                         selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 1,index, this.props.index, this.props.workflowIndex )}
@@ -337,7 +404,7 @@ class TaskDetailsComponent extends React.Component {
                     <div>
                         <RadioGroup
                             key={`taskFieldDefault${2}`}
-                            selectedValue={this.props.callTaskFunction('getFieldDefaultContentValue', 0,index, this.props.index, this.props.workflowIndex)}
+                            selectedValue={defaultParentTaskId}
                             onChange={(value) => {
                                 this.setState({ CurrentTaskFieldSelection: value, CurrentFieldSelection: 0 });
 
@@ -368,8 +435,26 @@ class TaskDetailsComponent extends React.Component {
                         <div className="inner block">
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-
-                            <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            <Editor
+                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                init={{
+                                    skin_url: '/static/tinymce_skins/lightgray',
+                                    height: '150px',
+                                    width: '500px',
+                                    menubar: false,
+                                    plugins: ['textcolor lists'],
+                                    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                    content_css: '/static/main.css',
+                                    body_class: 'faded-big editor',
+                                    resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
+                                    external_plugins: {
+                                        'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                    },
+                                }}
+                                onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                            />
                         </div>
                     );
                 }
@@ -464,7 +549,26 @@ class TaskDetailsComponent extends React.Component {
                             <div className="inner block">
                                 <label>{strings.DefaultContentForField}</label>
                                 <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                                <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                                <Editor
+                                    initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                    init={{
+                                        skin_url: '/static/tinymce_skins/lightgray',
+                                        height: '150px',
+                                        width: '500px',
+                                        menubar: false,
+                                        plugins: ['textcolor lists'],
+                                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                        content_css: '/static/main.css',
+                                        body_class: 'faded-big editor',
+                                        resize: 'both',
+                                        branding: false,
+                                        elementpath: false,
+                                        external_plugins: {
+                                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                        },
+                                    }}
+                                    onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                                />
                             </div>
                         );
                         break;
@@ -474,8 +578,26 @@ class TaskDetailsComponent extends React.Component {
                         <div className="inner block">
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-
-                            <textarea className="big-text-field" placeholder="Default content for the field..." onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                            <Editor
+                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                init={{
+                                    skin_url: '/static/tinymce_skins/lightgray',
+                                    height: '150px',
+                                    width: '500px',
+                                    menubar: false,
+                                    plugins: ['textcolor lists'],
+                                    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                    content_css: '/static/main.css',
+                                    body_class: 'faded-big editor',
+                                    resize: 'both',
+                                    branding: false,
+                                    elementpath: false,
+                                    external_plugins: {
+                                        'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                    },
+                                }}
+                                onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                            />
                         </div>
                     );
                 }
@@ -533,15 +655,51 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner block">
                         <label>{strings.FieldInstructions} ({strings.Optional})</label>
                         <Tooltip Text={strings.TaskFieldInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-instructions-tooltip`} />
-
-                        <textarea className="big-text-field" placeholder={`${strings.TypeInstructionsHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].instructions} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].instructions}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                                external_plugins: {
+                                    'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                },
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'instructions', this.props.index, index, this.props.workflowIndex)} 
+                        />
                     </div>
 
                     <div className="inner block">
                         <label>{strings.FieldRubric}</label>
                         <Tooltip Text={strings.TaskFieldRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-tooltip`} />
-
-                        <textarea className="big-text-field" placeholder={`${strings.TypeRubricHere}...`} onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].rubric} />
+                        <Editor
+                            initialvalue={this.props.TaskActivityData.TA_fields[index].rubric}
+                            init={{
+                                skin_url: '/static/tinymce_skins/lightgray',
+                                height: '150px',
+                                width: '500px',
+                                menubar: false,
+                                plugins: ['textcolor lists'],
+                                toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                content_css: '/static/main.css',
+                                body_class: 'faded-big editor',
+                                resize: 'both',
+                                branding: false,
+                                elementpath: false,
+                                external_plugins: {
+                                    'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                },
+                            }}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'rubric', this.props.index, index, this.props.workflowIndex)} 
+                        />
                     </div>
 
                     {justificationView}
@@ -635,7 +793,7 @@ class TaskDetailsComponent extends React.Component {
 
             );
 
-            const oneOrSeparate = this.props.index == 0 ? (
+            const oneOrSeparate = /*this.props.index == 0 ? (
                 <div className="inner">
                     <label>{strings.DoesEveryoneGetSameProblem}</label>
                     <Tooltip Text={strings.TaskOneOrSeparateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-one-or-separate-tooltip`} />
@@ -648,7 +806,7 @@ class TaskDetailsComponent extends React.Component {
                             {strings.Yes}</label>
                     </RadioGroup>
                 </div>
-            ) : null;
+            ) :*/ null;
 
             const seeSameActivity = (firstAssigneeConstr == 'student' || firstAssigneeConstr == 'both') ? (
                 <div className="inner">
@@ -893,6 +1051,7 @@ class TaskDetailsComponent extends React.Component {
                             clearable={false}
                             searchable={false} />
                         <br />
+                        {/*
                         <label>{strings.ShouldReflectBlock}</label><br />
                         <Tooltip Text={strings.TaskShouldReflectBlockMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-should-reflect-wait-tooltip`} />
                         <Select options={reflectWaitValues}
@@ -901,6 +1060,8 @@ class TaskDetailsComponent extends React.Component {
                             clearable={false}
                             searchable={false} />
                         <br />
+                        */}
+                        
                         <label>{strings.WhoCanReflect}</label>
                         <Tooltip Text={strings.TaskWhoCanReflectMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-reflect-tooltip`} />
                         <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', true, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', true, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
@@ -1104,9 +1265,9 @@ class TaskDetailsComponent extends React.Component {
                 ) : null;
             assigneeConstraints = (
                 <div>
-                    <label>{strings.AssigneeConstraints}</label>
-                    <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
-
+                    <b style={{textAlign: 'center'}}><label>{strings.AssigneeConstraints}</label>
+                        <Tooltip Text={strings.TaskAssigneeConstraintMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-assignee-constraint-tooltip`} />
+                    </b>
                     <br />
                     <label>{strings.WhoCanDoTask}</label>
                     <Tooltip Text={strings.TaskWhoCanDoMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-who-can-do-tooltip`} />

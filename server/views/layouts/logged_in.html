@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
         <link rel="stylesheet" rel="stylesheet/less" href="/static/main.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=MML_HTMLorMML"></script>
 
     </head>
     <body class="logged-in">
@@ -85,7 +86,7 @@
                     {{/if}}
                     {{#if masquerading}}
                     <div class="left-nav">
-                        <span>{{user.firstName}} {{user.lastName}}</span> 
+                        <a href="/account" style="color:#293847; cursor:pointer; font-size: 18px;">{{user.info.FirstName}} {{user.info.LastName}}</a>&nbsp;
                         <a href="/stop-masquerading" class="link">
                             <i class="fa fa-sign-out"></i>
                             {{ __ "Stop Masquerading" }}
@@ -93,7 +94,7 @@
                     </div>
                     {{else}}
                     <div class="left-nav">
-                        <span >{{user.firstName}} {{user.lastName}}</span>
+                        <a href="/account" style="color:#293847; cursor:pointer; font-size: 18px;">{{user.info.FirstName}} {{user.info.LastName}}</a>&nbsp;
                         <a href="/logout" class="link">
                             <i class="fa fa-sign-out"></i>
                             {{ __ "Log out" }}

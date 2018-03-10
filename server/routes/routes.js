@@ -7,7 +7,7 @@ const pages = [
     'course-section-management',
     'create-assignment',
     'assignment-editor',
-    'administrator',
+    //'administrator',
     'add-user',
     'settings',
     'account',
@@ -31,6 +31,8 @@ const pages = [
     'reallocation',
     'about',
     'section',
+    'assignment-status-table',
+    'database-maintenance'
 ];
 
 var pageConfigs = [];

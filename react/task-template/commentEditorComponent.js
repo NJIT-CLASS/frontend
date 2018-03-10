@@ -31,26 +31,26 @@ class CommentEditorComponent extends React.Component {
     }
 
     componentDidMount() {
-      if (this.props.Edit) {
-        this.editCommentTarget(this.props.CommentTarget, this.props.TargetID);
-        this.getEditData();
-      }
-      else {
-        this.setState({NewCommentTarget: this.props.CommentTargetOnList})
-      }
+        if (this.props.Edit) {
+            this.editCommentTarget(this.props.CommentTarget, this.props.TargetID);
+            this.getEditData();
+        }
+        else {
+            this.setState({NewCommentTarget: this.props.CommentTargetOnList});
+        }
 
-      if (this.props.Type != undefined) {
-          this.setState({NewCommentType: this.props.Type});
-      }
-      if (this.props.SetFlag) {
-          this.setState({NewCommentFlagValue: 1})
-      }
+        if (this.props.Type != undefined) {
+            this.setState({NewCommentType: this.props.Type});
+        }
+        if (this.props.SetFlag) {
+            this.setState({NewCommentFlagValue: 1});
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-      if ((nextProps.CommentTargetOnList != this.state.NewCommentTarget) && !this.props.Edit) {
-        this.setState({NewCommentTarget: this.props.CommentTargetOnList});
-      }
+        if ((nextProps.CommentTargetOnList != this.state.NewCommentTarget) && !this.props.Edit) {
+            this.setState({NewCommentTarget: this.props.CommentTargetOnList});
+        }
     }
 
     handleChangeText(event) {
@@ -106,18 +106,18 @@ class CommentEditorComponent extends React.Component {
                 this.setState({CommentBlank: true});
             }
 
-          else if (((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent)) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
-            apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
-                if(!body.Error) {
-                    console.log('Successfully edited comment.');
-                    this.setState({CommentBlank: false});
-                    this.props.Update(commentParameters.Status, commentParameters.Target, commentParameters.TargetID);
-                }
-                else {
-                    console.log('Error editing comment.');
-                }
-            });
-          }
+            else if (((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent)) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
+                apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
+                    if(!body.Error) {
+                        console.log('Successfully edited comment.');
+                        this.setState({CommentBlank: false});
+                        this.props.Update(commentParameters.Status, commentParameters.Target, commentParameters.TargetID);
+                    }
+                    else {
+                        console.log('Error editing comment.');
+                    }
+                });
+            }
 
             else{
                 console.log('Editing access denied / The comment cannot be edited because there is already a reply.');
@@ -230,14 +230,14 @@ class CommentEditorComponent extends React.Component {
     }
 
     editCommentTarget(target, id) {
-      let m;
-      for (let i of this.props.CommentTargetList) {
-        if ((i.Target == target) && (i.ID == id)) {
-          m = i.value;
-          console.log('ect', m);
+        let m;
+        for (let i of this.props.CommentTargetList) {
+            if ((i.Target == target) && (i.ID == id)) {
+                m = i.value;
+                console.log('ect', m);
+            }
+            this.setState({NewCommentTarget: m});
         }
-        this.setState({NewCommentTarget: m});
-      }
     }
 
     render() {
@@ -295,11 +295,11 @@ class CommentEditorComponent extends React.Component {
                     </div>)
                 }
 
-          <form role="form">
-              <div className="title-no-hover">{IntroText}</div>
-                  <div style={{width: 110, display: 'inline-flex'}}><Select placeholder='' style={{width: 100}} options={[{value: 'comment', label: strings.Comment}, {value: 'flag', label: strings.Flag}]} value={this.state.NewCommentType} onChange={this.handleChangeType.bind(this)} clearable={false}/></div>
-                  {(this.props.ReplyLevel == 0) && (<span style={{padding: 10}}>{strings.OnText}</span>)}
-                  {(this.props.ReplyLevel == 0) &&
+                <form role="form">
+                    <div className="title-no-hover">{IntroText}</div>
+                    <div style={{width: 110, display: 'inline-flex'}}><Select placeholder='' style={{width: 100}} options={[{value: 'comment', label: strings.Comment}, {value: 'flag', label: strings.Flag}]} value={this.state.NewCommentType} onChange={this.handleChangeType.bind(this)} clearable={false}/></div>
+                    {(this.props.ReplyLevel == 0) && (<span style={{padding: 10}}>{strings.OnText}</span>)}
+                    {(this.props.ReplyLevel == 0) &&
                   (<div style={{width: 320, display: 'inline-flex'}}>
                       <Select options={this.props.CommentTargetList} value={this.state.NewCommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true} required/>
                   </div>)}

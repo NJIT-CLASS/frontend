@@ -38,6 +38,8 @@ class TasksList extends React.Component{
         						Strings={Strings}
                                     TaskID={task.TaskInstanceID}
                                     showComments={this.props.showComments.bind(this)}
+                                    Type={task.TaskActivity.Type}
+
         					/>
                             );
                         }
@@ -56,6 +58,7 @@ class TasksList extends React.Component{
                                     TaskID={task.TaskInstanceID}
                                     Strings={Strings}
                                     showComments={this.props.showComments.bind(this)}
+                                    Type={task.TaskActivity.Type}
 								
         					/>
                             );
@@ -110,6 +113,8 @@ class TasksList extends React.Component{
         						Strings={Strings}
                                     TaskID={task.TaskInstanceID}
                                     showComments={this.props.showComments.bind(this)}
+                                    Type={task.TaskActivity.Type}
+									
         					/>
                             );
                         }

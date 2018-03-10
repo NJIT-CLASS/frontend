@@ -555,6 +555,7 @@ class TemplateContainer extends React.Component {
                     oneBox={true}
                     index={5000}
                     margin={0}
+                    Type={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskActivity.Type}
                 />)}
 
                         {(this.state.commentList != undefined) && (this.state.commentList.map((comment, index, array) => {
@@ -574,6 +575,7 @@ class TemplateContainer extends React.Component {
                                             scroll={this.showSingleComment.bind(this)}
                                             Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
                                             CommentTargetList={this.state.CommentTargetList}
+                                            TaskID={this.props.TaskID}
                                         />
                                     );}
                                 else {
@@ -590,6 +592,7 @@ class TemplateContainer extends React.Component {
                                             scroll={this.showSingleComment.bind(this)}
                                             Emphasize={(this.state.EmphasizeID == comment.CommentsID) ? true : false}
                                             CommentTargetList={this.state.CommentTargetList}
+                                            TaskID={this.props.TaskID}
                                         />
                                     );
                                 }

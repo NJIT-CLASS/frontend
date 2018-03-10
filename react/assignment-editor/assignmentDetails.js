@@ -1,6 +1,11 @@
 /* This Component is contains the assignment input fields. It gets its data and functions from the AssignmentEditorContainer.
 */
 import React from 'react';
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/modern/theme';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/textcolor';
+import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select';
 import NumberField from '../shared/numberField';
 import ToggleSwitch from '../shared/toggleSwitch';
@@ -125,8 +130,26 @@ class AssignmentDetailsComponent extends React.Component{
                                 <label>{strings.AssignmentInstructions}</label>
                                 <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
                                 <br />
-                                <textarea placeholder={strings.Instructions} className="big-text-field" value={this.props.AssignmentActivityData.AA_instructions}
-                                    onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')} ></textarea>
+                                <Editor
+                                    initialvalue={this.props.AssignmentActivityData.AA_instructions}
+                                    init={{
+                                        skin_url: '/static/tinymce_skins/lightgray',
+                                        height: '150px',
+                                        width: '500px',
+                                        menubar: false,
+                                        plugins: ['textcolor lists'],
+                                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+                                        content_css: '/static/main.css',
+                                        body_class: 'faded-big editor',
+                                        resize: 'both',
+                                        branding: false,
+                                        elementpath: false,
+                                        external_plugins: {
+                                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
+                                        },
+                                    }}
+                                    onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')}
+                                />
                             </div>
 
                             <div className="inner block">
