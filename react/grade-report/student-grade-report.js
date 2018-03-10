@@ -11,9 +11,11 @@ class UpdatedGradeReport extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log("Loaded");
 
         this.state = {
             loaded: false,
+            error:"",
             userID: props.UserID,
             instructorSections:[],
             studentSections:[],
@@ -31,7 +33,10 @@ class UpdatedGradeReport extends React.Component {
     getSections(userID){
         apiCall.get(`/SectionsByUser/${userID}`,{},(err,status,body)=>{
             if(status.statusCode === 200){
+                console.log(body);
                 body.Sections.forEach(section=>{this.getAssignments(section,body.Sections.length)});
+            } else {
+                this.setState({loaded:true,error:body});
             }
         });
     }
@@ -39,6 +44,7 @@ class UpdatedGradeReport extends React.Component {
     getAssignments(section,numSections){
         apiCall.get(`/getActiveAssignmentsForSection/${section.SectionID}`,{},(err,status,body)=>{
             if(status.statusCode===200){
+                console.log(section);
                 section["assignments"]=body.Assignments;
                 if(section.Role==="Instructor"){
                     this.state.instructorSections.push(section);
@@ -46,9 +52,14 @@ class UpdatedGradeReport extends React.Component {
                 else if(section.Role==="Student"){
                     this.state.studentSections.push(section);
                 }
+                console.log(numSections);
+                console.log(this.state.instructorSections.length);
+                console.log(this.state.studentSections.length);
                 if(numSections===this.state.instructorSections.length + this.state.studentSections.length){
                     this.setState({loaded:true});
                 }
+            } else {
+                this.setState({loaded:true,error:body});
             }
         });     
     }
@@ -141,6 +152,7 @@ class UpdatedGradeReport extends React.Component {
 
     render(){
         var tableHeader=null;
+        var error = this.state.error;
         var instructorSections = this.state.instructorSections;
         var studentSections = this.state.studentSections;
         var displayType = this.state.displayedSection.type;
@@ -176,6 +188,10 @@ class UpdatedGradeReport extends React.Component {
                     <i className=" fa fa-cog fa-spin fa-4x fa-fw"></i>
                 </div>
             );
+        }
+
+        if(error){
+            console.log(error);
         }
 
         if(displayType==="instructorOverview"){
