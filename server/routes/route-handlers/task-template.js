@@ -1,3 +1,4 @@
+import {ROLES} from '../../utils/react_constants';
 
 exports.get = (req, res) => {
 
@@ -10,8 +11,8 @@ exports.get = (req, res) => {
         taskId: req.params.taskId,
         courseId: req.query.courseId,
         sectionId: req.query.sectionId,
-        userType: req.App.user.type,
-        isAdmin: req.App.user.admin,
+        userType: req.App.user.role,
+        isAdmin: req.App.user.role === ROLES.ENHANCED,
         visitorId: req.query.visitorId,
     });
 };

@@ -10,7 +10,6 @@ exports.get = (req, res) => {
   
 
     req.App.api.get('/initial', (err, statusCode, body) => {
-        console.log('calling initial');
         if(statusCode == 400){
             return res.redirect('/onboarding');
         }
@@ -21,11 +20,12 @@ exports.get = (req, res) => {
             title: 'Login | CLASS Learning System'
         });
     });
+    return;
 };
 
 exports.post = (req, res) => {
 
-    req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
+    return req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
 
 
 

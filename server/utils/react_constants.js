@@ -53,3 +53,27 @@ exports.TASK_TYPES_TEXT = {
     RESOLVE_DISPUTE:'Resolve Dispute',
     COMPLETED:'Completed Task'
 };
+
+export const ROLES = {
+    GUEST: 'Guest',
+    PARTICIPANT: 'Participant',
+    TEACHER: 'Teacher',
+    ENHANCED: 'Enhanced',
+    ADMIN: 'Admin',
+    SYSTEM: 'System Role',
+    'Guest': 1,
+    'Participant': 2,
+    'Teacher': 3,
+    'Enhanced': 4,
+    'Admin': 5
+
+};
+
+export const canRoleAccess = function(userRole, requiredRole){
+    console.log(ROLES[userRole], ROLES[requiredRole]);
+    if(ROLES[userRole] >= ROLES[requiredRole]){
+        return true;
+    } else {
+        return false;
+    }
+};

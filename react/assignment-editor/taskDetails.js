@@ -213,12 +213,13 @@ class TaskDetailsComponent extends React.Component {
             );
 
             // TA_overall_instructions
+            console.log(this.props.TaskActivityData.TA_overall_instructions);
             const taskInstructions = (
                 <div className="inner block">
                     <label>{strings.TaskInstructions}</label>
                     <Tooltip Text={strings.TaskInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-instructions-message-tooltip`} />
                     <Editor
-                        initialvalue={this.props.TaskActivityData.TA_overall_instructions}
+                        initialValue={this.props.TaskActivityData.TA_overall_instructions}
                         init={{
                             skin_url: '/static/tinymce_skins/lightgray',
                             height: '150px',
@@ -247,7 +248,7 @@ class TaskDetailsComponent extends React.Component {
                     <label>{strings.TaskRubric}</label>
                     <Tooltip Text={strings.TaskRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-rubric-tooltip`} />
                     <Editor
-                        initialvalue={this.props.TaskActivityData.TA_overall_rubric}
+                        initialValue={this.props.TaskActivityData.TA_overall_rubric}
                         init={{
                             skin_url: '/static/tinymce_skins/lightgray',
                             height: '150px',
@@ -299,7 +300,7 @@ class TaskDetailsComponent extends React.Component {
                         <label>{strings.FieldJustificationInstructions}</label>
                         <Tooltip Text={strings.TaskFieldJustificationInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-justififcation-instructions-message-tooltip`} />
                         <Editor
-                            initialvalue={this.props.TaskActivityData.TA_fields[index].justification_instructions}
+                            initialValue={this.props.TaskActivityData.TA_fields[index].justification_instructions}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
                                 height: '150px',
@@ -314,7 +315,7 @@ class TaskDetailsComponent extends React.Component {
                                 elementpath: false,
                             }}
                             onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'justification_instructions', this.props.index, index, this.props.workflowIndex)} 
-                    />
+                        />
                     </div>
                 )
                 : null; // justification textbox for the field
@@ -436,7 +437,7 @@ class TaskDetailsComponent extends React.Component {
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                             <Editor
-                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                 init={{
                                     skin_url: '/static/tinymce_skins/lightgray',
                                     height: '150px',
@@ -550,7 +551,7 @@ class TaskDetailsComponent extends React.Component {
                                 <label>{strings.DefaultContentForField}</label>
                                 <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                                 <Editor
-                                    initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                    initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                     init={{
                                         skin_url: '/static/tinymce_skins/lightgray',
                                         height: '150px',
@@ -579,7 +580,7 @@ class TaskDetailsComponent extends React.Component {
                             <label>{strings.DefaultContentForField}</label>
                             <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                             <Editor
-                                initialvalue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                                 init={{
                                     skin_url: '/static/tinymce_skins/lightgray',
                                     height: '150px',
@@ -656,7 +657,7 @@ class TaskDetailsComponent extends React.Component {
                         <label>{strings.FieldInstructions} ({strings.Optional})</label>
                         <Tooltip Text={strings.TaskFieldInstructionsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-field-instructions-tooltip`} />
                         <Editor
-                            initialvalue={this.props.TaskActivityData.TA_fields[index].instructions}
+                            initialValue={this.props.TaskActivityData.TA_fields[index].instructions}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
                                 height: '150px',
@@ -681,7 +682,7 @@ class TaskDetailsComponent extends React.Component {
                         <label>{strings.FieldRubric}</label>
                         <Tooltip Text={strings.TaskFieldRubricMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-tooltip`} />
                         <Editor
-                            initialvalue={this.props.TaskActivityData.TA_fields[index].rubric}
+                            initialValue={this.props.TaskActivityData.TA_fields[index].rubric}
                             init={{
                                 skin_url: '/static/tinymce_skins/lightgray',
                                 height: '150px',

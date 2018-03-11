@@ -306,7 +306,6 @@ for (const route of loggedOutRoutes) {
                                 };
                             })();
                             next();
-                            
                         }
                         catch(error){
                             next(error);
@@ -319,7 +318,10 @@ for (const route of loggedOutRoutes) {
     }
 }
 
+
+
 app.use((req,res,next) => {
+    console.log('And here');
     
     if( !'userId' in req.session)
         return  res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
@@ -356,6 +358,7 @@ app.use((req, res, next) => {
             req.App.user.email = user.UserLogin.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
+            req.App.user.role = user.Role;
             req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
             req.App.user.info = user.UserContact;

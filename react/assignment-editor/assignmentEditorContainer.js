@@ -778,8 +778,8 @@ class AssignmentEditorContainer extends React.Component {
                     x.setState({
                         InfoMessage: '',
                         InfoMessageType: ''
-                    })
-                }, 8000)
+                    });
+                }, 8000);
             } else {
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
@@ -790,8 +790,8 @@ class AssignmentEditorContainer extends React.Component {
                     x.setState({
                         InfoMessage: '',
                         InfoMessageType: ''
-                    })
-                }, 8000)
+                    });
+                }, 8000);
             }
 
         });
@@ -2270,6 +2270,7 @@ class AssignmentEditorContainer extends React.Component {
 
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[taskIndex][stateField] = newVal;
+        console.log(e.target.getContent(), newData[workflowIndex].Workflow[taskIndex][stateField]);
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 

@@ -872,7 +872,7 @@ class SuperComponent extends React.Component {
             case 'text':
                 fieldInput = (<Editor
                     key={idx}
-                    initialValue={latestVersion[idx][0]}
+                    initialvalue={latestVersion[idx][0]}
                     init={{
                         skin_url: '/static/tinymce_skins/lightgray',
                         height: '150px',

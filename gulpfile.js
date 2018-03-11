@@ -382,7 +382,8 @@ gulp.task('start', ['node-babel'], function () {
     nodemon({
         script: '.build/server.js',
         ext: 'js html',
-        ignore: ['react/*', 'styles/*']
+        ignore: ['react/*', 'styles/*'],
+        args: ['--inspect']
     });
 });
 
