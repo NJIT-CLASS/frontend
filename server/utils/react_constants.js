@@ -69,8 +69,8 @@ export const ROLES = {
 
 };
 
-export const canRoleAccess = function(userRole, requiredRole){
-    console.log(ROLES[userRole], ROLES[requiredRole]);
+exports.canRoleAccess = function(userRole, requiredRole){
+    if(userRole == null || userRole == undefined) return false;
     if(ROLES[userRole] >= ROLES[requiredRole]){
         return true;
     } else {

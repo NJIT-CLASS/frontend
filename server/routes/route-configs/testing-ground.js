@@ -1,4 +1,5 @@
 const handler = require('../route-handlers/testing-ground');
+import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/testing',
@@ -8,6 +9,7 @@ module.exports = {
         admins: true,
         instructors: false,
         students: false,
+        role: ROLES.ENHANCED,
         loggedOut: false
     },
     icon: 'cog',

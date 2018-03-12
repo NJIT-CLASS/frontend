@@ -383,7 +383,6 @@ gulp.task('start', ['node-babel'], function () {
         script: '.build/server.js',
         ext: 'js html',
         ignore: ['react/*', 'styles/*'],
-        args: ['--inspect']
     });
 });
 

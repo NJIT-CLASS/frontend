@@ -1,5 +1,7 @@
 exports.get = (req, res) => {
+    console.log('Req app', req.App.user);
     if (req.App.user && req.App.user.userId) {
+        console.log('logged in (techincally');
         return res.redirect('/dashboard');
     }
 
@@ -26,7 +28,6 @@ exports.get = (req, res) => {
 exports.post = (req, res) => {
 
     return req.App.api.post('/login', {emailaddress: req.body.email, password:req.body.password}, (err, statusCode, body) => {
-
 
 
         switch(statusCode){
