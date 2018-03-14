@@ -202,7 +202,7 @@ class UserManagementContainer extends Component{
     generatePassword(form){
         var generator = require('generate-password');
         this.state[form].pw = generator.generate({length: 10,numbers: true});
-        this.setState({addTestUserData:this.state[form]});
+        this.setState({form:this.state[form]});
     }
 
     retrieveTestUser(){
@@ -359,7 +359,7 @@ class UserManagementContainer extends Component{
                                 <tr><td>First Name* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addAdminUserData","fn")}/></td></tr>
                                 <tr><td>Last Name* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addAdminUserData","ln")}/></td></tr>
                                 <tr><td>Organization </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addAdminUserData","organization")} /></td></tr>
-                                <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this,"addAdminUserData")}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this,"addAdminUserData")} type="radio" /> </td><td><input type={this.state.addAdminUserData.pwInputType} value={this.state.addAdminUserData.pw}  onChange={this.onFieldInput.bind(this,"addAdminUserData","pw")}/></td></tr>
+                                <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this,"addAdminUserData")}>Generate Password</button> Hide <input checked={this.state.addAdminUserData.hidePW} onClick={this.toggleHidePW.bind(this,"addAdminUserData")} type="radio" /> </td><td><input disabled={true} type={this.state.addAdminUserData.pwInputType} value={this.state.addAdminUserData.pw}  onChange={this.onFieldInput.bind(this,"addAdminUserData","pw")}/></td></tr>
                                 <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.inviteAdmin.bind(this)}>Invite</button></td></tr>      
                             </tbody>
                         </table>
@@ -375,7 +375,7 @@ class UserManagementContainer extends Component{
                                     <tr><td>Email* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addTestUserData","email")}/></td></tr>
                                     <tr><td>First Name* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addTestUserData","fn")}/></td></tr>
                                     <tr><td>Last Name* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addTestUserData","ln")}/></td></tr>
-                                    <tr><td>User Role* </td><td><Select clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"instructor",label:"Instructor"},{value:"admin",label:"Admin"}]}/></td></tr>
+                                    <tr><td>User Role* </td><td><Select className="change-role-select" clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"instructor",label:"Instructor"},{value:"admin",label:"Admin"}]}/></td></tr>
                                     <tr><td>Organization </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addTestUserData","organization")} /></td></tr>
                                     <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this,"addTestUserData")}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this,"addTestUserData")} type="radio" /> </td><td><input disabled={true} type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onFieldInput.bind(this,"addTestUserData","pw")}/></td></tr>
                                     <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
+const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
         showTaskInstance = taskStatus.some(v => Filters.Status.includes(v));
     }
-
+    let modal = null;
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
@@ -54,14 +54,16 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
 
       </div>;
     } else {
-        taskInformation = <a href={link}>
+        taskInformation = <div className="dropdown">
           <div className="task-type">{TaskActivity.Type}</div>
           <div> {UserContact.Email} </div>
           <div>TaskID: {TaskInstance.TaskInstanceID}</div>
           <div> UserID: {User.UserID} </div>
           <div>{letters[taskStatus[0]]}</div>
-        </a>;
+          <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
+        </div>;
     }
+
 
     return (<div className={`task-instance ${colors[taskStatus[0]]}`}>
       {taskInformation}
