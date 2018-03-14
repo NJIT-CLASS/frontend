@@ -46,29 +46,8 @@ const allowedRouteMethods = [
     'get',
     'post',
     'put',
-    'head',
-    'delete',
-    'options',
-    'trace',
-    'copy',
-    'lock',
-    'mkcol',
-    'move',
-    'purge',
-    'propfind',
-    'proppatch',
-    'unlock',
-    'report',
-    'mkactivity',
-    'checkout',
-    'merge',
-    'm-search',
-    'notify',
-    'subscribe',
-    'unsubscribe',
-    'patch',
-    'search',
-    'connect'
+    'delete'
+    
 ];
 //Setup static files
 app.use('/static', express.static(`${__dirname}/static`));
@@ -366,9 +345,16 @@ app.use((req, res, next) => {
             req.App.user.info = user.UserContact;
             next();
         });
+    } else {
+        {
+            delete req.session.userId; 
+            delete req.session.token;
+            console.log('No user profile. Check the backend server or API_URL');
+            res.redirect('/');
+            return;
+        }
     }
 
-    next();
 });
 
 
