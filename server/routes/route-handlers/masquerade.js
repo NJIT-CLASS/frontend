@@ -14,7 +14,6 @@ exports.post = (req, res) => {
     const email = req.body.email;
 
     req.App.api.post('/getUserId',{email:email},(err, statusCode, body) => {
-        console.log('masquerade body: ', body);
         if (body.UserID !== null) {
             const currentUserId = req.session.userId;
             req.session.userId = body.UserID;

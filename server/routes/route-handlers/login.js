@@ -1,7 +1,5 @@
 exports.get = (req, res) => {
-    console.log('Req app', req.App.user);
     if (req.App.user && req.App.user.userId) {
-        console.log('logged in (techincally');
         return res.redirect('/dashboard');
     }
 
