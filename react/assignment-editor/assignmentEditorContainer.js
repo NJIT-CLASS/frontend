@@ -106,6 +106,7 @@ class AssignmentEditorContainer extends React.Component {
                 StartDelay: false,
                 CustomNameSet: false,
                 TA_file_upload: {'mandatory': 0, 'optional': 0},
+                AllowFileUpload: false,
                 TA_due_type: [
                     'duration', 4320
                 ],
