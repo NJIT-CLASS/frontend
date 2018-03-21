@@ -8,7 +8,7 @@ import ReallocationModal from './reallocation-modal';
 class QuickAssignmentReport extends Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
             AssignmentData: {},
             Filters: {
@@ -70,8 +70,9 @@ class QuickAssignmentReport extends Component {
     }
 
     displayReallocateModal(userID, taskInstanceID){
+        console.log(this.props.AssignmentID);
         var title = "Reallocate task ID: "+taskInstanceID;
-        this.setState({Modal:(<ReallocationModal title={title} close={this.closeModal.bind(this)}></ReallocationModal>)});
+        this.setState({Modal:(<ReallocationModal taskInstanceID={taskInstanceID} AssignmentID={this.props.AssignmentID} title={title} close={this.closeModal.bind(this)}></ReallocationModal>)});
     }
 
     render(){
