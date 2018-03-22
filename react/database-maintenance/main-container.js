@@ -19,11 +19,11 @@ class DatabaseMaintenanceContainer extends Component {
         let {Strings} = this.state;
         
         return (
-            <div class="container">
-                <div class="col-xs-6">
+            <div className="container">
+                <div className="col-xs-6">
                     <Assignments strings={this.state.Strings} />
                 </div>
-                <div class="col-xs-6">
+                <div className="col-xs-6">
                     <ArchivedAssignments strings={this.state.Strings} />
                 </div>
             </div>
