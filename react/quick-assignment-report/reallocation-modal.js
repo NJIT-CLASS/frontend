@@ -40,6 +40,7 @@ export default class ReallocationModal extends Component {
 
     getStudents(val){
         apiCall.get(`/course/getsection/${this.state.sectionID}`,{},(err,status,body)=>{
+            console.log(body);
             this.setState({students:body.UserSection.filter( user => !user.active),reallocationMethod:val})
         });
     }
@@ -119,6 +120,7 @@ export default class ReallocationModal extends Component {
         if(this.state.reallocationMethod === "byUser"){
 
             var options = this.state.students.map(student =>{
+                console.log(student);
                 return {
                     value:student.UserID,
                     label:student.User.FirstName+" "+student.User.LastName
@@ -137,7 +139,7 @@ export default class ReallocationModal extends Component {
         modalContent = (<form role="form" className="section">
         {notification}
         <ul>
-            <li><p>Reallocate using: </p><Select onChange={this.reallcationSelectChange.bind(this)} value={this.state.reallocationMethod} clearable={false} options={[{value:"byUser",label:"Select student"},{value:"byVolunteer",label:"Use volunteeer pool"}]} /></li>
+            <li><p>Reallocate using: </p><Select onChange={this.reallcationSelectChange.bind(this)} value={this.state.reallocationMethod} clearable={false} options={[{value:"byUser",label:"Select user"},{value:"byVolunteer",label:"Use volunteeer pool"}]} /></li>
             {studentSelect}
             <li><p>Mark as extra credit: </p><input type="checkbox" checked={this.state.isExtraCredit} onClick={this.extraCreditOnlick.bind(this)}></input></li>
             <li><button type="button" onClick={this.submit.bind(this)}>Submit</button></li>
