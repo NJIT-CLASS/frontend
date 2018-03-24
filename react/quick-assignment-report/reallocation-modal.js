@@ -16,7 +16,8 @@ export default class ReallocationModal extends Component {
             showStudentsSelect:null,
             students:null,
             studentSelected:null,
-            isExtraCredit:false
+            isExtraCredit:false,
+            notification:null
         };
     }
 
@@ -57,21 +58,40 @@ export default class ReallocationModal extends Component {
             console.log(this.state.studentSelected);
             console.log(this.state.isExtraCredit);
             apiCall.post('/reallocate/task_to_user/',{ti_id:this.props.taskInstanceID, user_id:this.state.studentSelected,isExtraCredit:this.state.isExtraCredit},(err, status, body)=>{
-                console.log(body);
+                if(status.statusCode === 200){
+                    this.setState({notification:this.notification(false, "Task reallocated to user "+this.state.studentSelected)});
+                } else {
+                    this.setState({notification:this.notification(true,"Unable to reallocate user")});
+                }
             });
         }
         else if(this.state.reallocationMethod === "byVolunteer"){
             apiCall.post(`/volunteerpool/section/${this.state.sectionID}`,{},(err, status, body)=>{
-                console.log(body);
+                if(status.statusCode === 200){
+                    this.setState({notification:this.notification(false, "")});
+                } else {
+                    this.setState({notification:this.notification(true,"Unable to reallocate user")});
+                }
             });
         }
 
+    }
+
+    notification(isError, message){
+        var classType = isError ? "error form-error" : "success form-success";
+        return (
+            <div className={classType} role="alert">
+                <i className="fa fa-exclamation-circle"></i>
+                {message}
+            </div>
+        );
     }
 
     render(){
         let title = this.state.title;
         var studentSelect=null;
         let modalContent = null;
+        let notification = this.state.notification;
 
         if(!this.state.Loaded){
             modalContent = (<div></div>);
@@ -91,7 +111,12 @@ export default class ReallocationModal extends Component {
             console.log(this.state.students);
         }
 
+        if(notification){
+            this.state.notification = null;
+        }
+
         modalContent = (<form role="form" className="section">
+        {notification}
         <ul>
             <li><p>Reallocate using: </p><Select onChange={this.reallcationSelectChange.bind(this)} value={this.state.reallocationMethod} clearable={false} options={[{value:"byUser",label:"Select student"},{value:"byVolunteer",label:"Use volunteeer pool"}]} /></li>
             {studentSelect}
