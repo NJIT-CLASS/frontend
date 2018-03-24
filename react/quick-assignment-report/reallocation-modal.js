@@ -67,14 +67,33 @@ export default class ReallocationModal extends Component {
         }
         else if(this.state.reallocationMethod === "byVolunteer"){
             apiCall.post(`/volunteerpool/section/${this.state.sectionID}`,{},(err, status, body)=>{
-                if(status.statusCode === 200){
-                    this.setState({notification:this.notification(false, "")});
-                } else {
-                    this.setState({notification:this.notification(true,"Unable to reallocate user")});
+                console.log(this.props.taskInstanceID);
+                console.log(this.state.isExtraCredit);
+                console.log(body);
+                if(status.statusCode === 200 && !body.Error){
+                    var volPool = body.Volunteers.map(volunteer =>{
+                        if(volunteer.status === "Approved"){
+                            return volunteer.UserID;
+                        }
+                    });
+                    this.reallocateWithPool(this.props.taskInstanceID, volPool, this.state.isExtraCredit)
                 }
             });
         }
 
+    }
+
+    reallocateWithPool(task, volunteerPool, isExtraCredit){
+        var taskArray = ["ti",[task]];
+        var pool = [volunteerPool];
+        apiCall.post(`/reallocate/task_based`,{taskarray:taskArray,user_pool_wc:pool,user_pool_woc:[],is_extra_credit:isExtraCredit},(err, status, body)=>{
+            console.log(body);
+            if(status.statusCode === 200 && !body.Error){
+                this.setState({notification:this.notification(false, "Task reallocation successful")});
+            } else {
+                this.setState({notification:this.notification(true,"Unable to reallocate user")});
+            }
+        });
     }
 
     notification(isError, message){
