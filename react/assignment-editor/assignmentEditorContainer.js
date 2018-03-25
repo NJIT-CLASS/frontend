@@ -90,6 +90,8 @@ class AssignmentEditorContainer extends React.Component {
                 TA_display_name: '',
                 TA_type: '',
                 TA_documentation:'',
+                TA_AssessmentTask: false,
+                TA_MustCompleteThisFirst: false,
                 VersionEvaluation: 'first', // 'first','last','whole'
                 SeeSibblings: false,
                 SeeSameActivity: true,
@@ -150,6 +152,7 @@ class AssignmentEditorContainer extends React.Component {
             TA_type: TASK_TYPES.CREATE_PROBLEM,
             TA_name: TASK_TYPES_TEXT.CREATE_PROBLEM,
             VersionEvaluation: 'last',
+            TA_MustCompleteThisFirst: true,
             TA_what_if_late: 'keep_same_participant',
             TA_one_or_separate: false,
             TA_assignee_constraints: [
@@ -1201,6 +1204,7 @@ class AssignmentEditorContainer extends React.Component {
         stateData[workflowIndex].Workflow.push(newTask);
 
 
+
         var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id == index;
         });
@@ -1219,8 +1223,13 @@ class AssignmentEditorContainer extends React.Component {
 
         stateData[workflowIndex].Workflow[newTaskIndex].TA_display_name = this.computeNewName(stateData,newTaskIndex, workflowIndex);
 
-        //This adds follow on tasks and specifies additional follow-on settings
+        //This will set the TA_AssessmentTask field to its appropriate values
+        stateData[workflowIndex].Workflow[newTaskIndex].TA_AssessmentTask = this.getParentTask(newTaskIndex, workflowIndex, stateData).TA_AssessmentTask;
 
+        if(type === this.ASSESS_IDX){
+            stateData[workflowIndex].Workflow[newTaskIndex].TA_AssessmentTask = true;
+        }
+        //This adds follow on tasks and specifies additional follow-on settings
         switch(type){
         case this.ASSESS_IDX:
             //add default assignee constraints
@@ -1622,11 +1631,23 @@ class AssignmentEditorContainer extends React.Component {
      * @param  {[number]} workflowIndex
      * @return {[number]}               [parentId]
      */
-    getParentIndex(taskIndex, workflowIndex){
-        var selectedNode = this.state.WorkflowDetails[workflowIndex].WorkflowStructure.first(function(node) {
+    getParentIndex(taskIndex, workflowIndex ,stateData){
+        if(stateData === undefined){
+            stateData = this.state.WorkflowDetails;
+        }
+        console.log('Get Parent index', stateData, workflowIndex);
+        var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id === taskIndex;
         });
         return selectedNode.parent.model.id;
+    }
+
+    getParentTask(taskIndex, workflowIndex, stateData){
+        var index = this.getParentIndex(taskIndex, workflowIndex, stateData);
+        if(stateData === undefined ){
+            stateData = this.state.WorkflowDetails;
+        }
+        return stateData[workflowIndex].Workflow[index];
     }
 
     setAssessNumberofParticipants(index, workflowIndex, value) {
@@ -1652,10 +1673,6 @@ class AssignmentEditorContainer extends React.Component {
         }
         this.setState({WorkflowDetails: newData});
     }
-
-
-
-
 
 
 
