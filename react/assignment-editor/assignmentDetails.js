@@ -2,9 +2,7 @@
 */
 import React from 'react';
 import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/modern/theme';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/textcolor';
+import tinymceOptions from '../shared/tinymceOptions';
 import { Editor } from '@tinymce/tinymce-react';
 import Select from 'react-select';
 import NumberField from '../shared/numberField';
@@ -132,22 +130,7 @@ class AssignmentDetailsComponent extends React.Component{
                                 <br />
                                 <Editor
                                     initialvalue={this.props.AssignmentActivityData.AA_instructions}
-                                    init={{
-                                        skin_url: '/static/tinymce_skins/lightgray',
-                                        height: '150px',
-                                        width: '500px',
-                                        menubar: false,
-                                        plugins: ['textcolor lists'],
-                                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
-                                        content_css: '/static/main.css',
-                                        body_class: 'faded-big editor',
-                                        resize: 'both',
-                                        branding: false,
-                                        elementpath: false,
-                                        external_plugins: {
-                                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
-                                        },
-                                    }}
+                                    init={tinymceOptions}
                                     onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')}
                                 />
                             </div>
