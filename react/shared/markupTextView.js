@@ -16,6 +16,9 @@ class MarkupText extends React.Component {
             'li',
             'quote',
             'p',
+            'table',
+            'carousel',
+            
             'span',
             'math',
             'maction',
@@ -65,11 +68,11 @@ class MarkupText extends React.Component {
     }
 
     componentDidMount() {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     componentDidUpdate() {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     render() {

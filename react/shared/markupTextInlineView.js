@@ -16,6 +16,8 @@ class MarkupTextInline extends React.Component {
             'li',
             'quote',
             'p',
+            'table',
+            'carousel',
             'span',
             'math',
             'maction',
