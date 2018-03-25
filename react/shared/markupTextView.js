@@ -8,6 +8,7 @@ class MarkupText extends React.Component {
             'a',
             'b',
             'i',
+            'img',
             'em',
             'strong',
             'br',
@@ -56,6 +57,20 @@ class MarkupText extends React.Component {
             'mtr',
             'munder',
             'munderover',
+            'table',
+            'thead',
+            'tbody',
+            'tr',
+            'th',
+            'td',
+            'video',
+            'source',
+            'pre',
+            'code',
+            'sub',
+            'sup',
+            'h1',
+            'h2',
         ];
 
         this.options = {
@@ -65,10 +80,12 @@ class MarkupText extends React.Component {
     }
 
     componentDidMount() {
+        Prism.highlightAll();
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
 
     componentDidUpdate() {
+        Prism.highlightAll();
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
     }
 
