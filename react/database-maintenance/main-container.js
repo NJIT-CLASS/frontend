@@ -4,6 +4,7 @@ import apiCall from '../shared/apiCall';
 
 import Assignments from './assignments';
 import ArchivedAssignments from './archivedAssignments';
+import DeletedAssignments from './deletedAssignments';
 import strings from './strings';
     
 class DatabaseMaintenanceContainer extends Component {
@@ -26,10 +27,12 @@ class DatabaseMaintenanceContainer extends Component {
                 <div className="col-xs-6">
                     <ArchivedAssignments strings={this.state.Strings} />
                 </div>
+                <div className="col-xs-6">
+                    <DeletedAssignments strings={this.state.Strings} />
+                </div>
             </div>
         );
     }
 }
          
 export default DatabaseMaintenanceContainer;
-    
