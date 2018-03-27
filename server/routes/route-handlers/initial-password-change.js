@@ -42,10 +42,19 @@ exports.post = (req, res) => {
             oldPasswd: currentpassword,
             newPasswd: newpassword
         } ,(err, statusCode, body) => {
+            console.log(body);
+            console.log(statusCode);
             if(err || statusCode === 401){
                 return res.render('initial-password-change', {
                     serverError: true
                 });
+            } 
+            else if(body.error != false){
+                return res.render('initial-password-change', {
+                    error: true,
+                    errorMessage:body.error
+                });
+
             } else {
                 return res.redirect('/');
             }
