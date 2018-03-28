@@ -2262,7 +2262,11 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value || e.target.getContent();
+            if (e.target.id.includes("tiny")) {
+                newVal = e.target.getContent();
+            } else {
+                newVal = e.target.value;
+            }
         } else{
             newVal = e;
         }
@@ -2296,7 +2300,11 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            newVal = e.target.value || e.target.getContent();
+            if (e.target.id.includes("tiny")) {
+                newVal = e.target.getContent();
+            } else {
+                newVal = e.target.value;
+            }
         } else{
             newVal = e;
         }
@@ -2669,7 +2677,10 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentInput(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        let content = event.target.value || event.target.getContent();
+        let content = event.target.value;
+        if (event.target.id.includes("tiny")) {
+            content = event.target.getContent();
+        }
         if (content.length > 45000) {
             return;
         }
