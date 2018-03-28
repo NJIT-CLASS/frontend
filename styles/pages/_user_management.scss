@@ -24,9 +24,10 @@
 .promote-instructor-toggle ToggleSwitch {
 	margin: auto;
 }
-.change-role-select {
+.change-role-select .Select-menu-outer {
 	position: relative; 
     	z-index: 1; 
+	overflow-y:visible;
 }
 
 .generate-test-user button {

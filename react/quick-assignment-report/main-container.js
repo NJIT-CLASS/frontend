@@ -4,12 +4,11 @@ import FilterSection from './filtersSection';
 import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
-
-
+import ReallocationModal from './reallocation-modal';
 class QuickAssignmentReport extends Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
             AssignmentData: {},
             Filters: {
@@ -18,6 +17,7 @@ class QuickAssignmentReport extends Component {
                 WorkflowID: ''
             },
             Strings: strings,
+            Modal:null,
             Loaded: false
         };
 
@@ -39,8 +39,6 @@ class QuickAssignmentReport extends Component {
                 });
             });
         });
-
-
     }
 
     changeFilterType(val){
@@ -67,18 +65,30 @@ class QuickAssignmentReport extends Component {
         });
     }
 
+    closeModal(){
+        this.setState({Modal:null});
+    }
+
+    displayReallocateModal(userID, taskInstanceID){
+        console.log(this.props.AssignmentID);
+        var title = "Reallocate task ID: "+taskInstanceID;
+        this.setState({Modal:(<ReallocationModal taskInstanceID={taskInstanceID} AssignmentID={this.props.AssignmentID} title={title} close={this.closeModal.bind(this)}></ReallocationModal>)});
+    }
+
     render(){
         if(!this.state.Loaded){
             return <div></div>;
         }
 
         return <div className="quick-assignment-report" >
+            {this.state.Modal}
           <FilterSection Filters={this.state.Filters} changeFilterStatus={this.changeFilterStatus}
              changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType}
              Strings={this.state.Strings}
            />
            <LegendSection Strings={this.state.Strings} />
-          <AssignmentComponent Assignment={this.state.AssignmentData}
+          <AssignmentComponent onReallocate={this.displayReallocateModal.bind(this)}
+                               Assignment={this.state.AssignmentData}
                                Filters={this.state.Filters}
                                Strings={this.state.Strings}/>
         </div>;
