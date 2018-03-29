@@ -509,6 +509,7 @@ exports.API_URL = ${answers['api-url']};
 gulp.task('build-production', () => {
     return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build'],function(){
         console.log('-> Done moving files. Ready to go.');
+        process.exit();
     });
         
 });
