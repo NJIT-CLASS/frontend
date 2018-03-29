@@ -2022,8 +2022,19 @@ class AssignmentEditorContainer extends React.Component {
                 newVal = null;
             }
             break;
+        case 'AllowFileUpload':
+            {
+                if(newData[workflowIndex].Workflow[taskIndex].AllowFileUpload === true){
+                    newData[workflowIndex].Workflow[taskIndex].TA_file_upload.mandatory = 0;
+                    newData[workflowIndex].Workflow[taskIndex].TA_file_upload.optional = 0;
+                }
+                newData[workflowIndex].Workflow[taskIndex][stateField] = newData[workflowIndex].Workflow[taskIndex][stateField]
+                    ? false
+                    : true;
+            }
+            break;
         default:
-            newData[workflowIndex].Workflow[taskIndex][stateField] = this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex][stateField]
+            newData[workflowIndex].Workflow[taskIndex][stateField] = newData[workflowIndex].Workflow[taskIndex][stateField]
                 ? false
                 : true;
             break;

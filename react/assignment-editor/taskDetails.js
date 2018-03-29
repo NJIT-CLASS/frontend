@@ -170,7 +170,7 @@ class TaskDetailsComponent extends React.Component {
             );
 
             // TA_file_upload
-            const fileUploadOptions = this.props.TaskActivityData.AllowFileUploads
+            const fileUploadOptions = this.props.TaskActivityData.AllowFileUpload
                 ? (
                     <div
                         style={{
@@ -202,8 +202,9 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
                     <label>{strings.AreAnyFileUploadsRequired}</label>
                     <Checkbox
-                        isClicked={this.props.TaskActivityData.AllowFileUploads} click={() => {
-                            this.props.callTaskFunction.bind(this, 'changeDataCheck', 'AllowFileUploads', this.props.index, this.props.workflowIndex)
+                        isClicked={this.props.TaskActivityData.AllowFileUpload} click={() => {
+                            console.log('Clicked file upload', this.props.index, this.props.workflowIndex);
+                            this.props.callTaskFunction('changeDataCheck', 'AllowFileUpload', this.props.index, this.props.workflowIndex);
                         }}
                     /> {fileUploadOptions}
                 </div>
