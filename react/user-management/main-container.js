@@ -159,7 +159,7 @@ class UserManagementContainer extends Component{
         if(testUserInfo.access == "admin"){
             isAdmin=true;
         }
-        apiCall.post('/adduser',{email:testUserInfo.email,firstname:testUserInfo.fn,lastname:testUserInfo.ln,password:testUserInfo.pw,instructor:isInstructor,admin:isAdmin,Test:true},(err,status,body)=>{
+        apiCall.post('/adduser',{email:testUserInfo.email,firstname:testUserInfo.fn,lastname:testUserInfo.ln,password:testUserInfo.pw,instructor:isInstructor,admin:isAdmin,test:true},(err,status,body)=>{
             if(status.statusCode === 200){
                 this.componentData.addTestUserNotification = this.notification("success form-success","Test User Successfully Created");
             } else {
