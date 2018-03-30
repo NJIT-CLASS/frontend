@@ -81,18 +81,16 @@ export default class ReallocationModal extends Component {
                 }
             });
         }
-
     }
 
     reallocateWithPool(task, volunteerPool, isExtraCredit){
         var taskArray = ["ti",[task]];
         var pool = [volunteerPool];
         apiCall.post(`/reallocate/task_based`,{taskarray:taskArray,user_pool_wc:pool,user_pool_woc:[],is_extra_credit:isExtraCredit},(err, status, body)=>{
-            console.log(body);
-            if(status.statusCode === 200 && !body.Error){
+            if(status.statusCode === 200 && !body[0].Error){
                 this.setState({notification:this.notification(false, "Task reallocation successful")});
             } else {
-                this.setState({notification:this.notification(true,"Unable to reallocate user")});
+                this.setState({notification:this.notification(true,"Unable to reallocate user: "+body[0].Message)});
             }
         });
     }
