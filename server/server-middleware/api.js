@@ -147,6 +147,7 @@ const apiMethodInit = function(req,res,next){
         };
     
         request(options, function(err, response, body) {
+            var responseCode = response === undefined ? 500 : response.statusCode;
             if(response !== undefined){
                 if(response.statusCode === 409){
                     //bad token, try to refresh

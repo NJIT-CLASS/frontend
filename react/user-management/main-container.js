@@ -146,20 +146,19 @@ class UserManagementContainer extends Component{
 
     createTestUser(){
         var testUserInfo = this.state.addTestUserData;
-        var isInstructor = false;
-        var isAdmin = false;
+        var testRole = null;
         if(!testUserInfo.fn || !testUserInfo.ln || !testUserInfo.pw || !testUserInfo.access){
             this.componentData.addTestUserNotification = this.notification("error form-error","Fields marked with a * cannot be left blank");
             this.forceUpdate();
             return;
         }
         if(testUserInfo.access == "instructor"){
-            isInstructor = true;
+            testRole = "Teacher";
         }
         if(testUserInfo.access == "admin"){
-            isAdmin=true;
+            testRole = "Admin";
         }
-        apiCall.post('/adduser',{email:testUserInfo.email,firstname:testUserInfo.fn,lastname:testUserInfo.ln,password:testUserInfo.pw,instructor:isInstructor,admin:isAdmin,test:true},(err,status,body)=>{
+        apiCall.post('/adduser',{email:testUserInfo.email,firstname:testUserInfo.fn,lastname:testUserInfo.ln,password:testUserInfo.pw,role:testRole,test:true},(err,status,body)=>{
             if(status.statusCode === 200){
                 this.componentData.addTestUserNotification = this.notification("success form-success","Test User Successfully Created");
             } else {
@@ -179,7 +178,7 @@ class UserManagementContainer extends Component{
             return;
         }
 
-        apiCall.post('/adduser',{email:adminInfo.email,firstname:adminInfo.fn,lastname:adminInfo.ln,password:adminInfo.pw,instructor:false,admin:true,Test:false},(err,status,body)=>{
+        apiCall.post('/adduser',{email:adminInfo.email,firstname:adminInfo.fn,lastname:adminInfo.ln,password:adminInfo.pw,role:"Admin",Test:false},(err,status,body)=>{
             if(status.statusCode === 200){
                 this.componentData.inviteAdminNotification = this.notification("success form-success","Admin succesfully invited");
             } else {
@@ -255,6 +254,7 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
+            console.log(user);
             var organizationGroup = user.OrganizationGroup;
             var isBlocked = user.UserLogin.Blocked;
             var timeout = user.UserLogin.Timeout;
@@ -360,14 +360,14 @@ class UserManagementContainer extends Component{
                                 <tr><td>Last Name* </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addAdminUserData","ln")}/></td></tr>
                                 <tr><td>Organization </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addAdminUserData","organization")} /></td></tr>
                                 <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this,"addAdminUserData")}>Generate Password</button> Hide <input checked={this.state.addAdminUserData.hidePW} onClick={this.toggleHidePW.bind(this,"addAdminUserData")} type="radio" /> </td><td><input disabled={true} type={this.state.addAdminUserData.pwInputType} value={this.state.addAdminUserData.pw}  onChange={this.onFieldInput.bind(this,"addAdminUserData","pw")}/></td></tr>
-                                <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.inviteAdmin.bind(this)}>Invite</button></td></tr>      
+                                <tr><td></td><td><button type="button" onClick={this.inviteAdmin.bind(this)}>Invite</button></td></tr>      
                             </tbody>
                         </table>
                     </div>
                 </form>
 
                 <form name="create_test_user" role="form" className="section" method="POST">
-                        <label><h2 className="title">Create Test User<button type="button" className="generate-test-user" onClick={this.retrieveTestUser.bind(this)}>Generate Data</button></h2></label>
+                        <label><h2 className="title">Create Test User</h2></label>
                         <div className="section-content" >
                             <table className="promote-instructor-table">
                                 {addTestUserNotification}
@@ -378,7 +378,7 @@ class UserManagementContainer extends Component{
                                     <tr><td>User Role* </td><td><Select className="change-role-select" clearable={false} value={this.state.addTestUserData.selectValue} onChange={this.updateTestUserSelect.bind(this)} searchable={false} options={[{value:"instructor",label:"Instructor"},{value:"admin",label:"Admin"}]}/></td></tr>
                                     <tr><td>Organization </td><td><input type="text" onChange={this.onFieldInput.bind(this,"addTestUserData","organization")} /></td></tr>
                                     <tr><td>Password* <button type="button" onClick={this.generatePassword.bind(this,"addTestUserData")}>Generate Password</button> Hide <input checked={this.state.addTestUserData.hidePW} onClick={this.toggleHidePW.bind(this,"addTestUserData")} type="radio" /> </td><td><input disabled={true} type={this.state.addTestUserData.pwInputType} value={this.state.addTestUserData.pw}  onChange={this.onFieldInput.bind(this,"addTestUserData","pw")}/></td></tr>
-                                    <tr><td><button type="button">Cancel</button></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>
+                                    <tr><td></td><td><button type="button" onClick={this.createTestUser.bind(this)}>Add</button></td></tr>
                                 </tbody>
                             </table>
             

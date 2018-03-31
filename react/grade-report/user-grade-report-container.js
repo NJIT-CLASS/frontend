@@ -97,6 +97,7 @@ class GradeReport extends React.Component {
     getAssignmentsByStudent(){
         this.state.displayedSection.sectionData.assignments.forEach(assignment => {
             apiCall.post(`/getAssignmentGrades/${assignment.AssignmentInstanceID}`,{},(err,status,body)=>{
+                console.log(body);
                 body.SectionUsers.forEach(user => {
                     if(user.Role === "Student"){
                         var ag = "-";
@@ -114,7 +115,7 @@ class GradeReport extends React.Component {
     instructorAssignmentOnClick(assignmentInstanceID){
         this.state.displayedSection.type="instructorAssignment";
         apiCall.post(`/getAssignmentGrades/${assignmentInstanceID}`,{},(err,status,body)=>{
-
+            console.log(body);
             body.SecionUsers = body.SectionUsers.filter(user => {
                 if(user.Role === "Student"){
                     return true;
@@ -361,7 +362,6 @@ class GradeReport extends React.Component {
             let tableData = null;
             let grade = "No grade data";
             if(sectionData.userAssignmentGrades.assignmentGrade){ 
-                console.log("test");
                 tableData = sectionData.userAssignmentGrades.assignmentGrade.WorkflowActivityGrades.map( waGrade => {
                     var regularGrades = [];
                     var extraCreditGrades = [];
