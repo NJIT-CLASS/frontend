@@ -105,6 +105,8 @@ const apiMethodInit = function(req,res,next){
                         },
                         json: true
                     };
+                    delete req.session.token; 
+                    
                     request(refreshOptions, function(refreshErr, refreshResponse, refreshBody){
                         if(refreshResponse.statusCode === 410){
                             delete req.session.userId;
@@ -161,6 +163,8 @@ const apiMethodInit = function(req,res,next){
                         },
                         json: true
                     };
+                    delete req.session.token; 
+                    
                     request(refreshOptions, function(refreshErr, refreshResponse, refreshBody){
                         if(refreshResponse.statusCode === 410){
                             delete req.session.userId;
@@ -203,6 +207,8 @@ const apiMethodInit = function(req,res,next){
         };
     
         request(options, function(err, response, body) {
+            let responseCode = response === undefined ? 500 : response.statusCode;
+            
             if(response !== undefined){
                 if(response.statusCode === 409){
                     //bad token, try to refresh
@@ -216,6 +222,8 @@ const apiMethodInit = function(req,res,next){
                         },
                         json: true
                     };
+                    delete req.session.token; 
+                    
                     request(refreshOptions, function(refreshErr, refreshResponse, refreshBody){
                         if(refreshResponse.statusCode === 410){
                             delete req.session.userId;

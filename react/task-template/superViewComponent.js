@@ -177,7 +177,9 @@ class SuperViewComponent extends React.Component {
                         <div key={this.props.TaskActivityFields[index].title}>
                             <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
                             <div className="regular-text rubric">
-                                {this.props.TaskActivityFields[index].rubric}
+                                <MarkupText classNames="regular-text" content={this.props.TaskActivityFields[index].rubric} />
+                            
+                                
                             </div>
                         </div>);
                 }
@@ -209,7 +211,7 @@ class SuperViewComponent extends React.Component {
                     <div key={1100}>
                         <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                         <div className="regular-text instructions">
-                            {this.props.TaskActivityFields[index].instructions}
+                            <MarkupText classNames="regular-text" content={this.props.TaskActivityFields[index].instructions} />
                         </div>
                     </div>
                 );

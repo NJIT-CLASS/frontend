@@ -5,10 +5,8 @@
 */
 import React from 'react';
 import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/modern/theme';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/textcolor';
 import { Editor } from '@tinymce/tinymce-react';
+import tinymceOptions from '../shared/tinymceOptions';
 import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
@@ -300,7 +298,6 @@ class SuperComponent extends React.Component {
 
     handleContentChange(index, event) {
         // updates task data with new user input in grading fields
-
         const newTaskResponse = this.state.TaskResponse;
         newTaskResponse[index][0] = event.target.value || event.target.getContent();
         this.setState({
@@ -727,9 +724,9 @@ class SuperComponent extends React.Component {
                     rubric_content = (
                         <div key={this.state.TaskActivityFields[idx].title}>
                             <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                            <div className="regular-text rubric">
-                                {this.state.TaskActivityFields[idx].rubric}
-                            </div>
+                                <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
+                            
+                                
                         </div>);
                 }
 
@@ -760,7 +757,7 @@ class SuperComponent extends React.Component {
                     <div key={1100}>
                         <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                         <div className="regular-text instructions">
-                            {this.state.TaskActivityFields[idx].instructions}
+                        <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
                         </div>
                     </div>
                 );
@@ -772,22 +769,7 @@ class SuperComponent extends React.Component {
                     <Editor
                         key={idx + 100}
                         initialvalue={latestVersion[idx][1]}
-                        init={{
-                            skin_url: '/static/tinymce_skins/lightgray',
-                            height: '150px',
-                            width: '500px',
-                            menubar: false,
-                            plugins: ['textcolor lists'],
-                            toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
-                            content_css: '/static/main.css',
-                            body_class: 'faded-big editor',
-                            resize: 'both',
-                            branding: false,
-                            elementpath: false,
-                            external_plugins: {
-                                'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
-                            },
-                        }}
+                        init={tinymceOptions}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                     />
                 </div>);
@@ -872,23 +854,8 @@ class SuperComponent extends React.Component {
             case 'text':
                 fieldInput = (<Editor
                     key={idx}
-                    initialValue={latestVersion[idx][0]}
-                    init={{
-                        skin_url: '/static/tinymce_skins/lightgray',
-                        height: '150px',
-                        width: '500px',
-                        menubar: false,
-                        plugins: ['textcolor lists'],
-                        toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
-                        content_css: '/static/main.css',
-                        body_class: 'faded-big editor',
-                        resize: 'both',
-                        branding: false,
-                        elementpath: false,
-                        external_plugins: {
-                            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
-                        },
-                    }}
+                    initialvalue={latestVersion[idx][0]}
+                    init={tinymceOptions}
                     onChange={this.handleContentChange.bind(this, idx)}
                 />);
 

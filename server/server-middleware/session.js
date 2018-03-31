@@ -5,7 +5,8 @@ const consts = require('../utils/constants');
 
 const newSession = function() {
     return function(redisClient) {
-        return session({
+
+        var sess =  session({
             store: new RedisStore({
                 client: redisClient,
                 disableTTL: true
@@ -14,6 +15,11 @@ const newSession = function() {
             resave: false,
             saveUninitialized: true
         });
+
+        if (process.env.node === 'production') {
+            sess.cookie.secure = true; // serve secure cookies
+        }
+        return sess;
     };
 }();
 

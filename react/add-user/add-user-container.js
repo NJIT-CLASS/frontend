@@ -5,6 +5,7 @@ import PasswordField from '../shared/passwordField';
 import {clone, cloneDeep} from 'lodash';
 import Strings from './strings.js';
 import apiCall from '../shared/apiCall';
+import {ROLES } from '../../server/utils/react_constants';
 
 class AddUserContainer extends React.Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class AddUserContainer extends React.Component {
             firstname: '',
             lastname: '',
             email: '',
-            role: 'Student',
+            role: ROLES.PARTICIPANT,
             instructor: false,
             admin: false,
             firstnameError: false,
@@ -77,7 +78,7 @@ class AddUserContainer extends React.Component {
     adduserSubmit(content){
         content.preventDefault();
 
-        const {firstname, lastname, email,admin,instructor, pass} = this.state;
+        const {firstname, lastname, email,admin,instructor, pass, role} = this.state;
         const firstnameError = firstname.length === 0 ? true : false;
         const lastnameError = lastname.length === 0 ? true : false;
         if( firstnameError || lastnameError ){
@@ -101,7 +102,8 @@ class AddUserContainer extends React.Component {
             email: email,
             instructor: instructor,
             admin: admin,
-            password: pass
+            password: pass,
+            role:role
         };
 
 
@@ -124,9 +126,9 @@ class AddUserContainer extends React.Component {
         let errorView = null;
         const Strings = this.state.Strings;
         var roles = [
-            { value: 'Student', label: 'Student' },
-            { value: 'Instructor', label: 'Instructor' },
-            { value: 'Admin', label: 'Admin' }
+            { value: ROLES.PARTICIPANT, label: 'Participant' },
+            { value: ROLES.TEACHER, label: 'Teacher' },
+            { value: ROLES.ADMIN, label: 'Admin' }
         ];
 
         if(this.state.displayError){

@@ -1,4 +1,5 @@
 const async = require('async');
+import { ROLES, canRoleAccess } from '../../utils/react_constants';
 
 exports.get = (req, res) => {
     if(req.App.user === undefined){
@@ -7,7 +8,7 @@ exports.get = (req, res) => {
     let coursesUrl = '/course/';
 
 
-    if(req.App.user.type === 'student'){
+    if(req.App.user.role === ROLES.PARTICIPANT){
         coursesUrl = '/getActiveEnrolledSections/';
     }
     req.App.api.get(`${coursesUrl}${req.params.Id}?studentID=${req.App.user.userId}`, {token: req.session.token},(err, statusCode, body) =>{
@@ -48,9 +49,9 @@ exports.get = (req, res) => {
                             sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                         }
-                        let isInstructor = (req.App.user.type == 'teacher' ||  req.App.user.type == 'instructor') ? true : false;
-                        let isAdmin = req.App.user.admin;
-                        let instructOrAdmin = isInstructor || isAdmin;
+                        
+                        let instructOrAdmin = canRoleAccess(req.App.user.role, ROLES.TEACHER);
+                        let isInstructor = req.App.user.role === ROLES.TEACHER;
                         res.render('course_page', {
                             showHeader:false,
                             sectionList: sectionList,
@@ -58,7 +59,6 @@ exports.get = (req, res) => {
                             partialAssignments: partialAssignmentsBody.PartialAssignments,
                             assignmentsList: assignmentsArray,
                             instructor: isInstructor,
-                            admin: req.App.user.admin,
                             instructorOrAdmin: instructOrAdmin,
                             courseTitle: body.Course.Name,
                             courseNumber: body.Course.Number,

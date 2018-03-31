@@ -1,7 +1,7 @@
 import React from 'react';
 import bleach from 'bleach';
 
-class MarkupText extends React.Component {
+class MarkupTextInline extends React.Component {
     constructor(props) {
         super(props);
         this.whitelist = [
@@ -19,7 +19,6 @@ class MarkupText extends React.Component {
             'p',
             'table',
             'carousel',
-            
             'span',
             'math',
             'maction',
@@ -94,9 +93,9 @@ class MarkupText extends React.Component {
 
     render() {
         return(
-            <div className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></div>
+            <span className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></span>
         );
     }
 }
 
-export default MarkupText;
+export default MarkupTextInline;

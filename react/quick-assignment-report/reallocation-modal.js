@@ -81,7 +81,6 @@ export default class ReallocationModal extends Component {
                 }
             });
         }
-
     }
 
     reallocateWithPool(task, volunteerPool, isExtraCredit){

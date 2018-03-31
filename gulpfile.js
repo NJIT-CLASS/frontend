@@ -46,7 +46,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                //.pipe(uglifyes())
+                //.pipe(uglifyes()) //Working but disabled for useful testing info
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
@@ -382,7 +382,7 @@ gulp.task('start', ['node-babel'], function () {
     nodemon({
         script: '.build/server.js',
         ext: 'js html',
-        ignore: ['react/*', 'styles/*']
+        ignore: ['react/*', 'styles/*'],
     });
 });
 
@@ -509,6 +509,7 @@ exports.API_URL = ${answers['api-url']};
 gulp.task('build-production', () => {
     return runSequence(['apply-prod-environment','build-server', 'build-assets', 'clean:build'], 'generate:build-fallback-settings', ['move:server-build', 'move:config-build'],function(){
         console.log('-> Done moving files. Ready to go.');
+        process.exit();
     });
         
 });

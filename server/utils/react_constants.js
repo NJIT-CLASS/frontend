@@ -53,3 +53,28 @@ exports.TASK_TYPES_TEXT = {
     RESOLVE_DISPUTE:'Resolve Dispute',
     COMPLETED:'Completed Task'
 };
+
+export const ROLES = {
+    GUEST: 'Guest',
+    PARTICIPANT: 'Participant',
+    TEACHER: 'Teacher',
+    ENHANCED: 'Enhanced',
+    ADMIN: 'Admin',
+    SYSTEM: 'System Role',
+    'Guest': 1,
+    'Participant': 2,
+    'Teacher': 3,
+    'Enhanced': 4,
+    'Admin': 5
+
+};
+
+exports.canRoleAccess = function(userRole, requiredRole){
+    return true;
+    if(userRole == null || userRole == undefined) return false;
+    if(ROLES[userRole] >= ROLES[requiredRole]){
+        return true;
+    } else {
+        return false;
+    }
+};

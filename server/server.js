@@ -20,6 +20,7 @@ const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
 import {uploadFiles} from './server-middleware/file-upload';
+import { canRoleAccess } from './utils/react_constants';
 const loginGetRoute = require('./routes/route-handlers/login').get;
 const loginPostRoute = require('./routes/route-handlers/login').post;
 const loggedOutRoutes = routes.filter(route => route.access.loggedOut);
@@ -45,29 +46,8 @@ const allowedRouteMethods = [
     'get',
     'post',
     'put',
-    'head',
-    'delete',
-    'options',
-    'trace',
-    'copy',
-    'lock',
-    'mkcol',
-    'move',
-    'purge',
-    'propfind',
-    'proppatch',
-    'unlock',
-    'report',
-    'mkactivity',
-    'checkout',
-    'merge',
-    'm-search',
-    'notify',
-    'subscribe',
-    'unsubscribe',
-    'patch',
-    'search',
-    'connect'
+    'delete'
+    
 ];
 //Setup static files
 app.use('/static', express.static(`${__dirname}/static`));
@@ -98,6 +78,62 @@ app.use((req, res, next) => {
     next();
 });
 
+
+// APIs to access backend API routes through frontend server
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+
 //Checks that Redis is working properly
 app.use(function(req,res,next){
     if(req.session === undefined){
@@ -108,6 +144,59 @@ app.use(function(req,res,next){
     next();
 });
 
+// APIs to access backend API routes through frontend server
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
     // language options
@@ -168,9 +257,7 @@ app.use((req, res, next) => {
     });
 });
 
-//Login page
-// app.get('/',loginGetRoute);
-// app.post('/',loginPostRoute);
+
 
 //Stores the user session Id into req.App.user object
 app.use((req, res, next) => {
@@ -180,6 +267,9 @@ app.use((req, res, next) => {
     }
     next();
 });
+//Login page
+// app.get('/',loginGetRoute);
+// app.post('/',loginPostRoute);
 
 
 //Prepares render function to support options specified in route configs
@@ -206,8 +296,8 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-        if (req.App.user && !options[req.App.user.type]) {
-            if (req.App.user.admin && options.admin) {
+        if (req.App.user && !canRoleAccess(req.App.user.role, options.role) ) {
+            if (req.App.user.admin && options.admin || req.session.masqueraderId != null) {
             } else {
                 return res.sendStatus(404);
             }
@@ -281,6 +371,7 @@ for (const route of loggedOutRoutes) {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
                                     options.loggedOut = true;//route.access.loggedOut;
+                                    options.role = route.access.role;
                                     options.route = route.route;
                                     options.language = req.App.lang;
                                     options.languageOptions = req.App.langOptions;
@@ -306,7 +397,6 @@ for (const route of loggedOutRoutes) {
                                 };
                             })();
                             next();
-                            
                         }
                         catch(error){
                             next(error);
@@ -318,6 +408,8 @@ for (const route of loggedOutRoutes) {
         }
     }
 }
+
+
 
 app.use((req,res,next) => {
     
@@ -338,8 +430,9 @@ app.use((req, res, next) => {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
 
             if (err || statusCode === 500 ) {
-                delete req.session.userId; 
+                delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
                 res.redirect('/');
                 return;
@@ -348,6 +441,7 @@ app.use((req, res, next) => {
             if (body === undefined || body.User === undefined) {
                 delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 res.redirect('/');
                 return;
             }
@@ -356,14 +450,23 @@ app.use((req, res, next) => {
             req.App.user.email = user.UserLogin.Email;
             req.App.user.firstName = user.FirstName;
             req.App.user.lastName = user.LastName;
+            req.App.user.role = user.Role;
             req.App.user.type = user.Instructor ? 'teacher' : 'student';
             req.App.user.admin = user.Admin;
             req.App.user.info = user.UserContact;
             next();
         });
+    } else {
+        {
+            delete req.session.userId;
+            delete req.session.token;
+            delete req.session.refreshToken;
+            console.log('No user profile. Check the backend server or API_URL');
+            res.redirect('/');
+            return;
+        }
     }
 
-    next();
 });
 
 
@@ -459,60 +562,6 @@ app.post('/api/change-admin-status', (req, res) => {
             res.status(statusCode).end();
         }
     );
-});
-
-// APIs to access backend API routes through frontend server
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.delete('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.put('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
 });
 
 //API for file uploading
@@ -641,6 +690,7 @@ for (const route of loggedInRoutes) {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
                                     options.loggedOut = false;//route.access.loggedOut;
+                                    options.role = route.access.role;
                                     options.route = route.route;
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
@@ -686,9 +736,10 @@ for (const route of loggedInRoutes) {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if(!res.headersSent){
-        res.status(404).render('not_found', {
-            title: 'Not Found'
-        });
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        res.status(500).redirect('/');
     }
     
 });

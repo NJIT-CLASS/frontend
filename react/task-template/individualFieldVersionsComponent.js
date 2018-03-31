@@ -47,13 +47,11 @@ class FieldVersionView extends React.Component{
                 <MarkupText classNames="regular-text" content={this.props.Field.justificationInstructions } />
             </div>);
         }
-        console.log( this.props.Versions);
         let versions = this.props.Versions.map(function(versionArray, vIndex){
 
             let justification = null;
             let contentView = null;
             let fieldVersion = versionArray[this.props.FieldIndex];
-            console.log(fieldVersion);
 
             if(fieldVersion === undefined){
                 return <div>{this.props.Strings.DisputeSkipped}</div>;
