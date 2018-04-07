@@ -427,8 +427,9 @@ app.use((req,res,next) => {
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
+        
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-
+            
             if (err || statusCode === 500 ) {
                 delete req.session.userId;
                 delete req.session.token;
@@ -437,7 +438,7 @@ app.use((req, res, next) => {
                 res.redirect('/');
                 return;
             }
-
+    
             if (body === undefined || body.User === undefined) {
                 delete req.session.userId;
                 delete req.session.token;
@@ -445,17 +446,26 @@ app.use((req, res, next) => {
                 res.redirect('/');
                 return;
             }
-
-            const user = body.User; // JV - grabbed user's information
-            req.App.user.email = user.UserLogin.Email;
-            req.App.user.firstName = user.FirstName;
-            req.App.user.lastName = user.LastName;
-            req.App.user.role = user.Role;
-            req.App.user.type = user.Instructor ? 'teacher' : 'student';
-            req.App.user.admin = user.Admin;
-            req.App.user.info = user.UserContact;
-            next();
+            try {
+                const user = body.User; // JV - grabbed user's information
+                req.App.user.email = user.UserLogin.Email;
+                req.App.user.firstName = user.FirstName;
+                req.App.user.lastName = user.LastName;
+                req.App.user.role = user.Role;
+                req.App.user.type = user.Instructor ? 'teacher' : 'student';
+                req.App.user.admin = user.Admin;
+                req.App.user.info = user.UserContact;
+                next();
+            } catch(err){
+                delete req.session.userId;
+                delete req.session.token;
+                delete req.session.refreshToken;
+                res.redirect('/');
+                return;
+            }
         });
+        
+        
     } else {
         {
             delete req.session.userId;
