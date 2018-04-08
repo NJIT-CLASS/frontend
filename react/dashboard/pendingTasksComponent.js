@@ -92,7 +92,7 @@ export default class PendingTaskComponent extends Component {
                 <h2 className="title">{Strings.PendingTasks}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                        
+                        <span style={{backgroundColor: '#C7C7C7', fontSize: '14px', textAlign: 'center', display: 'inline-block', padding: '5px', width: '99%'}}>{Strings.RedHeader}</span>
                         <TableComponent
                             data={PendingTasksData}
                             columns={[

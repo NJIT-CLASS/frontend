@@ -431,6 +431,7 @@ app.use((req, res, next) => {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
             
             if (err || statusCode === 500 ) {
+                console.log('Got error or 500 code from backend for user: ',req.App.user.userId );
                 delete req.session.userId;
                 delete req.session.token;
                 delete req.session.refreshToken;
@@ -440,6 +441,8 @@ app.use((req, res, next) => {
             }
     
             if (body === undefined || body.User === undefined) {
+                console.log('Got undefined body from backend for user: ',req.App.user.userId );
+                
                 delete req.session.userId;
                 delete req.session.token;
                 delete req.session.refreshToken;
@@ -457,6 +460,8 @@ app.use((req, res, next) => {
                 req.App.user.info = user.UserContact;
                 next();
             } catch(err){
+                console.log('Caught exception in getting details for user: ',req.App.user.userId );
+                
                 delete req.session.userId;
                 delete req.session.token;
                 delete req.session.refreshToken;
@@ -467,14 +472,14 @@ app.use((req, res, next) => {
         
         
     } else {
-        {
-            delete req.session.userId;
-            delete req.session.token;
-            delete req.session.refreshToken;
-            console.log('No user profile. Check the backend server or API_URL');
-            res.redirect('/');
-            return;
-        }
+        console.log('Found No UserID in session (Redis issue)');
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        console.log('No user profile. Check the backend server or API_URL');
+        res.redirect('/');
+        return;
+        
     }
 
 });

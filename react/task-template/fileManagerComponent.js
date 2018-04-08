@@ -3,6 +3,7 @@ import FileLinksComponent from './fileLinksComponent';
 import FileLinksRemoveComponent from './fileLinksWithRemoveComponent';
 import FileUpload from '../shared/fileUpload';
 import apiCall from '../shared/apiCall';
+import ReactLoading from 'react-loading';
 
 class FileManagerComponent extends Component {
     constructor(props){
@@ -10,6 +11,7 @@ class FileManagerComponent extends Component {
 
         this.state = {
             Files: [],
+            Refreshing: true,
         };
 
         this.fetchFiles = this.fetchFiles.bind(this);
@@ -20,6 +22,9 @@ class FileManagerComponent extends Component {
     }
 
     fetchFiles(){
+        this.setState({
+            Refreshing: false
+        });
         apiCall.get(`/task/files/${this.props.TaskID}`, (err, res, body)=> {
             let filesArr = typeof body.Files == 'string' ? JSON.parse(body.Files) : body.Files;
             filesArr = filesArr.map(file => {
@@ -32,7 +37,8 @@ class FileManagerComponent extends Component {
                 };
             });
             this.setState({
-                Files: filesArr
+                Files: filesArr,
+                Refreshing: false
             });
         });
     }
@@ -44,8 +50,13 @@ class FileManagerComponent extends Component {
 
 
     render() {
-        let {Files} = this.state;
+        let {Files, Refreshing} = this.state;
         let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads, TaskID} = this.props;
+        
+        if(Refreshing){
+            return <div>Loading Files ... <ReactLoading type={'spin'} color="#e7e7e7" /></div>;
+        }
+
         let fileLinksView = ViewOnly === true ? <FileLinksComponent Files={Files} Strings={Strings} /> :
             <FileLinksRemoveComponent Files={Files} Strings={Strings} TaskID={TaskID} onChange={this.handleUpload}/>;
 
@@ -76,7 +87,8 @@ FileManagerComponent.defaultProps = {
     View: 'button',
     MinUploads: 0,
     MaxUploads: 0,
-    endpoint: ''
+    endpoint: '',
+    onChange: () => {}
 };
 
 export default FileManagerComponent;
