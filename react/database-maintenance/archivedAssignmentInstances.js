@@ -19,16 +19,22 @@ class ArchivedAssignments extends Component {
     loadTestData() {
         const assignments = [{
             assignmentId: 5,
-            assignmentName: 'Assignment-2',
-            courseName: 'CS 602'
+            assignmentName: 'Assignment-1',
+            courseName: 'CS 602',
+            sectionName: '001',
+            semesterName: 'Fall 17'
         }, {
             assignmentId: 7,
-            assignmentName: 'Assignment-3',
-            courseName: 'CS 610'
+            assignmentName: 'Assignment-4',
+            courseName: 'CS 610',
+            sectionName: '002',
+            semesterName: 'Spring 17'
         }, {
             assignmentId: 8,
-            assignmentName: 'Assignment-6',
-            courseName: 'CS 631'
+            assignmentName: 'Assignment-5',
+            courseName: 'CS 631',
+            sectionName: '003',
+            semesterName: 'Spring 18'
         }];
         this.setState({ assignments });
     }
@@ -39,6 +45,8 @@ class ArchivedAssignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseName: assignment.courseName,
+                sectionName: assignment.sectionName,
+                semesterName: assignment.semesterName,
                 restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'restore')}>Restore</button>,
                 deleteButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'delete')}>Delete</button>
             };
@@ -71,19 +79,26 @@ class ArchivedAssignments extends Component {
 
     render() {
         const {strings} = this.props;
+        const columnNames = strings.assignmentInstanceArchivedColumns;
 
         // React Table
         const columns = [{
-            Header: strings.archivedAssignmentsTableCol1,
+            Header: columnNames[0],
             accessor: 'assignmentName'
         }, {
-            Header: strings.archivedAssignmentsTableCol2,
+            Header: columnNames[1],
             accessor: 'courseName'
         }, {
-            Header: strings.archivedAssignmentsTableCol3,
+            Header: columnNames[2],
+            accessor: 'sectionName'
+        }, {
+            Header: columnNames[3],
+            accessor: 'semesterName'
+        }, {
+            Header: columnNames[4],
             accessor: 'restoreButton'
         }, {
-            Header: strings.archivedAssignmentsTableCol4,
+            Header: columnNames[5],
             accessor: 'deleteButton'
         }];
         const data = this.bindButtons(this.state.assignments);
@@ -111,7 +126,7 @@ class ArchivedAssignments extends Component {
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.archivedAssignmentsTableTitle}</h2>
+                <h2 className="title">{strings.archivedTableTitle}</h2>
                 <div className="section-content">
                     {content}
                 </div>

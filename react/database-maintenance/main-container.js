@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
+import Select from 'react-select';
 
-import Assignments from './assignments';
-import ArchivedAssignments from './archivedAssignments';
-import DeletedAssignments from './deletedAssignments';
+import AssignmentInstanceContainer from './assignmentInstanceContainer';
+import AssignmentActivityContainer from './assignmentActivityContainer';
 import strings from './strings';
     
 class DatabaseMaintenanceContainer extends Component {
@@ -12,26 +12,47 @@ class DatabaseMaintenanceContainer extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            Strings: strings
+            Strings: strings,
+            categories: [{
+                value: 'assignment-activity',
+                label: 'Assignment Activity'
+            }, {
+                value: 'assignment-instance',
+                label: 'Assignment Instance'
+            }],
+            selectedCategory: null
         };
     }
     
+    changeCategory(selectedCategory) {
+        this.setState({ selectedCategory: selectedCategory.value });
+    }
+
     render() { 
-        let {Strings} = this.state;
+        let {Strings, selectedCategory} = this.state;
+
+        let categoryContainer;
+        if (selectedCategory == 'assignment-activity') {
+            categoryContainer = <AssignmentActivityContainer strings={Strings} />;
+        } else if (selectedCategory == 'assignment-instance') {
+            categoryContainer = <AssignmentInstanceContainer strings={Strings} />;
+        }
         
-        return (
-            <div className="container">
-                <div className="col-xs-6">
-                    <Assignments strings={this.state.Strings} />
-                </div>
-                <div className="col-xs-6">
-                    <ArchivedAssignments strings={this.state.Strings} />
-                </div>
-                <div className="col-xs-6">
-                    <DeletedAssignments strings={this.state.Strings} />
+        return <div>
+            <div className="card">
+                <h2 className="title">Category</h2>
+                <div className="card-content">
+                    <Select
+                        options={this.state.categories}
+                        value={selectedCategory}
+                        onChange={this.changeCategory.bind(this)}
+                        clearable={false}
+                        searchable={false}
+                    />
                 </div>
             </div>
-        );
+            {categoryContainer}
+        </div>;
     }
 }
          

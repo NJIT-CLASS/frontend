@@ -1,21 +1,15 @@
 export default {
-    // Assignments table
-    assignmentsTableTitle: 'Assignments',
-    assignmentsTableCol1: 'Assignment',
-    assignmentsTableCol2: 'Course',
-    assignmentsTableCol3: 'Archive',
-    assignmentsTableCol4: 'Delete',
+    currentTableTitle: 'Current',
+    archivedTableTitle: 'Archived',
+    deletedTableTitle: 'Deleted',
 
-    // Archived Assignments Table
-    archivedAssignmentsTableTitle: 'Archived Assignments',
-    archivedAssignmentsTableCol1: 'Assignment',
-    archivedAssignmentsTableCol2: 'Course',
-    archivedAssignmentsTableCol3: 'Restore',
-    archivedAssignmentsTableCol4: 'Delete',
+    // Assignment Instance
+    assignmentInstanceCurrentColumns: ['Assignment', 'Course', 'Section', 'Semester', 'Archive', 'Delete'],
+    assignmentInstanceArchivedColumns: ['Assignment', 'Course', 'Section', 'Semester', 'Restore', 'Delete'],
+    assignmentInstanceDeletedColumns: ['Assignment', 'Course', 'Section', 'Semester', 'Restore'],
 
-    // Deleted Assignments Table
-    deletedAssignmentsTableTitle: 'Deleted Assignments',
-    deletedAssignmentsTableCol1: 'Assignment',
-    deletedAssignmentsTableCol2: 'Course',
-    deletedAssignmentsTableCol3: 'Restore'
+    // Assignment Activity
+    assignmentActivityCurrentColumns: ['Assignment', 'Course', 'Archive', 'Delete'],
+    assignmentActivityArchivedColumns: ['Assignment', 'Course', 'Restore', 'Delete'],
+    assignmentActivityDeletedColumns: ['Assignment', 'Course', 'Restore'],
 };
