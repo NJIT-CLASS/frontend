@@ -26,6 +26,32 @@ import { TASK_TYPES } from '../../server/utils/react_constants'; // contains con
 
 import CommentInfoComponent from './commentInfoComponent';
 
+let state = {
+    TaskActivityFields: {
+        field_titles: [],
+    },
+    TaskData: [],
+    TaskResponse: {},
+    ShowRubric: false,
+    FieldRubrics: [],
+    InputError: false,
+    TaskStatus: '',
+    ShowContent: true,
+    Error: false,
+    SaveSuccess: false,
+    SubmitSuccess: false,
+    NumberFilesStored: 0,
+    PassFailValue: null,
+    DisputeStatus: null,
+    FileUploadsSatisfied: false,
+    LockSubmit: false,
+    IsRevision: false,
+    RevisionStatus: false,
+    ShowDisputeModal: true,
+    ShowHistory: false,
+};
+
+
 class SuperComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -39,32 +65,13 @@ class SuperComponent extends React.Component {
             -Rubric
     */
 
-        this.state = {
-            TaskActivityFields: {
-                field_titles: [],
-            },
-            TaskData: [],
-            TaskResponse: {},
-            ShowRubric: false,
-            FieldRubrics: [],
-            InputError: false,
-            TaskStatus: '',
-            ShowContent: true,
-            Error: false,
-            SaveSuccess: false,
-            SubmitSuccess: false,
-            NumberFilesStored: 0,
-            PassFailValue: null,
-            DisputeStatus: null,
-            FileUploadsSatisfied: false,
-            LockSubmit: false,
-            IsRevision: false,
-            RevisionStatus: false,
-            ShowDisputeModal: true,
-            ShowHistory: false,
-        };
+        this.state = state;
 
         this.toggleHistory = this.toggleHistory.bind(this);
+    }
+
+    componentWillUnmount(){
+        state = this.state;
     }
 
     componentWillMount() {
@@ -123,14 +130,7 @@ class SuperComponent extends React.Component {
         });
     }
 
-    fetchNewFileUploads() {
-        return;
-        apiCall.get(`/taskFileReferences/${this.props.TaskID}`, (err, res, body) => {
-            this.setState({
-                NewFilesUploaded: body.Files
-            });
-        });
-    }
+
 
     isValidData() {
         // go through all of TaskData's fields to check if null. If a field requires_justification,
@@ -724,7 +724,7 @@ class SuperComponent extends React.Component {
                     rubric_content = (
                         <div key={this.state.TaskActivityFields[idx].title}>
                             <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                                <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
+                            <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
                             
                                 
                         </div>);
@@ -757,7 +757,7 @@ class SuperComponent extends React.Component {
                     <div key={1100}>
                         <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                         <div className="regular-text instructions">
-                        <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
+                            <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
                         </div>
                     </div>
                 );

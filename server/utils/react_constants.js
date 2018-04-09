@@ -70,8 +70,7 @@ export const ROLES = {
 };
 
 exports.canRoleAccess = function(userRole, requiredRole){
-    return true;
-    if(userRole == null || userRole == undefined) return false;
+    if(userRole == null || requiredRole == null) return false;
     if(ROLES[userRole] >= ROLES[requiredRole]){
         return true;
     } else {

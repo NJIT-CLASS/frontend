@@ -506,12 +506,13 @@ class TemplateContainer extends React.Component {
                         this.setState({ TabSelected: tab });
                     }}
                     selectedIndex={this.state.TabSelected}
+                    forceRenderTabPanel={true}
                 >
                     <TabList className="big-text">
                         <Tab>{this.state.Strings.Task}</Tab>
                         <Tab>{this.state.Strings.Comments}</Tab>
                     </TabList>
-                    <TabPanel>
+                    <TabPanel >
                         <HeaderComponent
                             TaskID={this.props.TaskID}
                             CourseName={this.state.CourseName}

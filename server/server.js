@@ -20,7 +20,7 @@ const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
 import {uploadFiles} from './server-middleware/file-upload';
-import { canRoleAccess } from './utils/react_constants';
+import { canRoleAccess, ROLES } from './utils/react_constants';
 const loginGetRoute = require('./routes/route-handlers/login').get;
 const loginPostRoute = require('./routes/route-handlers/login').post;
 const loggedOutRoutes = routes.filter(route => route.access.loggedOut);
@@ -302,9 +302,7 @@ app.use((req, res, next) => {
                 return res.sendStatus(404);
             }
         }
-        options.showMasqueradingOption = req.App.user.admin
-            ? req.App.user.admin
-            : false; //new value, not working yet
+        options.showMasqueradingOption = canRoleAccess(req.App.user.role, ROLES.ADMIN) || req.App.user.admin;
 
         var sidebarNavItems = [];
 
@@ -322,6 +320,11 @@ app.use((req, res, next) => {
 
             currentRoute.title = __(currentRoute.title);
 
+            if(canRoleAccess(req.App.user.role, currentRoute.access.role)){
+                sidebarNavItems.push(currentRoute);
+                continue;
+            }
+
             if (req.App.user.type === 'student') {
                 if (currentRoute.access.students) {
                     sidebarNavItems.push(currentRoute);
@@ -330,7 +333,7 @@ app.use((req, res, next) => {
                 }
             } else if (
                 req.App.user.type == 'teacher' &&
-				req.App.user.admin == 0
+            	req.App.user.admin == 0
             ) {
                 if (currentRoute.access.instructors) {
                     sidebarNavItems.push(currentRoute);
@@ -427,9 +430,11 @@ app.use((req,res,next) => {
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
+        
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-
+            
             if (err || statusCode === 500 ) {
+                console.log('Got error or 500 code from backend for user: ',req.App.user.userId );
                 delete req.session.userId;
                 delete req.session.token;
                 delete req.session.refreshToken;
@@ -437,34 +442,47 @@ app.use((req, res, next) => {
                 res.redirect('/');
                 return;
             }
-
+    
             if (body === undefined || body.User === undefined) {
+                console.log('Got undefined body from backend for user: ',req.App.user.userId );
+                
                 delete req.session.userId;
                 delete req.session.token;
                 delete req.session.refreshToken;
                 res.redirect('/');
                 return;
             }
-
-            const user = body.User; // JV - grabbed user's information
-            req.App.user.email = user.UserLogin.Email;
-            req.App.user.firstName = user.FirstName;
-            req.App.user.lastName = user.LastName;
-            req.App.user.role = user.Role;
-            req.App.user.type = user.Instructor ? 'teacher' : 'student';
-            req.App.user.admin = user.Admin;
-            req.App.user.info = user.UserContact;
-            next();
+            try {
+                const user = body.User; // JV - grabbed user's information
+                req.App.user.email = user.UserLogin.Email;
+                req.App.user.firstName = user.FirstName;
+                req.App.user.lastName = user.LastName;
+                req.App.user.role = user.Role;
+                req.App.user.type = user.Instructor ? 'teacher' : 'student';
+                req.App.user.admin = user.Admin;
+                req.App.user.info = user.UserContact;
+                next();
+            } catch(err){
+                console.log('Caught exception in getting details for user: ',req.App.user.userId );
+                
+                delete req.session.userId;
+                delete req.session.token;
+                delete req.session.refreshToken;
+                res.redirect('/');
+                return;
+            }
         });
+        
+        
     } else {
-        {
-            delete req.session.userId;
-            delete req.session.token;
-            delete req.session.refreshToken;
-            console.log('No user profile. Check the backend server or API_URL');
-            res.redirect('/');
-            return;
-        }
+        console.log('Found No UserID in session (Redis issue)');
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        console.log('No user profile. Check the backend server or API_URL');
+        res.redirect('/');
+        return;
+        
     }
 
 });

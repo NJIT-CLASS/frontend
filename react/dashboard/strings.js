@@ -13,6 +13,7 @@ export default {
     Revised: 'Revised',
     Revision: 'Revision',
     Notifications: 'Notifications',
-    NoNotifications: 'You currently have no notifications'
+    NoNotifications: 'You currently have no notifications',
+    RedHeader: 'Tasks in Red are considered late'
     
 };
