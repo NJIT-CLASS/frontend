@@ -32,8 +32,13 @@ class GradeReport extends React.Component {
 
     getSections(userID){
         apiCall.get(`/SectionsByUser/${userID}`,{},(err,status,body)=>{
+            console.log(body);
             if(status.statusCode === 200){
-                body.Sections.forEach(section=>{this.getAssignments(section,body.Sections.length)});
+                if(body["Sections"].length == 0){
+                    this.setState({loaded:true});
+                } else {
+                    body.Sections.forEach(section=>{this.getAssignments(section,body.Sections.length)});
+                }
             } else {
                 this.setState({loaded:true,error:body});
             }
@@ -140,6 +145,7 @@ class GradeReport extends React.Component {
     }
 
     studentAssignmentOnClick(assignmentInstanceID){
+        console.log("clicked");
         this.state.displayedSection.type="studentassignment";
         apiCall.post(`/getAssignmentGrades/${assignmentInstanceID}`,{},(err,status,body)=>{
             console.log(body);
@@ -156,6 +162,7 @@ class GradeReport extends React.Component {
 
     render(){
         console.log("Render");
+        var sectionsPlaceholder = null;
         var tableHeader=null;
         var error = this.state.error;
         var instructorSections = this.state.instructorSections;
@@ -283,18 +290,18 @@ class GradeReport extends React.Component {
                 const workflowActivityGradesView = user.assignmentGrade.WorkflowActivityGrades.map( waGrade => {
                     var regularGrades = [];
                     var extraCreditGrades = [];
-                    regularGrades.push(<tr><th>Regular Tasks</th><th>Task Grade</th><th>Task Simple Grade</th><th>Comments</th></tr>);
-                    extraCreditGrades.push(<tr><th>Extra Credit Tasks</th><th>Task Grade</th><th>Task Simple Grade</th><th>Comments</th></tr>);
+                    regularGrades.push(<tr><th>Regular Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
+                    extraCreditGrades.push(<tr><th>Extra Credit Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
 
                     waGrade.WorkflowActivity.users_WA_Tasks.forEach( task => {
                         
                         if(task.IsExtraCredit){
                             extraCreditGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{task.taskGrade.Grade}</td><td>{task.taskSimpleGrade.Grade}</td><td>{task.Comments}</td>
+                                <td>{task.taskActivity.Name}</td><td>{task.taskGrade.Grade}</td><td>{task.taskSimpleGrade.Grade}</td>
                             </tr>);
                         } else {
                             regularGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{task.taskGrade.Grade}</td><td>{task.taskSimpleGrade.Grade}</td><td>{task.Comments}</td>
+                                <td>{task.taskActivity.Name}</td><td>{task.taskGrade.Grade}</td><td>{task.taskSimpleGrade.Grade}</td>
                             </tr>);
                         }
                     });
@@ -305,10 +312,12 @@ class GradeReport extends React.Component {
 
                     workflowGradesTable.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                     <thead>
-                        <tr><th colSpan="4">Workflow {(workflowGradesTable.length + 1).toString()} | Grade: {waGrade.Grade}</th></tr>
+                        <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Grade: {waGrade.Grade}</th></tr>
                     </thead>
+                    <tbody>
                     {regularGrades}
                     {extraCreditGrades}
+                    </tbody>
                 </table>);
 
                 });
@@ -365,19 +374,19 @@ class GradeReport extends React.Component {
                 tableData = sectionData.userAssignmentGrades.assignmentGrade.WorkflowActivityGrades.map( waGrade => {
                     var regularGrades = [];
                     var extraCreditGrades = [];
-                    regularGrades.push(<tr><th>Regular Tasks</th><th>Task Grade</th><th>Task Simple Grade</th><th>Comments</th></tr>);
-                    extraCreditGrades.push(<tr><th>Extra Credit Tasks</th><th>Task Grade</th><th>Task Simple Grade</th><th>Comments</th></tr>);
+                    regularGrades.push(<tr><th>Regular Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
+                    extraCreditGrades.push(<tr><th>Extra Credit Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
 
                     waGrade.WorkflowActivity.users_WA_Tasks.forEach( task => {
                         let taskSimpleGrade = task.taskSimpleGrade ? task.taskSimpleGrade.Grade : "-";
                         let taskGrade = task.taskGrade ? task.taskGrade.Grade : "-";
                         if(task.IsExtraCredit){
                             extraCreditGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td><td>{task.Comments}</td>
+                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td>
                             </tr>);
                         } else {
                             regularGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td><td>{task.Comments}</td>
+                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td>
                             </tr>);
                         }
                     });
@@ -387,15 +396,18 @@ class GradeReport extends React.Component {
                     if(extraCreditGrades.length <=1){extraCreditGrades = null;}
 
                     nestedTables.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
+                    <tbody>
                     {regularGrades}
                     {extraCreditGrades}
+                    </tbody>
                 </table>);
                     return {workflow: (nestedTables.length).toString()};
                 });
                 grade = sectionData.userAssignmentGrades.assignmentGrade.Grade;
+                grade = "N/A";
                 tableView = (<ReactTable defaultPageSize={10} className="-striped -highlight" resizable={true}  data={tableData}
                 columns={[
-                    {Header: "Work Flow",accessor: 'workflow'}
+                    {Header: "Problem Thread",accessor: 'workflow'}
                 ]} 
                 noDataText="No grade data"
                 SubComponent={(row) => { return nestedTables[row.index]; }}
@@ -431,9 +443,14 @@ class GradeReport extends React.Component {
         </div>);
         }
 
+        if(instructorSections.length == 0 && studentSections.length == 0){
+            sectionsPlaceholder = (<div className="section"><h2 className="title">You are currently not attending or teaching any sections</h2></div>);
+        }
+
         return(
                 <form name="grade_report" role="form" className="section" method="post">
                     <div className="section-content">
+                        {sectionsPlaceholder}
                         {instructorSectionsView}
                         {studentSectionsView}
                         <div className="section card-2 sectionTable">
