@@ -23,9 +23,15 @@ class FileManagerComponent extends Component {
 
     fetchFiles(){
         this.setState({
-            Refreshing: false
+            Refreshing: true
         });
         apiCall.get(`/task/files/${this.props.TaskID}`, (err, res, body)=> {
+            if(err || res.statusCode != 200){
+                this.setState({
+                    Refreshing: false
+                });
+                return;
+            }
             let filesArr = typeof body.Files == 'string' ? JSON.parse(body.Files) : body.Files;
             filesArr = filesArr.map(file => {
                 let newFileInfo = JSON.parse(file.Info);

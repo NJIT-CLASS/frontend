@@ -393,9 +393,11 @@ class SuperComponent extends React.Component {
                 SubmitSuccess: true,
                 LockSubmit: false
             });
-            window.location.replace('/');
 
         });
+
+        window.location.replace('/');
+        
 
     }
 
@@ -523,12 +525,12 @@ class SuperComponent extends React.Component {
         if (!this.props.TaskStatus.includes('complete')) {
             let cancelDisputeView = null;
             if(this.state.DisputeStatus === true){
-                cancelDisputeView = <button type="button" ><i className="fa fa-times-circle"></i>{this.props.Strings.CancelDispute}</button>;
+                cancelDisputeView = <button type="button" onClick={this.cancelDispute.bind(this)} ><i className="fa fa-times-circle"></i>{this.props.Strings.CancelDispute}</button>;
             }
             formButtons = (<div>
                 <br />
                 {cancelDisputeView}
-                <button type="submit"  className="divider" onClick={this.cancelDispute}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
+                <button type="submit"  className="divider" ><i className="fa fa-check" />{this.props.Strings.Submit}</button>
                 {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
             </div>);
         }
@@ -765,7 +767,9 @@ class SuperComponent extends React.Component {
 
             if (this.state.TaskActivityFields[idx].requires_justification) {
                 justification = (<div>
-                    <div style={{margin: '5px'}}>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                    <div style={{margin: '5px'}}>
+                        <MarkupText className="" content={this.state.TaskActivityFields[idx].justification_instructions} />
+                    </div>
                     <Editor
                         key={idx + 100}
                         initialvalue={latestVersion[idx][1]}
