@@ -54,7 +54,7 @@ class FileManagerComponent extends Component {
         let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads, TaskID} = this.props;
         
         if(Refreshing){
-            return <div>Loading Files ... <ReactLoading type={'spin'} color="#e7e7e7" /></div>;
+            return <div>Loading Files...<br/> <b>Please allow file upload to finish before submitting.</b> <br/> <ReactLoading type={'spin'} color="#e7e7e7" /></div>;
         }
 
         let fileLinksView = ViewOnly === true ? <FileLinksComponent Files={Files} Strings={Strings} /> :
