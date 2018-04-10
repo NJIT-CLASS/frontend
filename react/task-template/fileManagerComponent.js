@@ -11,7 +11,7 @@ class FileManagerComponent extends Component {
 
         this.state = {
             Files: [],
-            Refreshing: true,
+            Refreshing: false,
         };
 
         this.fetchFiles = this.fetchFiles.bind(this);
