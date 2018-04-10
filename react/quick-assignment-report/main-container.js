@@ -31,7 +31,7 @@ class QuickAssignmentReport extends Component {
     getVolunteerIdsAsync(sectionID) {
         const volunteersURL = `/VolunteerPool/VolunteersInSection/${sectionID}`;
         return apiCall.getAsync(volunteersURL)
-            .then(response => ({volunteerIDs: response.data.Volunteers.map(user => user.UserID)}));
+            .then(response => response.data.Volunteers.map(user => user.UserID));
     }
 
     getNamesAsync(sectionID) {
