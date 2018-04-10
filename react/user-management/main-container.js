@@ -55,7 +55,7 @@ class UserManagementContainer extends Component{
     }
 
     fetchUsers(){
-        apiCall.getAsync('/usermanagement',{}).then(body => {
+        apiCall.getAsync('/userManagement',{}).then(body => {
             this.componentData.users = body.data.Assignments;
             this.setState({loaded:true});
         });
