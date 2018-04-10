@@ -11,7 +11,7 @@ class FileManagerComponent extends Component {
 
         this.state = {
             Files: [],
-            Refreshing: true,
+            Refreshing: false,
         };
 
         this.fetchFiles = this.fetchFiles.bind(this);
@@ -23,9 +23,15 @@ class FileManagerComponent extends Component {
 
     fetchFiles(){
         this.setState({
-            Refreshing: false
+            Refreshing: true
         });
         apiCall.get(`/task/files/${this.props.TaskID}`, (err, res, body)=> {
+            if(err || res.statusCode != 200){
+                this.setState({
+                    Refreshing: false
+                });
+                return;
+            }
             let filesArr = typeof body.Files == 'string' ? JSON.parse(body.Files) : body.Files;
             filesArr = filesArr.map(file => {
                 let newFileInfo = JSON.parse(file.Info);
@@ -54,7 +60,7 @@ class FileManagerComponent extends Component {
         let { Strings, View, InitialNumberUploaded, PostVars, MinUploads, endpoint, MaxUploads, ViewOnly, AllowUploads, TaskID} = this.props;
         
         if(Refreshing){
-            return <div>Loading Files ... <ReactLoading type={'spin'} color="#e7e7e7" /></div>;
+            return <div>Loading Files...<br/> <b>Please allow file upload to finish before submitting.</b> <br/> <ReactLoading type={'spin'} color="#e7e7e7" /></div>;
         }
 
         let fileLinksView = ViewOnly === true ? <FileLinksComponent Files={Files} Strings={Strings} /> :

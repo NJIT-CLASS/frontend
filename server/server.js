@@ -122,16 +122,7 @@ app.put('/api/generalCall', (req, res) => {
 
     });
 });
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
 
-    });
-});
 
 
 //Checks that Redis is working properly
@@ -144,59 +135,7 @@ app.use(function(req,res,next){
     next();
 });
 
-// APIs to access backend API routes through frontend server
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
 
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.delete('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.put('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
     // language options

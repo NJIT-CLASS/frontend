@@ -12,6 +12,8 @@ const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) =
     const TaskActivity = TaskInstance.TaskActivity;
 
     //from old task status table
+    let isLate = taskStatus.includes('late') ? (taskStatus.includes('complete' ) ? false : true) : false ;
+
     const colors = { Incomplete: 'incomplete',
         complete: 'complete',
         Late: 'late',
@@ -44,30 +46,40 @@ const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) =
 
     //hide details if Automatic task
     let taskInformation = null;
-    if(taskStatus[0] === 'automatic'){
+    if(isLate){
+        taskInformation = <div className="dropdown">
+            <div className="task-type">{TaskActivity.Type}</div>
+            <div> {UserContact.Email} </div>
+            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            <div> UserID: {User.UserID} </div>
+            <div>{letters.Late}</div>
+            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
+        </div>;
+    }
+    else if(taskStatus[0] === 'automatic'){
         taskInformation = <div>
-        <div className="task-type">{TaskActivity.Type}</div>
-        <div>{taskStatus[0]}</div>
-        <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-        <br />
-        <br />
+            <div className="task-type">{TaskActivity.Type}</div>
+            <div>{taskStatus[0]}</div>
+            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            <br />
+            <br />
 
-      </div>;
+        </div>;
     } else {
         taskInformation = <div className="dropdown">
-          <div className="task-type">{TaskActivity.Type}</div>
-          <div> {UserContact.Email} </div>
-          <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-          <div> UserID: {User.UserID} </div>
-          <div>{letters[taskStatus[0]]}</div>
-          <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
+            <div className="task-type">{TaskActivity.Type}</div>
+            <div> {UserContact.Email} </div>
+            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            <div> UserID: {User.UserID} </div>
+            <div>{letters[taskStatus[0]]}</div>
+            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
         </div>;
     }
 
 
-    return (<div className={`task-instance ${colors[taskStatus[0]]}`}>
-      {taskInformation}
-      </div>
+    return (<div className={`task-instance ${isLate ? 'late' : colors[taskStatus[0]]}`}>
+        {taskInformation}
+    </div>
     );
 };
 
