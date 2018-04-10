@@ -2188,7 +2188,14 @@ class AssignmentEditorContainer extends React.Component {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].splice(indexInArray, 1);
         } else if (constraint == 'same_as') {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [referId];
-        } else {
+        } 
+        else if (constraint == 'not_in_workflow_instance') {
+            if(newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint]){
+                delete newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint];
+            } else {
+                newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
+            }
+        }else {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].push(referId);
         }
 
@@ -2196,7 +2203,6 @@ class AssignmentEditorContainer extends React.Component {
             return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
         } else {
-            console.log('data passed', newData);
             return newData;
 
         }
@@ -2273,7 +2279,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            if (e.target.id.includes("tiny")) {
+            if (e.target.id.includes('tiny')) {
                 newVal = e.target.getContent();
             } else {
                 newVal = e.target.value;
@@ -2311,7 +2317,7 @@ class AssignmentEditorContainer extends React.Component {
         let newVal = null;
         if(e.preventDefault !== undefined){
             e.preventDefault();
-            if (e.target.id.includes("tiny")) {
+            if (e.target.id.includes('tiny')) {
                 newVal = e.target.getContent();
             } else {
                 newVal = e.target.value;
@@ -2689,7 +2695,7 @@ class AssignmentEditorContainer extends React.Component {
     changeAssignmentInput(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
         let content = event.target.value;
-        if (event.target.id.includes("tiny")) {
+        if (event.target.id.includes('tiny')) {
             content = event.target.getContent();
         }
         if (content.length > 45000) {
