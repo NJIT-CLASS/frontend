@@ -617,6 +617,7 @@ class AssignmentEditorContainer extends React.Component {
         this.checkAssigneeConstraintTasks(2, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(2, 'not', 1, workflowIndex);
         //this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
+        //this.checkAssigneeConstraintTasks(3, 'not', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(3, 'same_as', 0, workflowIndex);
         this.checkAssigneeConstraintTasks(4, 'same_as', 2, workflowIndex);
         this.checkAssigneeConstraintTasks(5, 'not', 2, workflowIndex);
@@ -1234,7 +1235,7 @@ class AssignmentEditorContainer extends React.Component {
             //add default assignee constraints
             let tasksToAvoid = this.getAlreadyCreatedTasks(newTaskIndex, workflowIndex, stateData);
             tasksToAvoid.forEach((task) => {
-                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', task.value, workflowIndex, stateData);
+                stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not', task.value, workflowIndex, stateData);
             });
 
             //add default consolidation task and dispte task
@@ -1246,8 +1247,7 @@ class AssignmentEditorContainer extends React.Component {
         case this.REFLECT_IDX:
             break;
         case this.CREATE_IDX:
-            stateData =  this.checkAssigneeConstraintTasks(newTaskIndex, 'not_in_workflow_instance', index, workflowIndex, stateData);
-        
+            stateData =  this.checkAssigneeConstraints(newTaskIndex, 'not_in_workflow_instance',  workflowIndex, stateData);
             stateData = this.changeDataCheck('TA_allow_reflection', newTaskIndex, workflowIndex, stateData);
             stateData = this.changeDataCheck('TA_leads_to_new_solution', newTaskIndex, workflowIndex, stateData);
             break;
@@ -2156,13 +2156,20 @@ class AssignmentEditorContainer extends React.Component {
 
     }
 
-    checkAssigneeConstraints(taskIndex, constraint, workflowIndex) {
-        let newData = this.state.WorkflowDetails;
+    checkAssigneeConstraints(taskIndex, constraint, workflowIndex, stateData) {
+        let newData = stateData || this.state.WorkflowDetails;
 
         if (constraint === 'none') {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2] = {};
             this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
             return;
+        }
+        else if (constraint == 'not_in_workflow_instance') {
+            if(newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint]){
+                delete newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint];
+            } else {
+                newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
+            }
         }
 
         if (newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] === undefined) {
@@ -2171,7 +2178,13 @@ class AssignmentEditorContainer extends React.Component {
             delete newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint];
         }
 
-        this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+        if(stateData == null){
+            return this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+        } else {
+            return newData;
+
+        }
     }
 
 
@@ -2188,13 +2201,7 @@ class AssignmentEditorContainer extends React.Component {
         } else if (constraint == 'same_as') {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [referId];
         } 
-        else if (constraint == 'not_in_workflow_instance') {
-            if(newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint]){
-                delete newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint];
-            } else {
-                newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint] = [];
-            }
-        }else {
+        else {
             newData[workflowIndex].Workflow[taskIndex].TA_assignee_constraints[2][constraint].push(referId);
         }
 
