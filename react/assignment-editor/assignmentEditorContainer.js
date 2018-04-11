@@ -571,10 +571,9 @@ class AssignmentEditorContainer extends React.Component {
                     courseId: this.props.CourseID === '*' ? undefined : this.props.CourseID
                 };
 
-                console.log(assignmentOptions);
-                console.log('partialAssignmentURL:', `/partialAssignments/ById/${this.props.PartialAssignmentID}`);
+                
                 apiCall.get(`/partialAssignments/byId/${this.props.PartialAssignmentID}`,assignmentOptions, (err3, res3, assignBody) => {
-                    console.log(assignBody, res3);
+                    
 
                     if(res3.statusCode !== 200 || assignBody == null || assignBody.PartialAssignment == null || assignBody.PartialAssignment.Data == null){
                         return;
@@ -715,12 +714,12 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     onLoad(assignmentData){
-        console.log('AssignmentData onLoad',assignmentData.WorkflowActivity);
+        
         let workflowData = clone(assignmentData.WorkflowActivity);
         delete assignmentData['WorkflowActivity'];
         let AA_Data = assignmentData;
         workflowData.forEach((workflow, index) => {
-            console.log(workflow);
+            
             workflow.WorkflowStructure = this.unflattenTreeStructure(workflow.WorkflowStructure);
         })
         ;
@@ -743,7 +742,7 @@ class AssignmentEditorContainer extends React.Component {
 
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
             showMessage(this.state.Strings.CourseIDNull);
-            console.log('CourseID null');
+            
             this.setState({
                 InfoMessage: this.state.Strings.CourseIDNull,
                 InfoMessageType: 'error'
@@ -824,7 +823,7 @@ class AssignmentEditorContainer extends React.Component {
 
         if (this.state.AssignmentActivityData.AA_course === null || isNaN(this.state.AssignmentActivityData.AA_course)) {
             showMessage(this.state.Strings.CourseIDNull);
-            console.log('CourseID null');
+            
             this.setState({
                 InfoMessage: this.state.Strings.CourseIDNull,
                 InfoMessageType: 'error'
@@ -879,7 +878,7 @@ class AssignmentEditorContainer extends React.Component {
             workflow.WorkflowStructure.walk((node) => {
                 if(node.model.id == -1) return;
             });
-            console.log(workflow.Workflow, workflow.WorkflowStructure);
+            
 
             // B.2 Add Subworkflow labels
             workflow.WorkflowStructure = this.makeSubWorkflows(workflow.WorkflowStructure,workflow.Workflow, index);
@@ -954,7 +953,7 @@ class AssignmentEditorContainer extends React.Component {
         }, this);
 
 
-        console.log(sendData);
+        
 
 
         const options = {
@@ -974,7 +973,7 @@ class AssignmentEditorContainer extends React.Component {
                     InfoMessageType: 'success',
                     SubmitButtonShow: false});
             } else {
-                console.log('Submit failed');
+                
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
                     InfoMessage: this.state.Strings.ErrorMessage,
@@ -1008,7 +1007,7 @@ class AssignmentEditorContainer extends React.Component {
 
 
     addConsolidation(stateData, parentIndex, workflowIndex) {
-        console.log(stateData, parentIndex, workflowIndex);
+        
         if(this.hasConsolidate(parentIndex, workflowIndex)){
             return;
         }
@@ -1262,8 +1261,8 @@ class AssignmentEditorContainer extends React.Component {
     createNewTask(stateData, taskType, index, workflowIndex, string) {
         let prevTaskName = stateData[workflowIndex].Workflow[index].TA_name;
         let newTask = cloneDeep(taskType);
-        console.log(stateData, taskType, index, workflowIndex, string);
-        console.log('New task:',newTask);
+        
+        
         let newText = string + ' ' + prevTaskName;
         if (newText.length > 254) { //need to do this because of database limit
             switch (taskType.TA_type) {
@@ -1635,7 +1634,7 @@ class AssignmentEditorContainer extends React.Component {
         if(stateData === undefined){
             stateData = this.state.WorkflowDetails;
         }
-        console.log('Get Parent index', stateData, workflowIndex);
+        
         var selectedNode = stateData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id === taskIndex;
         });
@@ -1800,7 +1799,7 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
         newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
         newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
-        console.log('RemoveFieldButton: ',newData);
+        
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
     }
@@ -1838,7 +1837,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, stateData) {
-        console.log(stateField, taskIndex, workflowIndex, stateData);
+        
         let newData = stateData || this.state.WorkflowDetails;
         switch (stateField) {
         case 'TA_allow_reflection':
@@ -2001,7 +2000,7 @@ class AssignmentEditorContainer extends React.Component {
                 if (this.hasConsolidate(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex)) {
                     this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 } else {
-                    console.log('Assess consol index', this.getAssessIndex(taskIndex, workflowIndex, newData));
+                    
                     newData = this.addConsolidation(newData, this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 }
             }
@@ -2244,7 +2243,7 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field][stateField] = e.value;
         if( stateField == 'field_type'){
             newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
-            console.log('Data after Refresh', newData);
+            
                 
         }
 
@@ -2309,7 +2308,7 @@ class AssignmentEditorContainer extends React.Component {
 
         let newData = this.state.WorkflowDetails;
         newData[workflowIndex].Workflow[taskIndex][stateField] = newVal;
-        console.log(e.target.getContent(), newData[workflowIndex].Workflow[taskIndex][stateField]);
+        
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
@@ -2583,7 +2582,7 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFieldDefaultContentValue(defaultFieldIndex, fieldIndex,taskIndex, workflowIndex){
-        console.log('Get default field', defaultFieldIndex, this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to);
+        
         if(defaultFieldIndex === 1){
             return `${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[0]}:${this.state.WorkflowDetails[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex].default_refers_to[1]}`;
         } 
@@ -2618,7 +2617,7 @@ class AssignmentEditorContainer extends React.Component {
 
     refreshTaskFieldDistribution(taskIndex, workflowIndex, stateData){
         let assessedFields  = this.getAssessmentFieldsForTask(taskIndex,workflowIndex, stateData);
-        console.log('Assessed Fields' ,assessedFields);
+        
         let newFieldDist = new Object();
         
         let count = assessedFields.length;
@@ -2714,7 +2713,6 @@ class AssignmentEditorContainer extends React.Component {
 
     changeAssignmentDropdown(fieldName, event) {
         let newData = this.state.AssignmentActivityData;
-        console.log(event);
         if(fieldName === 'AA_course'){
             newData[fieldName] = event.value;
             this.setState({AssignmentActivityData: newData, CourseSelected: {Name: event.label, Number: event.number}});
@@ -2819,7 +2817,6 @@ class AssignmentEditorContainer extends React.Component {
      */
     refreshGradeDist(stateData, workflowIndex)  {
         let gradedTasks = this.getFinalGradeTasksArray(workflowIndex, stateData);
-        console.log('Grading tasks array,', gradedTasks);
         let newGradeDist = new Object();
         if(this.scanWorkflowForSimpleGrade(workflowIndex)){
             gradedTasks.push('simple');

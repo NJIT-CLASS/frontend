@@ -501,12 +501,15 @@ class Container extends React.Component {
                 <h2 className="title">
                     {name == '' ? this.strings.account : name} 
                 </h2> 
+                {/*
                 <button type="button" onClick={this.editAccount.bind(this)}>
                     {this.strings.edit} 
                 </button> 
                 <button type="button" onClick={this.changePassword.bind(this)}>
                     {this.strings.changePassword} 
                 </button> 
+                */}
+                
                 <div className="card-content">
                     <table>
                         <tbody>
