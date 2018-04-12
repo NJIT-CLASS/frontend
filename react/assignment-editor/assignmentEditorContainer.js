@@ -1356,9 +1356,8 @@ class AssignmentEditorContainer extends React.Component {
      * @param  {[number]} workflowIndex [workflow's array index]
      * @return {[void]}
      */
-    propogateNameChangeDownTree(startIndex, workflowIndex){
-
-        let newData = this.state.WorkflowDetails;
+    propogateNameChangeDownTree(startIndex, workflowIndex ,stateData){
+        let newData = stateData || this.state.WorkflowDetails;
         let selectedNode = newData[workflowIndex].WorkflowStructure.first(function(node) {
             return node.model.id === startIndex;
         });
@@ -1376,9 +1375,13 @@ class AssignmentEditorContainer extends React.Component {
 
         }, this);
 
-        this.setState({
-            WorkflowDetails: newData
-        });
+        if(stateData == null){
+            this.setState({
+                WorkflowDetails: newData
+            });
+        } else {
+            return newData;
+        }
     }
 
     getAssessIndex(parentIndex, workflowIndex, stateData) {
@@ -1834,6 +1837,7 @@ class AssignmentEditorContainer extends React.Component {
         newData = this.refreshGradeDist(newData, workflowIndex);
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, stateData) {
@@ -1978,6 +1982,7 @@ class AssignmentEditorContainer extends React.Component {
                 } else {
                     newData = this.addConsolidation(newData, this.getReflectIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 }
+                newData = this.propogateNameChangeDownTree(0, workflowIndex, newData);
             }
             break;
 
@@ -1991,7 +1996,7 @@ class AssignmentEditorContainer extends React.Component {
                     newData[workflowIndex].Workflow[reflectIndex].TA_allow_dispute = true;
                     newData = this.addDispute(newData, reflectIndex, workflowIndex);
                 }
-
+                newData = this.propogateNameChangeDownTree(0, workflowIndex, newData);
             }
             break;
 
@@ -2003,6 +2008,8 @@ class AssignmentEditorContainer extends React.Component {
                     
                     newData = this.addConsolidation(newData, this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
                 }
+                newData = this.propogateNameChangeDownTree(0, workflowIndex, newData);
+                
             }
             break;
 
@@ -2018,6 +2025,7 @@ class AssignmentEditorContainer extends React.Component {
                     newData = this.addDispute(newData, assessIndex, workflowIndex);
                 }
                 assessIndex = null;
+                newData = this.propogateNameChangeDownTree(0, workflowIndex, newData);
             }
             break;
 
