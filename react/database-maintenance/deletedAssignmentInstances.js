@@ -18,7 +18,7 @@ class DeletedAssignments extends Component {
     }
 
     loadAssignments() {
-        apiCall.get('/displayremovedassignmentinstance', (err, res, body) => {
+        apiCall.get('/displayremovedinstance', (err, res, body) => {
             if (res.statusCode == 200) {
                 let assignments = body.RemovedAssignmentInstance.map(instance => {
                     return {
