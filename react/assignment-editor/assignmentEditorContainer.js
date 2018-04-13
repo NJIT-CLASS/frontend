@@ -831,6 +831,16 @@ class AssignmentEditorContainer extends React.Component {
             });
             return;
         }
+
+        //Prepare Save data before working on
+        let saveData = cloneDeep(this.state.AssignmentActivityData);
+        saveData.WorkflowActivity = cloneDeep(this.state.WorkflowDetails);
+        saveData.WorkflowActivity.forEach((workflow, index) => {
+            workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
+
+        });
+
+
         //Place Workflows in AssignmentActivityData object for compatability with backend call
         let sendData = cloneDeep(this.state.AssignmentActivityData);
         sendData.WorkflowActivity = cloneDeep(this.state.WorkflowDetails);
@@ -961,7 +971,8 @@ class AssignmentEditorContainer extends React.Component {
             assignment: sendData,
             userId: this.props.UserID,
             partialAssignmentId: this.state.PartialAssignmentID,
-            courseId: sendData.AA_course
+            courseId: sendData.AA_course,
+            saveData: saveData
         };
         
 
