@@ -940,12 +940,12 @@ class AssignmentEditorContainer extends React.Component {
             }).filter(function(taskIndex){
                 return taskIndex != -1;
             });
-
+            //console.log('tasksToLink', taskstoLink);
             taskstoLink.forEach((taskIndex) => {
-                workflow.Workflow = this.addLinkedTaskFields(workflow.WorkflowStructure, workflow.Workflow, taskIndex);
+                let newData = this.addLinkedTaskFields(workflow.WorkflowStructure, workflow.Workflow, taskIndex);
+                workflow.Workflow = newData;
+
             });
-
-
             // B.6 Flatten workflow
 
             workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
@@ -954,7 +954,7 @@ class AssignmentEditorContainer extends React.Component {
         }, this);
 
 
-        
+        console.log(sendData);
 
 
         const options = {
@@ -965,24 +965,24 @@ class AssignmentEditorContainer extends React.Component {
         };
         
 
-        apiCall.post('/assignment/create', options, (err, res, body) => {
-            if (err == null && res.statusCode == 200) {
-                document.body.scrollTop = document.documentElement.scrollTop = 0;
-                showMessage(this.state.Strings.SubmitSuccessMessage);
-                this.setState({
-                    InfoMessage: this.state.Strings.SubmitSuccessMessage,
-                    InfoMessageType: 'success',
-                    SubmitButtonShow: false});
-            } else {
+        // apiCall.post('/assignment/create', options, (err, res, body) => {
+        //     if (err == null && res.statusCode == 200) {
+        //         document.body.scrollTop = document.documentElement.scrollTop = 0;
+        //         showMessage(this.state.Strings.SubmitSuccessMessage);
+        //         this.setState({
+        //             InfoMessage: this.state.Strings.SubmitSuccessMessage,
+        //             InfoMessageType: 'success',
+        //             SubmitButtonShow: false});
+        //     } else {
                 
-                showMessage(this.state.Strings.ErrorMessage);
-                this.setState({
-                    InfoMessage: this.state.Strings.ErrorMessage,
-                    InfoMessageType: 'error'
-                });
-            }
+        //         showMessage(this.state.Strings.ErrorMessage);
+        //         this.setState({
+        //             InfoMessage: this.state.Strings.ErrorMessage,
+        //             InfoMessageType: 'error'
+        //         });
+        //     }
 
-        });
+        // });
     }
     ///////////////////////////////////////////////////////////////////////////
     ////////////// Tree Methods //////////////////////////////////////////////
@@ -1746,6 +1746,9 @@ class AssignmentEditorContainer extends React.Component {
                 break;
             }
         }
+
+
+
         excludedTasks = null;
         possibleParents = null;
         return parentID;
@@ -1757,23 +1760,24 @@ class AssignmentEditorContainer extends React.Component {
          case future support for adding more fields on top of linked fields is desired*/
 
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
-        let linkedFields = cloneDeep(workflowData[linkedIndex].TA_fields);
+        let linkedFields = JSON.parse(JSON.stringify((workflowData[linkedIndex].TA_fields)));
         let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
         let linkedFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
         
-        let oldFields = cloneDeep(workflowData[taskIndex].TA_fields);
+        let oldFields = JSON.parse(JSON.stringify((workflowData[taskIndex].TA_fields)));
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
         let oldFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
+        console.log(taskIndex, oldNumberOfFields, linkedNumberOfFields);
         
-        workflowData[taskIndex].TA_fields = linkedFields;
+        workflowData[taskIndex].TA_fields = JSON.parse(JSON.stringify(linkedFields));
         for(let i = 0; i < oldNumberOfFields; i++){
             workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
         }
         if(oldFieldDistribution !== undefined){
             let oldFieldDistFields =Object.keys(oldFieldDistribution);
             oldFieldDistFields.forEach((key) => {
-                workflowData[taskIndex].TA_fields[linkedNumberOfFields + key] = oldFieldDistribution[key];
+                workflowData[taskIndex].TA_fields.field_distribution[linkedNumberOfFields + parseInt(key)] = oldFieldDistribution[key];
             });
         }
         
