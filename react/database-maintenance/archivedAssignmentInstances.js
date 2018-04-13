@@ -40,7 +40,7 @@ class ArchivedAssignments extends Component {
             return {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
-                courseName: assignment.courseName,
+                courseNumber: assignment.courseNumber,
                 sectionName: assignment.sectionName,
                 semesterName: assignment.semesterName,
                 restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'restore')}>Restore</button>,
@@ -78,7 +78,7 @@ class ArchivedAssignments extends Component {
             accessor: 'assignmentName'
         }, {
             Header: columnNames[1],
-            accessor: 'courseName'
+            accessor: 'courseNumber'
         }, {
             Header: columnNames[2],
             accessor: 'sectionName'
@@ -105,7 +105,7 @@ class ArchivedAssignments extends Component {
                 <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
-                <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseName}</p>
+                <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
                 <br />
                 <button type="submit">Restore</button>
                 <button type="button" onClick={this.unselectAssignment.bind(this)}>Cancel</button>
