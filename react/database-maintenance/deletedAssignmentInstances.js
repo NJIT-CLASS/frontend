@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TableComponent from '../shared/tableComponent';
+import apiCall from '../shared/apiCall';
 
 class DeletedAssignments extends Component {
 
@@ -13,30 +14,25 @@ class DeletedAssignments extends Component {
     }
 
     componentDidMount() {
-        this.loadTestData();
+        this.loadAssignments();
     }
 
-    loadTestData() {
-        const assignments = [{
-            assignmentId: 5,
-            assignmentName: 'Assignment-1',
-            courseName: 'CS 602',
-            sectionName: '001',
-            semesterName: 'Fall 17'
-        }, {
-            assignmentId: 7,
-            assignmentName: 'Assignment-4',
-            courseName: 'CS 610',
-            sectionName: '002',
-            semesterName: 'Spring 17'
-        }, {
-            assignmentId: 8,
-            assignmentName: 'Assignment-5',
-            courseName: 'CS 631',
-            sectionName: '003',
-            semesterName: 'Spring 18'
-        }];
-        this.setState({ assignments });
+    loadAssignments() {
+        apiCall.get('/displaydeletedinstance', (err, res, body) => {
+            if (res.statusCode == 200) {
+                console.log(body);
+                let assignments = body.DeletedAssignmentInstance.map(instance => {
+                    return {
+                        assignmentId: instance.AssignmentInstanceID,
+                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
+                        courseNumber: instance.Section.Course.Number,
+                        sectionName: instance.Section.Name,
+                        semesterName: instance.Section.Semester.Name
+                    };
+                });
+                this.setState({ assignments });
+            }
+        });
     }
 
     bindButtons(assignments) {

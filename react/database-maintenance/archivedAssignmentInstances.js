@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TableComponent from '../shared/tableComponent';
+import apiCall from '../shared/apiCall';
 
 class ArchivedAssignments extends Component {
 
@@ -13,30 +14,25 @@ class ArchivedAssignments extends Component {
     }
 
     componentDidMount() {
-        this.loadTestData();
+        this.loadAssignments();
     }
 
-    loadTestData() {
-        const assignments = [{
-            assignmentId: 5,
-            assignmentName: 'Assignment-1',
-            courseName: 'CS 602',
-            sectionName: '001',
-            semesterName: 'Fall 17'
-        }, {
-            assignmentId: 7,
-            assignmentName: 'Assignment-4',
-            courseName: 'CS 610',
-            sectionName: '002',
-            semesterName: 'Spring 17'
-        }, {
-            assignmentId: 8,
-            assignmentName: 'Assignment-5',
-            courseName: 'CS 631',
-            sectionName: '003',
-            semesterName: 'Spring 18'
-        }];
-        this.setState({ assignments });
+    loadAssignments() {
+        apiCall.get('/displayarchivedinstance', (err, res, body) => {
+            if (res.statusCode == 200) {
+                console.log(body);
+                let assignments = body.ArchivedAssignmentInstance.map(instance => {
+                    return {
+                        assignmentId: instance.AssignmentInstanceID,
+                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
+                        courseNumber: instance.Section.Course.Number,
+                        sectionName: instance.Section.Name,
+                        semesterName: instance.Section.Semester.Name
+                    };
+                });
+                this.setState({ assignments });
+            }
+        });
     }
 
     bindButtons(assignments) {
@@ -72,11 +68,6 @@ class ArchivedAssignments extends Component {
         console.log(this.state.selectedAssignment);
     }
 
-    deleteAssignment() {
-        console.log('Delete assignment');
-        console.log(this.state.selectedAssignment);
-    }
-
     render() {
         const {strings} = this.props;
         const columnNames = strings.assignmentInstanceArchivedColumns;
@@ -97,9 +88,6 @@ class ArchivedAssignments extends Component {
         }, {
             Header: columnNames[4],
             accessor: 'restoreButton'
-        }, {
-            Header: columnNames[5],
-            accessor: 'deleteButton'
         }];
         const data = this.bindButtons(this.state.assignments);
 
@@ -113,13 +101,13 @@ class ArchivedAssignments extends Component {
         } else {
             const selectedAssignment = this.state.selectedAssignment;
             const type = this.state.type;
-            content = <form onSubmit={type == 'restore' ? this.restoreAssignment.bind(this) : this.deleteAssignment.bind(this)}>
+            content = <form onSubmit={this.restoreAssignment.bind(this)}>
                 <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
                 <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseName}</p>
                 <br />
-                <button type="submit">{type == 'restore' ? 'Restore' : 'Delete'}</button>
+                <button type="submit">Restore</button>
                 <button type="button" onClick={this.unselectAssignment.bind(this)}>Cancel</button>
             </form>;
         }

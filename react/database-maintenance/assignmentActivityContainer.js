@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
 
-import AssignmentActivities from './assignmentActivities';
+import ActiveAssignmentActivities from './activeAssignmentActivities';
 import ArchivedAssignmentActivities from './archivedAssignmentActivities';
 import DeletedAssignmentActivities from './deletedAssignmentActivities';
 import strings from './strings';
@@ -16,7 +16,7 @@ class AssignmentActivityContainer extends Component {
 
     render() {
         return <div>
-            <AssignmentActivities strings={this.props.strings} />
+            <ActiveAssignmentActivities strings={this.props.strings} />
             <ArchivedAssignmentActivities strings={this.props.strings} />
             <DeletedAssignmentActivities strings={this.props.strings} />
         </div>;
