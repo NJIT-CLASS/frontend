@@ -20,7 +20,6 @@ class Assignments extends Component {
     loadAssignments() {
         apiCall.get('/displayactiveinstance', (err, res, body) => {
             if (res.statusCode == 200) {
-                console.log(body);
                 let assignments = body.ActiveAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,

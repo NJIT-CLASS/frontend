@@ -20,7 +20,6 @@ class ArchivedAssignments extends Component {
     loadAssignments() {
         apiCall.get('/displayarchivedinstance', (err, res, body) => {
             if (res.statusCode == 200) {
-                console.log(body);
                 let assignments = body.ArchivedAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
