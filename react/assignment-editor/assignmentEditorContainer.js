@@ -965,24 +965,24 @@ class AssignmentEditorContainer extends React.Component {
         };
         
 
-        // apiCall.post('/assignment/create', options, (err, res, body) => {
-        //     if (err == null && res.statusCode == 200) {
-        //         document.body.scrollTop = document.documentElement.scrollTop = 0;
-        //         showMessage(this.state.Strings.SubmitSuccessMessage);
-        //         this.setState({
-        //             InfoMessage: this.state.Strings.SubmitSuccessMessage,
-        //             InfoMessageType: 'success',
-        //             SubmitButtonShow: false});
-        //     } else {
+        apiCall.post('/assignment/create', options, (err, res, body) => {
+            if (err == null && res.statusCode == 200) {
+                document.body.scrollTop = document.documentElement.scrollTop = 0;
+                showMessage(this.state.Strings.SubmitSuccessMessage);
+                this.setState({
+                    InfoMessage: this.state.Strings.SubmitSuccessMessage,
+                    InfoMessageType: 'success',
+                    SubmitButtonShow: false});
+            } else {
                 
-        //         showMessage(this.state.Strings.ErrorMessage);
-        //         this.setState({
-        //             InfoMessage: this.state.Strings.ErrorMessage,
-        //             InfoMessageType: 'error'
-        //         });
-        //     }
+                showMessage(this.state.Strings.ErrorMessage);
+                this.setState({
+                    InfoMessage: this.state.Strings.ErrorMessage,
+                    InfoMessageType: 'error'
+                });
+            }
 
-        // });
+        });
     }
     ///////////////////////////////////////////////////////////////////////////
     ////////////// Tree Methods //////////////////////////////////////////////
