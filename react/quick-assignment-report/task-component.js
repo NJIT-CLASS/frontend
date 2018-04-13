@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
 
-const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings}) => {
+const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick}) => {
     let showTaskActivity = true;
     if(Filters.Type !== ''){
         showTaskActivity = Filters.Type === TaskActivity[0].TaskActivity.Type;
@@ -11,6 +11,7 @@ const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings}) =>
                                       key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
                                       Filters={Filters}
                                       Strings={Strings}
+                                      onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
 
                                   />;
     });

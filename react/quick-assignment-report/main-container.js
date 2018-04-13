@@ -20,7 +20,8 @@ class QuickAssignmentReport extends Component {
             Strings: strings,
             AssignmentDataLoaded: false,
             sectionInfo: null,
-            sectionInfoLoaded: false
+            sectionInfoLoaded: false,
+            showTaskReallocationForm: false
         };
 
         this.changeFilterType = this.changeFilterType.bind(this);
@@ -139,6 +140,11 @@ class QuickAssignmentReport extends Component {
         });
     }
 
+    onReplaceUserInTaskButtonClick(clickedTaskInstance) {
+        this.taskInstanceToReallocate = clickedTaskInstance;
+        this.setState({ showTaskReallocationForm: true });
+    }
+
     render() {
         if (!this.state.AssignmentDataLoaded) {
             return null;
@@ -152,7 +158,8 @@ class QuickAssignmentReport extends Component {
            <LegendSection Strings={this.state.Strings} />
           <AssignmentComponent Assignment={this.state.AssignmentData}
                                Filters={this.state.Filters}
-                               Strings={this.state.Strings}/>
+                               Strings={this.state.Strings}
+                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.onReplaceUserInTaskButtonClick(clickedTaskInstance)} />
         </div>;
     }
 

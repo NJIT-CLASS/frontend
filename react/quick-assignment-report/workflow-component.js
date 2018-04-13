@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import WorkflowInstanceComponent from './workflow-instance-component';
 
-const WorkflowComponent = ({WorkflowInstances, Structure, WA_ID, Filters, Strings}) => {
+const WorkflowComponent = ({WorkflowInstances, Structure, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick}) => {
     const workflowInstancesArray = Object.keys(WorkflowInstances).map((key)=> {
         return <WorkflowInstanceComponent Workflow={WorkflowInstances[key]}
                                         Structure={Structure}
@@ -10,7 +10,7 @@ const WorkflowComponent = ({WorkflowInstances, Structure, WA_ID, Filters, String
                                         key={`${WA_ID}-${key}`}
                                         Filters={Filters}
                                         Strings={Strings}
-
+                                        onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
                                       />;
     });
 

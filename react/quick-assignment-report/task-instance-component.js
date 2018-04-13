@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
+const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
@@ -54,18 +54,43 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
 
       </div>;
     } else {
-        taskInformation = <a href={link}>
-          <div className="task-type">{TaskActivity.Type}</div>
-          <div> {UserContact.Email} </div>
-          <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-          <div> UserID: {User.UserID} </div>
-          <div>{letters[taskStatus[0]]}</div>
-        </a>;
+        taskInformation = (
+            <div>
+                <div className="task-type">{TaskActivity.Type}</div>
+                <div>{UserContact.Email}</div>
+                <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+                <div>UserID: {User.UserID}</div>
+                <div>{letters[taskStatus[0]]}</div>
+            </div>
+        );
     }
 
-    return (<div className={`task-instance ${colors[taskStatus[0]]}`}>
-      {taskInformation}
-      </div>
+    const isTaskReallocatable = [
+        letters.Incomplete,
+        letters.Late,
+        letters.not_yet_started,
+        letters.started
+    ].includes(letters[taskStatus[0]]);
+
+    const taskInstanceTooltip =
+        <div className="task-instance-tooltip">
+            <a href={`/task/${TaskInstance.TaskInstanceID}`}>
+                Go to task page
+            </a> <br />
+            {isTaskReallocatable ? (
+                <span style={{ color: 'blue', cursor: 'pointer' }}
+                    onClick={() => onReplaceUserInTaskButtonClick(TaskInstance)} >
+                    Replace this user
+                </span>
+            ) : null}
+        </div>;
+
+
+    return (
+        <div className={`task-instance ${colors[taskStatus[0]]}`}>
+            {taskInformation}
+            {taskInstanceTooltip}
+        </div>
     );
 };
 

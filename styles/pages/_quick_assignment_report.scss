@@ -34,13 +34,17 @@
   }
   .task-instance{
     padding: 10px;
-    flex: 0 0 100px;
-    //border:1px solid #bfbfbf;
+    position: relative;
+    min-width: 150px;
 
     .task-type{
       font-size: 18px;
       font-weight: 500;
     }
+
+   &:hover > .task-instance-tooltip {
+       display: block;
+   }
   }
 
   .empty-block-placeholder{
@@ -60,4 +64,30 @@
     flex: 0 1 150px;
   }
 
+  .task-instance-tooltip {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      background-color: #ddd;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: 10px 10px 10px 10px;
+      line-height: 1.6;
+
+      &:hover {
+          display: block;
+      }
+
+      &::after {
+          content: "";
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          margin-left: -10px;
+          border-width: 10px;
+          border-style: solid;
+          border-color: transparent transparent #ddd transparent;
+      }
+  }
 }
