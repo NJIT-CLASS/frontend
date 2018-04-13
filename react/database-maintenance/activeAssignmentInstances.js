@@ -44,18 +44,22 @@ class Assignments extends Component {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
         apiCall.get(`/archiveinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
-            console.log(res.statusCode);
             if (res.statusCode == 201) {
-                console.log('Deleted');
                 this.setState({ selectedAssignment: null });
                 this.props.loadData();
             }
         });
     }
 
-    deleteAssignment() {
-        console.log('Delete assignment');
-        console.log(this.state.selectedAssignment);
+    deleteAssignment(event) {
+        event.preventDefault();
+        const selectedAssignment = this.state.selectedAssignment;
+        apiCall.get(`/removeinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+            if (res.statusCode == 201) {
+                this.setState({ selectedAssignment: null });
+                this.props.loadData();
+            }
+        });
     }
 
     render() {
