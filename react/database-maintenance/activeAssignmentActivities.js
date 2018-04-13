@@ -7,29 +7,9 @@ class Assignments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assignments: [],
             selectedAssignment: null,
             type: null
         };
-    }
-
-    componentDidMount() {
-        this.loadAssignments();
-    }
-
-    loadAssignments() {
-        apiCall.get('/displayactiveactivity', (err, res, body) => {
-            if (res.statusCode == 200) {
-                let assignments = body.ActiveAssignment.map(instance => {
-                    return {
-                        assignmentId: instance.AssignmentID,
-                        assignmentName: instance.DisplayName,
-                        courseNumber: instance.Course.Number
-                    };
-                });
-                this.setState({ assignments });
-            }
-        });
     }
 
     bindButtons(assignments) {
@@ -69,7 +49,7 @@ class Assignments extends Component {
     }
 
     render() {
-        const {strings} = this.props;
+        const { strings, assignments } = this.props;
         const columnNames = strings.assignmentActivityCurrentColumns;
 
         // React Table
@@ -86,7 +66,7 @@ class Assignments extends Component {
             Header: columnNames[3],
             accessor: 'deleteButton'
         }];
-        const data = this.bindButtons(this.state.assignments);
+        const data = this.bindButtons(assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {

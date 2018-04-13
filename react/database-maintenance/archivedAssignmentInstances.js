@@ -48,7 +48,7 @@ class ArchivedAssignments extends Component {
     }
 
     render() {
-        const {strings} = this.props;
+        const { strings, assignments } = this.props;
         const columnNames = strings.assignmentInstanceArchivedColumns;
 
         // React Table
@@ -68,7 +68,7 @@ class ArchivedAssignments extends Component {
             Header: columnNames[4],
             accessor: 'restoreButton'
         }];
-        const data = this.bindButtons(this.props.assignments);
+        const data = this.bindButtons(assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {

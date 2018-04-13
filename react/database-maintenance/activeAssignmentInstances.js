@@ -63,7 +63,7 @@ class Assignments extends Component {
     }
 
     render() {
-        const {strings} = this.props;
+        const { strings, assignments } = this.props;
         const columnNames = strings.assignmentInstanceCurrentColumns;
 
         // React Table
@@ -86,7 +86,7 @@ class Assignments extends Component {
             Header: columnNames[5],
             accessor: 'deleteButton'
         }];
-        const data = this.bindButtons(this.props.assignments);
+        const data = this.bindButtons(assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {

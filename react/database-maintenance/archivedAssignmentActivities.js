@@ -7,29 +7,8 @@ class ArchivedAssignments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assignments: [],
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         };
-    }
-
-    componentDidMount() {
-        this.loadAssignments();
-    }
-
-    loadAssignments() {
-        apiCall.get('/displayarchivedactivity', (err, res, body) => {
-            if (res.statusCode == 200) {
-                let assignments = body.ArchivedAssignment.map(instance => {
-                    return {
-                        assignmentId: instance.AssignmentID,
-                        assignmentName: instance.DisplayName,
-                        courseNumber: instance.Course.Number
-                    };
-                });
-                this.setState({ assignments });
-            }
-        });
     }
 
     bindButtons(assignments) {
@@ -38,22 +17,20 @@ class ArchivedAssignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseNumber: assignment.courseNumber,
-                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'restore')}>Restore</button>
+                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
     }
 
-    selectAssignment(assignment, type) {
+    selectAssignment(assignment) {
         this.setState({
-            selectedAssignment: assignment,
-            type: type
+            selectedAssignment: assignment
         });
     }
 
     unselectAssignment() {
         this.setState({
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         });
     }
 
@@ -63,7 +40,7 @@ class ArchivedAssignments extends Component {
     }
 
     render() {
-        const {strings} = this.props;
+        const { strings, assignments } = this.props;
         const columnNames = strings.assignmentActivityArchivedColumns;
 
         // React Table
@@ -80,7 +57,7 @@ class ArchivedAssignments extends Component {
             Header: columnNames[3],
             accessor: 'deleteButton'
         }];
-        const data = this.bindButtons(this.state.assignments);
+        const data = this.bindButtons(assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {
@@ -91,9 +68,8 @@ class ArchivedAssignments extends Component {
             />;
         } else {
             const selectedAssignment = this.state.selectedAssignment;
-            const type = this.state.type;
             content = <form onSubmit={this.restoreAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
+                <p style={{fontWeight: 'bold'}}>Are you sure you want to restore?</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
                 <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
