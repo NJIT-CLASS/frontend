@@ -49,9 +49,15 @@ class Assignments extends Component {
         });
     }
 
-    deleteAssignment() {
-        console.log('Delete assignment');
-        console.log(this.state.selectedAssignment);
+    deleteAssignment(event) {
+        event.preventDefault();
+        const selectedAssignment = this.state.selectedAssignment;
+        apiCall.get(`/removeactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
+            if (res.statusCode == 201) {
+                this.unselectAssignment();
+                this.props.loadData();
+            }
+        });
     }
 
     render() {
