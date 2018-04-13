@@ -7,31 +7,9 @@ class Assignments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assignments: [],
             selectedAssignment: null,
             type: null
         };
-    }
-
-    componentDidMount() {
-        this.loadAssignments();
-    }
-
-    loadAssignments() {
-        apiCall.get('/displayactiveinstance', (err, res, body) => {
-            if (res.statusCode == 200) {
-                let assignments = body.ActiveAssignmentInstance.map(instance => {
-                    return {
-                        assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
-                        courseNumber: instance.Section.Course.Number,
-                        sectionName: instance.Section.Name,
-                        semesterName: instance.Section.Semester.Name
-                    };
-                });
-                this.setState({ assignments });
-            }
-        });
     }
 
     bindButtons(assignments) {
@@ -62,9 +40,17 @@ class Assignments extends Component {
         });
     }
 
-    archiveAssignment() {
-        console.log('Archive assignment');
-        console.log(this.state.selectedAssignment);
+    archiveAssignment(event) {
+        event.preventDefault();
+        const selectedAssignment = this.state.selectedAssignment;
+        apiCall.get(`/archiveinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+            console.log(res.statusCode);
+            if (res.statusCode == 201) {
+                console.log('Deleted');
+                this.setState({ selectedAssignment: null });
+                this.props.loadData();
+            }
+        });
     }
 
     deleteAssignment() {
@@ -96,7 +82,7 @@ class Assignments extends Component {
             Header: columnNames[5],
             accessor: 'deleteButton'
         }];
-        const data = this.bindButtons(this.state.assignments);
+        const data = this.bindButtons(this.props.assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {

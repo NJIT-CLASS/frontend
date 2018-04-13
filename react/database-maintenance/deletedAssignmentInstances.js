@@ -7,31 +7,9 @@ class DeletedAssignments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assignments: [],
             selectedAssignment: null,
             type: null
         };
-    }
-
-    componentDidMount() {
-        this.loadAssignments();
-    }
-
-    loadAssignments() {
-        apiCall.get('/displayremovedinstance', (err, res, body) => {
-            if (res.statusCode == 200) {
-                let assignments = body.RemovedAssignmentInstance.map(instance => {
-                    return {
-                        assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
-                        courseNumber: instance.Section.Course.Number,
-                        sectionName: instance.Section.Name,
-                        semesterName: instance.Section.Semester.Name
-                    };
-                });
-                this.setState({ assignments });
-            }
-        });
     }
 
     bindButtons(assignments) {
@@ -87,7 +65,7 @@ class DeletedAssignments extends Component {
             Header: columnNames[4],
             accessor: 'restoreButton'
         }];
-        const data = this.bindButtons(this.state.assignments);
+        const data = this.bindButtons(this.props.assignments);
 
         let content;
         if (this.state.selectedAssignment == null) {
