@@ -7,8 +7,7 @@ class ArchivedAssignments extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         };
     }
 
@@ -20,29 +19,32 @@ class ArchivedAssignments extends Component {
                 courseNumber: assignment.courseNumber,
                 sectionName: assignment.sectionName,
                 semesterName: assignment.semesterName,
-                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'restore')}>Restore</button>,
-                deleteButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'delete')}>Delete</button>
+                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
     }
 
-    selectAssignment(assignment, type) {
+    selectAssignment(assignment) {
         this.setState({
-            selectedAssignment: assignment,
-            type: type
+            selectedAssignment: assignment
         });
     }
 
     unselectAssignment() {
         this.setState({
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         });
     }
 
-    restoreAssignment() {
-        console.log('Restore assignment');
-        console.log(this.state.selectedAssignment);
+    restoreAssignment(event) {
+        event.preventDefault();
+        const selectedAssignment = this.state.selectedAssignment;
+        apiCall.get(`/restorearchivedinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+            if (res.statusCode == 201) {
+                this.unselectAssignment();
+                this.props.loadData();
+            }
+        });
     }
 
     render() {
@@ -77,9 +79,8 @@ class ArchivedAssignments extends Component {
             />;
         } else {
             const selectedAssignment = this.state.selectedAssignment;
-            const type = this.state.type;
             content = <form onSubmit={this.restoreAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
+                <p style={{fontWeight: 'bold'}}>Are you sure you want to restore?</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
                 <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
