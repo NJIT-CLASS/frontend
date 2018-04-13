@@ -34,9 +34,15 @@ class DeletedAssignments extends Component {
         });
     }
 
-    restoreAssignment() {
-        console.log('Restore assignment');
-        console.log(this.state.selectedAssignment);
+    restoreAssignment(event) {
+        event.preventDefault();
+        const selectedAssignment = this.state.selectedAssignment;
+        apiCall.get(`/restoreremovedactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
+            if (res.statusCode == 201) {
+                this.unselectAssignment();
+                this.props.loadData();
+            }
+        });
     }
 
     render() {
