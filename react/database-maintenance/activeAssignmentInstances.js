@@ -45,7 +45,7 @@ class Assignments extends Component {
         const selectedAssignment = this.state.selectedAssignment;
         apiCall.get(`/archiveinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
-                this.setState({ selectedAssignment: null });
+                this.unselectAssignment();
                 this.props.loadData();
             }
         });
@@ -56,7 +56,7 @@ class Assignments extends Component {
         const selectedAssignment = this.state.selectedAssignment;
         apiCall.get(`/removeinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
-                this.setState({ selectedAssignment: null });
+                this.unselectAssignment();
                 this.props.loadData();
             }
         });
