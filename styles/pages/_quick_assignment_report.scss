@@ -64,6 +64,21 @@
     flex: 0 1 150px;
   }
 
+  .disabled {
+      color: #ccc;
+  }
+
+  .user-list {
+      td:first-child,
+      th:first-child {
+          min-width: 0;
+      }
+
+      tbody tr:hover {
+          background-color: #f1f9fc;
+      }
+  }
+
   .task-instance-tooltip {
       display: none;
       position: absolute;
@@ -88,6 +103,26 @@
           border-width: 10px;
           border-style: solid;
           border-color: transparent transparent #ddd transparent;
+      }
+  }
+
+  .drag-handle {
+      width: 10px;
+      height: 20px;
+      display: inline-block;
+      line-height: 5px;
+      vertical-align: middle;
+      margin-left: -8px;
+      margin-top: -1.1em;
+      margin-right: .8em;
+      font-size: 12px;
+      font-family: sans-serif;
+      letter-spacing: 2px;
+      color: #888;
+      text-shadow: 1px 0 1px black;
+
+      &::after {
+          content: '.. .. .. .. ..';
       }
   }
 }

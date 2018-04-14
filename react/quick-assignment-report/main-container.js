@@ -5,6 +5,7 @@ import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
 import {flatten} from 'lodash';
+import TaskReallocationForm from './task-reallocation-form';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -140,9 +141,14 @@ class QuickAssignmentReport extends Component {
         });
     }
 
-    onReplaceUserInTaskButtonClick(clickedTaskInstance) {
+    handleReplaceUserInTaskButtonClick(clickedTaskInstance) {
         this.taskInstanceToReallocate = clickedTaskInstance;
         this.setState({ showTaskReallocationForm: true });
+    }
+
+    handleUserReplaced() {
+        this.fetchAssignmentData();
+        this.fetchSectionInfo();
     }
 
     render() {
@@ -159,7 +165,19 @@ class QuickAssignmentReport extends Component {
           <AssignmentComponent Assignment={this.state.AssignmentData}
                                Filters={this.state.Filters}
                                Strings={this.state.Strings}
-                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.onReplaceUserInTaskButtonClick(clickedTaskInstance)} />
+                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.handleReplaceUserInTaskButtonClick(clickedTaskInstance)} />
+
+            {this.state.showTaskReallocationForm &&
+                this.state.sectionInfoLoaded ? (
+                    <TaskReallocationForm
+                        onClose={() => this.setState({showTaskReallocationForm: false})}
+                        taskInstance={this.taskInstanceToReallocate}
+                        users={this.state.sectionInfo.users}
+                        volunteerIDs={this.state.sectionInfo.volunteerIDs}
+                        onUserReplaced={() => this.handleUserReplaced()}
+                    />
+                ) : null}
+
         </div>;
     }
 
