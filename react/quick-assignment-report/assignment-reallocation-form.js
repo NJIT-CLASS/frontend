@@ -360,17 +360,17 @@ class AssignmentReallocationForm extends Component {
                 >
                     <CollapsableBlock Title="Select Users to Remove">
                         {removeFromOngoingAssignmentsSection}
-                        <br /> <hr /> <br />
+                        <hr />
                         {makeInactiveSection}
-                        <br /> <hr /> <br />
+                        <hr />
                         {userRemovalsSection}
                     </CollapsableBlock>
 
                     <CollapsableBlock Title="Select Replacement Users">
                         {extraCreditSection}
-                        <br /> <hr /> <br />
+                        <hr />
                         {replacementPoolsSection}
-                        <br /> <hr /> <br />
+                        <hr />
                         {fallbackReplacementSection}
                     </CollapsableBlock>
                     <br />

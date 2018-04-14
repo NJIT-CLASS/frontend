@@ -260,11 +260,11 @@ class TaskReallocationForm extends Component {
                     width={'680px'}
                 >
                     {replaceUserInSection}
-                    <br /> <hr /> <br />
+                    <hr />
                     {extraCreditSection}
-                    <br /> <hr /> <br />
+                    <hr />
                     {replacementPoolsSection}
-                    <br /> <hr /> <br />
+                    <hr />
                     {fallbackReplacementSection}
                     <br />
                     {buttons}
