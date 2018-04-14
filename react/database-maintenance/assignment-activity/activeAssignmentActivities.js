@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import TableComponent from '../shared/tableComponent';
-import apiCall from '../shared/apiCall';
+import TableComponent from '../../shared/tableComponent';
+import apiCall from '../../shared/apiCall';
 
 class Assignments extends Component {
 
@@ -18,8 +18,6 @@ class Assignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseNumber: assignment.courseNumber,
-                sectionName: assignment.sectionName,
-                semesterName: assignment.semesterName,
                 archiveButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'archive')}>Archive</button>,
                 deleteButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'delete')}>Delete</button>
             };
@@ -43,7 +41,7 @@ class Assignments extends Component {
     archiveAssignment(event) {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/archiveinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+        apiCall.get(`/archiveactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
                 this.unselectAssignment();
                 this.props.loadData();
@@ -54,7 +52,7 @@ class Assignments extends Component {
     deleteAssignment(event) {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/removeinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+        apiCall.get(`/removeactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
                 this.unselectAssignment();
                 this.props.loadData();
@@ -64,7 +62,7 @@ class Assignments extends Component {
 
     render() {
         const { strings, assignments } = this.props;
-        const columnNames = strings.assignmentInstanceCurrentColumns;
+        const columnNames = strings.assignmentActivityCurrentColumns;
 
         // React Table
         const columns = [{
@@ -75,15 +73,9 @@ class Assignments extends Component {
             accessor: 'courseNumber'
         }, {
             Header: columnNames[2],
-            accessor: 'sectionName'
-        }, {
-            Header: columnNames[3],
-            accessor: 'semesterName'
-        }, {
-            Header: columnNames[4],
             accessor: 'archiveButton'
         }, {
-            Header: columnNames[5],
+            Header: columnNames[3],
             accessor: 'deleteButton'
         }];
         const data = this.bindButtons(assignments);

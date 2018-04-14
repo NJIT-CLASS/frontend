@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import TableComponent from '../shared/tableComponent';
-import apiCall from '../shared/apiCall';
+import TableComponent from '../../shared/tableComponent';
+import apiCall from '../../shared/apiCall';
 
-class Assignments extends Component {
+class DeletedAssignments extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         };
     }
 
@@ -18,41 +17,27 @@ class Assignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseNumber: assignment.courseNumber,
-                archiveButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'archive')}>Archive</button>,
-                deleteButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment, 'delete')}>Delete</button>
+                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
     }
 
-    selectAssignment(assignment, type) {
+    selectAssignment(assignment) {
         this.setState({
-            selectedAssignment: assignment,
-            type: type
+            selectedAssignment: assignment
         });
     }
 
     unselectAssignment() {
         this.setState({
-            selectedAssignment: null,
-            type: null
+            selectedAssignment: null
         });
     }
 
-    archiveAssignment(event) {
+    restoreAssignment(event) {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/archiveactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
-            if (res.statusCode == 201) {
-                this.unselectAssignment();
-                this.props.loadData();
-            }
-        });
-    }
-
-    deleteAssignment(event) {
-        event.preventDefault();
-        const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/removeactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
+        apiCall.get(`/restoreremovedactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
                 this.unselectAssignment();
                 this.props.loadData();
@@ -62,7 +47,7 @@ class Assignments extends Component {
 
     render() {
         const { strings, assignments } = this.props;
-        const columnNames = strings.assignmentActivityCurrentColumns;
+        const columnNames = strings.assignmentActivityDeletedColumns;
 
         // React Table
         const columns = [{
@@ -73,10 +58,7 @@ class Assignments extends Component {
             accessor: 'courseNumber'
         }, {
             Header: columnNames[2],
-            accessor: 'archiveButton'
-        }, {
-            Header: columnNames[3],
-            accessor: 'deleteButton'
+            accessor: 'restoreButton'
         }];
         const data = this.bindButtons(assignments);
 
@@ -89,21 +71,20 @@ class Assignments extends Component {
             />;
         } else {
             const selectedAssignment = this.state.selectedAssignment;
-            const type = this.state.type;
-            content = <form onSubmit={type == 'archive' ? this.archiveAssignment.bind(this) : this.deleteAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
+            content = <form onSubmit={this.restoreAssignment.bind(this)}>
+                <p style={{fontWeight: 'bold'}}>Are you sure you want to restore?</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
                 <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
                 <br />
-                <button type="submit">{type == 'archive' ? 'Archive' : 'Delete'}</button>
+                <button type="submit">Restore</button>
                 <button type="button" onClick={this.unselectAssignment.bind(this)}>Cancel</button>
             </form>;
         }
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.currentTableTitle}</h2>
+                <h2 className="title">{strings.deletedTableTitle}</h2>
                 <div className="section-content">
                     {content}
                 </div>
@@ -112,4 +93,4 @@ class Assignments extends Component {
     }
 }
 
-export default Assignments;
+export default DeletedAssignments;

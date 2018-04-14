@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 
-import AssignmentInstanceContainer from './assignmentInstanceContainer';
-import AssignmentActivityContainer from './assignmentActivityContainer';
+import AssignmentInstanceContainer from './assignment-instance/assignmentInstanceContainer';
+import AssignmentActivityContainer from './assignment-activity/assignmentActivityContainer';
 import strings from './strings';
     
 class DatabaseMaintenanceContainer extends Component {

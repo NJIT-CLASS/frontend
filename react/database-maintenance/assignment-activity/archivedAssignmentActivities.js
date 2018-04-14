@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import TableComponent from '../shared/tableComponent';
-import apiCall from '../shared/apiCall';
+import TableComponent from '../../shared/tableComponent';
+import apiCall from '../../shared/apiCall';
 
 class ArchivedAssignments extends Component {
 
@@ -17,8 +17,6 @@ class ArchivedAssignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseNumber: assignment.courseNumber,
-                sectionName: assignment.sectionName,
-                semesterName: assignment.semesterName,
                 restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
@@ -39,7 +37,7 @@ class ArchivedAssignments extends Component {
     restoreAssignment(event) {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/restorearchivedinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
+        apiCall.get(`/restorearchivedactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
                 this.unselectAssignment();
                 this.props.loadData();
@@ -49,7 +47,7 @@ class ArchivedAssignments extends Component {
 
     render() {
         const { strings, assignments } = this.props;
-        const columnNames = strings.assignmentInstanceArchivedColumns;
+        const columnNames = strings.assignmentActivityArchivedColumns;
 
         // React Table
         const columns = [{
@@ -60,12 +58,6 @@ class ArchivedAssignments extends Component {
             accessor: 'courseNumber'
         }, {
             Header: columnNames[2],
-            accessor: 'sectionName'
-        }, {
-            Header: columnNames[3],
-            accessor: 'semesterName'
-        }, {
-            Header: columnNames[4],
             accessor: 'restoreButton'
         }];
         const data = this.bindButtons(assignments);

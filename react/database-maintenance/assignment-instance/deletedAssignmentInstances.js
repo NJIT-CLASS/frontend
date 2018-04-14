@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import TableComponent from '../shared/tableComponent';
-import apiCall from '../shared/apiCall';
+import TableComponent from '../../shared/tableComponent';
+import apiCall from '../../shared/apiCall';
 
 class DeletedAssignments extends Component {
 

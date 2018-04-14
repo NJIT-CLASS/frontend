@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import apiCall from '../shared/apiCall';
+import apiCall from '../../shared/apiCall';
 
 import ActiveAssignmentInstances from './activeAssignmentInstances';
 import ArchivedAssignmentInstances from './archivedAssignmentInstances';
 import DeletedAssignmentInstances from './deletedAssignmentInstances';
-import strings from './strings';
+import strings from '../strings';
     
 class AssignmentInstanceContainer extends Component {
     

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import TableComponent from '../shared/tableComponent';
-import apiCall from '../shared/apiCall';
+import TableComponent from '../../shared/tableComponent';
+import apiCall from '../../shared/apiCall';
 
-class DeletedAssignments extends Component {
+class ArchivedAssignments extends Component {
 
     constructor(props) {
         super(props);
@@ -17,6 +17,8 @@ class DeletedAssignments extends Component {
                 assignmentId: assignment.assignmentId,
                 assignmentName: assignment.assignmentName,
                 courseNumber: assignment.courseNumber,
+                sectionName: assignment.sectionName,
+                semesterName: assignment.semesterName,
                 restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
@@ -37,7 +39,7 @@ class DeletedAssignments extends Component {
     restoreAssignment(event) {
         event.preventDefault();
         const selectedAssignment = this.state.selectedAssignment;
-        apiCall.get(`/restoreremovedactivity/${selectedAssignment.assignmentId}`, (err, res, body) => {
+        apiCall.get(`/restorearchivedinstance/${selectedAssignment.assignmentId}`, (err, res, body) => {
             if (res.statusCode == 201) {
                 this.unselectAssignment();
                 this.props.loadData();
@@ -47,7 +49,7 @@ class DeletedAssignments extends Component {
 
     render() {
         const { strings, assignments } = this.props;
-        const columnNames = strings.assignmentActivityDeletedColumns;
+        const columnNames = strings.assignmentInstanceArchivedColumns;
 
         // React Table
         const columns = [{
@@ -58,6 +60,12 @@ class DeletedAssignments extends Component {
             accessor: 'courseNumber'
         }, {
             Header: columnNames[2],
+            accessor: 'sectionName'
+        }, {
+            Header: columnNames[3],
+            accessor: 'semesterName'
+        }, {
+            Header: columnNames[4],
             accessor: 'restoreButton'
         }];
         const data = this.bindButtons(assignments);
@@ -84,7 +92,7 @@ class DeletedAssignments extends Component {
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.deletedTableTitle}</h2>
+                <h2 className="title">{strings.archivedTableTitle}</h2>
                 <div className="section-content">
                     {content}
                 </div>
@@ -93,4 +101,4 @@ class DeletedAssignments extends Component {
     }
 }
 
-export default DeletedAssignments;
+export default ArchivedAssignments;
