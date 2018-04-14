@@ -6,6 +6,7 @@ import strings from './strings';
 import apiCall from '../shared/apiCall';
 import {flatten} from 'lodash';
 import TaskReallocationForm from './task-reallocation-form';
+import AssignmentReallocationForm from './assignment-reallocation-form';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class QuickAssignmentReport extends Component {
             AssignmentDataLoaded: false,
             sectionInfo: null,
             sectionInfoLoaded: false,
+            showAssignmentReallocationForm: false,
             showTaskReallocationForm: false
         };
 
@@ -157,6 +159,12 @@ class QuickAssignmentReport extends Component {
         }
 
         return <div className="quick-assignment-report" >
+          <button
+              type="button"
+              onClick={() => this.setState({showAssignmentReallocationForm: true})}
+          >
+              {'Remove and replace users in the entire assignment'}
+          </button>
           <FilterSection Filters={this.state.Filters} changeFilterStatus={this.changeFilterStatus}
              changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType}
              Strings={this.state.Strings}
@@ -172,8 +180,17 @@ class QuickAssignmentReport extends Component {
                     <TaskReallocationForm
                         onClose={() => this.setState({showTaskReallocationForm: false})}
                         taskInstance={this.taskInstanceToReallocate}
-                        users={this.state.sectionInfo.users}
-                        volunteerIDs={this.state.sectionInfo.volunteerIDs}
+                        sectionInfo={this.state.sectionInfo}
+                        onUserReplaced={() => this.handleUserReplaced()}
+                    />
+                ) : null}
+
+            {this.state.showAssignmentReallocationForm &&
+            this.state.sectionInfoLoaded ? (
+                    <AssignmentReallocationForm
+                        onClose={() => this.setState({showAssignmentReallocationForm: false})}
+                        AssignmentID={this.props.AssignmentID}
+                        sectionInfo={this.state.sectionInfo}
                         onUserReplaced={() => this.handleUserReplaced()}
                     />
                 ) : null}

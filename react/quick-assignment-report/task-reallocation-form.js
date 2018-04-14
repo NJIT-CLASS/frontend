@@ -14,16 +14,17 @@ class TaskReallocationForm extends Component {
 
     getDefaultState() {
         const currentlyAssignedUserID = this.props.taskInstance.User.UserID;
-        const defaultFallbackID = this.props.users.find(
+        const users = this.props.sectionInfo.users
+            .map(user => ({
+                ...user,
+                selectedAsReplacement: false,
+                selectedForRemoval: false
+            }));
+        const defaultFallbackID = users.find(
             user => user.role === 'Instructor'
         ).id;
         const mustSpecifyFallback =
             defaultFallbackID === currentlyAssignedUserID;
-        const users = this.props.users.map(user => ({
-            ...user,
-            selectedAsReplacement: false,
-            selectedForRemoval: false
-        }));
         users.find(
             user => user.id === currentlyAssignedUserID
         ).selectedForRemoval = true;
@@ -65,7 +66,7 @@ class TaskReallocationForm extends Component {
             .filter(user => user.active && user.role === 'Student')
             .map(user => user.id);
 
-        const volunteerIDs = this.props.volunteerIDs;
+        const volunteerIDs = this.props.sectionInfo.volunteerIDs;
 
         const specificIDs = this.state.users
             .filter(user => user.selectedAsReplacement && user.active)
