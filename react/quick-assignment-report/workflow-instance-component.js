@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskComponent from './task-component';
 
-const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick}) => {
+const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick}) => {
     let showWorkflow = true;
     if(Filters.WorkflowID !== ''){
         showWorkflow = WI_ID === Filters.WorkflowID;
@@ -15,6 +15,7 @@ const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, 
                             Filters={Filters}
                             Strings={Strings}
                             onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
+                            onMoreInformationButtonClick={onMoreInformationButtonClick}
                           />;
     });
 

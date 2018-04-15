@@ -7,6 +7,7 @@ import apiCall from '../shared/apiCall';
 import {flatten} from 'lodash';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
+import MoreInformation from './more-information';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -24,7 +25,8 @@ class QuickAssignmentReport extends Component {
             sectionInfo: null,
             sectionInfoLoaded: false,
             showAssignmentReallocationForm: false,
-            showTaskReallocationForm: false
+            showTaskReallocationForm: false,
+            showMoreInformation: false
         };
 
         this.changeFilterType = this.changeFilterType.bind(this);
@@ -148,6 +150,11 @@ class QuickAssignmentReport extends Component {
         this.setState({ showTaskReallocationForm: true });
     }
 
+    handleMoreInformationButtonClick(clickedTaskInstance) {
+        this.clickedTaskInstance = clickedTaskInstance;
+        this.setState({ showMoreInformation: true });
+    }
+
     handleUserReplaced() {
         this.fetchAssignmentData();
         this.fetchSectionInfo();
@@ -173,7 +180,9 @@ class QuickAssignmentReport extends Component {
           <AssignmentComponent Assignment={this.state.AssignmentData}
                                Filters={this.state.Filters}
                                Strings={this.state.Strings}
-                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.handleReplaceUserInTaskButtonClick(clickedTaskInstance)} />
+                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.handleReplaceUserInTaskButtonClick(clickedTaskInstance)}
+                               onMoreInformationButtonClick={clickedTaskInstance => this.handleMoreInformationButtonClick(clickedTaskInstance)}
+            />
 
             {this.state.showTaskReallocationForm &&
                 this.state.sectionInfoLoaded ? (
@@ -194,6 +203,15 @@ class QuickAssignmentReport extends Component {
                         onUserReplaced={() => this.handleUserReplaced()}
                     />
                 ) : null}
+
+            {this.state.showMoreInformation ? (
+                <MoreInformation
+                    onClose={() => this.setState({showMoreInformation: false})}
+                    taskInstance={this.clickedTaskInstance}
+                    sectionInfo={this.state.sectionInfo}
+                />
+            ) : null}
+
 
         </div>;
     }

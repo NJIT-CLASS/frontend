@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick }) => {
+const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
@@ -77,6 +77,10 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
             <a href={`/task/${TaskInstance.TaskInstanceID}`}>
                 Go to task page
             </a> <br />
+            <span style={{ color: 'blue', cursor: 'pointer' }}
+                onClick={() => onMoreInformationButtonClick(TaskInstance)} >
+                More Information
+            </span> <br />
             {isTaskReallocatable ? (
                 <span style={{ color: 'blue', cursor: 'pointer' }}
                     onClick={() => onReplaceUserInTaskButtonClick(TaskInstance)} >
