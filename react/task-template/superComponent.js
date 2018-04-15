@@ -140,12 +140,18 @@ class SuperComponent extends React.Component {
             //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
                 if (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') {
+                    showMessage(this.props.Strings.MissingJustification);
+                    console.log('Empty Justification at ' + i);
                     return false;
+
                 }
             }
 
             //checks for blank response
-            if (this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') {
+            if (this.state.TaskResponse[i][0] === null || this.state.TaskResponse[i][0] === '') {
+                showMessage(this.props.Strings.MissingResponse);
+                console.log('Empty Response at ' + i);
+                
                 return false;
             }
 
@@ -153,16 +159,18 @@ class SuperComponent extends React.Component {
             if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || 
             (( this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment') && (this.state.TaskActivityFields[i].assessment_type == 'grade' || this.state.TaskActivityFields[i].assessment_type == 'rating'))) ) {
                 if (isNaN(this.state.TaskResponse[i][0])) {
-                    console.log(this.state.TaskResponse[i][0], this.state.TaskActivityFields[i]);
+                    showMessage(this.props.Strings.IsNanResponse);
                     console.log('isNan error');
                     return false;
                 }
                 if (this.state.TaskResponse[i][0] < parseInt(this.state.TaskActivityFields[i].numeric_min) || this.state.TaskResponse[i][0] > parseInt(this.state.TaskActivityFields[i].numeric_max)) {
+                    showMessage(this.props.Strings.MinMaxResponse);
                     console.log('min max error');
                     return false;
                 }
             }
             else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+                showMessage(this.props.Strings.StringLengthResponse);
                 console.log('strin length error');
                 return false;
             }
@@ -171,10 +179,11 @@ class SuperComponent extends React.Component {
 
         if (this.props.FileUpload.mandatory > 0) {
             if (!this.state.FileUploadsSatisfied) {
+                showMessage(this.props.Strings.InsufficientFileErrorMessage);
+                console.log('Files missing');
                 return false;
             }
         }
-
         return true;
     }
 
@@ -194,7 +203,6 @@ class SuperComponent extends React.Component {
         };
 
         apiCall.post('/taskInstanceTemplate/create/save', options, (err, res, body) => {
-            console.log(res, body);
             if (res.statusCode != 200) {
                 showMessage(this.props.Strings.InputErrorMessage);
             } else {
@@ -221,55 +229,62 @@ class SuperComponent extends React.Component {
             return;
         }
 
-        //check if submit is in progress
-        if (this.state.LockSubmit) {
-            return;
-        }
-
-        // check if input is valid
-        const validData = this.isValidData();
-        if (validData) {
-            const options = {
-                taskInstanceid: this.props.TaskID,
-                userid: this.props.UserID,
-                taskInstanceData: this.state.TaskResponse,
-            };
-            this.setState({
-                LockSubmit: true
-            });
-            apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
-                console.log(body);
-                if (res.statusCode != 200) {
-                    this.setState({
-                        InputError: true,
-                        LockSubmit: false
-                    });
-                    showMessage(this.props.Strings.InputErrorMessage);
-                    
-                } else {
-                    this.setState({
-                        TaskStatus: 'Complete',
-                        SubmitSuccess: true
-                    });
-
-                    showMessage(this.props.Strings.SubmitSuccessMessage);
-                    setTimeout(()=>{
-                        window.location.replace('/');
-                    }, 1000);
-
-                }
-            });
-        } else {
-            this.setState({
-                LockSubmit: false
-            });
-
-            if (!this.state.FileUploadsSatisfied) {
-                showMessage(this.props.Strings.InsufficientFileErrorMessage);
-            } else {
-                showMessage(this.props.Strings.InputErrorMessage);
+        try{
+            //check if submit is in progress
+            if (this.state.LockSubmit) {
+                return;
             }
+
+            // check if input is valid
+            const validData = this.isValidData();
+            if (validData) {
+                const options = {
+                    taskInstanceid: this.props.TaskID,
+                    userid: this.props.UserID,
+                    taskInstanceData: this.state.TaskResponse,
+                };
+                this.setState({
+                    LockSubmit: true
+                });
+                apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
+                    if(err){
+                        showMessage('There was an error submitting your response');
+                        this.setState({
+                            InputError: true,
+                            LockSubmit: false
+                        });
+                    }
+                    if (res.statusCode != 200) {
+                        this.setState({
+                            InputError: true,
+                            LockSubmit: false
+                        });
+                        showMessage(this.props.Strings.InputErrorMessage);
+                    
+                    } else {
+                        this.setState({
+                            TaskStatus: 'Complete',
+                            SubmitSuccess: true
+                        });
+
+                        showMessage(this.props.Strings.SubmitSuccessMessage);
+                        setTimeout(()=>{
+                            window.location.replace('/');
+                        }, 1000);
+
+                    }
+                });
+            } else {
+                this.setState({
+                    LockSubmit: false
+                });
+
+               
+            }
+        } catch(e){
+            console.log(this.props.Strings.InputErrorMessage,e);
         }
+       
     }
 
 
