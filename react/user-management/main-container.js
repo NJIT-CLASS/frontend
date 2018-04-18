@@ -63,7 +63,7 @@ class UserManagementContainer extends Component{
 
     changeBlockedStatus(userID, email, isBlocked){
 
-        var endpoint = isBlocked ? '/usermanagement/unblocked/' : '/usermanagement/blocked/';
+        var endpoint = isBlocked ? '/userManagement/unblocked/' : '/userManagement/blocked/';
 
         apiCall.getAsync(endpoint+userID,{}).then(body => {
             if(body.status === 200){

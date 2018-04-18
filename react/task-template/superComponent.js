@@ -772,7 +772,7 @@ class SuperComponent extends React.Component {
                     </div>
                     <Editor
                         key={idx + 100}
-                        initialvalue={latestVersion[idx][1]}
+                        initialValue={latestVersion[idx][1]}
                         init={tinymceOptions}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                     />
@@ -858,7 +858,7 @@ class SuperComponent extends React.Component {
             case 'text':
                 fieldInput = (<Editor
                     key={idx}
-                    initialvalue={latestVersion[idx][0]}
+                    initialValue={latestVersion[idx][0]}
                     init={tinymceOptions}
                     onChange={this.handleContentChange.bind(this, idx)}
                 />);

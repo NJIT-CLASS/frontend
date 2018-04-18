@@ -9,7 +9,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: false,
-        roles: ROLES.TEACHER,
+        roles: ROLES.ADMIN,
         loggedOut: false
 
     },
