@@ -58,7 +58,7 @@ class UserManagementContainer extends Component{
     }
 
     fetchUsers(){
-        apiCall.getAsync('/usermanagement',{}).then(body => {
+        apiCall.getAsync('/userManagement',{}).then(body => {
             this.componentData.users = body.data.Assignments;
             this.fetchOrganizations();
         });
@@ -78,7 +78,7 @@ class UserManagementContainer extends Component{
 
     changeBlockedStatus(userID, email, isBlocked){
 
-        var endpoint = isBlocked ? '/usermanagement/unblocked/' : '/usermanagement/blocked/';
+        var endpoint = isBlocked ? '/userManagement/unblocked/' : '/userManagement/blocked/';
 
         apiCall.getAsync(endpoint+userID,{}).then(body => {
             if(body.status === 200){

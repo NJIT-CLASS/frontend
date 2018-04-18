@@ -63,7 +63,6 @@ class TemplateContainer extends React.Component {
             BoxHide: false
         };
 
-        console.log(props.UserType, props.Admin);
     }
 
     unflattenTreeStructure(flatTreeString) {
@@ -199,16 +198,12 @@ class TemplateContainer extends React.Component {
 
                                 apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
                                     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                                    console.log(reviseBod);
                                     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
                                         return node.model.id === currentTask.TaskActivity.TaskActivityID;
                                     });
 
-                                    console.log('Revision: currentTask', currentTaskNode);
                                     if (currentTaskNode.children !== undefined && currentTaskNode.children[2] !== undefined) {
-                                        console.log('Revision: first child', currentTaskNode.children[2] !== undefined);
                                         if (currentTaskNode.children[2].children !== undefined && currentTaskNode.children[2].children[2]) {
-                                            console.log('Revision: second child: ', currentTaskNode.children[2].children[2]);
                                             this.setState({
                                                 IsRevision: true
                                             });
@@ -235,7 +230,6 @@ class TemplateContainer extends React.Component {
 
                             apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
                                 reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                                //console.log(reviseBod);
                                 let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
                                     return node.model.id === currentTask.TaskActivity.TaskActivityID;
                                 });
@@ -252,12 +246,15 @@ class TemplateContainer extends React.Component {
                                 } else {
                                     possibleEditTask = null;
                                 }
+
+
                                 if (possibleEditTask === null) {
                                     this.setState({
                                         IsRevision: false
                                     });
                                 } else {
-                                    let possibleEditData = reviseBod.Workflow[editIndex].TaskActivity;
+                                    let possibleEditInstanceId =  Object.keys(reviseBod.Workflow).find(x => reviseBod.Workflow[x].TaskActivityID == editIndex);
+                                    let possibleEditData = reviseBod.Workflow[possibleEditInstanceId].TaskActivity;
                                     if ([TASK_TYPES.COMMENT].includes(possibleEditData.Type)) {
                                         if (possibleEditData.AllowRevision === true) {
                                             this.setState({
@@ -275,25 +272,24 @@ class TemplateContainer extends React.Component {
                                         });
                                     }
                                 }
-                                console.log(currentTaskNode);
 
                             });
                         }
                         // apiCall.get(`/getWorkflow/${this.props.TaskID}`, (err, res, reviseBod) => {
                         //     reviseBod.WorkflowTree = this.unflattenTreeStructure(reviseBod.WorkflowTree);
-                        //         //console.log(reviseBod);
+                        //         //
                         //     let currentTaskNode = reviseBod.WorkflowTree.first((node) => {
                         //         return node.model.id === parseInt(this.props.TaskID);
                         //     });
 
-                        //     console.log(currentTaskNode);
+                        //     
 
                         // });
                     }
 
 
-                    console.log('tasklist', taskList);
 
+                    console.log('tasklist', taskList);
 
                     this.setState({
                         Loaded: true,
@@ -311,7 +307,7 @@ class TemplateContainer extends React.Component {
                         CommentsTaskList: commentsTaskList,
                     });
                     this.createCommentList();
-                    console.log(commentsTaskList, body.assignment);
+                    
                 });
             });
         });
@@ -323,16 +319,16 @@ class TemplateContainer extends React.Component {
                 this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
             }
             else {
-                console.log('No comment ID data received.');
+                
             }
         });
     }
 
     getCommentData(target, ID, type) {
-        console.log(this.state.CommentTargetList[this.state.CommentTarget].Target, target, this.state.CommentTargetList[this.state.CommentTarget].ID, ID);
+        
         if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
             apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-                console.log('Comment data fetched');
+                
                 let list = [];
                 if (body != undefined ) {
                     for (let com of body.Comments) {
@@ -343,7 +339,7 @@ class TemplateContainer extends React.Component {
                     });
                 }
                 else {
-                    console.log('No comment data received.');
+                    
                     this.setState({
                         commentList: list
                     });
@@ -401,7 +397,7 @@ class TemplateContainer extends React.Component {
 
     showSingleComment() {
         let commentsID = this.getQS('commentsID');
-        console.log('showSingleComment called');
+        
         if (commentsID != undefined) {
             this.setState({EmphasizeID: commentsID});
         }
@@ -464,7 +460,6 @@ class TemplateContainer extends React.Component {
                 show = i.value;
             }
         }
-        console.log('show', show);
         this.setState({CommentTarget: show, TabSelected: tab});
         this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
