@@ -34,7 +34,7 @@ class AssignmentInstanceContainer extends Component {
                 let activeAssignmentInstances = body.ActiveAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
+                        assignmentName: instance.AssignmentInstanceID,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
                         semesterName: instance.Section.Semester.Name
@@ -51,7 +51,7 @@ class AssignmentInstanceContainer extends Component {
                 let archivedAssignmentInstances = body.ArchivedAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
+                        assignmentName: instance.Assignment != null ? instance.Assignment.DisplayName : instance.ArchivedAssignment != null ? instance.ArchivedAssignment.DisplayName : instance.AssignmentInstanceID,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
                         semesterName: instance.Section.Semester.Name
@@ -68,7 +68,7 @@ class AssignmentInstanceContainer extends Component {
                 let deletedAssignmentInstances = body.RemovedAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: 'AssignmentInstanceID' + instance.AssignmentInstanceID,
+                        assignmentName: instance.Assignment != null ? instance.Assignment.DisplayName : instance.RemovedAssignment != null ? instance.RemovedAssignment.DisplayName : instance.AssignmentInstanceID,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
                         semesterName: instance.Section.Semester.Name

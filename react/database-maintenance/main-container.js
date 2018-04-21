@@ -29,7 +29,7 @@ class DatabaseMaintenanceContainer extends Component {
     }
 
     render() { 
-        let {Strings, selectedCategory} = this.state;
+        let { Strings, selectedCategory } = this.state;
 
         let categoryContainer;
         if (selectedCategory == 'assignment-activity') {
