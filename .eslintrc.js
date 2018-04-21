@@ -33,7 +33,7 @@ module.exports = {
             "always"
         ],
         "no-alert": 1,
-        "no-debugger": 1,
+        "no-debugger": 0,
         "no-dupe-args": 1,
         "no-dupe-keys": 1,
         "no-unreachable": 1

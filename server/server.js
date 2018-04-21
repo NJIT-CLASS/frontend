@@ -97,7 +97,6 @@ app.post('/api/generalCall', (req, res) => {
     let endpoint = `${req.body.endpoint}`;
     delete postVars.endpoint;
     req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        console.log(endpoint, 'Response: ', statusCode);
         res.status(statusCode).json(body);
         res.end();
 
