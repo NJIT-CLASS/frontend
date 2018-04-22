@@ -12,12 +12,12 @@ const LegendSection = ({Strings}) => {
     };
 
     const letters = {
-        Incomplete: '(I)',
+        Incomplete: '(O)',
         complete: '(C)',
-        Late: '(!)',
+        Late: '(L)',
         'Not Needed': '(X)',
-        not_yet_started: '(NS)',
-        started: '(S)',
+        not_yet_started: '(NP)',
+        started: '(P)',
         bypassed: '(B)',
         automatic: '(A)',
     };

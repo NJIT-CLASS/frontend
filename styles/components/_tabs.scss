@@ -37,8 +37,20 @@ $break-large: 1200px;
 	width: 100%;
 	
 }
+.react-tabs__tab-panel{
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+.react-tabs__tab-panel--selected{
+	width: initial;
+	height: initial;
+	overflow: initial;
+}
 .react-tabs [role=tab]{
 	width:25%;
+	
 	cursor:pointer;
 	height: 30px;
   border-bottom: none;

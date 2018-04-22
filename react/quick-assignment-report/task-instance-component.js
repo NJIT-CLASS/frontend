@@ -10,8 +10,11 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
+    const DisplayName = TaskActivity.DisplayName;
 
     //from old task status table
+    let isLate = taskStatus.includes('late') ? (taskStatus.includes('complete' ) ? false : true) : false ;
+
     const colors = { Incomplete: 'incomplete',
         complete: 'complete',
         Late: 'late',
@@ -23,12 +26,12 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     };
 
     const letters = {
-        Incomplete: '(I)',
+        Incomplete: '(O)',
         complete: '(C)',
-        Late: '(!)',
+        Late: '(L)',
         'Not Needed': '(X)',
-        not_yet_started: '(NS)',
-        started: '(S)',
+        not_yet_started: '(NP)',
+        started: '(P)',
         automatic: '(A)',
         bypassed: '(B)',
     };
@@ -44,19 +47,30 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
     //hide details if Automatic task
     let taskInformation = null;
-    if(taskStatus[0] === 'automatic'){
+    if(isLate){
+        taskInformation =
+            <div className="task-type">{TaskActivity.Type}</div>
+            	<div> {UserContact.Email} </div>
+            	<div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            	<div> UserID: {User.UserID} </div>
+            	<div>{letters.Late}</div>
+            </div>;
+    }
+    else if(taskStatus[0] === 'automatic'){
         taskInformation = <div>
-        <div className="task-type">{TaskActivity.Type}</div>
-        <div>{taskStatus[0]}</div>
-        <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-        <br />
-        <br />
+          <div className="task-type">{DisplayName}</div>
+          <div>{taskStatus[0]}</div>
+          <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+          <br />
+          <br />
 
-      </div>;
+
+
+        </div>;
     } else {
         taskInformation = (
             <div>
-                <div className="task-type">{TaskActivity.Type}</div>
+                <div className="task-type">{DisplayName}</div>
                 <div>{UserContact.Email}</div>
                 <div>TaskID: {TaskInstance.TaskInstanceID}</div>
                 <div>UserID: {User.UserID}</div>
@@ -91,7 +105,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
 
     return (
-        <div className={`task-instance ${colors[taskStatus[0]]}`}>
+        <div className={`task-instance ${isLate ? 'late' : colors[taskStatus[0]]}`}>
             {taskInformation}
             {taskInstanceTooltip}
         </div>

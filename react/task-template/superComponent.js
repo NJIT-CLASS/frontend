@@ -26,6 +26,32 @@ import { TASK_TYPES } from '../../server/utils/react_constants'; // contains con
 
 import CommentInfoComponent from './commentInfoComponent';
 
+let state = {
+    TaskActivityFields: {
+        field_titles: [],
+    },
+    TaskData: [],
+    TaskResponse: {},
+    ShowRubric: false,
+    FieldRubrics: [],
+    InputError: false,
+    TaskStatus: '',
+    ShowContent: true,
+    Error: false,
+    SaveSuccess: false,
+    SubmitSuccess: false,
+    NumberFilesStored: 0,
+    PassFailValue: null,
+    DisputeStatus: null,
+    FileUploadsSatisfied: false,
+    LockSubmit: false,
+    IsRevision: false,
+    RevisionStatus: false,
+    ShowDisputeModal: true,
+    ShowHistory: false,
+};
+
+
 class SuperComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -39,32 +65,13 @@ class SuperComponent extends React.Component {
             -Rubric
     */
 
-        this.state = {
-            TaskActivityFields: {
-                field_titles: [],
-            },
-            TaskData: [],
-            TaskResponse: {},
-            ShowRubric: false,
-            FieldRubrics: [],
-            InputError: false,
-            TaskStatus: '',
-            ShowContent: true,
-            Error: false,
-            SaveSuccess: false,
-            SubmitSuccess: false,
-            NumberFilesStored: 0,
-            PassFailValue: null,
-            DisputeStatus: null,
-            FileUploadsSatisfied: false,
-            LockSubmit: false,
-            IsRevision: false,
-            RevisionStatus: false,
-            ShowDisputeModal: true,
-            ShowHistory: false,
-        };
+        this.state = state;
 
         this.toggleHistory = this.toggleHistory.bind(this);
+    }
+
+    componentWillUnmount(){
+        state = this.state;
     }
 
     componentWillMount() {
@@ -123,14 +130,7 @@ class SuperComponent extends React.Component {
         });
     }
 
-    fetchNewFileUploads() {
-        return;
-        apiCall.get(`/taskFileReferences/${this.props.TaskID}`, (err, res, body) => {
-            this.setState({
-                NewFilesUploaded: body.Files
-            });
-        });
-    }
+
 
     isValidData() {
         // go through all of TaskData's fields to check if null. If a field requires_justification,
@@ -140,12 +140,18 @@ class SuperComponent extends React.Component {
             //make sure reqiures_justification is satisfied
             if (this.state.TaskActivityFields[i].requires_justification) {
                 if (this.state.TaskResponse[i][1] == null || this.state.TaskResponse[i][1] == '') {
+                    showMessage(this.props.Strings.MissingJustification);
+                    console.log('Empty Justification at ' + i);
                     return false;
+
                 }
             }
 
             //checks for blank response
-            if (this.state.TaskResponse[i][0] == null || this.state.TaskResponse[i][0] == '') {
+            if (this.state.TaskResponse[i][0] === null || this.state.TaskResponse[i][0] === '') {
+                showMessage(this.props.Strings.MissingResponse);
+                console.log('Empty Response at ' + i);
+                
                 return false;
             }
 
@@ -153,16 +159,18 @@ class SuperComponent extends React.Component {
             if (this.state.TaskActivityFields[i] != null && (this.state.TaskActivityFields[i].field_type == 'numeric' || 
             (( this.state.TaskActivityFields[i].field_type == 'assessment' || this.state.TaskActivityFields[i].field_type == 'self assessment') && (this.state.TaskActivityFields[i].assessment_type == 'grade' || this.state.TaskActivityFields[i].assessment_type == 'rating'))) ) {
                 if (isNaN(this.state.TaskResponse[i][0])) {
-                    console.log(this.state.TaskResponse[i][0], this.state.TaskActivityFields[i]);
+                    showMessage(this.props.Strings.IsNanResponse);
                     console.log('isNan error');
                     return false;
                 }
                 if (this.state.TaskResponse[i][0] < parseInt(this.state.TaskActivityFields[i].numeric_min) || this.state.TaskResponse[i][0] > parseInt(this.state.TaskActivityFields[i].numeric_max)) {
+                    showMessage(this.props.Strings.MinMaxResponse);
                     console.log('min max error');
                     return false;
                 }
             }
             else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+                showMessage(this.props.Strings.StringLengthResponse);
                 console.log('strin length error');
                 return false;
             }
@@ -171,10 +179,11 @@ class SuperComponent extends React.Component {
 
         if (this.props.FileUpload.mandatory > 0) {
             if (!this.state.FileUploadsSatisfied) {
+                showMessage(this.props.Strings.InsufficientFileErrorMessage);
+                console.log('Files missing');
                 return false;
             }
         }
-
         return true;
     }
 
@@ -194,7 +203,6 @@ class SuperComponent extends React.Component {
         };
 
         apiCall.post('/taskInstanceTemplate/create/save', options, (err, res, body) => {
-            console.log(res, body);
             if (res.statusCode != 200) {
                 showMessage(this.props.Strings.InputErrorMessage);
             } else {
@@ -221,55 +229,62 @@ class SuperComponent extends React.Component {
             return;
         }
 
-        //check if submit is in progress
-        if (this.state.LockSubmit) {
-            return;
-        }
-
-        // check if input is valid
-        const validData = this.isValidData();
-        if (validData) {
-            const options = {
-                taskInstanceid: this.props.TaskID,
-                userid: this.props.UserID,
-                taskInstanceData: this.state.TaskResponse,
-            };
-            this.setState({
-                LockSubmit: true
-            });
-            apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
-                console.log(body);
-                if (res.statusCode != 200) {
-                    this.setState({
-                        InputError: true,
-                        LockSubmit: false
-                    });
-                    showMessage(this.props.Strings.InputErrorMessage);
-                    
-                } else {
-                    this.setState({
-                        TaskStatus: 'Complete',
-                        SubmitSuccess: true
-                    });
-
-                    showMessage(this.props.Strings.SubmitSuccessMessage);
-                    setTimeout(()=>{
-                        window.location.replace('/');
-                    }, 1000);
-
-                }
-            });
-        } else {
-            this.setState({
-                LockSubmit: false
-            });
-
-            if (!this.state.FileUploadsSatisfied) {
-                showMessage(this.props.Strings.InsufficientFileErrorMessage);
-            } else {
-                showMessage(this.props.Strings.InputErrorMessage);
+        try{
+            //check if submit is in progress
+            if (this.state.LockSubmit) {
+                return;
             }
+
+            // check if input is valid
+            const validData = this.isValidData();
+            if (validData) {
+                const options = {
+                    taskInstanceid: this.props.TaskID,
+                    userid: this.props.UserID,
+                    taskInstanceData: this.state.TaskResponse,
+                };
+                this.setState({
+                    LockSubmit: true
+                });
+                apiCall.post('/taskInstanceTemplate/create/submit', options, (err, res, body) => {
+                    if(err){
+                        showMessage('There was an error submitting your response');
+                        this.setState({
+                            InputError: true,
+                            LockSubmit: false
+                        });
+                    }
+                    if (res.statusCode != 200) {
+                        this.setState({
+                            InputError: true,
+                            LockSubmit: false
+                        });
+                        showMessage(this.props.Strings.InputErrorMessage);
+                    
+                    } else {
+                        this.setState({
+                            TaskStatus: 'Complete',
+                            SubmitSuccess: true
+                        });
+
+                        showMessage(this.props.Strings.SubmitSuccessMessage);
+                        setTimeout(()=>{
+                            window.location.replace('/');
+                        }, 1000);
+
+                    }
+                });
+            } else {
+                this.setState({
+                    LockSubmit: false
+                });
+
+               
+            }
+        } catch(e){
+            console.log(this.props.Strings.InputErrorMessage,e);
         }
+       
     }
 
 
@@ -393,9 +408,11 @@ class SuperComponent extends React.Component {
                 SubmitSuccess: true,
                 LockSubmit: false
             });
-            window.location.replace('/');
 
         });
+
+        window.location.replace('/');
+        
 
     }
 
@@ -523,12 +540,12 @@ class SuperComponent extends React.Component {
         if (!this.props.TaskStatus.includes('complete')) {
             let cancelDisputeView = null;
             if(this.state.DisputeStatus === true){
-                cancelDisputeView = <button type="button" ><i className="fa fa-times-circle"></i>{this.props.Strings.CancelDispute}</button>;
+                cancelDisputeView = <button type="button" onClick={this.cancelDispute.bind(this)} ><i className="fa fa-times-circle"></i>{this.props.Strings.CancelDispute}</button>;
             }
             formButtons = (<div>
                 <br />
                 {cancelDisputeView}
-                <button type="submit"  className="divider" onClick={this.cancelDispute}><i className="fa fa-check" />{this.props.Strings.Submit}</button>
+                <button type="submit"  className="divider" ><i className="fa fa-check" />{this.props.Strings.Submit}</button>
                 {/* <button type="button" className="divider" onClick={this.saveData.bind(this)}>{this.props.Strings.SaveForLater}</button>*/}
             </div>);
         }
@@ -724,7 +741,7 @@ class SuperComponent extends React.Component {
                     rubric_content = (
                         <div key={this.state.TaskActivityFields[idx].title}>
                             <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                                <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
+                            <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
                             
                                 
                         </div>);
@@ -757,7 +774,7 @@ class SuperComponent extends React.Component {
                     <div key={1100}>
                         <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                         <div className="regular-text instructions">
-                        <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
+                            <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
                         </div>
                     </div>
                 );
@@ -765,10 +782,12 @@ class SuperComponent extends React.Component {
 
             if (this.state.TaskActivityFields[idx].requires_justification) {
                 justification = (<div>
-                    <div style={{margin: '5px'}}>{this.state.TaskActivityFields[idx].justification_instructions}</div>
+                    <div style={{margin: '5px'}}>
+                        <MarkupText className="" content={this.state.TaskActivityFields[idx].justification_instructions} />
+                    </div>
                     <Editor
                         key={idx + 100}
-                        initialvalue={latestVersion[idx][1]}
+                        initialValue={latestVersion[idx][1]}
                         init={tinymceOptions}
                         onChange={this.handleJustificationChange.bind(this, idx)}
                     />
@@ -854,7 +873,7 @@ class SuperComponent extends React.Component {
             case 'text':
                 fieldInput = (<Editor
                     key={idx}
-                    initialvalue={latestVersion[idx][0]}
+                    initialValue={latestVersion[idx][0]}
                     init={tinymceOptions}
                     onChange={this.handleContentChange.bind(this, idx)}
                 />);

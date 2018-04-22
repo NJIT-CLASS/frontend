@@ -9,7 +9,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: false,
-        role: ROLES.TEACHER,
+        role: ROLES.ADMIN,
         loggedOut: false
     },
     icon: 'exchange',
