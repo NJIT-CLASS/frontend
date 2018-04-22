@@ -8,6 +8,7 @@ import {flatten} from 'lodash';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
 import MoreInformation from './more-information';
+import RemoveWorkflow from './remove-workflow';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -26,7 +27,13 @@ class QuickAssignmentReport extends Component {
             sectionInfoLoaded: false,
             showAssignmentReallocationForm: false,
             showTaskReallocationForm: false,
-            showMoreInformation: false
+            showMoreInformation: false,
+            // when workflowCancellationMode is true, select boxes appear next to
+            // each workflow instance, the workflow cancellation  buttons show, and 
+            // the 'replace in assignment' button is hidden
+            workflowCancellationMode: false,
+            selectedWorkflowIDs: new Set(),
+            showRemoveWorkflowConfirmation: false
         };
 
         this.changeFilterType = this.changeFilterType.bind(this);
@@ -155,9 +162,29 @@ class QuickAssignmentReport extends Component {
         this.setState({ showMoreInformation: true });
     }
 
-    handleUserReplaced() {
+    refetchData() {
         this.fetchAssignmentData();
         this.fetchSectionInfo();
+    }
+
+    handleWorkflowInstanceSelection(clickedWorkflowID) {
+        this.setState(prevState => {
+            const selectedWorkflowIDs = new Set(prevState.selectedWorkflowIDs);
+            if (selectedWorkflowIDs.has(clickedWorkflowID)) {
+                selectedWorkflowIDs.delete(clickedWorkflowID);
+            } else {
+                selectedWorkflowIDs.add(clickedWorkflowID);
+            }
+            return { selectedWorkflowIDs: selectedWorkflowIDs };
+        });
+    }
+
+    handleWorkflowCancel() {
+        this.setState({
+            workflowCancellationMode: false,
+            selectedWorkflowIDs: new Set()
+        });
+        this.refetchData();
     }
 
     render() {
@@ -165,57 +192,151 @@ class QuickAssignmentReport extends Component {
             return null;
         }
 
-        return <div className="quick-assignment-report" >
-          <button
-              type="button"
-              onClick={() => this.setState({showAssignmentReallocationForm: true})}
-          >
-              {'Remove and replace users in the entire assignment'}
-          </button>
-          <FilterSection Filters={this.state.Filters} changeFilterStatus={this.changeFilterStatus}
-             changeFilterWorkflowID={this.changeFilterWorkflowID} changeFilterType={this.changeFilterType}
-             Strings={this.state.Strings}
-           />
-           <LegendSection Strings={this.state.Strings} />
-          <AssignmentComponent Assignment={this.state.AssignmentData}
-                               Filters={this.state.Filters}
-                               Strings={this.state.Strings}
-                               onReplaceUserInTaskButtonClick={clickedTaskInstance => this.handleReplaceUserInTaskButtonClick(clickedTaskInstance)}
-                               onMoreInformationButtonClick={clickedTaskInstance => this.handleMoreInformationButtonClick(clickedTaskInstance)}
-            />
+        let buttons = null;
+        if (this.state.workflowCancellationMode) {
+            buttons =
+                <div>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                showRemoveWorkflowConfirmation: true
+                            })
+                        }
+                    >
+                        Remove selected problem threads
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                workflowCancellationMode: false
+                            })
+                        }
+                    >
+                        Cancel problem thread removals
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                selectedWorkflowIDs: new Set()
+                            })
+                        }
+                    >
+                        Clear Selections
+                    </button>
+                </div>;
+        } else {
+            buttons =
+                <div>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                showAssignmentReallocationForm: true
+                            })
+                        }
+                        style={{ marginRight: '30px' }}
+                    >
+                        Remove and replace users in the entire assignment
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                workflowCancellationMode: true
+                            })
+                        }
+                    >
+                        Remove problem threads
+                    </button>
+                </div>;
+        }
 
-            {this.state.showTaskReallocationForm &&
-                this.state.sectionInfoLoaded ? (
-                    <TaskReallocationForm
-                        onClose={() => this.setState({showTaskReallocationForm: false})}
-                        taskInstance={this.taskInstanceToReallocate}
-                        sectionInfo={this.state.sectionInfo}
-                        onUserReplaced={() => this.handleUserReplaced()}
-                    />
-                ) : null}
-
-            {this.state.showAssignmentReallocationForm &&
-            this.state.sectionInfoLoaded ? (
-                    <AssignmentReallocationForm
-                        onClose={() => this.setState({showAssignmentReallocationForm: false})}
-                        AssignmentID={this.props.AssignmentID}
-                        sectionInfo={this.state.sectionInfo}
-                        onUserReplaced={() => this.handleUserReplaced()}
-                    />
-                ) : null}
-
-            {this.state.showMoreInformation ? (
-                <MoreInformation
-                    onClose={() => this.setState({showMoreInformation: false})}
-                    taskInstance={this.clickedTaskInstance}
-                    sectionInfo={this.state.sectionInfo}
+        return (
+            <div className="quick-assignment-report">
+                {buttons}
+                <FilterSection
+                    Filters={this.state.Filters}
+                    changeFilterStatus={this.changeFilterStatus}
+                    changeFilterWorkflowID={this.changeFilterWorkflowID}
+                    changeFilterType={this.changeFilterType}
+                    Strings={this.state.Strings}
                 />
-            ) : null}
+                <LegendSection Strings={this.state.Strings} />
+                <AssignmentComponent
+                    Assignment={this.state.AssignmentData}
+                    Filters={this.state.Filters}
+                    Strings={this.state.Strings}
+                    onReplaceUserInTaskButtonClick={clickedTaskInstance =>
+                        this.handleReplaceUserInTaskButtonClick(
+                            clickedTaskInstance
+                        )
+                    }
+                    onMoreInformationButtonClick={clickedTaskInstance =>
+                        this.handleMoreInformationButtonClick(
+                            clickedTaskInstance
+                        )
+                    }
+                    showCheckboxes={this.state.workflowCancellationMode}
+                    onCheckboxClick={clickedWorkflowID =>
+                        this.handleWorkflowInstanceSelection(clickedWorkflowID)
+                    }
+                    selectedWorkflowIDs={Array.from(
+                        this.state.selectedWorkflowIDs
+                    )}
+                />
 
+                {this.state.showTaskReallocationForm &&
+                this.state.sectionInfoLoaded ? (
+                        <TaskReallocationForm
+                            onClose={() => this.setState({showTaskReallocationForm: false})}
+                            taskInstance={this.taskInstanceToReallocate}
+                            sectionInfo={this.state.sectionInfo}
+                            onUserReplaced={() => this.refetchData()}
+                        />
+                    ) : null}
 
-        </div>;
+                {this.state.showAssignmentReallocationForm &&
+                this.state.sectionInfoLoaded ? (
+                        <AssignmentReallocationForm
+                            onClose={() =>
+                                this.setState({
+                                    showAssignmentReallocationForm: false
+                                })
+                            }
+                            AssignmentID={this.props.AssignmentID}
+                            sectionInfo={this.state.sectionInfo}
+                            onUserReplaced={() => this.refetchData()}
+                        />
+                    ) : null}
+
+                {this.state.showMoreInformation ? (
+                    <MoreInformation
+                        onClose={() =>
+                            this.setState({ showMoreInformation: false })
+                        }
+                        taskInstance={this.clickedTaskInstance}
+                        sectionInfo={this.state.sectionInfo}
+                    />
+                ) : null}
+
+                {this.state.showRemoveWorkflowConfirmation ? (
+                    <RemoveWorkflow
+                        onClose={() =>
+                            this.setState({
+                                showRemoveWorkflowConfirmation: false
+                            })
+                        }
+                        workflowIDs={Array.from(this.state.selectedWorkflowIDs)}
+                        assignmentID={this.props.AssignmentID}
+                        onWorkflowCancel={() => this.handleWorkflowCancel()}
+                    />
+                ) : null}
+            </div>
+        );
     }
-
 }
 
 export default QuickAssignmentReport;

@@ -10,6 +10,7 @@
   .workflow-block{
     display:flex;
     flex-direction: row;
+    align-items: center;
   }
   .workflow-activity-block{
     display:flex;
@@ -23,6 +24,7 @@
     width: 20px;
     padding: 8px;
     border:1px solid #bfbfbf;
+    align-self: stretch;
   }
   .workflow-instance{
     display: flex;
@@ -140,5 +142,13 @@
     h1 {
       font-size: 1.17em;
     }
+    ul {
+      margin: 5px 0 5px 0;
+      padding-left: 40px;
+    }
+  }
+
+  .checkbox {
+    margin: 0 8px 0 0;
   }
 }

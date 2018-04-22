@@ -98,7 +98,6 @@ class TaskReallocationForm extends Component {
         }
 
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
-
         const postBody = {
             taskarray: [this.state.replaceUserIn, [taskInstanceID]],
             is_extra_credit: this.state.extraCredit,
@@ -106,6 +105,9 @@ class TaskReallocationForm extends Component {
             user_pool_woc: [this.state.fallbackID]
         };
 
+        // See 'Automatically reallocate new user to this task instance' section of the 
+        // 'Pool and Reallocation APIs' document for information about this API call
+        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const url = '/reallocate/task_based/';
         apiCall.postAsync(url, postBody).then(() => this.props.onUserReplaced());
         showMessage('User successfully replaced');

@@ -84,7 +84,7 @@ class AssignmentReallocationForm extends Component {
 
     doReplace() {
         if (this.state.users.some(
-                user => user.selectedForRemoval && user.id === this.state.fallbackID)
+            user => user.selectedForRemoval && user.id === this.state.fallbackID)
         ) {
             showMessage(
                 'Error: Cannot remove the fallback replacement user. Select a different fallback.'
@@ -107,6 +107,9 @@ class AssignmentReallocationForm extends Component {
             remove_from_all_assignments: this.state.removeUsersFromOngoingAssignments
         };
 
+        // See 'Automatically reallocate new users to all tasks in entire assignment' section of the
+        // 'Pool and Reallocation APIs' document for info about this API call
+        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const url = '/reallocate/user_based/';
         apiCall.postAsync(url, postBody).then(() => this.props.onUserReplaced());
         showMessage('Users successfully replaced');
