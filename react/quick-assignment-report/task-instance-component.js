@@ -59,40 +59,27 @@ const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) =
     }
     else if(taskStatus[0] === 'automatic'){
         taskInformation = <div>
-<<<<<<< HEAD
           <div className="task-type">{DisplayName}</div>
           <div>{taskStatus[0]}</div>
           <div>TaskID: {TaskInstance.TaskInstanceID}</div>
           <br />
           <br />
-=======
-            <div className="task-type">{TaskActivity.Type}</div>
-            <div>{taskStatus[0]}</div>
-            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            <br />
-            <br />
->>>>>>> 21f0a8eaccb085db87e7d62b6019ce1d33ddf899
+
+
 
         </div>;
     } else {
-<<<<<<< HEAD
-        taskInformation = <a href={link}>
+
+
+
+        taskInformation = <div className="dropdown">
           <div className="task-type">{DisplayName}</div>
           <div> {UserContact.Email} </div>
           <div>TaskID: {TaskInstance.TaskInstanceID}</div>
           <div> UserID: {User.UserID} </div>
           <div>{letters[taskStatus[0]]}</div>
-        </a>;
-=======
-        taskInformation = <div className="dropdown">
-            <div className="task-type">{TaskActivity.Type}</div>
-            <div> {UserContact.Email} </div>
-            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            <div> UserID: {User.UserID} </div>
-            <div>{letters[taskStatus[0]]}</div>
-            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
+          <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
         </div>;
->>>>>>> 21f0a8eaccb085db87e7d62b6019ce1d33ddf899
     }
 
 
