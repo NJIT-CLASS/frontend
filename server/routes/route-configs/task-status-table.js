@@ -2,7 +2,7 @@ const handler = require('../route-handlers/task-status-table');
 
 module.exports = {
     route: '/assignment-record/:assignmentId',
-    title: 'Task Status Table',
+    title: 'Assignment Status',
     routeHandler: handler,
     access: {
         admins: true,

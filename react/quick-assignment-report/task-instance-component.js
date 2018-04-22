@@ -10,6 +10,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
+    const DisplayName = TaskActivity.DisplayName;
 
     //from old task status table
     const colors = { Incomplete: 'incomplete',
@@ -23,12 +24,12 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
     };
 
     const letters = {
-        Incomplete: '(I)',
+        Incomplete: '(O)',
         complete: '(C)',
-        Late: '(!)',
+        Late: '(L)',
         'Not Needed': '(X)',
-        not_yet_started: '(NS)',
-        started: '(S)',
+        not_yet_started: '(NP)',
+        started: '(P)',
         automatic: '(A)',
         bypassed: '(B)',
     };
@@ -46,16 +47,16 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings}) => {
     let taskInformation = null;
     if(taskStatus[0] === 'automatic'){
         taskInformation = <div>
-        <div className="task-type">{TaskActivity.Type}</div>
-        <div>{taskStatus[0]}</div>
-        <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-        <br />
-        <br />
+          <div className="task-type">{DisplayName}</div>
+          <div>{taskStatus[0]}</div>
+          <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+          <br />
+          <br />
 
       </div>;
     } else {
         taskInformation = <a href={link}>
-          <div className="task-type">{TaskActivity.Type}</div>
+          <div className="task-type">{DisplayName}</div>
           <div> {UserContact.Email} </div>
           <div>TaskID: {TaskInstance.TaskInstanceID}</div>
           <div> UserID: {User.UserID} </div>
