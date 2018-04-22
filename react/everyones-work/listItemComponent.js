@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import MarkupView from '../shared/markupTextInlineView';
 
 const trunc = (str, n ) => {
     if (str.length <= n) { return str; }
@@ -15,10 +15,14 @@ const ListItemComponent = ({TaskObject, UserID}) => {
         let problemText = trunc(taskData[0][0][0], 100);
         
         if(taskId != null){
-            return (<li><a target="_blank" href={`/task/${taskId}?visitorId=${UserID}`}>{problemText}</a></li>);
+            return (<li><a target="_blank" href={`/task/${taskId}?visitorId=${UserID}`}>
+                <MarkupView content={problemText} />
+            </a></li>);
                 
         } else {
-            return (<li><div href={`/task/${taskId}`}>{problemText}</div></li>);
+            return (<li>
+                <MarkupView content={problemText} />
+            </li>);
         }
     } else {
         return null;

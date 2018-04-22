@@ -23,15 +23,15 @@ const pages = [
     'task-status-table',
     'onboarding',
     'initial-password-change',
-    'assignment-final-grades',
+    //'assignment-final-grades',
     'volunteer-pool',
     'section',
     'user-management',
-    'everyones-work',
+    //'everyones-work',
     'reallocation',
     'about',
     'section',
-    'assignment-status-table',
+    //'assignment-status-table',
     'database-maintenance'
 ];
 

@@ -20,6 +20,7 @@ const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
 import {uploadFiles} from './server-middleware/file-upload';
+import { canRoleAccess, ROLES } from './utils/react_constants';
 const loginGetRoute = require('./routes/route-handlers/login').get;
 const loginPostRoute = require('./routes/route-handlers/login').post;
 const loggedOutRoutes = routes.filter(route => route.access.loggedOut);
@@ -45,29 +46,8 @@ const allowedRouteMethods = [
     'get',
     'post',
     'put',
-    'head',
-    'delete',
-    'options',
-    'trace',
-    'copy',
-    'lock',
-    'mkcol',
-    'move',
-    'purge',
-    'propfind',
-    'proppatch',
-    'unlock',
-    'report',
-    'mkactivity',
-    'checkout',
-    'merge',
-    'm-search',
-    'notify',
-    'subscribe',
-    'unsubscribe',
-    'patch',
-    'search',
-    'connect'
+    'delete'
+    
 ];
 //Setup static files
 app.use('/static', express.static(`${__dirname}/static`));
@@ -75,10 +55,12 @@ app.use('/service-worker.js', express.static(`${__dirname}/service-worker.js`)
 );
 //Setup request parsing
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true,parameterLimit:50000}));
+// app.use(bodyParser.urlencoded({
+//     extended: true
+// }));
+// app.use(bodyParser.json());
 
 //Setup Redis session
 app.use(session(redisClient));
@@ -98,6 +80,53 @@ app.use((req, res, next) => {
     next();
 });
 
+
+// APIs to access backend API routes through frontend server
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+
+
 //Checks that Redis is working properly
 app.use(function(req,res,next){
     if(req.session === undefined){
@@ -107,6 +136,7 @@ app.use(function(req,res,next){
     }
     next();
 });
+
 
 // set the language cookie if it has a lang query param
 app.use((req, res, next) => {
@@ -168,9 +198,7 @@ app.use((req, res, next) => {
     });
 });
 
-//Login page
-// app.get('/',loginGetRoute);
-// app.post('/',loginPostRoute);
+
 
 //Stores the user session Id into req.App.user object
 app.use((req, res, next) => {
@@ -180,6 +208,9 @@ app.use((req, res, next) => {
     }
     next();
 });
+//Login page
+// app.get('/',loginGetRoute);
+// app.post('/',loginPostRoute);
 
 
 //Prepares render function to support options specified in route configs
@@ -206,15 +237,13 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-        if (req.App.user && !options[req.App.user.type]) {
-            if (req.App.user.admin && options.admin) {
+        if (req.App.user && !canRoleAccess(req.App.user.role, options.role) ) {
+            if (req.App.user.admin && options.admin || req.session.masqueraderId != null) {
             } else {
                 return res.sendStatus(404);
             }
         }
-        options.showMasqueradingOption = req.App.user.admin
-            ? req.App.user.admin
-            : false; //new value, not working yet
+        options.showMasqueradingOption = canRoleAccess(req.App.user.role, ROLES.ADMIN) || req.App.user.admin;
 
         var sidebarNavItems = [];
 
@@ -232,6 +261,11 @@ app.use((req, res, next) => {
 
             currentRoute.title = __(currentRoute.title);
 
+            if(canRoleAccess(req.App.user.role, currentRoute.access.role)){
+                sidebarNavItems.push(currentRoute);
+                continue;
+            }
+
             if (req.App.user.type === 'student') {
                 if (currentRoute.access.students) {
                     sidebarNavItems.push(currentRoute);
@@ -240,7 +274,7 @@ app.use((req, res, next) => {
                 }
             } else if (
                 req.App.user.type == 'teacher' &&
-				req.App.user.admin == 0
+            	req.App.user.admin == 0
             ) {
                 if (currentRoute.access.instructors) {
                     sidebarNavItems.push(currentRoute);
@@ -281,6 +315,7 @@ for (const route of loggedOutRoutes) {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
                                     options.loggedOut = true;//route.access.loggedOut;
+                                    options.role = route.access.role;
                                     options.route = route.route;
                                     options.language = req.App.lang;
                                     options.languageOptions = req.App.langOptions;
@@ -306,7 +341,6 @@ for (const route of loggedOutRoutes) {
                                 };
                             })();
                             next();
-                            
                         }
                         catch(error){
                             next(error);
@@ -318,6 +352,8 @@ for (const route of loggedOutRoutes) {
         }
     }
 }
+
+
 
 app.use((req,res,next) => {
     
@@ -335,35 +371,61 @@ app.use((req,res,next) => {
 //Gets user profile details from backend(also checks for issues with connecting to backend)
 app.use((req, res, next) => {
     if (req.App.user && req.App.user.userId) {
+        
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
-
+            
             if (err || statusCode === 500 ) {
-                delete req.session.userId; 
+                console.log('Got error or 500 code from backend for user: ',req.App.user.userId );
+                delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
                 res.redirect('/');
                 return;
             }
-
+    
             if (body === undefined || body.User === undefined) {
+                console.log('Got undefined body from backend for user: ',req.App.user.userId );
+                
                 delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 res.redirect('/');
                 return;
             }
-
-            const user = body.User; // JV - grabbed user's information
-            req.App.user.email = user.UserLogin.Email;
-            req.App.user.firstName = user.FirstName;
-            req.App.user.lastName = user.LastName;
-            req.App.user.type = user.Instructor ? 'teacher' : 'student';
-            req.App.user.admin = user.Admin;
-            req.App.user.info = user.UserContact;
-            next();
+            try {
+                const user = body.User; // JV - grabbed user's information
+                req.App.user.email = user.UserLogin.Email;
+                req.App.user.firstName = user.FirstName;
+                req.App.user.lastName = user.LastName;
+                req.App.user.role = user.Role;
+                req.App.user.type = user.Instructor ? 'teacher' : 'student';
+                req.App.user.admin = user.Admin;
+                req.App.user.info = user.UserContact;
+                next();
+            } catch(err){
+                console.log('Caught exception in getting details for user: ',req.App.user.userId );
+                
+                delete req.session.userId;
+                delete req.session.token;
+                delete req.session.refreshToken;
+                res.redirect('/');
+                return;
+            }
         });
+        
+        
+    } else {
+        console.log('Found No UserID in session (Redis issue)');
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        console.log('No user profile. Check the backend server or API_URL');
+        res.redirect('/');
+        return;
+        
     }
 
-    next();
 });
 
 
@@ -459,60 +521,6 @@ app.post('/api/change-admin-status', (req, res) => {
             res.status(statusCode).end();
         }
     );
-});
-
-// APIs to access backend API routes through frontend server
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.delete('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.put('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
 });
 
 //API for file uploading
@@ -641,6 +649,7 @@ for (const route of loggedInRoutes) {
                                 return function(template, options, cb) {
                                     options = options ? options : {};
                                     options.loggedOut = false;//route.access.loggedOut;
+                                    options.role = route.access.role;
                                     options.route = route.route;
                                     options.student = route.access.students;
                                     options.teacher = route.access.instructors;
@@ -686,9 +695,10 @@ for (const route of loggedInRoutes) {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if(!res.headersSent){
-        res.status(404).render('not_found', {
-            title: 'Not Found'
-        });
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        res.status(500).redirect('/');
     }
     
 });

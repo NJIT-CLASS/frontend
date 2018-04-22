@@ -8,6 +8,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: true,
+        role: null,
         loggedOut: true
     },
     sidebar: false

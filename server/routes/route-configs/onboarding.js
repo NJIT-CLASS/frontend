@@ -8,6 +8,7 @@ module.exports = {
         admins: false,
         instructors: false,
         students: false,
+        role: null,
         loggedOut: true
     },
     icon: 'files-o',

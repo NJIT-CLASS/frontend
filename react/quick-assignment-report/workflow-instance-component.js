@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import TaskComponent from './task-component';
 
-const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, Strings}) => {
+const WorkflowInstanceComponent = ({onReallocate, Workflow, Structure, WI_ID, WA_ID, Filters, Strings}) => {
     let showWorkflow = true;
     if(Filters.WorkflowID !== ''){
         showWorkflow = WI_ID === Filters.WorkflowID;
     }
     let taskActivitiesArray = Object.keys(Workflow).map(key => {
-        return <TaskComponent TaskActivity={Workflow[key]}
+        return <TaskComponent onReallocate={onReallocate}
+                            TaskActivity={Workflow[key]}
                             TA_ID={key}
                             WI_ID={WI_ID}
                             WA_ID={WA_ID}

@@ -7,6 +7,7 @@ import React from 'react';
 import apiCall from '../shared/apiCall';
 import CommentEditorComponent from './commentEditorComponent';
 import Tooltip from '../shared/tooltip';
+import { ROLES, canRoleAccess } from '../../server/utils/react_constants';
 var moment = require('moment');
 
 class CommentComponent extends React.Component{
@@ -66,11 +67,11 @@ class CommentComponent extends React.Component{
     }
 
     editExistingComment() {
-        if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.NextStatus != 'saved') && (this.props.UserType == 'student')) {
+        if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.NextStatus != 'saved') && (this.props.UserType == ROLES.PARTICIPANT)) {
             console.log('Cannot edit comment if it has replies.');
             this.setState({CommentChangeMessage: 'edit-replies'});
         }
-        else if ((this.props.Comment.UserID == this.props.CurrentUser) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        else if ((this.props.Comment.UserID == this.props.CurrentUser) || canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             this.setState({editExistingComment: true});
         }
         this.props.Update(this.props.Comment.CommentTarget, this.props.Comment.TargetID);
@@ -89,7 +90,7 @@ class CommentComponent extends React.Component{
     }
 
     showChangeMessage() {
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             if ((this.props.NextParent == this.props.Comment.CommentsID) && (this.props.NextStatus != 'saved')) {
                 this.setState({CommentChangeMessage: 'delete-replies'});
             }
@@ -103,7 +104,7 @@ class CommentComponent extends React.Component{
     }
 
     showConfirmMessage() {
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             this.setState({CommentChangeMessage:'unhide'});
         }
     }
@@ -113,7 +114,7 @@ class CommentComponent extends React.Component{
     }
 
     deleteExistingComment() {
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             apiCall.post('/comments/delete/', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
                 if(body.Message == 'Success') {
                     console.log('Successfully deleted comment.');
@@ -127,7 +128,7 @@ class CommentComponent extends React.Component{
     }
 
     showHideMessage(target) {
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             if(target == 'comment') {
                 this.setState({CommentHideMessage: 'comment'});
             }
@@ -148,7 +149,7 @@ class CommentComponent extends React.Component{
     hideExistingComment(event) {
         console.log(this.state.HideReasonValue);
         event.preventDefault();
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             apiCall.post('/comments/hide', {CommentsID: this.props.Comment.CommentsID, HideReason: this.state.HideReasonValue, HideType: this.state.CommentHideMessage}, (err, res, body) => {
                 if(!body.Error) {
                     console.log('Successfully hid comment.');
@@ -163,7 +164,7 @@ class CommentComponent extends React.Component{
     }
 
     unhideExistingComment() {
-        if ((this.props.UserType == 'teacher') || (this.props.Admin == true)) {
+        if (canRoleAccess(this.props.UserType, ROLES.TEACHER)) {
             console.log('unhide started');
             apiCall.post('/comments/unhide', {CommentsID: this.props.Comment.CommentsID}, (err, res, body) => {
                 if(!body.Error) {
@@ -311,7 +312,7 @@ class CommentComponent extends React.Component{
                 }
 
                 {this.props.Comment.Type == 'flag' ?
-                    ((this.props.UserType == 'teacher') || (this.props.Admin == true)) ? ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>)):
+                    (canRoleAccess(this.props.UserType, ROLES.TEACHER)) ? ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}} onClick={this.handleFlagClick.bind(this)} onMouseEnter={this.handleMouseEnterFlag.bind(this)} onMouseLeave={this.handleMouseLeaveFlag.bind(this)}></i>)):
                         ((this.state.CommentFlagDisplay =='on') ? (<i className="fa fa-flag" style={{color:'red'}}></i>) : (<i className="fa fa-flag-o" style={{color:'gray'}}></i>))
                     : (this.props.Comment.ReplyLevel == 0 ? <i className="fa fa-comment-o" aria-hidden="true"></i> : <i className="fa fa-reply" aria-hidden="true"></i>
                     )
@@ -321,14 +322,14 @@ class CommentComponent extends React.Component{
                 {((this.props.Comment.Rating != null) && (this.props.Comment.HideType != 'rating')) && (
                     <div style={{display: 'inline'}}>
                         <label style={{padding: 10, paddingLeft: 5}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{this.props.Comment.Rating} / 5</span>
-                        {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.showHideMessage.bind(this, 'rating')}>{strings.HideLabel.concat(typeName)}</a></div>)}
+                        {(canRoleAccess(this.props.UserType, ROLES.TEACHER)) && (<div className="title"><a onClick={this.showHideMessage.bind(this, 'rating')}>{strings.HideLabel.concat(typeName)}</a></div>)}
                     </div>
                 )}
 
                 {(this.props.Comment.HideType == 'rating') && (
                     <div style={{display: 'inline'}}>
                         <label style={{padding: 10, paddingLeft: 5}}>{strings.RatingLabel}</label><span style={{paddingRight: 10}}>{strings.HiddenText}<Tooltip Text={this.props.Comment.HideReason}/></span>
-                        {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (<div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel.concat(typeName)}</a></div>)}
+                        {(canRoleAccess(this.props.UserType, ROLES.TEACHER)) && (<div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel.concat(typeName)}</a></div>)}
                     </div>
                 )}
 
@@ -337,7 +338,7 @@ class CommentComponent extends React.Component{
                 <div className="title"><a onClick={this.displayNewEditor.bind(this)}>{strings.ReplyLabel}</a></div>
                 <div className="title"><a onClick={this.displayNewFlagEditor.bind(this)}>{strings.FlagThisLabel}</a></div>
                 {((((this.props.Comment.UserID == this.props.CurrentUser) && ((this.props.NextParent != this.props.Comment.CommentsID) || (this.props.NextStatus == 'saved'))) || (this.props.UserType == 'teacher') || (this.props.Admin == true)) && !this.state.showEditor) && (<div className="title"><a onClick={this.editExistingComment.bind(this)}>{strings.EditLabel.concat(typeName)}</a></div>)}
-                {(!this.state.showEditor && (this.props.UserType == 'teacher') || (this.props.Admin == true)) && (
+                {(!this.state.showEditor && canRoleAccess(this.props.UserType, ROLES.TEACHER)) && (
                     <div style={{display: 'inline'}}>
                         <div className="title"><a onClick={this.showHideMessage.bind(this, 'comment')}>{strings.HideLabel.concat(typeName)}</a></div>
                         <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel.concat(typeName)}</a></div>
@@ -370,7 +371,7 @@ class CommentComponent extends React.Component{
                       )}
 
                   <div className="regular-text comtext">{strings.CommentHiddenText + ': ' + this.props.Comment.HideReason}</div>
-                  {((this.props.UserType == 'teacher') || (this.props.Admin == true)) && (
+                  {(canRoleAccess(this.props.UserType, ROLES.TEACHER)) && (
                       <div style={{display: 'inline'}}>
                           <div className="title"><a onClick={this.unhideExistingComment.bind(this)}>{strings.UnhideLabel.concat(typeName)}</a></div>
                           <div className="title"><a onClick={this.showChangeMessage.bind(this)}>{strings.DeleteLabel.concat(typeName)}</a></div>

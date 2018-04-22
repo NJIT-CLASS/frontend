@@ -1,4 +1,5 @@
 const handler = require('../route-handlers/stop-masquerading');
+import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/stop-masquerading',
@@ -8,6 +9,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: true,
+        role: ROLES.PARTICIPANT,
         loggedOut: false
     },
     icon: '',

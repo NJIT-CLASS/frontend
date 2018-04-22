@@ -1,4 +1,5 @@
 const handler = require('../route-handlers/user-management');
+import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/user-management',
@@ -8,6 +9,7 @@ module.exports = {
         admins: true,
         instructors: false,
         students: false,
+        role: ROLES.ADMIN,
         loggedOut: false
     },
     icon: 'cogs',

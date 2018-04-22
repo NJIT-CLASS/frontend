@@ -1,4 +1,5 @@
 const handler = require('../route-handlers/create-account');
+import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/create-account/:id',
@@ -8,6 +9,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: true,
+        role: ROLES.PARTICIPANT,
         loggedOut: true
     },
     icon: '',

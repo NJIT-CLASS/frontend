@@ -7,6 +7,8 @@ future stuff.
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import { ROLES, canRoleAccess } from '../../server/utils/react_constants';
+
 var moment = require('moment');
 
 class CommentEditorComponent extends React.Component {
@@ -106,7 +108,7 @@ class CommentEditorComponent extends React.Component {
                 this.setState({CommentBlank: true});
             }
 
-            else if (((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent)) || (this.props.NextStatus == 'saved') || (this.props.UserType == 'teacher') || (this.props.Admin == true))) {
+            else if (((this.props.UserID == this.props.CurrentUser) && ((this.props.CommentsID != this.props.NextParent)) || (this.props.NextStatus == 'saved') || canRoleAccess(this.props.UserType, ROLES.TEACHER))) {
                 apiCall.post('/comments/edit/', commentParameters, (err, res, body) => {
                     if(!body.Error) {
                         console.log('Successfully edited comment.');

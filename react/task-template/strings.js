@@ -74,7 +74,11 @@ let strings = {
     CancelDispute: 'Cancel Dispute',
     ConfirmSkipDisputeText: 'Are you sure you want to skip this dispute?',
     DisputeSkipped: 'The dispute was skipped',
-    
+    MissingJustification: 'One of the justification fields is empty',
+    MissingResponse: 'One of your answers is blank',
+    IsNanResponse: 'One of your numeric answers was not a valid number',
+    MinMaxResponse: 'One of your numeric answers was outside the acceptable range',
+    StringLengthResponse: 'One of your text inputs was too long ( limit of 45000 characters)'
     
 };
 

@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import CommentInfoComponent from './commentInfoComponent';
+import MarkupText from '../shared/markupTextView';
 
 /*  Props: (from TemplateContainer)
         - AssignmentTitle
@@ -38,7 +39,7 @@ class HeaderComponent extends React.Component {
             <div className = "section-content section-header" >
                 <div name = "course-title" className = "regular-text" >
                     <b> {this.props.Strings.Course}: </b>{this.props.CourseNumber} - {this.props.SectionName} - {this.props.CourseName} - {this.props.SemesterName}
-                    <div className="assignment-description">{this.props.Assignment.Instructions}</div>
+                    <MarkupText content={this.props.Assignment.Instructions} classNames={'assignment-description'} />
                 </div>
             </div>
         </div>
