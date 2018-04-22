@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { RadioGroup, Radio } from 'react-radio-group';
 import CollapsableBlock from './collapsable-block';
 import UserList from './user-list';
+import Tooltip from '../shared/tooltip';
 
 class FallbackReplacementSection extends Component {
     constructor(props) {
@@ -9,9 +10,14 @@ class FallbackReplacementSection extends Component {
     }
 
     render() {
+        const tooltip =
+            'The fallback replacement user will be the replacement if none of the users in the pools above satisfy the problem constraints.';
         return (
             <div>
-                <p>How should the fallback replacement user be chosen?</p>
+                <div>
+                    How should the fallback replacement user be chosen?
+                    <Tooltip Text={tooltip} ID="fallback-tooltip" />
+                </div>
                 <RadioGroup
                     selectedValue={
                         this.props.useDefaultFallback && !this.props.mustSpecifyFallback
