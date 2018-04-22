@@ -75,7 +75,6 @@ class MutliViewComponent extends React.Component {
                     break;
                 }
 
-                console.log('TaskActivityFields', task.TaskActivity.Fields, 'TaskData', task.Data);
                 return(
                     <div className="child" key={index +500}>
                         <SuperViewComponent key={index + 2000} index={index+200}

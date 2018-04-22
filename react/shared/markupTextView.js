@@ -17,6 +17,9 @@ class MarkupText extends React.Component {
             'li',
             'quote',
             'p',
+            'table',
+            'carousel',
+            
             'span',
             'math',
             'maction',
@@ -57,7 +60,6 @@ class MarkupText extends React.Component {
             'mtr',
             'munder',
             'munderover',
-            'table',
             'thead',
             'tbody',
             'tr',
@@ -81,12 +83,12 @@ class MarkupText extends React.Component {
 
     componentDidMount() {
         Prism.highlightAll();
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     componentDidUpdate() {
         Prism.highlightAll();
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     render() {

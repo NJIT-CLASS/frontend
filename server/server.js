@@ -46,29 +46,8 @@ const allowedRouteMethods = [
     'get',
     'post',
     'put',
-    'head',
-    'delete',
-    'options',
-    'trace',
-    'copy',
-    'lock',
-    'mkcol',
-    'move',
-    'purge',
-    'propfind',
-    'proppatch',
-    'unlock',
-    'report',
-    'mkactivity',
-    'checkout',
-    'merge',
-    'm-search',
-    'notify',
-    'subscribe',
-    'unsubscribe',
-    'patch',
-    'search',
-    'connect'
+    'delete'
+    
 ];
 //Setup static files
 app.use('/static', express.static(`${__dirname}/static`));
@@ -98,6 +77,62 @@ app.use((req, res, next) => {
 
     next();
 });
+
+
+// APIs to access backend API routes through frontend server
+app.get('/api/generalCall', (req, res) => {
+    let queryStrings = req.query;
+    let endpoint = `${req.query.endpoint}`;
+    delete queryStrings.endpoint;
+    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.delete('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
+app.put('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+app.post('/api/generalCall', (req, res) => {
+    let postVars = req.body;
+    let endpoint = `${req.body.endpoint}`;
+    delete postVars.endpoint;
+    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
+        res.status(statusCode).json(body);
+        res.end();
+
+    });
+});
+
 
 //Checks that Redis is working properly
 app.use(function(req,res,next){
@@ -208,8 +243,8 @@ app.use((req, res, next) => {
 
             return render.call(this, template, options, cb);
         }
-        if (req.App.user && !canRoleAccess(req.App.user.role, options.role)) {
-            if (req.App.user.admin && options.admin) {
+        if (req.App.user && !canRoleAccess(req.App.user.role, options.role) ) {
+            if (req.App.user.admin && options.admin || req.session.masqueraderId != null) {
             } else {
                 return res.sendStatus(404);
             }
@@ -342,8 +377,9 @@ app.use((req, res, next) => {
         return req.App.api.get(`/generalUser/${req.App.user.userId}`,(err, statusCode, body) => {
 
             if (err || statusCode === 500 ) {
-                delete req.session.userId; 
+                delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 console.log('Had trouble fetching user profile. Check the backend server or API_URL');
                 res.redirect('/');
                 return;
@@ -352,6 +388,7 @@ app.use((req, res, next) => {
             if (body === undefined || body.User === undefined) {
                 delete req.session.userId;
                 delete req.session.token;
+                delete req.session.refreshToken;
                 res.redirect('/');
                 return;
             }
@@ -366,9 +403,17 @@ app.use((req, res, next) => {
             req.App.user.info = user.UserContact;
             next();
         });
+    } else {
+        {
+            delete req.session.userId;
+            delete req.session.token;
+            delete req.session.refreshToken;
+            console.log('No user profile. Check the backend server or API_URL');
+            res.redirect('/');
+            return;
+        }
     }
 
-    next();
 });
 
 
@@ -464,60 +509,6 @@ app.post('/api/change-admin-status', (req, res) => {
             res.status(statusCode).end();
         }
     );
-});
-
-// APIs to access backend API routes through frontend server
-app.get('/api/generalCall', (req, res) => {
-    let queryStrings = req.query;
-    let endpoint = `${req.query.endpoint}`;
-    delete queryStrings.endpoint;
-    req.App.api.get(endpoint, queryStrings, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.delete('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.delete(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-
-app.put('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.put(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
-});
-app.post('/api/generalCall', (req, res) => {
-    let postVars = req.body;
-    let endpoint = `${req.body.endpoint}`;
-    delete postVars.endpoint;
-    req.App.api.post(endpoint, postVars, (err, statusCode, body) => {
-        res.status(statusCode).json(body);
-        res.end();
-
-    });
 });
 
 //API for file uploading
@@ -692,9 +683,10 @@ for (const route of loggedInRoutes) {
 app.use((err, req, res, next) => {
     console.error(err.stack);
     if(!res.headersSent){
-        res.status(404).render('not_found', {
-            title: 'Not Found'
-        });
+        delete req.session.userId;
+        delete req.session.token;
+        delete req.session.refreshToken;
+        res.status(500).redirect('/');
     }
     
 });

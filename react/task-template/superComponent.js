@@ -724,9 +724,9 @@ class SuperComponent extends React.Component {
                     rubric_content = (
                         <div key={this.state.TaskActivityFields[idx].title}>
                             <div className="template-field-rubric-label"> {fieldTitleText} {this.props.Strings.Rubric} </div>
-                            <div className="regular-text rubric">
-                                {this.state.TaskActivityFields[idx].rubric}
-                            </div>
+                                <MarkupText classNames="regular-text" key={'rubric for field '+idx} content={this.state.TaskActivityFields[idx].rubric} />
+                            
+                                
                         </div>);
                 }
 
@@ -757,7 +757,7 @@ class SuperComponent extends React.Component {
                     <div key={1100}>
                         <div className="template-field-instructions-label">{fieldTitleText} {this.props.Strings.Instructions}</div>
                         <div className="regular-text instructions">
-                            {this.state.TaskActivityFields[idx].instructions}
+                        <MarkupText classNames="regular-text" key={'instruct. for field '+idx} content={this.state.TaskActivityFields[idx].instructions} />
                         </div>
                     </div>
                 );

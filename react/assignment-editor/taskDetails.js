@@ -18,7 +18,6 @@ import AllowAssessmentComponent from './taskComponents/allowAssessmentComponent'
 //Initial state, needed to maintain across mount and unmount
 
 let state = {
-    FileUp: false,
     NewTask: true,
     FieldType: 'text',
     Tasks: [
@@ -169,7 +168,7 @@ class TaskDetailsComponent extends React.Component {
             );
 
             // TA_file_upload
-            const fileUploadOptions = this.state.FileUp
+            const fileUploadOptions = this.props.TaskActivityData.AllowFileUpload
                 ? (
                     <div
                         style={{
@@ -201,17 +200,15 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
                     <label>{strings.AreAnyFileUploadsRequired}</label>
                     <Checkbox
-                        isClicked={this.state.FileUp} click={() => {
-                            this.setState({
-                                FileUp: !this.state.FileUp,
-                            });
+                        isClicked={this.props.TaskActivityData.AllowFileUpload} click={() => {
+                            console.log('Clicked file upload', this.props.index, this.props.workflowIndex);
+                            this.props.callTaskFunction('changeDataCheck', 'AllowFileUpload', this.props.index, this.props.workflowIndex);
                         }}
                     /> {fileUploadOptions}
                 </div>
             );
 
             // TA_overall_instructions
-            console.log(this.props.TaskActivityData.TA_overall_instructions);
             const taskInstructions = (
                 <div className="inner block">
                     <label>{strings.TaskInstructions}</label>
@@ -955,15 +952,15 @@ class TaskDetailsComponent extends React.Component {
                 );
             }
 
-
+            
             // TA_allow_revisions
-            const allowRevision = [/*TASK_TYPES.EDIT,*/ TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
+            const allowRevision = /*[TASK_TYPES.EDIT, TASK_TYPES.COMMENT].includes(this.props.TaskActivityData.TA_type) ?   (
                 <div className="inner">
                     <label>{strings.AllowRevision}</label>
                     <Tooltip Text={strings.TaskAllowRevisionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-revision-tooltip`} />
                     <Checkbox isClicked={this.props.TaskActivityData.TA_allow_revisions} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_allow_revisions', this.props.index, this.props.workflowIndex)} />
                 </div>
-            ) : null;
+            ) :*/ null;
 
             const allowReflection = (
                 <div>
