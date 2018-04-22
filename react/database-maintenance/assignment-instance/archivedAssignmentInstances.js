@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+
 import TableComponent from '../../shared/tableComponent';
 import apiCall from '../../shared/apiCall';
+import Tooltip from '../../shared/tooltip';
 
 class ArchivedAssignments extends Component {
 
@@ -75,24 +77,29 @@ class ArchivedAssignments extends Component {
             content = <TableComponent
                 columns={columns}
                 data={data}
-                noDataText="No assignments"
+                noDataText={strings.emptyTable}
             />;
         } else {
             const selectedAssignment = this.state.selectedAssignment;
             content = <form onSubmit={this.restoreAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>Are you sure you want to restore?</p>
+                <p style={{fontWeight: 'bold'}}>{strings.restoreConfirmation}</p>
                 <br />
-                <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
-                <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[0]}:</span> {selectedAssignment.assignmentName}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[1]}:</span> {selectedAssignment.courseNumber}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[2]}:</span> {selectedAssignment.sectionName}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[3]}:</span> {selectedAssignment.semesterName}</p>
                 <br />
-                <button type="submit">Restore</button>
-                <button type="button" onClick={this.unselectAssignment.bind(this)}>Cancel</button>
+                <button type="submit">{strings.restoreButton}</button>
+                <button type="button" onClick={this.unselectAssignment.bind(this)}>{strings.cancelButton}</button>
             </form>;
         }
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.archivedTableTitle}</h2>
+                <h2 className="title">
+                    {strings.archivedTableTitle}
+                    <Tooltip Text={strings.archivedTableTooltip} />
+                </h2>
                 <div className="section-content">
                     {content}
                 </div>

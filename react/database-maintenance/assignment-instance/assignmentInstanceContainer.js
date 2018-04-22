@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import apiCall from '../../shared/apiCall';
 
 import ActiveAssignmentInstances from './activeAssignmentInstances';
@@ -34,7 +35,7 @@ class AssignmentInstanceContainer extends Component {
                 let activeAssignmentInstances = body.ActiveAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: instance.AssignmentInstanceID,
+                        assignmentName: instance.Assignment.DisplayName,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
                         semesterName: instance.Section.Semester.Name

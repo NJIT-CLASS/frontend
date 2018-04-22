@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import strings from './strings';
+import Tooltip from '../shared/tooltip';
 
 import AssignmentInstanceContainer from './assignment-instance/assignmentInstanceContainer';
 import AssignmentActivityContainer from './assignment-activity/assignmentActivityContainer';
-import strings from './strings';
     
 class DatabaseMaintenanceContainer extends Component {
     
@@ -40,7 +42,11 @@ class DatabaseMaintenanceContainer extends Component {
         
         return <div>
             <div className="card">
-                <h2 className="title">Category</h2>
+                <h2 className="title">
+                    {Strings.categoryPickerTitle}
+                    <Tooltip Text={Strings.categoryPickerTootltip} />
+                </h2>
+                
                 <div className="card-content">
                     <Select
                         options={this.state.categories}

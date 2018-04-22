@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+
 import TableComponent from '../../shared/tableComponent';
 import apiCall from '../../shared/apiCall';
+import Tooltip from '../../shared/tooltip';
 
 class Assignments extends Component {
 
@@ -93,25 +95,30 @@ class Assignments extends Component {
             content = <TableComponent
                 columns={columns}
                 data={data}
-                noDataText="No assignments"
+                noDataText={strings.emptyTable}
             />;
         } else {
             const selectedAssignment = this.state.selectedAssignment;
             const type = this.state.type;
             content = <form onSubmit={type == 'archive' ? this.archiveAssignment.bind(this) : this.deleteAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>Are you sure you want to {type}?</p>
+                <p style={{fontWeight: 'bold'}}>{type == 'archive' ? strings.archiveConfirmation : strings.deleteConfirmation}</p>
                 <br />
-                <p><span style={{fontWeight: 'bold'}}>Assignment:</span> {selectedAssignment.assignmentName}</p>
-                <p><span style={{fontWeight: 'bold'}}>Course:</span> {selectedAssignment.courseNumber}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[0]}:</span> {selectedAssignment.assignmentName}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[1]}:</span> {selectedAssignment.courseNumber}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[2]}:</span> {selectedAssignment.sectionName}</p>
+                <p><span style={{fontWeight: 'bold'}}>{strings.assignmentInstanceConfirmationScreen[3]}:</span> {selectedAssignment.semesterName}</p>
                 <br />
-                <button type="submit">{type == 'archive' ? 'Archive' : 'Delete'}</button>
-                <button type="button" onClick={this.unselectAssignment.bind(this)}>Cancel</button>
+                <button type="submit">{type == 'archive' ? strings.archiveButton : strings.deleteButton}</button>
+                <button type="button" onClick={this.unselectAssignment.bind(this)}>{strings.cancelButton}</button>
             </form>;
         }
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.currentTableTitle}</h2>
+                <h2 className="title">
+                    {strings.currentTableTitle}
+                    <Tooltip Text={strings.currentTableTooltip} />
+                </h2>
                 <div className="section-content">
                     {content}
                 </div>
