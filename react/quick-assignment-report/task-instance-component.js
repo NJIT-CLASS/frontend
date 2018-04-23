@@ -12,13 +12,14 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     const TaskActivity = TaskInstance.TaskActivity;
     const DisplayName = TaskActivity.DisplayName;
 
-    let theStatus = taskStatus[0];
+    /*
     if (taskStatus.includes('late') && !taskStatus.includes('complete')) {
-        theStatus = 'late';
+        taskStatus[0] = 'late';
     }
     if (taskStatus.includes('cancelled')) {
-        theStatus = 'cancelled';
+        taskStatus[0] = 'cancelled';
     }
+    */
 
     const colors = { 
         viewed: 'viewed',
@@ -42,6 +43,28 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
         automatic: '(A)',
     };
 
+    let statusSymbols = letters[taskStatus[0]];
+    if (taskStatus.includes('viewed')) {
+        statusSymbols += letters.viewed;
+    }
+    if (taskStatus.includes('late')) {
+        statusSymbols += letters.late;
+    }
+    if (taskStatus.includes('cancelled')) {
+        statusSymbols += letters.cancelled;
+    }
+
+    let bgColor = colors[taskStatus[0]];
+    if (taskStatus.includes('viewed') && !taskStatus.includes('complete')) {
+        bgColor = colors.viewed;
+    }
+    if (taskStatus.includes('late') && !taskStatus.includes('complete')) {
+        bgColor = colors.late;
+    }
+    if (taskStatus.includes('cancelled')) {
+        bgColor = colors.cancelled;
+    }
+
 
     const link = `/task/${TaskInstance.TaskInstanceID}`;
 
@@ -53,13 +76,13 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
     //hide details if Automatic task
     let taskInformation = null;
-    if (theStatus === 'automatic') {
+    if (taskStatus[0] === 'automatic') {
         taskInformation = 
             <div>
                 <div className="task-type">{DisplayName}</div>
-                <div>{theStatus}</div>
+                <div>{taskStatus[0]}</div>
                 <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-                <br />
+            	<div>{statusSymbols}</div>
                 <br />
             </div>;
     } else {
@@ -69,7 +92,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
             	<div> {UserContact.Email} </div>
             	<div>TaskID: {TaskInstance.TaskInstanceID}</div>
             	<div> UserID: {User.UserID} </div>
-            	<div>{letters[theStatus]}</div>
+            	<div>{statusSymbols}</div>
             </div>;
     }
 
@@ -78,7 +101,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
         letters.late,
         letters.not_yet_started,
         letters.started
-    ].includes(letters[theStatus]);
+    ].includes(letters[taskStatus[0]]);
 
     const taskInstanceTooltip =
         <div className="task-instance-tooltip">
@@ -99,7 +122,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
 
     return (
-        <div className={`task-instance ${colors[theStatus]}`}>
+        <div className={`task-instance ${bgColor}`}>
             {taskInformation}
             {taskInstanceTooltip}
         </div>
