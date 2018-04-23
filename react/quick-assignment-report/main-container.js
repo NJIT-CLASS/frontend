@@ -25,6 +25,7 @@ class QuickAssignmentReport extends Component {
             Strings: strings,
             AssignmentDataLoaded: false,
             sectionInfo: null,
+            taskActivities: null,
             sectionInfoLoaded: false,
             showAssignmentReallocationForm: false,
             showTaskReallocationForm: false,
@@ -60,12 +61,14 @@ class QuickAssignmentReport extends Component {
             }));
     }
 
-    getSectionIdAndAssignmentNameAsync(assignmentID) {
+    getSectionIdAndAssignmentNameAndTaskActivityNamesAsync(assignmentID) {
         const assignmentRecordURL = `/getAssignmentRecord/${assignmentID}`;
         return apiCall.getAsync(assignmentRecordURL)
             .then(response => ({
                 sectionID: response.data.Info.SectionID.SectionID,
                 assignmentName: response.data.Info.Assignment.DisplayName,
+                taskActivities: response.data.AssignmentRecords[0]
+                    .map(taskInstance => taskInstance.TaskActivity)
             }));
     }
 
@@ -91,7 +94,8 @@ class QuickAssignmentReport extends Component {
 
     async fetchSectionInfo() {
         const {AssignmentID} = this.props;
-        const {sectionID, assignmentName} = await this.getSectionIdAndAssignmentNameAsync(AssignmentID);
+        const {sectionID, assignmentName, taskActivities} =
+            await this.getSectionIdAndAssignmentNameAndTaskActivityNamesAsync(AssignmentID);
         const volunteerIDs = this.getVolunteerIdsAsync(sectionID);
         const names = this.getNamesAsync(sectionID); // courseName, sectionName, and semesterName
         const users = this.getUsersAsync(sectionID);
@@ -106,7 +110,8 @@ class QuickAssignmentReport extends Component {
 
         this.setState({
             sectionInfo,
-            sectionInfoLoaded: true
+            sectionInfoLoaded: true,
+            taskActivities
         });
     }
 
@@ -273,7 +278,8 @@ class QuickAssignmentReport extends Component {
                     changeFilterType={this.changeFilterType}
                     changeFilterUsers={this.changeFilterUsers}
                     Strings={this.state.Strings}
-                    users={this.state.sectionInfo.users}
+                    users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}
+                    taskActivities={this.state.taskActivities}
                 />
                 <LegendSection Strings={this.state.Strings} />
                 <AssignmentComponent

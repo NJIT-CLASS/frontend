@@ -2,18 +2,11 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
 
-const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users}) => {
-    const typeOptions = [
-        {value: TASK_TYPES.CREATE_PROBLEM ,label: Strings.CreateProblemName},
-        {value: TASK_TYPES.EDIT,label: Strings.EditProblemName},
-        {value: TASK_TYPES.SOLVE_PROBLEM ,label: Strings.SolveProblemName},
-        {value: TASK_TYPES.GRADE_PROBLEM ,label: Strings.GradeName},
-        {value: TASK_TYPES.CRITIQUE ,label: Strings.CritiqueName},
-        {value: TASK_TYPES.NEEDS_CONSOLIDATION ,label: Strings.NeedsConsolidationName},
-        {value: TASK_TYPES.CONSOLIDATION ,label: Strings.ConsolidateName},
-        {value: TASK_TYPES.DISPUTE,label: Strings.DisputeName},
-        {value: TASK_TYPES.RESOLVE_DISPUTE ,label: Strings.ResolveDisputeName},
-    ];
+const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
+    const typeOptions = taskActivities.map(taskActivity => ({
+        value: taskActivity.Type,
+        label: taskActivity.DisplayName
+    }));
 
     const statusOptions = [
         {value: 'viewed', label: Strings.Viewed},
