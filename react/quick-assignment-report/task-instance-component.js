@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
-    if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
+    if(Filters.Status.length > 0) {
         showTaskInstance = taskStatus.some(v => Filters.Status.includes(v));
     }
 
@@ -12,13 +12,19 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     const TaskActivity = TaskInstance.TaskActivity;
     const DisplayName = TaskActivity.DisplayName;
 
-    //from old task status table
-    let isLate = taskStatus.includes('late') ? (taskStatus.includes('complete' ) ? false : true) : false ;
+    let theStatus = taskStatus[0];
+    if (taskStatus.includes('late') && !taskStatus.includes('complete')) {
+        theStatus = 'late';
+    }
+    if (taskStatus.includes('cancelled')) {
+        theStatus = 'cancelled';
+    }
 
-    const colors = { Incomplete: 'incomplete',
+    const colors = { 
+        viewed: 'viewed',
         complete: 'complete',
-        Late: 'late',
-        'Not Needed': 'not-needed',
+        late: 'late',
+        cancelled: 'cancelled',
         not_yet_started: 'not-yet-started',
         started: 'started',
         bypassed:'bypassed',
@@ -26,14 +32,14 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     };
 
     const letters = {
-        Incomplete: '(O)',
+        viewed: '(O)',
         complete: '(C)',
-        Late: '(L)',
-        'Not Needed': '(X)',
+        late: '(L)',
+        cancelled: '(X)',
         not_yet_started: '(NP)',
         started: '(P)',
-        automatic: '(A)',
         bypassed: '(B)',
+        automatic: '(A)',
     };
 
 
@@ -47,44 +53,32 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
     //hide details if Automatic task
     let taskInformation = null;
-    if(isLate){
+    if (theStatus === 'automatic') {
+        taskInformation = 
+            <div>
+                <div className="task-type">{DisplayName}</div>
+                <div>{theStatus}</div>
+                <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+                <br />
+                <br />
+            </div>;
+    } else {
         taskInformation =
-            <div className="task-type">{TaskActivity.Type}</div>
+            <div>
+                <div className="task-type">{DisplayName}</div>
             	<div> {UserContact.Email} </div>
             	<div>TaskID: {TaskInstance.TaskInstanceID}</div>
             	<div> UserID: {User.UserID} </div>
-            	<div>{letters.Late}</div>
+            	<div>{letters[theStatus]}</div>
             </div>;
-    }
-    else if(taskStatus[0] === 'automatic'){
-        taskInformation = <div>
-          <div className="task-type">{DisplayName}</div>
-          <div>{taskStatus[0]}</div>
-          <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-          <br />
-          <br />
-
-
-
-        </div>;
-    } else {
-        taskInformation = (
-            <div>
-                <div className="task-type">{DisplayName}</div>
-                <div>{UserContact.Email}</div>
-                <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-                <div>UserID: {User.UserID}</div>
-                <div>{letters[taskStatus[0]]}</div>
-            </div>
-        );
     }
 
     const isTaskReallocatable = [
-        letters.Incomplete,
-        letters.Late,
+        letters.opened,
+        letters.late,
         letters.not_yet_started,
         letters.started
-    ].includes(letters[taskStatus[0]]);
+    ].includes(letters[theStatus]);
 
     const taskInstanceTooltip =
         <div className="task-instance-tooltip">
@@ -105,7 +99,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
 
     return (
-        <div className={`task-instance ${isLate ? 'late' : colors[taskStatus[0]]}`}>
+        <div className={`task-instance ${colors[theStatus]}`}>
             {taskInformation}
             {taskInstanceTooltip}
         </div>

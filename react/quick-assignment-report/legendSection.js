@@ -1,10 +1,11 @@
 import React from 'react';
 
 const LegendSection = ({Strings}) => {
-    const colors = { Incomplete: 'incomplete',
+    const colors = { 
+        viewed: 'viewed',
         complete: 'complete',
-        Late: 'late',
-        'Not Needed': 'not-needed',
+        late: 'late',
+        cancelled: 'cancelled',
         not_yet_started: 'not-yet-started',
         started: 'started',
         bypassed:'bypassed',
@@ -12,10 +13,10 @@ const LegendSection = ({Strings}) => {
     };
 
     const letters = {
-        Incomplete: '(O)',
+        viewed: '(O)',
         complete: '(C)',
-        Late: '(L)',
-        'Not Needed': '(X)',
+        late: '(L)',
+        cancelled: '(X)',
         not_yet_started: '(NP)',
         started: '(P)',
         bypassed: '(B)',
@@ -23,25 +24,27 @@ const LegendSection = ({Strings}) => {
     };
 
     const statusToString = {
-        Incomplete: 'Incomplete',
+        viewed: 'Viewed',
         complete: 'Complete',
-        Late: 'Late',
-        'Not Needed': 'NotNeeded',
+        late: 'Late',
+        cancelled: 'Cancelled',
         not_yet_started: 'NotYetStarted',
         started: 'Started',
         bypassed: 'Bypassed',
         automatic: 'Automatic',
     };
 
-    let statusArray =  ['Incomplete',
+    let statusArray =  [
+        'viewed',
         'complete',
-        'Late',
-        'Not Needed',
+        'late',
+        'cancelled',
         'not_yet_started',
         'started',
         'bypassed',
-        'automatic'].map((status) => {
-            return <div className={`legend-block ${colors[status]}`}>{Strings[statusToString[status]]} {letters[status]}</div>;
+        'automatic'
+    ].map((status) => {
+            return <div key={status} className={`legend-block ${colors[status]}`}>{Strings[statusToString[status]]} {letters[status]}</div>;
         });
 
     return <div className="legend-table">

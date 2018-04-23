@@ -17,8 +17,8 @@ class QuickAssignmentReport extends Component {
         this.state = {
             AssignmentData: {},
             Filters: {
-                Type: '',
-                Status: [''],
+                Type: [],
+                Status: [],
                 WorkflowID: ''
             },
             Strings: strings,
@@ -128,9 +128,9 @@ class QuickAssignmentReport extends Component {
         this.fetchSectionInfo();
     }
 
-    changeFilterType(val){
+    changeFilterType(typeArray){
         let newFilters = this.state.Filters;
-        newFilters.Type = val.value;
+        newFilters.Type = typeArray.map(t => t.value);
         this.setState({
             Filters: newFilters
         });
