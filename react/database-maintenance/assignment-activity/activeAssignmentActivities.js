@@ -93,7 +93,7 @@ class Assignments extends Component {
             const selectedAssignment = this.state.selectedAssignment;
             const type = this.state.type;
             content = <form onSubmit={type == 'archive' ? this.archiveAssignment.bind(this) : this.deleteAssignment.bind(this)}>
-                <p style={{fontWeight: 'bold'}}>{type == 'archive' ? strings.archiveConfirmation : strings.deleteConfirmation}}</p>
+                <p style={{fontWeight: 'bold'}}>{type == 'archive' ? strings.archiveConfirmation : strings.deleteConfirmation}</p>
                 <br />
                 <p><span style={{fontWeight: 'bold'}}>{strings.assignmentActivityConfirmationScreen[0]}:</span> {selectedAssignment.assignmentName}</p>
                 <p><span style={{fontWeight: 'bold'}}>{strings.assignmentActivityConfirmationScreen[1]}:</span> {selectedAssignment.courseNumber}</p>
