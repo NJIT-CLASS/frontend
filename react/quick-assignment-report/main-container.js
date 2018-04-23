@@ -4,7 +4,7 @@ import FilterSection from './filtersSection';
 import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
-import {flatten} from 'lodash';
+import {flatten, uniqBy} from 'lodash';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
 import MoreInformation from './more-information';
@@ -25,7 +25,7 @@ class QuickAssignmentReport extends Component {
             Strings: strings,
             AssignmentDataLoaded: false,
             sectionInfo: null,
-            taskActivities: null,
+            taskActivities: [],
             sectionInfoLoaded: false,
             showAssignmentReallocationForm: false,
             showTaskReallocationForm: false,
@@ -42,6 +42,16 @@ class QuickAssignmentReport extends Component {
         this.changeFilterWorkflowID = this.changeFilterWorkflowID.bind(this);
         this.changeFilterStatus = this.changeFilterStatus.bind(this);
         this.changeFilterUsers = this.changeFilterUsers.bind(this);
+    }
+
+    getTaskActivitiesAsync(assignmentID) {
+        const assignmentReportURL = `/getAssignmentReport/${assignmentID}`;
+        return apiCall.getAsync(assignmentReportURL)
+            .then(response => {
+                const taskActivities = response.data.Result[0]
+                    .map(taskInstance => taskInstance.TaskActivity);
+                return uniqBy(taskActivities, 'TaskActivityID'); // remove duplicates
+            });
     }
 
     getVolunteerIdsAsync(sectionID) {
@@ -61,14 +71,12 @@ class QuickAssignmentReport extends Component {
             }));
     }
 
-    getSectionIdAndAssignmentNameAndTaskActivityNamesAsync(assignmentID) {
+    getSectionIdAndAssignmentNameAsync(assignmentID) {
         const assignmentRecordURL = `/getAssignmentRecord/${assignmentID}`;
         return apiCall.getAsync(assignmentRecordURL)
             .then(response => ({
                 sectionID: response.data.Info.SectionID.SectionID,
-                assignmentName: response.data.Info.Assignment.DisplayName,
-                taskActivities: response.data.AssignmentRecords[0]
-                    .map(taskInstance => taskInstance.TaskActivity)
+                assignmentName: response.data.Info.Assignment.DisplayName
             }));
     }
 
@@ -94,8 +102,8 @@ class QuickAssignmentReport extends Component {
 
     async fetchSectionInfo() {
         const {AssignmentID} = this.props;
-        const {sectionID, assignmentName, taskActivities} =
-            await this.getSectionIdAndAssignmentNameAndTaskActivityNamesAsync(AssignmentID);
+        const {sectionID, assignmentName} =
+            await this.getSectionIdAndAssignmentNameAsync(AssignmentID);
         const volunteerIDs = this.getVolunteerIdsAsync(sectionID);
         const names = this.getNamesAsync(sectionID); // courseName, sectionName, and semesterName
         const users = this.getUsersAsync(sectionID);
@@ -111,7 +119,6 @@ class QuickAssignmentReport extends Component {
         this.setState({
             sectionInfo,
             sectionInfoLoaded: true,
-            taskActivities
         });
     }
 
@@ -128,6 +135,9 @@ class QuickAssignmentReport extends Component {
                 });
             });
         });
+
+        this.getTaskActivitiesAsync(this.props.AssignmentID)
+            .then(taskActivities => this.setState({taskActivities}));
     }
 
     componentWillMount() {

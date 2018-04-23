@@ -4,8 +4,7 @@ import TaskInstanceComponent from './task-instance-component';
 const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick}) => {
     let showTaskActivity = true;
     if (Filters.Type.length > 0) {
-        const taskType = TaskActivity[0].TaskActivity.Type;
-        showTaskActivity = Filters.Type.includes(taskType);
+        showTaskActivity = Filters.Type.includes(parseInt(TA_ID, 10));
     }
     let taskInstancesArray = TaskActivity.map((taskInstance, index)=> {
         return <TaskInstanceComponent TaskInstance={taskInstance}
@@ -21,8 +20,7 @@ const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onR
         return <div className='task-activity-block'>{taskInstancesArray}</div>;
     }
     else{
-        return <div className={'task-instance empty-block-placeholder'}>
-        </div>;
+        return <div className={'task-activity-block empty-block-placeholder'}></div>;
     }
 };
 
