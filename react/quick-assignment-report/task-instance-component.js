@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) => {
+const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick,onReallocate }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if(Filters.Status.length > 0 && Filters.Status[0] !== ''){
@@ -66,20 +66,47 @@ const TaskInstanceComponent = ({onReallocate, TaskInstance, Filters, Strings}) =
 
         </div>;
     } else {
-        taskInformation = <div className="dropdown">
-            <div className="task-type">{TaskActivity.Type}</div>
-            <div> {UserContact.Email} </div>
-            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            <div> UserID: {User.UserID} </div>
-            <div>{letters[taskStatus[0]]}</div>
-            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
-        </div>;
+        taskInformation = (
+            <div>
+                <div className="task-type">{TaskActivity.Type}</div>
+                <div>{UserContact.Email}</div>
+                <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+                <div>UserID: {User.UserID}</div>
+                <div>{letters[taskStatus[0]]}</div>
+            </div>
+        );
     }
 
+    const isTaskReallocatable = [
+        letters.Incomplete,
+        letters.Late,
+        letters.not_yet_started,
+        letters.started
+    ].includes(letters[taskStatus[0]]);
 
-    return (<div className={`task-instance ${isLate ? 'late' : colors[taskStatus[0]]}`}>
-        {taskInformation}
-    </div>
+    const taskInstanceTooltip =
+        <div className="task-instance-tooltip">
+            <a href={`/task/${TaskInstance.TaskInstanceID}`}>
+                Go to task page
+            </a> <br />
+            <span style={{ color: 'blue', cursor: 'pointer' }}
+                onClick={() => onMoreInformationButtonClick(TaskInstance)} >
+                More Information
+            </span> <br />
+            {isTaskReallocatable ? (
+                <span style={{ color: 'blue', cursor: 'pointer' }}
+                    onClick={() => onReplaceUserInTaskButtonClick(TaskInstance)} >
+                    Replace this user
+                </span>
+            ) : null}
+        </div>;
+
+
+    return (
+        <div className={`task-instance ${colors[taskStatus[0]]}`}>
+            {taskInformation}
+            {taskInstanceTooltip}
+        </div>
     );
 };
 

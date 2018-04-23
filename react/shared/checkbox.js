@@ -31,8 +31,18 @@ class Checkbox extends React.Component{
             checkedValue = this.state.Clicked;
         }
 
-        return(<div className={checkedValue ? 'checkbox checked' : 'checkbox'}  style={styles} onClick={(e) => {
+        let className = "checkbox";
+        if (checkedValue) {
+            className += " checked";
+        }
+        if (this.props.disabled) {
+            className += " disabled";
+        }
+        return(<div className={className}  style={styles} onClick={(e) => {
             e.preventDefault();
+            if (this.props.disabled) {
+                return;
+            }
             this.setState({
                 Clicked: this.state.Clicked ? false: true
             });

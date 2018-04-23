@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
 
-const TaskComponent = ({onReallocate, TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings}) => {
+const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick,onReallocate}) => {
     let showTaskActivity = true;
     if(Filters.Type !== ''){
         showTaskActivity = Filters.Type === TaskActivity[0].TaskActivity.Type;
     }
     let taskInstancesArray = TaskActivity.map((taskInstance, index)=> {
         return <TaskInstanceComponent onReallocate={onReallocate}
-                                        TaskInstance={taskInstance}
-                                      key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
-                                      Filters={Filters}
-                                      Strings={Strings}
-
-                                  />;
+            TaskInstance={taskInstance}
+            key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
+            Filters={Filters}
+            Strings={Strings}
+            onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
+            onMoreInformationButtonClick={onMoreInformationButtonClick}
+        />;
     });
 
     if(showTaskActivity){
