@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
 
-const FilterSection = ({Filters, changeFilterType, changeFilterStatus, Strings}) => {
+const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users}) => {
     const typeOptions = [
         {value: TASK_TYPES.CREATE_PROBLEM ,label: Strings.CreateProblemName},
         {value: TASK_TYPES.EDIT,label: Strings.EditProblemName},
@@ -25,6 +25,11 @@ const FilterSection = ({Filters, changeFilterType, changeFilterStatus, Strings})
         {value: 'bypassed', label: Strings.Bypassed},
         {value: 'automatic', label: Strings.Automatic}
     ];
+
+    const userOptions = users.map(user => ({
+        value: user.id,
+        label: `${user.id} - ${user.firstName} ${user.lastName} - ${user.email}`
+    }));
 
     const workflowOptions = [{value:'', label: Strings.WorkflowID}];
 
@@ -55,9 +60,23 @@ const FilterSection = ({Filters, changeFilterType, changeFilterStatus, Strings})
         placeholder={'Status'}/>
       );
 
+    const userFilter = (
+        <Select  options={userOptions}
+          onChange={changeFilterUsers}
+          value={Filters.Users}
+          autosize={true}
+          className={'inline-filters'}
+          searchable={true}
+          placeholder={'User'}
+          clearable={true}
+          multi={true}
+        />
+      );
+
     return <div>
       {typeFilter}
       {statusFilter}
+      {userFilter}
   </div>;
 
 };

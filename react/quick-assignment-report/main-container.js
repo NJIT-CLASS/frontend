@@ -19,6 +19,7 @@ class QuickAssignmentReport extends Component {
             Filters: {
                 Type: [],
                 Status: [],
+                Users: [],
                 WorkflowID: ''
             },
             Strings: strings,
@@ -39,6 +40,7 @@ class QuickAssignmentReport extends Component {
         this.changeFilterType = this.changeFilterType.bind(this);
         this.changeFilterWorkflowID = this.changeFilterWorkflowID.bind(this);
         this.changeFilterStatus = this.changeFilterStatus.bind(this);
+        this.changeFilterUsers = this.changeFilterUsers.bind(this);
     }
 
     getVolunteerIdsAsync(sectionID) {
@@ -124,8 +126,7 @@ class QuickAssignmentReport extends Component {
     }
 
     componentWillMount() {
-        this.fetchAssignmentData();
-        this.fetchSectionInfo();
+        this.fetchData();
     }
 
     changeFilterType(typeArray){
@@ -152,6 +153,14 @@ class QuickAssignmentReport extends Component {
         });
     }
 
+    changeFilterUsers(usersArray){
+        let newFilters = this.state.Filters;
+        newFilters.Users = usersArray.map(user => user.value);
+        this.setState({
+            Filters: newFilters
+        });
+    }
+
     handleReplaceUserInTaskButtonClick(clickedTaskInstance) {
         this.taskInstanceToReallocate = clickedTaskInstance;
         this.setState({ showTaskReallocationForm: true });
@@ -162,7 +171,7 @@ class QuickAssignmentReport extends Component {
         this.setState({ showMoreInformation: true });
     }
 
-    refetchData() {
+    fetchData() {
         this.fetchAssignmentData();
         this.fetchSectionInfo();
     }
@@ -184,7 +193,7 @@ class QuickAssignmentReport extends Component {
             workflowCancellationMode: false,
             selectedWorkflowIDs: new Set()
         });
-        this.refetchData();
+        this.fetchData();
     }
 
     render() {
@@ -262,7 +271,9 @@ class QuickAssignmentReport extends Component {
                     changeFilterStatus={this.changeFilterStatus}
                     changeFilterWorkflowID={this.changeFilterWorkflowID}
                     changeFilterType={this.changeFilterType}
+                    changeFilterUsers={this.changeFilterUsers}
                     Strings={this.state.Strings}
+                    users={this.state.sectionInfo.users}
                 />
                 <LegendSection Strings={this.state.Strings} />
                 <AssignmentComponent
@@ -294,7 +305,7 @@ class QuickAssignmentReport extends Component {
                             onClose={() => this.setState({showTaskReallocationForm: false})}
                             taskInstance={this.taskInstanceToReallocate}
                             sectionInfo={this.state.sectionInfo}
-                            onUserReplaced={() => this.refetchData()}
+                            onUserReplaced={() => this.fetchData()}
                         />
                     ) : null}
 
@@ -308,7 +319,7 @@ class QuickAssignmentReport extends Component {
                             }
                             AssignmentID={this.props.AssignmentID}
                             sectionInfo={this.state.sectionInfo}
-                            onUserReplaced={() => this.refetchData()}
+                            onUserReplaced={() => this.fetchData()}
                         />
                     ) : null}
 

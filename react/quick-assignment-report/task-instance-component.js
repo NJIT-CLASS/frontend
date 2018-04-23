@@ -3,23 +3,17 @@ import React, { Component } from 'react';
 const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
-    if(Filters.Status.length > 0) {
+    if (Filters.Status.length > 0) {
         showTaskInstance = taskStatus.some(v => Filters.Status.includes(v));
+    }
+    if (Filters.Users.length > 0) {
+        showTaskInstance = Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
     }
 
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
     const DisplayName = TaskActivity.DisplayName;
-
-    /*
-    if (taskStatus.includes('late') && !taskStatus.includes('complete')) {
-        taskStatus[0] = 'late';
-    }
-    if (taskStatus.includes('cancelled')) {
-        taskStatus[0] = 'cancelled';
-    }
-    */
 
     const colors = { 
         viewed: 'viewed',
