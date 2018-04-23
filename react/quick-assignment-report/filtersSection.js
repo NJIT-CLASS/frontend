@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
 
-const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFilterWorkflowID, Strings}) => {
+const FilterSection = ({Filters, changeFilterType, changeFilterStatus, Strings}) => {
     const typeOptions = [{value: '', label: Strings.TaskType},
     {value: TASK_TYPES.CREATE_PROBLEM ,label: Strings.CreateProblemName},
     {value: TASK_TYPES.EDIT,label: Strings.EditProblemName},
@@ -35,15 +35,6 @@ const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFil
           searchable={false} />
       );
 
-    const workflowFilter = (
-        <Select options={workflowOptions}
-            onChange={changeFilterWorkflowID}
-            value={Filters.WorkflowID}
-            className={'inline-filters'}
-            autosize={true}
-            clearable={false}
-            searchable={false} />
-        );
 
     const statusFilter = (
       <Select options={statusOptions}
@@ -54,15 +45,27 @@ const FilterSection = ({Filters, changeFilterType, changeFilterStatus, changeFil
         backspaceRemoves={false}
         searchable={false}
         autosize={true}
-        multi={true}/>
+        multi={true}
+        placeholder={'Status'}/>
       );
 
     return <div>
-    {typeFilter}
-    {statusFilter}
-    {workflowFilter}
+      {typeFilter}
+      {statusFilter}
   </div>;
 
 };
 
 export default FilterSection;
+
+// const workflowFilter = (
+//     <Select options={workflowOptions}
+//         onChange={changeFilterWorkflowID}
+//         value={Filters.WorkflowID}
+//         className={'inline-filters'}
+//         autosize={true}
+//         clearable={false}
+//         searchable={false} />
+//     );
+//
+//     {workflowFilter}
