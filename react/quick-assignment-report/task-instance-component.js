@@ -7,7 +7,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
         showTaskInstance = taskStatus.some(v => Filters.Status.includes(v));
     }
     if (Filters.Users.length > 0) {
-        showTaskInstance = Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
+        showTaskInstance = showTaskInstance && Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
     }
 
     const User = TaskInstance.User;
