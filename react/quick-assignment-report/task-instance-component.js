@@ -70,16 +70,29 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
     //hide details if Automatic task
     let taskInformation = null;
-    if (taskStatus[0] === 'automatic') {
-        taskInformation = 
-            <div>
-                <div className="task-type">{DisplayName}</div>
-                <div>{taskStatus[0]}</div>
-                <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            	<div>{statusSymbols}</div>
-                <br />
-            </div>;
+    if(isLate){
+        taskInformation = <div className="dropdown">
+            <div className="task-type">{TaskActivity.Type}</div>
+            <div> {UserContact.Email} </div>
+            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            <div> UserID: {User.UserID} </div>
+            <div>{letters.Late}</div>
+            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
+        </div>;
+    }
+    else if(taskStatus[0] === 'automatic'){
+        taskInformation = <div>
+            <div className="task-type">{DisplayName}</div>
+            <div>{taskStatus[0]}</div>
+            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+            <br />
+            <br />
+
+
+
+        </div>;
     } else {
+        
         taskInformation =
             <div>
                 <div className="task-type">{DisplayName}</div>

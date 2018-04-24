@@ -8,12 +8,12 @@ const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onR
     }
     let taskInstancesArray = TaskActivity.map((taskInstance, index)=> {
         return <TaskInstanceComponent TaskInstance={taskInstance}
-                                      key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
-                                      Filters={Filters}
-                                      Strings={Strings}
-                                      onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
-                                      onMoreInformationButtonClick={onMoreInformationButtonClick}
-                                  />;
+            key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
+            Filters={Filters}
+            Strings={Strings}
+            onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
+            onMoreInformationButtonClick={onMoreInformationButtonClick}
+        />;
     });
 
     if(showTaskActivity){

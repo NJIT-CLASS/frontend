@@ -9,15 +9,15 @@ const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, 
     }
     let taskActivitiesArray = Object.keys(Workflow).map(key => {
         return <TaskComponent TaskActivity={Workflow[key]}
-                            TA_ID={key}
-                            WI_ID={WI_ID}
-                            WA_ID={WA_ID}
-                            key={`${WA_ID}-${WI_ID}-${key}`}
-                            Filters={Filters}
-                            Strings={Strings}
-                            onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
-                            onMoreInformationButtonClick={onMoreInformationButtonClick}
-                          />;
+            TA_ID={key}
+            WI_ID={WI_ID}
+            WA_ID={WA_ID}
+            key={`${WA_ID}-${WI_ID}-${key}`}
+            Filters={Filters}
+            Strings={Strings}
+            onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
+            onMoreInformationButtonClick={onMoreInformationButtonClick}
+        />;
     });
 
     if(showWorkflow){
