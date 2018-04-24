@@ -9,6 +9,7 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
     if (Filters.Users.length > 0) {
         showTaskInstance = showTaskInstance && Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
     }
+    let isLate = taskStatus.includes('late') ? (taskStatus.includes('complete' ) ? false : true) : false ;
 
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
@@ -77,7 +78,6 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
             <div>TaskID: {TaskInstance.TaskInstanceID}</div>
             <div> UserID: {User.UserID} </div>
             <div>{letters.Late}</div>
-            <div className="dropdown-content"><ul><li><a href={link}>View Task</a></li><li><a href="#" onClick={onReallocate.bind(this,User.UserID,TaskInstance.TaskInstanceID)}>Reallocate Task</a></li></ul></div>
         </div>;
     }
     else if(taskStatus[0] === 'automatic'){
@@ -87,9 +87,6 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
             <div>TaskID: {TaskInstance.TaskInstanceID}</div>
             <br />
             <br />
-
-
-
         </div>;
     } else {
         
