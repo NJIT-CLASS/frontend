@@ -60,7 +60,6 @@ class MarkupText extends React.Component {
             'mtr',
             'munder',
             'munderover',
-            'table',
             'thead',
             'tbody',
             'tr',

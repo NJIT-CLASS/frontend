@@ -53,6 +53,8 @@ class Assignment extends React.Component {
         </div>
         );
 
+        
+
         if(this.props.Assignment.StartLater)
         {
             CalendarView =
@@ -87,14 +89,13 @@ class Assignment extends React.Component {
                 <div className = "section-content">
                     <table border="0" cellPadding="0" cellSpacing="0" className="tab">
                         <tbody className="children">
-                            {/*<tr className="children">
-              <td className="children">
-                <form>
-                  <input type="text" name="AssigmentName" value={this.props.Assignment.AssigmentName} onChange = {this.props.onChangeAssigmentName.bind(this)}>
-                  </input>
-                </form>
-              </td>
-            </tr>*/}
+                            <tr className="children">
+                                <td className="children">
+                                    <label>{strings.AssignmentName}</label>
+                                    <input type="text" name="AssigmentName" value={this.props.Assignment.AssigmentName} onChange = {this.props.onChangeAssigmentName.bind(this)}>
+                                    </input>
+                                </td>
+                            </tr>
 
                             <tr className="children">
                                 <td className="children">
@@ -116,24 +117,20 @@ class Assignment extends React.Component {
 
                             <tr className="children">
                                 <td className="children">
-                                    <form>
-                                        <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
-                                            name="Days" value="Days">
-                                        </input>
-                                        <label>{strings.StartNow}</label>
-                                    </form>
+                                    <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
+                                        name="Days" value="Days">
+                                    </input>
+                                    <label>{strings.StartNow}</label>
                                 </td>
                             </tr>
 
                             <tr className="children">
                                 <td className="children">
-                                    <form>
-                                        <input type="radio" checked={this.props.Assignment.StartLater}  onChange={this.props.onChangeStartLaterAssignment.bind(this)}
-                                            name="Days" value="Days">
-                                        </input>
-                                        <label>{strings.StartLater}</label>
-                                        {CalendarView}
-                                    </form>
+                                    <input type="radio" checked={this.props.Assignment.StartLater}  onChange={this.props.onChangeStartLaterAssignment.bind(this)}
+                                        name="Days" value="Days">
+                                    </input>
+                                    <label>{strings.StartLater}</label>
+                                    {CalendarView}
                                 </td>
                             </tr>
                         </tbody>

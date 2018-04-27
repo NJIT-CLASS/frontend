@@ -5,7 +5,7 @@
     border: 1.6px solid #caccce;
     transition: border-color ease .3s;
 
-    &:hover {
+    &:hover:not(.disabled) {
         border-color: #00AB8D;
         cursor: pointer;
     }
@@ -13,6 +13,11 @@
     &.checked {
         border-color: #00AB8D;
         background-color: #00AB8D;
+    }
+
+    &.checked.disabled {
+        border-color: #CCC;
+        background-color: #CCC;
     }
 
     &:after {

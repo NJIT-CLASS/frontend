@@ -1779,12 +1779,23 @@ class AssignmentEditorContainer extends React.Component {
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
         let oldFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
-        console.log(taskIndex, oldNumberOfFields, linkedNumberOfFields);
         
-        workflowData[taskIndex].TA_fields = JSON.parse(JSON.stringify(linkedFields));
-        for(let i = 0; i < oldNumberOfFields; i++){
-            workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = oldFields[i];
+        workflowData[taskIndex].TA_fields = linkedFields;
+        for(let j = 0; j < linkedNumberOfFields; j++){
+            let copiedField = workflowData[taskIndex].TA_fields[j];
+            if(workflowData[taskIndex].TA_type === TASK_TYPES.EDIT){
+                //If an edit task, set default content of linked fields to point to linked task
+                if(copiedField.default_content[0] === ''  && copiedField.default_refers_to[0] === null){
+                    copiedField.default_refers_to = [taskIndex, j];
+                }
+            }
         }
+
+        for(let i = 0; i < oldNumberOfFields; i++){
+            let copiedField = cloneDeep(oldFields[i]);
+            workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = copiedField;
+        }
+        
         if(oldFieldDistribution !== undefined){
             let oldFieldDistFields =Object.keys(oldFieldDistribution);
             oldFieldDistFields.forEach((key) => {

@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/assignment-record/:assignmentId',
-    title: 'Task Status Table',
+    title: 'Assignment Status',
     routeHandler: handler,
     access: {
         admins: true,

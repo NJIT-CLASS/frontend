@@ -169,6 +169,7 @@ class AssignToSectionContainer extends React.Component
 
         let newData = {
             assignmentid: this.props.AssignmentID,
+            assignmentDisplayName: this.state.Assignment.AssigmentName,
             sectionIDs: this.state.Assignment.Section,
             startDate: this.state.Assignment.Time,
             wf_timing: {
