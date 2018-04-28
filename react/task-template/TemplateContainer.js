@@ -423,8 +423,15 @@ class TemplateContainer extends React.Component {
             } else {
                 if(task.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
-
-                    returningValues = task.Data[task.Data.length - 1][fieldIndex];
+                    try{
+                        if(task.Data !== null && task.Data.length !== 0){
+                            returningValues = task.Data[task.Data.length - 1][fieldIndex];
+                        } else {
+                            returningValues = ['',''];
+                        }
+                    } catch(exc){
+                        returningValues = ['',''];
+                    }
                 }
             }
         });

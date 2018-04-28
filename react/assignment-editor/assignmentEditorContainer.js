@@ -133,6 +133,7 @@ class AssignmentEditorContainer extends React.Component {
                 TA_allow_dispute: false,
                 AllowConsolidation: false,
                 TA_trigger_consolidation_threshold: [],
+                RefersToWhichTask: null,
                 TA_leads_to_new_problem: false,
                 TA_leads_to_new_solution: false
             };
@@ -862,8 +863,6 @@ class AssignmentEditorContainer extends React.Component {
         };
 
         sendData.WorkflowActivity.forEach((workflow, index) => {
-
-
             // B.1 Clean Workflow array
             let counter = 0;
             let mapping = {}; //new IDs of tasks after B.1
@@ -957,6 +956,24 @@ class AssignmentEditorContainer extends React.Component {
 
             });
             // B.6 Flatten workflow
+
+            let currentRefersToTarget = null;
+            let RefersToTargetTypes = [TASK_TYPES.EDIT, TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
+            workflow.WorkflowStructure.walk(function(node){
+                if(node.model.id === -1 ){
+                    return;
+                }
+
+                if(RefersToTargetTypes.includes(workflow.Workflow[node.model.id].TA_type)){
+                    currentRefersToTarget = node.parent.model.id;
+                }
+
+                workflow.Workflow[node.model.id].RefersToWhichTask = currentRefersToTarget;
+
+                if(!node.hasChildren()){
+                    currentRefersToTarget = null;
+                }
+            });
 
             workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
 

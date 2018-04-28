@@ -63,7 +63,7 @@ let strings = {
     DisputeMessage: '',
     DidNotDisputeMessage: 'This task will not be disputed',
     InsufficientFileErrorMessage: 'Missing some files. Please try again',
-    BypassedDisputeMessage: 'This dispute was bypassed.',
+    BypassedDisputeMessage: 'This task was bypassed.',
     Revision: 'Revision',
     Original: 'Original',
     Latest: 'Latest',

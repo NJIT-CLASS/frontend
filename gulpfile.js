@@ -55,7 +55,7 @@ const compileReact = (rootFile, outputName, watch) => {
         } else{
 
             bundler.transform(babelify, {
-                'presets': ['es2015', 'react', 'es2017'],
+                'presets': ['es2015', 'react', 'es2017','stage-0'],
                 'plugins': ['transform-flow-strip-types', 'transform-object-rest-spread'],
             })
                 .bundle()
