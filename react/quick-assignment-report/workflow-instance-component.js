@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TaskComponent from './task-component';
 import Checkbox from '../shared/checkbox';
 
-const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick, showCheckboxes, onCheckboxClick, selectedWorkflowIDs}) => {
+const WorkflowInstanceComponent = ({currentUserID, hasInstructorPrivilege, Workflow, Structure, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick, showCheckboxes, onCheckboxClick, selectedWorkflowIDs}) => {
     let showWorkflow = true;
     if(Filters.WorkflowID !== ''){
         showWorkflow = WI_ID === Filters.WorkflowID;
@@ -17,6 +17,8 @@ const WorkflowInstanceComponent = ({Workflow, Structure, WI_ID, WA_ID, Filters, 
                             Strings={Strings}
                             onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
                             onMoreInformationButtonClick={onMoreInformationButtonClick}
+                            hasInstructorPrivilege={hasInstructorPrivilege}
+                            currentUserID={currentUserID}
                           />;
     });
 

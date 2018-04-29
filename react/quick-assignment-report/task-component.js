@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
 
-const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick}) => {
+const TaskComponent = ({currentUserID, hasInstructorPrivilege, TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick}) => {
     let showTaskActivity = true;
     if (Filters.Type.length > 0) {
         showTaskActivity = Filters.Type.includes(parseInt(TA_ID, 10));
@@ -13,6 +13,8 @@ const TaskComponent = ({TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onR
                                       Strings={Strings}
                                       onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
                                       onMoreInformationButtonClick={onMoreInformationButtonClick}
+                                      hasInstructorPrivilege={hasInstructorPrivilege}
+                                      currentUserID={currentUserID}
                                   />;
     });
 
