@@ -78,8 +78,8 @@ class AboutContainer extends Component { //create a class for the component
             },
             {
                 semesterTitle: strings.SubTitle9,
-                topPerformers: ['Jerrod Ransom', 'Mateusz Stolarz'],
-                contributors: ['Vaishnavi Reddy Adapala', 'Arun Somasundaram','Shantanu Sharma', 'Aravind Narayan','Zelin Chen']
+                topPerformers: ['Jerrod Ransom', 'Mateusz Stolarz','Shantanu Sharma', 'Aravind Narayan'],
+                contributors: ['Vaishnavi Reddy Adapala', 'Arun Somasundaram','Zelin Chen']
             }
         ];
 
