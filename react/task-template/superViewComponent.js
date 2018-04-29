@@ -33,6 +33,7 @@ class SuperViewComponent extends React.Component {
     }
 
     componentDidMount(){
+        console.log(this.props.TaskData, this.props.Status);
         if(this.props.Status.includes('bypassed')){
             try{
                 let latestVersion = {};
