@@ -254,22 +254,22 @@ class QuickAssignmentReport extends Component {
         } else {
             buttons =
                 <div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      this.setState({
-                        showAssignmentReallocationForm: true
-                      })
-                    }
-                    style={{ marginRight: '30px' }}
-                  >
-                    Remove and replace users in the entire assignment
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      this.setState({
-                        workflowCancellationMode: true
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                showAssignmentReallocationForm: true
+                            })
+                        }
+                        style={{ marginRight: '30px' }}
+                    >
+                        Remove and replace users in the entire assignment
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            this.setState({
+                                workflowCancellationMode: true
                             })
                         }
                     >
@@ -280,51 +280,53 @@ class QuickAssignmentReport extends Component {
 
         return (
             <div className="quick-assignment-report">
-              {`${this.state.sectionInfo.assignmentName} - ${this.state.sectionInfo.courseName}`}
+              {this.state.sectionInfoLoaded?
+                (<div className="details">{`${this.state.sectionInfo.courseName} - ${this.state.sectionInfo.sectionName} - ${this.state.sectionInfo.semesterName} - ${this.state.sectionInfo.assignmentName}`}</div>)
+              :null}
               {buttons}
               <FilterSection
                 Filters={this.state.Filters}
-                    changeFilterStatus={this.changeFilterStatus}
-                    changeFilterWorkflowID={this.changeFilterWorkflowID}
-                    changeFilterType={this.changeFilterType}
-                    changeFilterUsers={this.changeFilterUsers}
-                    Strings={this.state.Strings}
-                    users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}
-                    taskActivities={this.state.taskActivities}
-                />
-                <LegendSection Strings={this.state.Strings} />
-                <AssignmentComponent
-                    Assignment={this.state.AssignmentData}
-                    Filters={this.state.Filters}
-                    Strings={this.state.Strings}
-                    onReplaceUserInTaskButtonClick={clickedTaskInstance =>
-                        this.handleReplaceUserInTaskButtonClick(
-                            clickedTaskInstance
-                        )
-                    }
-                    onMoreInformationButtonClick={clickedTaskInstance =>
-                        this.handleMoreInformationButtonClick(
-                            clickedTaskInstance
-                        )
-                    }
-                    showCheckboxes={this.state.workflowCancellationMode}
-                    onCheckboxClick={clickedWorkflowID =>
-                        this.handleWorkflowInstanceSelection(clickedWorkflowID)
-                    }
-                    selectedWorkflowIDs={Array.from(
-                        this.state.selectedWorkflowIDs
-                    )}
-                />
+                changeFilterStatus={this.changeFilterStatus}
+                changeFilterWorkflowID={this.changeFilterWorkflowID}
+                changeFilterType={this.changeFilterType}
+                changeFilterUsers={this.changeFilterUsers}
+                Strings={this.state.Strings}
+                users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}
+                taskActivities={this.state.taskActivities}
+              />
+              <LegendSection Strings={this.state.Strings} />
+              <AssignmentComponent
+                Assignment={this.state.AssignmentData}
+                Filters={this.state.Filters}
+                Strings={this.state.Strings}
+                onReplaceUserInTaskButtonClick={clickedTaskInstance =>
+                  this.handleReplaceUserInTaskButtonClick(
+                    clickedTaskInstance
+                  )
+                }
+                onMoreInformationButtonClick={clickedTaskInstance =>
+                  this.handleMoreInformationButtonClick(
+                    clickedTaskInstance
+                  )
+                }
+                showCheckboxes={this.state.workflowCancellationMode}
+                onCheckboxClick={clickedWorkflowID =>
+                  this.handleWorkflowInstanceSelection(clickedWorkflowID)
+                }
+                selectedWorkflowIDs={Array.from(
+                  this.state.selectedWorkflowIDs
+                )}
+              />
 
-                {this.state.showTaskReallocationForm &&
+              {this.state.showTaskReallocationForm &&
                 this.state.sectionInfoLoaded ? (
-                        <TaskReallocationForm
-                            onClose={() => this.setState({showTaskReallocationForm: false})}
-                            taskInstance={this.taskInstanceToReallocate}
-                            sectionInfo={this.state.sectionInfo}
-                            onUserReplaced={() => this.fetchData()}
-                        />
-                    ) : null}
+                  <TaskReallocationForm
+                    onClose={() => this.setState({showTaskReallocationForm: false})}
+                    taskInstance={this.taskInstanceToReallocate}
+                    sectionInfo={this.state.sectionInfo}
+                    onUserReplaced={() => this.fetchData()}
+                  />
+                ) : null}
 
                 {this.state.showAssignmentReallocationForm &&
                 this.state.sectionInfoLoaded ? (
