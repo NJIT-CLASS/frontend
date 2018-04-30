@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick }) => {
+const TaskInstanceComponent = ({ currentUserID, hasInstructorPrivilege, TaskInstance, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick }) => {
     let showTaskInstance = true;
     const taskStatus = JSON.parse(TaskInstance.Status);
     if (Filters.Status.length > 0) {
@@ -71,32 +71,41 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
 
     //hide details if Automatic task
     let taskInformation = null;
-    if(isLate){
-        taskInformation = <div className="dropdown">
-            <div className="task-type">{TaskActivity.Type}</div>
-            <div> {UserContact.Email} </div>
-            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            <div> UserID: {User.UserID} </div>
-            <div>{letters.Late}</div>
-        </div>;
-    }
-    else if(taskStatus[0] === 'automatic'){
-        taskInformation = <div>
-            <div className="task-type">{DisplayName}</div>
-            <div>{taskStatus[0]}</div>
-            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            <br />
-            <br />
-        </div>;
+    if (taskStatus[0] === 'automatic') {
+        taskInformation = 
+            <div>
+                <div className="task-type">{DisplayName}</div>
+                {
+                    hasInstructorPrivilege ?
+                        <div>
+                            <div>{taskStatus[0]}</div>
+                            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+                            <div>{statusSymbols}</div>
+                            <br />
+                        </div>
+                        : <div>{statusSymbols}</div>
+                }
+            </div>;
     } else {
         
         taskInformation =
             <div>
                 <div className="task-type">{DisplayName}</div>
-            	<div> {UserContact.Email} </div>
-            	<div>TaskID: {TaskInstance.TaskInstanceID}</div>
-            	<div> UserID: {User.UserID} </div>
+                {
+                    hasInstructorPrivilege ?
+                        <div>
+                            <div> {UserContact.Email} </div>
+                            <div>TaskID: {TaskInstance.TaskInstanceID}</div>
+                            <div> UserID: {User.UserID} </div>
+                        </div>
+                        : null
+                }
             	<div>{statusSymbols}</div>
+                {
+                    !hasInstructorPrivilege && currentUserID == TaskInstance.User.UserID ?
+                        <div style={{fontWeight: 'bold'}}> My Task </div>
+                        : null
+                }
             </div>;
     }
 
@@ -112,16 +121,24 @@ const TaskInstanceComponent = ({ TaskInstance, Filters, Strings, onReplaceUserIn
             <a href={`/task/${TaskInstance.TaskInstanceID}`}>
                 Go to task page
             </a> <br />
-            <span style={{ color: 'blue', cursor: 'pointer' }}
-                onClick={() => onMoreInformationButtonClick(TaskInstance)} >
-                More Information
-            </span> <br />
-            {isTaskReallocatable ? (
-                <span style={{ color: 'blue', cursor: 'pointer' }}
-                    onClick={() => onReplaceUserInTaskButtonClick(TaskInstance)} >
-                    Replace this user
-                </span>
-            ) : null}
+            {
+                hasInstructorPrivilege ?
+                    <div>
+                        <span style={{ color: 'blue', cursor: 'pointer' }}
+                            onClick={() => onMoreInformationButtonClick(TaskInstance)} >
+                            More Information
+                        </span> <br />
+                        {
+                            isTaskReallocatable ?
+                                <span style={{ color: 'blue', cursor: 'pointer' }}
+                                    onClick={() => onReplaceUserInTaskButtonClick(TaskInstance)} >
+                                    Replace this user
+                                </span>
+                                : null
+                        }
+                    </div>
+                    : null
+            }
         </div>;
 
 
