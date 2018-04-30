@@ -285,7 +285,13 @@ class QuickAssignmentReport extends Component {
 
         return (
             <div className="quick-assignment-report">
-                {buttons}
+                {
+                    this.props.hasInstructorPrivilege ?
+                        <div>
+                            {buttons}
+                        </div>
+                    : null
+                }
                 <FilterSection
                     Filters={this.state.Filters}
                     changeFilterStatus={this.changeFilterStatus}
@@ -295,9 +301,12 @@ class QuickAssignmentReport extends Component {
                     Strings={this.state.Strings}
                     users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}
                     taskActivities={this.state.taskActivities}
+                    hasInstructorPrivilege={this.props.hasInstructorPrivilege}
                 />
                 <LegendSection Strings={this.state.Strings} />
                 <AssignmentComponent
+                    hasInstructorPrivilege={this.props.hasInstructorPrivilege}
+                    currentUserID={parseInt(this.props.UserID)}
                     Assignment={this.state.AssignmentData}
                     Filters={this.state.Filters}
                     Strings={this.state.Strings}
