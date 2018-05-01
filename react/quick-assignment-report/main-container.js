@@ -66,6 +66,7 @@ class QuickAssignmentReport extends Component {
         return apiCall.getAsync(sectionInfoURL)
             .then(response => ({
                 courseName: response.data.Section.Course.Name,
+                courseNumber: response.data.Section.Course.Number,
                 sectionName: response.data.Section.Name,
                 semesterName: response.data.Section.Semester.Name,
             }));
