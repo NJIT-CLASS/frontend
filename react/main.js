@@ -57,6 +57,7 @@ const courseId = reactElem.dataset.courseId;
 const assignmentId = reactElem.dataset.assignmentId;
 const userType = reactElem.dataset.userType;
 const sectionId = reactElem.dataset.sectionId;
+const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege === 'true';
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
@@ -113,7 +114,7 @@ case 'testing-container':
     break;
 
 case 'assignment-record-container':
-    componentForCurrentPage = <QuickAssignmentReport UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
+    componentForCurrentPage = <QuickAssignmentReport hasInstructorPrivilege={hasInstructorPrivilege} UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
     break;
 
 case 'course-section-management':
