@@ -4,7 +4,7 @@ import {TASK_TYPES} from '../../server/utils/react_constants';
 
 const FilterSection = ({hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
     const typeOptions = taskActivities.map(taskActivity => ({
-        value: taskActivity.TaskActivityID,
+        value: taskActivity.Type,
         label: taskActivity.DisplayName
     }));
 

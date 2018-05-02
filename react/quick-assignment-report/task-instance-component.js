@@ -9,7 +9,6 @@ const TaskInstanceComponent = ({ currentUserID, hasInstructorPrivilege, TaskInst
     if (Filters.Users.length > 0) {
         showTaskInstance = showTaskInstance && Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
     }
-    let isLate = taskStatus.includes('late') ? (taskStatus.includes('complete' ) ? false : true) : false ;
 
     const User = TaskInstance.User;
     const UserContact = TaskInstance.User.UserContact;
