@@ -18,7 +18,7 @@ import TasksList from './tasksList';
 import CommentEditorComponent from './commentEditorComponent';
 import SuperViewComponent from './superViewComponent';
 import Tooltip from '../shared/tooltip';
-
+import ErrorComponent from '../shared/ErrorComponent';
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
 
@@ -92,18 +92,17 @@ class TemplateContainer extends React.Component {
         let commentsTaskList = [];
 
         apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
+            console.log(err,res,bod);
             if (res.statusCode != 200) {
-                this.setState({ Error: true });
-                return;
+                return this.setState({
+                    ErrorStatus: res.statusCode,
+                    Loaded:true
+                });
             }
             this.props.__(strings, (newStrings) => {
 
                 apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
-                    if (res.statusCode != 200) {
-                        return this.setState({
-                            ErrorStatus: res.statusCode
-                        });
-                    }
+                    
 
                     const taskList = new Array();
                     const skipIndeces = new Array();
@@ -491,9 +490,11 @@ class TemplateContainer extends React.Component {
 
         if(this.state.ErrorStatus !== null){
             switch(this.state.ErrorStatus){
-            case 402:
-                return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
-
+            case 418:
+                return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}.</div>;
+            default:
+                return <ErrorComponent />;
+            
             }
         }
         if (this.state.NotAllowed === true) {
