@@ -60,7 +60,8 @@ class TemplateContainer extends React.Component {
             NotAllowedMessage: '',
             IsRevision: false,
             CommentTargetList: [],
-            BoxHide: false
+            BoxHide: false,
+            ErrorStatus: null
         };
 
     }
@@ -99,13 +100,15 @@ class TemplateContainer extends React.Component {
 
                 apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
                     if (res.statusCode != 200) {
-                        this.setState({ Error: true });
-                        return;
+                        return this.setState({
+                            ErrorStatus: res.statusCode
+                        });
                     }
 
                     const taskList = new Array();
                     const skipIndeces = new Array();
                     let currentTaskStatus = '';
+                    
 
                     if (bod.error === true) {
                         return this.setState({
@@ -486,6 +489,13 @@ class TemplateContainer extends React.Component {
             return <div />;
         }
 
+        if(this.state.ErrorStatus !== null){
+            switch(this.state.ErrorStatus){
+            case 402:
+                return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
+
+            }
+        }
         if (this.state.NotAllowed === true) {
             return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
         } else {
