@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
 
-const FilterSection = ({hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
+const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
     const typeOptions = taskActivities.map(taskActivity => ({
         value: taskActivity.Type,
         label: taskActivity.DisplayName
@@ -53,7 +53,7 @@ const FilterSection = ({hasInstructorPrivilege, Filters, changeFilterType, chang
         placeholder={'Status'}/>
       );
 
-    const userFilter = hasInstructorPrivilege ? (
+    const userFilter = hasInstructorPrivilege && !showAnonymousVersion ? (
         <Select  options={userOptions}
           onChange={changeFilterUsers}
           value={Filters.Users}
