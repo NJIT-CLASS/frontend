@@ -306,36 +306,35 @@ class QuickAssignmentReport extends Component {
 
         return (
             <div className="quick-assignment-report">
-                {this.state.sectionInfoLoaded?
-                    (<div className="details">{`${this.state.sectionInfo.courseName} - ${this.state.sectionInfo.sectionName} - ${this.state.sectionInfo.semesterName} - ${this.state.sectionInfo.assignmentName}`}</div>)
-                :null}
-                {
-                    this.props.hasInstructorPrivilege ?
-                        <div style={{display: "flex", justifyContent: "space-between", width: "230px"}}>
-                            <label style={{marginTop: "5px"}}>
-                                Anonymous Version
-                            </label>
-                            <ToggleSwitch 
-                                isClicked={this.state.showAnonymousVersion} 
-                                click={() => this.setState(prevState => ({
-                                    showAnonymousVersion: !prevState.showAnonymousVersion
-                                })} 
-                                style={{margin: "0px"}}
-                            />
+              {this.state.sectionInfoLoaded?
+                (<div className="details">{`${this.state.sectionInfo.courseNumber} - ${this.state.sectionInfo.courseName} - ${this.state.sectionInfo.sectionName} - ${this.state.sectionInfo.semesterName} - ${this.state.sectionInfo.assignmentName}`}</div>)
+              :null}
+              {
+                this.props.hasInstructorPrivilege ?
+                  <div style={{display: "flex", justifyContent: "space-between", width: "230px"}}>
+                    <label style={{marginTop: "5px"}}>
+                      Anonymous Version
+                    </label>
+                    <ToggleSwitch
+                      isClicked={this.state.showAnonymousVersion}
+                      click={() => this.setState(prevState => ({
+                        showAnonymousVersion: !prevState.showAnonymousVersion
+                      }))} />
+
                         </div>
                         : null
-                }
-                {
-                    this.props.hasInstructorPrivilege && !this.state.showAnonymousVersion ?
-                        <div>
-                            {buttons}
-                        </div>
-                    : null
-                }
-                <FilterSection
-                    Filters={this.state.Filters}
-                    changeFilterStatus={this.changeFilterStatus}
-                    changeFilterWorkflowID={this.changeFilterWorkflowID}
+                        }
+                        {
+                          this.props.hasInstructorPrivilege && !this.state.showAnonymousVersion ?
+                            <div>
+                              {buttons}
+                            </div>
+                          : null
+                        }
+                        <FilterSection
+                          Filters={this.state.Filters}
+                          changeFilterStatus={this.changeFilterStatus}
+                          changeFilterWorkflowID={this.changeFilterWorkflowID}
                     changeFilterType={this.changeFilterType}
                     changeFilterUsers={this.changeFilterUsers}
                     Strings={this.state.Strings}
@@ -362,11 +361,11 @@ class QuickAssignmentReport extends Component {
                             clickedTaskInstance
                         )
                     }
-                    onBypassTaskButtonClick={clickedTaskInstance => 
+                    onBypassTaskButtonClick={clickedTaskInstance =>
                         this.handleBypassTaskButtonClick(clickedTaskInstance)}
-                    onCancelTaskButtonClick={clickedTaskInstance => 
+                    onCancelTaskButtonClick={clickedTaskInstance =>
                         this.handleCancelTaskButtonClick(clickedTaskInstance)}
-                    onRestartTaskButtonClick={clickedTaskInstance => 
+                    onRestartTaskButtonClick={clickedTaskInstance =>
                         this.handleRestartTaskButtonClick(clickedTaskInstance)}
                     showCheckboxes={this.state.workflowCancellationMode}
                     onCheckboxClick={clickedWorkflowID =>
