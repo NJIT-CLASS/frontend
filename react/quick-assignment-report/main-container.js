@@ -5,6 +5,7 @@ import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
 import {flatten, uniqBy} from 'lodash';
+import ReallocationModal from './reallocation-modal';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
 import MoreInformation from './more-information';
@@ -27,6 +28,8 @@ class QuickAssignmentReport extends Component {
                 WorkflowID: ''
             },
             Strings: strings,
+            Modal:null,
+            Loaded: false,
             AssignmentDataLoaded: false,
             sectionInfo: null,
             taskActivities: [],
@@ -56,6 +59,7 @@ class QuickAssignmentReport extends Component {
         const assignmentReportURL = `/getAssignmentReport/${assignmentID}`;
         return apiCall.getAsync(assignmentReportURL)
             .then(response => {
+                debugger;
                 const taskActivities = response.data.Result[0]
                     .map(taskInstance => taskInstance.TaskActivity);
                 return uniqBy(taskActivities, 'TaskActivityID'); // remove duplicates
@@ -148,6 +152,8 @@ class QuickAssignmentReport extends Component {
         this.getTaskActivitiesAsync(this.props.AssignmentID)
             .then(taskActivities => this.setState({taskActivities}));
     }
+
+    
 
     componentWillMount() {
         this.fetchData();
