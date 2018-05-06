@@ -7,6 +7,7 @@ const WorkflowComponent = ({
     currentUserID,
     WorkflowInstances,
     Structure,
+    WorkflowActivityName,
     WA_ID,
     Filters,
     Strings,
@@ -67,7 +68,7 @@ const WorkflowComponent = ({
 
     return (
         <div className="workflow-activity-block">
-            <div className="workflow-activity-label">{WA_ID}</div>
+            <div className="workflow-activity-label">{WA_ID} - {WorkflowActivityName}</div>
             {workflowInstancesArray}
         </div>
     );

@@ -21,7 +21,8 @@ const AssignmentComponent = ({
         return (
             <WorkflowComponent
                 WorkflowInstances={Assignment[key].WorkflowInstances}
-                WorkflowStructure={Assignment[key].Structure}
+                Structure={Assignment[key].Structure}
+                WorkflowActivityName={Assignment[key].Name}
                 WA_ID={key}
                 key={key}
                 Filters={Filters}

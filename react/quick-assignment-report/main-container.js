@@ -28,8 +28,6 @@ class QuickAssignmentReport extends Component {
                 WorkflowID: ''
             },
             Strings: strings,
-            Modal:null,
-            Loaded: false,
             AssignmentDataLoaded: false,
             sectionInfo: null,
             taskActivities: [],
@@ -59,7 +57,6 @@ class QuickAssignmentReport extends Component {
         const assignmentReportURL = `/getAssignmentReport/${assignmentID}`;
         return apiCall.getAsync(assignmentReportURL)
             .then(response => {
-                debugger;
                 const taskActivities = response.data.Result[0]
                     .map(taskInstance => taskInstance.TaskActivity);
                 return uniqBy(taskActivities, 'TaskActivityID'); // remove duplicates
