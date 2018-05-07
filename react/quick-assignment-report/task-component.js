@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
 
-const TaskComponent = ({currentUserID, hasInstructorPrivilege, TaskActivity, TA_ID, WI_ID, WA_ID, Filters, Strings, onReplaceUserInTaskButtonClick, onMoreInformationButtonClick}) => {
+const TaskComponent = ({
+    currentUserID,
+    hasInstructorPrivilege,
+    showAnonymousVersion,
+    TaskActivity,
+    TA_ID,
+    WI_ID,
+    WA_ID,
+    Filters,
+    Strings,
+    onReplaceUserInTaskButtonClick,
+    onMoreInformationButtonClick,
+    onBypassTaskButtonClick,
+    onCancelTaskButtonClick,
+    onRestartTaskButtonClick
+}) => {
     let taskInstancesArray = TaskActivity
         .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.Type))
         .map((taskInstance, index) => {
@@ -14,7 +29,11 @@ const TaskComponent = ({currentUserID, hasInstructorPrivilege, TaskActivity, TA_
                     onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
                     onMoreInformationButtonClick={onMoreInformationButtonClick}
                     hasInstructorPrivilege={hasInstructorPrivilege}
+                    showAnonymousVersion={showAnonymousVersion}
                     currentUserID={currentUserID}
+                    onBypassTaskButtonClick={onBypassTaskButtonClick}
+                    onCancelTaskButtonClick={onCancelTaskButtonClick}
+                    onRestartTaskButtonClick={onRestartTaskButtonClick}
                 />
             );
         });
