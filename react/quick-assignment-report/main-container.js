@@ -10,6 +10,10 @@ import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
 import MoreInformation from './more-information';
 import RemoveWorkflow from './remove-workflow';
+import BypassTask from './bypass-task';
+import CancelTask from './cancel-task';
+import RestartTask from './restart-task';
+import ToggleSwitch from '../shared/toggleSwitch';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -24,8 +28,6 @@ class QuickAssignmentReport extends Component {
                 WorkflowID: ''
             },
             Strings: strings,
-            Modal:null,
-            Loaded: false,
             AssignmentDataLoaded: false,
             sectionInfo: null,
             taskActivities: [],
@@ -38,7 +40,11 @@ class QuickAssignmentReport extends Component {
             // the 'replace in assignment' button is hidden
             workflowCancellationMode: false,
             selectedWorkflowIDs: new Set(),
-            showRemoveWorkflowConfirmation: false
+            showRemoveWorkflowConfirmation: false,
+            showBypassTaskConfirmation: false,
+            showCancelTaskConfirmation: false,
+            showRestartTaskConfirmation: false,
+            showAnonymousVersion: false,
         };
 
         this.changeFilterType = this.changeFilterType.bind(this);
@@ -69,6 +75,7 @@ class QuickAssignmentReport extends Component {
         return apiCall.getAsync(sectionInfoURL)
             .then(response => ({
                 courseName: response.data.Section.Course.Name,
+                courseNumber: response.data.Section.Course.Number,
                 sectionName: response.data.Section.Name,
                 semesterName: response.data.Section.Semester.Name,
             }));
@@ -79,7 +86,7 @@ class QuickAssignmentReport extends Component {
         return apiCall.getAsync(assignmentRecordURL)
             .then(response => ({
                 sectionID: response.data.Info.SectionID.SectionID,
-                assignmentName: response.data.Info.Assignment.DisplayName
+                assignmentName: response.data.Info.SectionID.DisplayName
             }));
     }
 
@@ -216,7 +223,24 @@ class QuickAssignmentReport extends Component {
         this.fetchData();
     }
 
+    handleBypassTaskButtonClick(clickedTaskInstance) {
+        this.clickedTaskInstance = clickedTaskInstance;
+        this.setState({ showBypassTaskConfirmation: true });
+    }
+
+    handleCancelTaskButtonClick(clickedTaskInstance) {
+        this.clickedTaskInstance = clickedTaskInstance;
+        this.setState({ showCancelTaskConfirmation: true });
+    }
+
+    handleRestartTaskButtonClick(clickedTaskInstance) {
+        console.log("Restart");
+        this.clickedTaskInstance = clickedTaskInstance;
+        this.setState({ showRestartTaskConfirmation: true });
+    }
+
     render() {
+
         if (!this.state.AssignmentDataLoaded) {
             return null;
         }
@@ -287,6 +311,23 @@ class QuickAssignmentReport extends Component {
             <div className="quick-assignment-report">
                 {
                     this.props.hasInstructorPrivilege ?
+                    <div style={{display: "flex", justifyContent: "space-between", width: "230px"}}>
+                        <label style={{marginTop: "5px"}}>
+                            Anonymous Version
+                        </label>
+                        <ToggleSwitch 
+                            isClicked={this.state.showAnonymousVersion} 
+                            click={() => this.setState(prevState => ({
+                                showAnonymousVersion: !prevState.showAnonymousVersion
+                                })
+                            )} 
+                            style={{margin: "0px"}}
+                        />
+                    </div>
+                    : null
+                }
+                {
+                    this.props.hasInstructorPrivilege && !this.state.showAnonymousVersion ?
                         <div>
                             {buttons}
                         </div>
@@ -302,10 +343,12 @@ class QuickAssignmentReport extends Component {
                     users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}
                     taskActivities={this.state.taskActivities}
                     hasInstructorPrivilege={this.props.hasInstructorPrivilege}
+                    showAnonymousVersion={this.state.showAnonymousVersion}
                 />
                 <LegendSection Strings={this.state.Strings} />
                 <AssignmentComponent
                     hasInstructorPrivilege={this.props.hasInstructorPrivilege}
+                    showAnonymousVersion={this.state.showAnonymousVersion}
                     currentUserID={parseInt(this.props.UserID)}
                     Assignment={this.state.AssignmentData}
                     Filters={this.state.Filters}
@@ -320,6 +363,12 @@ class QuickAssignmentReport extends Component {
                             clickedTaskInstance
                         )
                     }
+                    onBypassTaskButtonClick={clickedTaskInstance => 
+                        this.handleBypassTaskButtonClick(clickedTaskInstance)}
+                    onCancelTaskButtonClick={clickedTaskInstance => 
+                        this.handleCancelTaskButtonClick(clickedTaskInstance)}
+                    onRestartTaskButtonClick={clickedTaskInstance => 
+                        this.handleRestartTaskButtonClick(clickedTaskInstance)}
                     showCheckboxes={this.state.workflowCancellationMode}
                     onCheckboxClick={clickedWorkflowID =>
                         this.handleWorkflowInstanceSelection(clickedWorkflowID)
@@ -373,6 +422,36 @@ class QuickAssignmentReport extends Component {
                         workflowIDs={Array.from(this.state.selectedWorkflowIDs)}
                         assignmentID={this.props.AssignmentID}
                         onWorkflowCancel={() => this.handleWorkflowCancel()}
+                    />
+                ) : null}
+
+                {this.state.showBypassTaskConfirmation ? (
+                    <BypassTask
+                        onClose={() =>
+                            this.setState({ showBypassTaskConfirmation: false })
+                        }
+                        taskInstance={this.clickedTaskInstance}
+                        onBypassTask={() => this.fetchData()}
+                    />
+                ) : null}
+
+                {this.state.showCancelTaskConfirmation ? (
+                    <CancelTask
+                        onClose={() =>
+                            this.setState({ showCancelTaskConfirmation: false })
+                        }
+                        taskInstance={this.clickedTaskInstance}
+                        onCancelTask={() => this.fetchData()}
+                    />
+                ) : null}
+
+                {this.state.showRestartTaskConfirmation ? (
+                    <RestartTask
+                        onClose={() =>
+                            this.setState({ showCancelTaskConfirmation: false })
+                        }
+                        taskInstance={this.clickedTaskInstance}
+                        onRestartTask={() => this.fetchData()}
                     />
                 ) : null}
             </div>

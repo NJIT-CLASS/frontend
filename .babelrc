@@ -14,11 +14,12 @@
     }],
     "react",
    "es2015",  "es2017",
-    "stage-1"
+    "stage-0"
   ],
   "plugins": [
     "transform-decorators-legacy",
     "transform-class-properties",
-    "syntax-class-properties"
+    "syntax-class-properties",
+    "transform-runtime"
   ]
 }
