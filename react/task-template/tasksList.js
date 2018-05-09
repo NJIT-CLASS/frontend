@@ -39,6 +39,7 @@ class TasksList extends React.Component{
                                     TaskID={task.TaskInstanceID}
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
+                                    Status={task.Status}
 
         					/>
                             );
@@ -59,6 +60,7 @@ class TasksList extends React.Component{
                                     Strings={Strings}
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
+                                    Status={task.Status}
 								
         					/>
                             );

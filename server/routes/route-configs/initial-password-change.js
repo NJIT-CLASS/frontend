@@ -1,3 +1,4 @@
+import {ROLES} from '../../utils/react_constants';
 const handler = require('../route-handlers/initial-password-change');
 
 module.exports = {
@@ -8,8 +9,8 @@ module.exports = {
         admins: true,
         instructors: true,
         students: true,
-        role: null,
-        loggedOut: true
+        role: ROLES.GUEST,
+        loggedOut: false
     },
     sidebar: false
 };

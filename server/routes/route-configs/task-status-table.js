@@ -8,7 +8,7 @@ module.exports = {
     access: {
         admins: true,
         instructors: true,
-        students: false,
+        students: true,
         role: ROLES.TEACHER,
         loggedOut: false
     },

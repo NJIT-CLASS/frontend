@@ -87,6 +87,7 @@ class MutliViewComponent extends React.Component {
                             Strings={this.props.Strings}
                             TaskID={task.TaskInstanceID}
                             showComments={this.props.showComments.bind(this)}
+                            Status={task.Status}
                         />
                     </div>
                 );

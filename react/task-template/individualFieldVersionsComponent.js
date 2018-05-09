@@ -143,7 +143,7 @@ class FieldVersionView extends React.Component{
             }
 
             return <div className="version-block">
-                <label style={{fontSize: '12px', color: '#777777'}}>{versionSubheaderText}</label><br/>
+                <label style={{fontSize: '12px', color: '#777777'}}>{versionSubheaderText}</label>
 
                 {fieldContentBlock}
                 
@@ -157,7 +157,6 @@ class FieldVersionView extends React.Component{
 
         completeFieldView =  (
             <div key={this.props.FieldIndex +200}>
-                <br/>
                 {versions}
             </div>
         );

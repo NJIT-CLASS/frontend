@@ -323,7 +323,7 @@ class TaskDetailsComponent extends React.Component {
                 );
             }
             // Default Content from Other Tasks Logic
-            if (showDefaultFromOthers) {
+            if (showDefaultFromOthers && this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)) {
                 const defaultParentTaskId = this.props.callTaskFunction('getFieldDefaultContentValue', 0, index, this.props.index, this.props.workflowIndex);
                 console.log('Fields for', index, defaultParentTaskId, this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex));
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex).map(field => {
@@ -373,131 +373,86 @@ class TaskDetailsComponent extends React.Component {
                         </RadioGroup>
                     </div>
                 );
-                if (this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)) {
-                    defaultContentView = (
-                        <div className="inner block">
-                            <label>{strings.DefaultContentFromOtherTasks}</label>
-                            <Tooltip Text={strings.TaskDefaultFieldContentFromOthersMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-from-others-tooltip`} />
+                
+                defaultContentView = (
+                    <div className="inner block">
+                        <label>{strings.DefaultContentFromOtherTasks}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentFromOthersMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-from-others-tooltip`} />
 
-                            {defaultContentWrapper}
-                            {fieldSelection}
-                        </div>
-                    );
-                }
-                else{
-                    defaultContentView = (
-                        <div className="inner block">
-                            <label>{strings.DefaultContentForField}</label>
-                            <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                            <Editor
-                                initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                init={tinymceOptions}
-                                onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
-                            />
-                        </div>
-                    );
-                }
-
-                defaultContentButton = (
-                    <div
-                        style={{
-                            display: 'inline',
-                        }}
-                    >
-                        <label>{strings.GetDataFromAnotherTaskInstead}</label>
-                        <Tooltip Text={strings.TaskGetFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-get-field-content-tooltip`} />
-
-                        <Checkbox
-                            isClicked={this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)} click={() => {
-                                this.props.callTaskFunction('toggleDefaultFieldRefersTo', index, this.props.index, this.props.workflowIndex);
-                            }}
-                        />
-
+                        {defaultContentWrapper}
+                        {fieldSelection}
                     </div>
                 );
-            } else {
-                //change default content view by assessment type
-                if(this.props.TaskActivityData.TA_fields[index].field_type === 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type === 'self assessment' ){
-                    switch(this.props.TaskActivityData.TA_fields[index].assessment_type){
+            
 
-                    case 'grade':
-                        defaultContentView = (
-                            <div className="inner block">
-                                <label>{strings.DefaultContentForField}</label>
-                                <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                                <input type="number" className="number-input" placeholder="" onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
-                            </div>
-                        );
-                        break;
-                    case 'rating':
-                        defaultContentView = (
-                            <div className="inner block">
-                                <label>{strings.DefaultContentForField}</label>
-                                <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                
+            } else  if(this.props.TaskActivityData.TA_fields[index].field_type === 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type === 'self assessment' ){
+                switch(this.props.TaskActivityData.TA_fields[index].assessment_type){
 
-                                <Rater total={this.props.TaskActivityData.TA_fields[index].rating_max} rating={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                    onRate={(val) => {
-                                        this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.rating);
-                                    }}/>
-                            </div>
-                        );
-                        break;
-                    case 'evaluation':
-                        let labels = this.props.TaskActivityData.TA_fields[index].list_of_labels;
-                        if (typeof labels === 'string') {
-                            labels = labels.split(',');
-                        }
-                        labels = labels.map(label => {
-                            return {value: label, label: label};
-                        });
+                case 'grade':
+                    defaultContentView = (
+                        <div className="inner block">
+                            <label>{strings.DefaultContentForField}</label>
+                            <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                            <input type="number" className="number-input" placeholder="" onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_fields[index].default_content[0]} />
+                        </div>
+                    );
+                    break;
+                case 'rating':
+                    defaultContentView = (
+                        <div className="inner block">
+                            <label>{strings.DefaultContentForField}</label>
+                            <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
 
-                        defaultContentView = (
-                            <div className="inner block">
-                                <label>{strings.DefaultContentForField}</label>
-                                <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                                <Select
-                                    key={index + 1000}
-                                    options={labels}
-                                    selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                    value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                    onChange={(val) => {
-                                        this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.value);
-                                    }}
-                                    clearable={false}
-                                    searchable={false}
-                                />
-                            </div>
-                        );
-                        break;
-                    case 'pass':
-                        defaultContentView = (<div className="true-checkbox">
-                            <RadioGroup
-                                selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                onChange={(val) => {
-                                    this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val);
-                                }}
-                            >
-                                <label>{strings.Pass} <Radio value={'pass'} /> </label>
-                                <label>{strings.Fail} <Radio value={'fail'} /> </label>
-
-                            </RadioGroup>
-                        </div>);
-                        break;
-                    default:
-                        defaultContentView = (
-                            <div className="inner block">
-                                <label>{strings.DefaultContentForField}</label>
-                                <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
-                                <Editor
-                                    initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
-                                    init={tinymceOptions}
-                                    onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
-                                />
-                            </div>
-                        );
-                        break;
+                            <Rater total={this.props.TaskActivityData.TA_fields[index].rating_max} rating={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                onRate={(val) => {
+                                    this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.rating);
+                                }}/>
+                        </div>
+                    );
+                    break;
+                case 'evaluation':
+                    let labels = this.props.TaskActivityData.TA_fields[index].list_of_labels;
+                    if (typeof labels === 'string') {
+                        labels = labels.split(',');
                     }
-                } else {
+                    labels = labels.map(label => {
+                        return {value: label, label: label};
+                    });
+
+                    defaultContentView = (
+                        <div className="inner block">
+                            <label>{strings.DefaultContentForField}</label>
+                            <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                            <Select
+                                key={index + 1000}
+                                options={labels}
+                                selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                value={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                                onChange={(val) => {
+                                    this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val.value);
+                                }}
+                                clearable={false}
+                                searchable={false}
+                            />
+                        </div>
+                    );
+                    break;
+                case 'pass':
+                    defaultContentView = (<div className="true-checkbox">
+                        <RadioGroup
+                            selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                            onChange={(val) => {
+                                this.props.callTaskFunction('changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex, val);
+                            }}
+                        >
+                            <label>{strings.Pass} <Radio value={'pass'} /> </label>
+                            <label>{strings.Fail} <Radio value={'fail'} /> </label>
+
+                        </RadioGroup>
+                    </div>);
+                    break;
+                default:
                     defaultContentView = (
                         <div className="inner block">
                             <label>{strings.DefaultContentForField}</label>
@@ -509,8 +464,22 @@ class TaskDetailsComponent extends React.Component {
                             />
                         </div>
                     );
+                    break;
                 }
-				  }
+            } else {
+                defaultContentView = (
+                    <div className="inner block">
+                        <label>{strings.DefaultContentForField}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
+                        <Editor
+                            initialValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
+                            init={tinymceOptions}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeInputFieldData', 'default_content', this.props.index, index, this.props.workflowIndex)} 
+                        />
+                    </div>
+                );
+            }
+				  
 
             let removeButtonView = null;
             if (index != 0) {

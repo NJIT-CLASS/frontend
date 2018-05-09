@@ -1,3 +1,4 @@
+
 exports.get = (req, res) => {
 
     //make call to check if user is actually Pending
@@ -5,7 +6,8 @@ exports.get = (req, res) => {
         return res.redirect('/');
     }
     req.App.api.get('/user/pendingStatus/' + req.App.user.userId, {token: req.session.token},(err, statusCode, body) => {
-        if(statusCode === 401){
+        console.log(err,statusCode,body);
+        if(statusCode === 403){
             return res.status(404).end();
         }else{
             return res.render('initial-password-change');
@@ -18,7 +20,7 @@ exports.post = (req, res) => {
     let {currentpassword, newpassword, confirmpassword} = req.body;
 
     req.App.api.get('/user/pendingStatus/' + req.App.user.userId,{token: req.session.token}, (err, statusCode, body) => {
-        if(statusCode === 401){
+        if(statusCode === 403){
             return res.status(404).end();
         }
 
