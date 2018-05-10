@@ -22,7 +22,7 @@ const WorkflowComponent = ({
 }) => {
     const workflowInstancesArray = Object.keys(WorkflowInstances)
         .filter(key => {
-            if (hasInstructorPrivilege && !showAnonymousVersion) {
+            if (hasInstructorPrivilege) {
                 return true;
             }
             for (const [taskActivityID, taskActivity] of Object.entries(
