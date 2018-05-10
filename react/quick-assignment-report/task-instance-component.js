@@ -70,10 +70,9 @@ const TaskInstanceComponent = ({
                     </div>
                 ) : null}
                 <div>{statusSymbols}</div>
-                {!hasInstructorPrivilege && !showAnonymousVersion &&
-                currentUserID == TaskInstance.User.UserID ? (
-                        <div style={{ fontWeight: 'bold' }}> My Task </div>
-                    ) : null}
+                {!showAnonymousVersion && currentUserID == TaskInstance.User.UserID ? (
+                    <div style={{ fontWeight: 'bold' }}> My Task </div>
+                ) : null}
             </div>
         );
     }
@@ -123,7 +122,7 @@ const TaskInstanceComponent = ({
         <div className="task-instance-tooltip">
             <a href={`/task/${TaskInstance.TaskInstanceID}`}>Go to task page</a>
             <br />
-            {hasInstructorPrivilege && !showAnonymousVersion ? (
+            {hasInstructorPrivilege ? (
                 <div>
                     <div>
                         <span

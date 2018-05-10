@@ -53,7 +53,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
         placeholder={'Status'}/>
       );
 
-    const userFilter = hasInstructorPrivilege && !showAnonymousVersion ? (
+    const userFilter = (
         <Select  options={userOptions}
           onChange={changeFilterUsers}
           value={Filters.Users}
@@ -64,7 +64,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
           clearable={true}
           multi={true}
         />
-      ) : null;
+    );
 
     return <div>
       {typeFilter}
