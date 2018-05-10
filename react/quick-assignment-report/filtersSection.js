@@ -1,33 +1,17 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
+import {sortBy} from 'lodash';
 
 const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
-    const typeOptions = taskActivities.map(taskActivity => ({
-        value: taskActivity.Type,
-        label: taskActivity.DisplayName
+
+    const typeOptions = taskActivities.map(ta => ({
+        value: ta.taskActivityID,
+        label: `${ta.workflowActivityName} - ${ta.taskActivityDisplayName}`
     }));
-
-    const statusOptions = [
-        {value: 'viewed', label: Strings.Viewed},
-        {value: 'complete', label: Strings.Complete},
-        {value: 'late', label: Strings.Late},
-        {value: 'cancelled', label: Strings.Cancelled},
-        {value: 'not_yet_started', label: Strings.NotYetStarted},
-        {value: 'started', label: Strings.Started},
-        {value: 'bypassed', label: Strings.Bypassed},
-        {value: 'automatic', label: Strings.Automatic}
-    ];
-
-    const userOptions = users.map(user => ({
-        value: user.id,
-        label: `${user.id} - ${user.firstName} ${user.lastName} - ${user.email}`
-    }));
-
-    const workflowOptions = [{value:'', label: Strings.WorkflowID}];
-
     const typeFilter = (
-        <Select  options={typeOptions}
+        <Select
+          options={typeOptions}
           onChange={changeFilterType}
           value={Filters.Type}
           autosize={true}
@@ -40,8 +24,19 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
       );
 
 
+    const statusOptions = [
+        {value: 'viewed', label: Strings.Viewed},
+        {value: 'complete', label: Strings.Complete},
+        {value: 'late', label: Strings.Late},
+        {value: 'cancelled', label: Strings.Cancelled},
+        {value: 'not_yet_started', label: Strings.NotYetStarted},
+        {value: 'started', label: Strings.Started},
+        {value: 'bypassed', label: Strings.Bypassed},
+        {value: 'automatic', label: Strings.Automatic}
+    ];
     const statusFilter = (
-      <Select options={statusOptions}
+      <Select
+        options={statusOptions}
         onChange={changeFilterStatus}
         value={Filters.Status}
         className={'inline-filters'}
@@ -53,24 +48,35 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
         placeholder={'Status'}/>
       );
 
+
+    const userOptions = sortBy(users, user => user.id)
+        .map(user => ({
+            value: user.id,
+            label: `${user.id} - ${user.firstName} ${user.lastName} - ${user.email}`
+        }));
     const userFilter = (
-        <Select  options={userOptions}
-          onChange={changeFilterUsers}
-          value={Filters.Users}
-          autosize={true}
-          className={'inline-filters'}
-          searchable={true}
-          placeholder={'User'}
-          clearable={true}
-          multi={true}
-        />
+        hasInstructorPrivilege ?
+            <Select
+              options={userOptions}
+              onChange={changeFilterUsers}
+              value={Filters.Users}
+              autosize={true}
+              className={'inline-filters'}
+              searchable={true}
+              placeholder={'User'}
+              clearable={true}
+              multi={true}
+            />
+            : null
     );
 
-    return <div>
-      {typeFilter}
-      {statusFilter}
-      {userFilter}
-  </div>;
+    return (
+        <div>
+            {typeFilter}
+            {statusFilter}
+            {userFilter}
+        </div>
+    );
 
 };
 

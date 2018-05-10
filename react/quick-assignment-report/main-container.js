@@ -4,7 +4,7 @@ import FilterSection from './filtersSection';
 import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
-import {flatten, uniqBy} from 'lodash';
+import {flatten, uniqBy, flatMap, sortBy} from 'lodash';
 import ReallocationModal from './reallocation-modal';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
@@ -57,9 +57,16 @@ class QuickAssignmentReport extends Component {
         const assignmentReportURL = `/getAssignmentReport/${assignmentID}`;
         return apiCall.getAsync(assignmentReportURL)
             .then(response => {
-                const taskActivities = response.data.Result[0]
-                    .map(taskInstance => taskInstance.TaskActivity);
-                return uniqBy(taskActivities, 'TaskActivityID'); // remove duplicates
+                let taskActivities =
+                    flatMap(response.data.Result, workflow =>
+                        workflow.map(taskInstance => ({
+                            taskActivityDisplayName: taskInstance.TaskActivity.DisplayName,
+                            taskActivityID: taskInstance.TaskActivity.TaskActivityID,
+                            workflowActivityName: taskInstance.WorkflowInstance.WorkflowActivity.Name,
+                            workflowActivityID: taskInstance.WorkflowInstance.WorkflowActivityID
+                        })));
+                taskActivities = uniqBy(taskActivities, 'taskActivityID');
+                return sortBy(taskActivities, ['workflowActivitiyID', 'taskActivityID']);
             });
     }
 
@@ -137,7 +144,6 @@ class QuickAssignmentReport extends Component {
 
         this.props.__(strings, (newStrings) => {
             apiCall.get(url, (err,res, body) => {
-                console.log(body);
                 this.setState({
                     AssignmentData: body.Result,
                     Strings: newStrings,
@@ -234,7 +240,6 @@ class QuickAssignmentReport extends Component {
     }
 
     handleRestartTaskButtonClick(clickedTaskInstance) {
-        console.log("Restart");
         this.clickedTaskInstance = clickedTaskInstance;
         this.setState({ showRestartTaskConfirmation: true });
     }

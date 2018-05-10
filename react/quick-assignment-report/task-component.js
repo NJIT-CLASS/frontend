@@ -18,7 +18,7 @@ const TaskComponent = ({
     onRestartTaskButtonClick
 }) => {
     let taskInstancesArray = TaskActivity
-        .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.Type))
+        .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.TaskActivityID))
         .map((taskInstance, index) => {
         return (
             <TaskInstanceComponent
