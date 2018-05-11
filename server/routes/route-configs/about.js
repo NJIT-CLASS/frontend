@@ -10,7 +10,7 @@ module.exports = {
         instructors: true,
         students: true,
         role: ROLES.GUEST,
-        loggedOut: false
+        loggedOut: true
     },
     icon: 'files-o',
     sidebar: true

@@ -20,23 +20,23 @@ const TaskComponent = ({
     let taskInstancesArray = TaskActivity
         .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.TaskActivityID))
         .map((taskInstance, index) => {
-        return (
-            <TaskInstanceComponent
-                TaskInstance={taskInstance}
-                key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
-                Filters={Filters}
-                Strings={Strings}
-                onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
-                onMoreInformationButtonClick={onMoreInformationButtonClick}
-                hasInstructorPrivilege={hasInstructorPrivilege}
-                showAnonymousVersion={showAnonymousVersion}
-                currentUserID={currentUserID}
-                onBypassTaskButtonClick={onBypassTaskButtonClick}
-                onCancelTaskButtonClick={onCancelTaskButtonClick}
-                onRestartTaskButtonClick={onRestartTaskButtonClick}
-            />
-        );
-    });
+            return (
+                <TaskInstanceComponent
+                    TaskInstance={taskInstance}
+                    key={`${WA_ID}-${WI_ID}-${TA_ID}-${index}`}
+                    Filters={Filters}
+                    Strings={Strings}
+                    onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}
+                    onMoreInformationButtonClick={onMoreInformationButtonClick}
+                    hasInstructorPrivilege={hasInstructorPrivilege}
+                    showAnonymousVersion={showAnonymousVersion}
+                    currentUserID={currentUserID}
+                    onBypassTaskButtonClick={onBypassTaskButtonClick}
+                    onCancelTaskButtonClick={onCancelTaskButtonClick}
+                    onRestartTaskButtonClick={onRestartTaskButtonClick}
+                />
+            );
+        });
 
     if (taskInstancesArray.length > 0) {
         return <div className="task-activity-block">{taskInstancesArray}</div>;

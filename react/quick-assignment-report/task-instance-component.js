@@ -82,39 +82,39 @@ const TaskInstanceComponent = ({
     // 'replace user,' 'bypass task,' 'cancel task,' and 'restart task'
     // buttons should show based on the task status
     const showButton = {
-        "replace": {
-            "automatic": false,
-            "started": true,
-            "complete": false,
-            "bypassed": false,
-            "cancelled": false,
-            "not_yet_started": true
+        'replace': {
+            'automatic': false,
+            'started': true,
+            'complete': false,
+            'bypassed': false,
+            'cancelled': false,
+            'not_yet_started': true
         },
-        "bypass": {
-            "automatic": true,
-            "started": true,
-            "complete": false,
-            "bypassed": false,
-            "cancelled": false,
-            "not_yet_started": false
+        'bypass': {
+            'automatic': true,
+            'started': true,
+            'complete': false,
+            'bypassed': false,
+            'cancelled': false,
+            'not_yet_started': false
         },
-        "cancel": {
-            "automatic": false,
-            "started": true,
-            "complete": false,
-            "bypassed": true,
-            "cancelled": false,
-            "not_yet_started": true
+        'cancel': {
+            'automatic': false,
+            'started': true,
+            'complete': false,
+            'bypassed': true,
+            'cancelled': false,
+            'not_yet_started': true
         },
-        "restart": {
-            "automatic": true,
-            "started": true,
-            "complete": true,
-            "bypassed": true,
-            "cancelled": true,
-            "not_yet_started": false
+        'restart': {
+            'automatic': true,
+            'started': true,
+            'complete': true,
+            'bypassed': true,
+            'cancelled': true,
+            'not_yet_started': false
         },
-    }
+    };
 
     const status = taskStatuses.includes('cancelled') ? 'cancelled' : taskStatuses[0];
 

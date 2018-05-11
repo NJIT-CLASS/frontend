@@ -57,7 +57,7 @@ const courseId = reactElem.dataset.courseId;
 const assignmentId = reactElem.dataset.assignmentId;
 const userType = reactElem.dataset.userType;
 const sectionId = reactElem.dataset.sectionId;
-const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege === 'true';
+const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege;
 /**
  * Decide which page is displayed currently and render the appropriate component
  */

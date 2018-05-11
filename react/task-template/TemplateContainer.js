@@ -18,7 +18,7 @@ import TasksList from './tasksList';
 import CommentEditorComponent from './commentEditorComponent';
 import SuperViewComponent from './superViewComponent';
 import Tooltip from '../shared/tooltip';
-
+import ErrorComponent from '../shared/ErrorComponent';
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
 
@@ -60,7 +60,8 @@ class TemplateContainer extends React.Component {
             NotAllowedMessage: '',
             IsRevision: false,
             CommentTargetList: [],
-            BoxHide: false
+            BoxHide: false,
+            ErrorStatus: null
         };
 
     }
@@ -91,21 +92,22 @@ class TemplateContainer extends React.Component {
         let commentsTaskList = [];
 
         apiCall.get(`/superCall/${this.props.TaskID}`, options2, (err, res, bod) => {
+            console.log(err,res,bod);
             if (res.statusCode != 200) {
-                this.setState({ Error: true });
-                return;
+                return this.setState({
+                    ErrorStatus: res.statusCode,
+                    Loaded:true
+                });
             }
             this.props.__(strings, (newStrings) => {
 
                 apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
-                    if (res.statusCode != 200) {
-                        this.setState({ Error: true });
-                        return;
-                    }
+                    
 
                     const taskList = new Array();
                     const skipIndeces = new Array();
                     let currentTaskStatus = '';
+                    
 
                     if (bod.error === true) {
                         return this.setState({
@@ -486,6 +488,15 @@ class TemplateContainer extends React.Component {
             return <div />;
         }
 
+        if(this.state.ErrorStatus !== null){
+            switch(this.state.ErrorStatus){
+            case 418:
+                return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}.</div>;
+            default:
+                return <ErrorComponent />;
+            
+            }
+        }
         if (this.state.NotAllowed === true) {
             return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
         } else {
