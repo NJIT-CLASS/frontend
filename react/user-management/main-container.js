@@ -240,8 +240,9 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
+            console.log(user);
             var organizationGroup = user.OrganizationGroup;
-            var isBlocked = user.UserLogin.Blocked;
+            var isBlocked = "Blocked" in user.UserLogin ? user.UserLogin.Blocked : false;
             var timeout = user.UserLogin.Timeout;
             var userID = user.UserID;
             var email = user.UserContact.Email;
