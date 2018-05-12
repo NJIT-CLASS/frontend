@@ -333,7 +333,7 @@ class QuickAssignmentReport extends Component {
                     : null
                 }
                 {
-                    this.props.hasInstructorPrivilege && !this.state.showAnonymousVersion ?
+                    this.props.hasInstructorPrivilege ?
                         <div>
                             {buttons}
                         </div>
