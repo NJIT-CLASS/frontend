@@ -5,7 +5,6 @@ import LegendSection from './legendSection';
 import strings from './strings';
 import apiCall from '../shared/apiCall';
 import {flatten, uniqBy, flatMap, sortBy} from 'lodash';
-import ReallocationModal from './reallocation-modal';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
 import MoreInformation from './more-information';
@@ -74,7 +73,8 @@ class QuickAssignmentReport extends Component {
     getVolunteerIdsAsync(sectionID) {
         const volunteersURL = `/VolunteerPool/VolunteersInSection/${sectionID}`;
         return apiCall.getAsync(volunteersURL)
-            .then(response => response.data.Volunteers.map(user => user.UserID));
+            .then(response => response.data.Volunteers.map(user => user.UserID))
+            .catch(() => []);
     }
 
     getNamesAsync(sectionID) {

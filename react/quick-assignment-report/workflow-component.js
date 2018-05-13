@@ -68,14 +68,18 @@ const WorkflowComponent = ({
             );
         });
 
-    return (
-        <div className="workflow-activity-block">
-            <div className="workflow-activity-label">
-                {WA_ID} - {WorkflowActivityName}<Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
+    if (workflowInstancesArray.length > 0) {
+        return (
+            <div className="workflow-activity-block">
+                <div className="workflow-activity-label">
+                    {WA_ID} - {WorkflowActivityName}<Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
+                </div>
+                {workflowInstancesArray}
             </div>
-            {workflowInstancesArray}
-        </div>
-    );
+        );
+    } else {
+        return null;
+    }
 };
 
 export default WorkflowComponent;
