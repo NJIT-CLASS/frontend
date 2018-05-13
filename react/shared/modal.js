@@ -18,7 +18,7 @@ class Modal extends React.Component {
                 }
             }}>
                 <div className="modal-overlay-container">
-                    <div className="modal" style={ styles }>
+                    <div className="modal" style={ styles } onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
                             <div>{ this.props.title }</div>
                             <i className="close-icon" onClick={this.props.close}>&times;</i>

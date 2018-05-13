@@ -5,9 +5,12 @@ exports.get = (req, res) => {
     if(req.App.user === undefined){
         return res.redirect(`/?url=${encodeURIComponent(req.originalUrl)}`);
     }
+
+    var userIDToUse = req.App.user.userId;
+    
     res.render('task-template', {
         scripts: ['/static/react_apps.js'],
-        userId: req.App.user.userId,
+        userId: userIDToUse ,
         taskId: req.params.taskId,
         courseId: req.query.courseId,
         sectionId: req.query.sectionId,

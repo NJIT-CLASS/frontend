@@ -26,19 +26,45 @@ class SuperViewComponent extends React.Component {
             Ready: false,
             Error: false,
             IsBypassedDispute: false,
-            TaskHistory: null
+            TaskHistory: null,
+            CancelledTask: null
             
         };
     }
 
     componentDidMount(){
-        if(this.props.Type === TASK_TYPES.DISPUTE){
-            if(this.props.TaskData === undefined || this.props.TaskData[0] === undefined || isEmpty(this.props.TaskData[0])){
+        console.log(this.props.TaskData, this.props.Status);
+        if(this.props.Status.includes('bypassed')){
+            try{
+                let latestVersion = {};
+                latestVersion.number_of_fields = this.props.TaskActivityFields.number_of_fields;
+                for (let i = 0; i < this.props.TaskActivityFields.number_of_fields; i++) {
+                    try{
+                        if (this.props.TaskActivityFields[i].default_refers_to[0] !== null) {
+                            latestVersion[i] = this.props.getLinkedTaskValues(this.props.TaskActivityFields[i].default_refers_to[0], tAdata[i].default_refers_to[1]);
+                        } else {
+                            latestVersion[i] = this.props.TaskActivityFields[i].default_content;
+                        }
+                    }catch(exc){
+                        latestVersion[i] = ['',''];
+                    }
+                    
+                }
+                this.props.TaskData = latestVersion;
+            } catch(exc){
                 this.setState({
                     IsBypassedDispute: true
                 });
             }
+                
+            
+        } 
+        else if(this.props.Status.includes('bypassed')){
+            this.setState({
+                CancelledTask: true
+            });
         }
+        
     }
     
 
@@ -86,7 +112,9 @@ class SuperViewComponent extends React.Component {
     }
 
     render() {
-        console.log('View Data',this.props);
+        if(this.state.CancelledTask === true){
+            return <div></div>;
+        }
         let content = null;
         let TA_rubric = null;
         let TA_instructions = null;

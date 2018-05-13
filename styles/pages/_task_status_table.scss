@@ -58,28 +58,40 @@
 
   .complete{
     background-color: #00ff00;
+    border: 1px solid #00dd00;
   }
 
-  .incomplete{
+  .opened{
     background-color: #ffffff;
+    border: 1px solid #dddddd;
   }
 
   .late{
     background-color: #ff0000;
+    border: 1px solid #dd0000;
   }
 
-  .not-needed{
+  .cancelled{
     background-color: #ffff00;
+    border: 1px solid #dddd00;
   }
   .not-yet-started{
     background-color: #b3b3b3;
+    border: 1px solid #919191;
   }
   .started{
     background-color: #0099ff;
+    border: 1px solid #0077ff;
   }
   .automatic{
     background-color: #ff9933;
+    border: 1px solid #dd7711;
   }
   .bypassed{
     background-color: #03EAFF;
+    border: 1px solid #00C8DD;
+  }
+  .viewed{
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
   }

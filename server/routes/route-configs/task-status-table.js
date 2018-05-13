@@ -3,12 +3,12 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/assignment-record/:assignmentId',
-    title: 'Task Status Table',
+    title: 'Assignment Status',
     routeHandler: handler,
     access: {
         admins: true,
         instructors: true,
-        students: false,
+        students: true,
         role: ROLES.TEACHER,
         loggedOut: false
     },

@@ -26,10 +26,11 @@ import 'tinymce/plugins/wordcount';
 const tinymceOptions = {
     skin_url: '/static/tinymce_skins/lightgray',
     height: '150px',
-    width: '500px',
+    width: '570px',
     menubar: true,
     plugins: ['advlist autolink charmap codesample colorpicker contextmenu directionality fullscreen help image imagetools insertdatetime link lists media paste preview print searchreplace table textcolor textpattern wordcount'],
-    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+    toolbar: 'bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | removeformat | tiny_mce_wiris_formulaEditor',
+    contextmenu: "cut copy paste | link | selectall",
     content_css: [
         '/static/main.css',
         '/static/vendor/prism.css',
