@@ -87,7 +87,7 @@ class SectionPageContainer extends Component {
                     <h2 className="title">{Strings.OngoingAssignments}</h2>
                     <ul>
                         { 
-                            OngoingAssignments.map( assignment => <li ><a href={`/assignment-record/${assignment.AssignmentInstanceID}`}>{assignment.Assignment.DisplayName}</a></li>)
+                            OngoingAssignments.map( assignment => <li key={assignment.AssignmentInstanceID}><a href={`/assignment-record/${assignment.AssignmentInstanceID}`}>{assignment.Assignment.DisplayName}</a></li>)
                         }
                     </ul>
                 </div>

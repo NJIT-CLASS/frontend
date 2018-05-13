@@ -13,7 +13,7 @@ class UserList extends Component {
             <ul>
                 {
                     Users.map((user) => {
-                        return <li>{user.User.FirstName} {user.User.LastName}</li>;
+                        return <li key={user.UserID}>{user.User.FirstName} {user.User.LastName}</li>;
                     })
                 }
             </ul>
