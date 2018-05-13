@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import MarkupView from '../shared/markupTextInlineView';
 
 const trunc = (str, n ) => {
+    if(str == null) return '';
     if (str.length <= n) { return str; }
     var subString = str.substr(0, n-1);
+    if(subString == null) return '';
     return (subString.substr(0, subString.lastIndexOf(' ')) ) + '...';
 };
 
