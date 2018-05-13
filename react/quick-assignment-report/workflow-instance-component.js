@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TaskComponent from './task-component';
 import Checkbox from '../shared/checkbox';
+import Tooltip from '../shared/tooltip';
 
 const WorkflowInstanceComponent = ({
     currentUserID,
@@ -19,7 +20,8 @@ const WorkflowInstanceComponent = ({
     selectedWorkflowIDs,
     onBypassTaskButtonClick,
     onCancelTaskButtonClick,
-    onRestartTaskButtonClick
+    onRestartTaskButtonClick,
+    index
 }) => {
     let showWorkflow = true;
     if (Filters.WorkflowID !== '') {
@@ -56,7 +58,9 @@ const WorkflowInstanceComponent = ({
                         click={() => onCheckboxClick(WI_ID)}
                     />
                 ) : null}
-                <div className="workflow-instance-label">{WI_ID}</div>
+                <div className="workflow-instance-label">
+                    {WI_ID} {index === 0 ? <Tooltip Text={Strings.WorkflowInstanceTooltip} ID={WA_ID} /> : null}
+                </div>
                 <div className="workflow-instance">
                     {taskActivitiesArray}
                     <br />

@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '../shared/tooltip';
 
 const LegendSection = ({Strings}) => {
     const colors = { 
@@ -44,12 +45,21 @@ const LegendSection = ({Strings}) => {
         'bypassed',
         'automatic'
     ].map((status) => {
-            return <div key={status} className={`legend-block ${colors[status]}`}>{Strings[statusToString[status]]} {letters[status]}</div>;
-        });
+        const statusString = Strings[statusToString[status]];
+        const statusTooltip = Strings[statusToString[status] + 'Tooltip'];
+        return (
+            <div key={status} className={`legend-block ${colors[status]}`}>
+                <div>{statusString} {letters[status]}</div>
+                <Tooltip ID={status + 'Tooltip'} Text={statusTooltip} />
+            </div>
+        );
+    });
 
-    return <div className="legend-table">
-      {statusArray}
-    </div>;
+    return (
+        <div className="legend-table">
+            {statusArray}
+        </div>
+    );
 
 
 };

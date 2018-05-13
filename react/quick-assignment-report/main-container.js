@@ -14,6 +14,7 @@ import BypassTask from './bypass-task';
 import CancelTask from './cancel-task';
 import RestartTask from './restart-task';
 import ToggleSwitch from '../shared/toggleSwitch';
+import Tooltip from '../shared/tooltip';
 
 class QuickAssignmentReport extends Component {
     constructor(props) {
@@ -263,6 +264,7 @@ class QuickAssignmentReport extends Component {
                         }
                     >
                         Remove selected problem threads
+                        <Tooltip Text={strings.RemoveSelectedProblemThreadsTooltip} ID="replace-in-assignment-tooltip" />
                     </button>
                     <button
                         type="button"
@@ -297,7 +299,7 @@ class QuickAssignmentReport extends Component {
                         }
                         style={{ marginRight: '30px' }}
                     >
-                        Remove and replace users in the entire assignment
+                        Remove and replace users in the entire assignment<Tooltip Text={strings.ReplaceInAssignmentTooltip} ID="replace-in-assignment-tooltip" />
                     </button>
                     <button
                         type="button"
@@ -307,7 +309,7 @@ class QuickAssignmentReport extends Component {
                             })
                         }
                     >
-                        Remove problem threads
+                        Remove problem threads<Tooltip Text={strings.RemoveProblemThreadsTooltip} ID="remove-problem-threads-tooltip" />
                     </button>
                 </div>;
         }

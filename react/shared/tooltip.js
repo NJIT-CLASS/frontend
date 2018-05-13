@@ -5,7 +5,7 @@ const Tooltip = ({Text, ID}) => {
   return (
     <div style={{display: 'inline-block'}}>
       <i className="fa fa-info-circle tooltip-icon"  aria-hidden="true" data-tip={Text} data-for={ID}></i>
-        <ReactTooltip className="react-tooltip-custom" id={ID} effect='solid'/>
+        <ReactTooltip html={true} className="react-tooltip-custom" id={ID} effect='solid' />
     </div>
   )
 }

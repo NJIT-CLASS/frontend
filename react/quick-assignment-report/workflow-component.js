@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import WorkflowInstanceComponent from './workflow-instance-component';
+import Tooltip from '../shared/tooltip';
 
 const WorkflowComponent = ({
     hasInstructorPrivilege,
@@ -39,7 +40,7 @@ const WorkflowComponent = ({
             }
             return false;
         })
-        .map(key => {
+        .map((key, index) => {
             return (
                 <WorkflowInstanceComponent
                     Workflow={WorkflowInstances[key]}
@@ -62,13 +63,16 @@ const WorkflowComponent = ({
                     onBypassTaskButtonClick={onBypassTaskButtonClick}
                     onCancelTaskButtonClick={onCancelTaskButtonClick}
                     onRestartTaskButtonClick={onRestartTaskButtonClick}
+                    index={index}
                 />
             );
         });
 
     return (
         <div className="workflow-activity-block">
-            <div className="workflow-activity-label">{WA_ID} - {WorkflowActivityName}</div>
+            <div className="workflow-activity-label">
+                {WA_ID} - {WorkflowActivityName}<Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
+            </div>
             {workflowInstancesArray}
         </div>
     );

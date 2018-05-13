@@ -45,12 +45,14 @@ class RemoveWorkflow extends Component {
         const okLabel = 'Remove problem threads';
         const cancelLabel = 'Don\'t remove problem threads';
 
-        const workflowsToRemoveList = 
+        const workflowsToRemoveList = this.props.workflowIDs.length > 0 ?
             <ul>
                 {this.props.workflowIDs.map(
                     workflowID => <li key={workflowID}>{`Problem thread: ${workflowID}`}</li>
                 )}
-            </ul>;
+            </ul>
+             : <p>No problem threads selected</p>;
+
         const message = 
             <div>
                 <p>The following problem threads will be removed: </p>

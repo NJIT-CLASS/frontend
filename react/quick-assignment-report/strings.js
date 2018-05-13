@@ -1,4 +1,5 @@
 import {TASK_TYPES_TEXT} from '../../server/utils/react_constants';
+import React from 'react';
 
 const strings = {
     CreateProblemName: TASK_TYPES_TEXT.CREATE_PROBLEM,
@@ -21,6 +22,29 @@ const strings = {
     Automatic: 'Automatic',
     TaskType: 'Task Type',
     WorkflowID: 'WorkflowID',
+    ReplaceInAssignmentTooltip: 'This button will open a form for replacing users in the assignment',
+    RemoveProblemThreadsTooltip: `<p>This button will reveal checkboxes next to each problem thread. 
+        Use them to select problem threads to remove.</p>`,
+    WorkflowActivityTooltip: `<p>The assignment has several different problem types.
+        To the left is the internal ID and name of one of these problem types.
+        Below are all of the problem threads grouped for this problem type.</p>`,
+    WorkflowInstanceTooltip: `<p>Each row shows all of the tasks for one of the problem threads 
+            and their current status. The internal problem thread ID is at the start of the row.
+            Hover over any task for more options.<p>`,
+    ViewedTooltip: 'The task has been opened and viewed by the student.',
+    CompleteTooltip: 'The task has been completed and submitted by the student.',
+    LateTooltip: 'The task is past its due date',
+    CancelledTooltip: 'The task was cancelled and will not start.',
+    NotYetStartedTooltip: 'The task has not yet started because previous tasks that it depends on have not been completed.',
+    StartedTooltip: 'The task has started and is awaiting completion by the student.',
+    BypassedTooltip: 'The task was skipped and the next task was started.',
+    AutomaticTooltip: 'The task will be completed automatically.',
+    RemoveSelectedProblemThreadsTooltip:
+        `Click to remove the checked problem threads.
+        Removing a problem thread will cancel all of its tasks.
+        The users will be shuffled to ensure that they all have an even number of tasks assigned to them.
+        You can only remove problem threads without any completed tasks.
+        It is most efficent to remove multiple problem threads at once instead of doing this individually.</p>`
 };
 
 export default strings;
