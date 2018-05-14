@@ -134,7 +134,7 @@ class AssignmentReallocationForm extends Component {
         };
 
         const url = '/reallocate/user_based/';
-        showMessage('Replacing the user...');
+        showMessage('Replacing the users...');
         apiCall.postAsync(url, postBody).then(() => {
             this.props.onUserReplaced();
             showMessage('Users successfully replaced');
