@@ -9,6 +9,8 @@ import UserList from './user-list';
 import CollapsableBlock from './collapsable-block';
 import { cloneDeep } from 'lodash';
 
+// This component renders the form for removing and replacing users in an entire assignment (and possibly
+// all of the user's ongoing assignments as well).
 class AssignmentReallocationForm extends Component {
     constructor(props) {
         super(props);
@@ -16,22 +18,36 @@ class AssignmentReallocationForm extends Component {
     }
 
     getDefaultState() {
+        // These new properties added to each user will allow for keeping track of which users
+        // have been selected for removal, and which users have been selected to be candidate
+        // replacements for the removed user.
         const users = this.props.sectionInfo.users
             .map(user => ({
                 ...user,
                 selectedAsReplacement: false,
                 selectedForRemoval: false
             }));
-        const defaultFallbackID = users.find(
-            user => user.role === 'Instructor'
-        ).id;
+
+        // The fallback replacement is the user who will be the replacement if all other candidate replacements
+        // don't satisfy the problem's constraints. By default, this user is an instructor.
+        const defaultFallbackID = users.find(user => user.role === 'Instructor').id;
 
         return {
             users: users,
-            extraCredit: true,
+
+            extraCredit: true, // Indicates whether the replacement user will receive extra credit or not.
+
+            // Indicates whether or not the user using the form has chosen to use the default fallback replacement
             useDefaultFallback: true,
+
             fallbackID: defaultFallbackID,
+
+            // Indicates whether or not the user filling the form will have to manually specify a fallback
+            // replacement due to the default fallback being selected for removal. This overrides the
+            // useDefaultFallback property if set to true.
             mustSpecifyFallback: false,
+
+            // Indicates the ordering of the replacement user pools and whether or not each one should be used.
             replacementPools: [
                 {
                     id: 'volunteers',
@@ -49,13 +65,22 @@ class AssignmentReallocationForm extends Component {
                     enabled: false
                 }
             ],
+
             showConfirmationPopup: false,
+
             removeUsersFromOngoingAssignments: false,
+
             makeRemovedUsersInactiveIn: 'no_assignments'
+            // Other valid values for the above property are 'this_assignment' and 'all_assignments'.
+            // Don't rename the values -- they are used by the backend API.
         };
     }
 
     buildReplacementPoolsList() {
+        // Builds a list containing each replacement user pool (active students, volunteers,
+        // and 'specific students,' ie students specifically selected by the user filling the
+        // form as candidate replacements).
+
         const activeStudentIDs = this.state.users
             .filter(user => user.active && user.role === 'Student')
             .map(activeStudent => activeStudent.id);
@@ -83,12 +108,13 @@ class AssignmentReallocationForm extends Component {
     }
 
     doReplace() {
-        if (this.state.users.some(
-            user => user.selectedForRemoval && user.id === this.state.fallbackID)
-        ) {
-            showMessage(
-                'Error: Cannot remove the fallback replacement user. Select a different fallback.'
-            );
+        // Calls the backend API for replacing users in an assignment.
+        // See the 'Automatically reallocate new users to all tasks in entire assignment' section of the
+        // 'Pool and Reallocation APIs' document for info about this API call
+        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
+
+        if (this.state.users.some(user => user.selectedForRemoval && user.id === this.state.fallbackID)) {
+            showMessage('Error: Cannot remove the fallback replacement user. Select a different fallback.');
             return;
         }
 
@@ -107,12 +133,12 @@ class AssignmentReallocationForm extends Component {
             remove_from_all_assignments: this.state.removeUsersFromOngoingAssignments
         };
 
-        // See 'Automatically reallocate new users to all tasks in entire assignment' section of the
-        // 'Pool and Reallocation APIs' document for info about this API call
-        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const url = '/reallocate/user_based/';
-        apiCall.postAsync(url, postBody).then(() => this.props.onUserReplaced());
-        showMessage('Users successfully replaced');
+        showMessage('Replacing the user...');
+        apiCall.postAsync(url, postBody).then(() => {
+            this.props.onUserReplaced();
+            showMessage('Users successfully replaced');
+        });
         this.props.onClose();
     }
 
@@ -172,7 +198,7 @@ class AssignmentReallocationForm extends Component {
             <Modal
                 close={() => this.setState({ showConfirmationPopup: false })}
                 title={title}
-                styles={{ marginTop: '65px' }}
+                styles={{ marginTop: '70px' }}// clear room so that the title of the form underneath can still be seen
             >
                 <div id="modal-text">
                     {replaceMessage}
@@ -202,13 +228,21 @@ class AssignmentReallocationForm extends Component {
     }
 
     userRemovalsSection() {
+        // Returns the section of the form for selecting users to remove.
+
         const handleUserSelectionChange = changedUserID => {
+            // This function toggles a user's selectedForRemoval property when they are selected/deselected.
+
             const users = cloneDeep(this.state.users);
             const changedUser = users.find(user => user.id === changedUserID);
             changedUser.selectedForRemoval = !changedUser.selectedForRemoval;
+
+            // If the fallback replacement user was selected for removal, the form-filler will have to
+            // manually select a new fallback replacement.
             const mustSpecifyFallback = users.find(
                 user => user.id === this.state.fallbackID
             ).selectedForRemoval;
+
             this.setState({ users, mustSpecifyFallback });
         };
 
@@ -227,6 +261,8 @@ class AssignmentReallocationForm extends Component {
     }
 
     makeRemovedUsersInactiveSection() {
+        // Returns the section of the form for choosing if removed users should be made inactive.
+
         const assignmentName = this.props.sectionInfo.assignmentName;
         return (
             <div>
@@ -242,13 +278,11 @@ class AssignmentReallocationForm extends Component {
                     </label>
                     <br />
                     <label>
-                        <Radio value="all_assignments" />In all ongoing and
-                        future assignments
+                        <Radio value="all_assignments" />In all ongoing and future assignments
                     </label>
                     <br />
                     <label>
-                        <Radio value="no_assignments" />Do not make the removed
-                        users inactive
+                        <Radio value="no_assignments" />Do not make the removed users inactive
                     </label>
                 </RadioGroup>
             </div>
@@ -256,6 +290,9 @@ class AssignmentReallocationForm extends Component {
     }
 
     removeFromOngoingAssignmentsSection() {
+        // Returns the section of the form for choosing if removed users should also be removed
+        // from their other ongoing assignments.
+
         const assignmentName = this.props.sectionInfo.assignmentName;
         return (
             <div>

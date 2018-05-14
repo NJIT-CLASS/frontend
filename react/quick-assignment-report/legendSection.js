@@ -1,6 +1,7 @@
 import React from 'react';
 import Tooltip from '../shared/tooltip';
 
+// This component renders the task status legend on the Assignment Status page.
 const LegendSection = ({Strings}) => {
     const colors = { 
         viewed: 'viewed',
@@ -46,11 +47,11 @@ const LegendSection = ({Strings}) => {
         'automatic'
     ].map((status) => {
         const statusString = Strings[statusToString[status]];
-        const statusTooltip = Strings[statusToString[status] + 'Tooltip'];
+        const tooltipString = Strings[statusToString[status] + 'Tooltip'];
         return (
             <div key={status} className={`legend-block ${colors[status]}`}>
                 <div>{statusString} {letters[status]}</div>
-                <Tooltip ID={status + 'Tooltip'} Text={statusTooltip} />
+                <Tooltip ID={status + 'Tooltip'} Text={tooltipString} />
             </div>
         );
     });

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import Modal from '../shared/modal';
 
+// This component renders a modal panel which displays information about a task instance (passed in as a prop).
 class MoreInformation extends Component {
     constructor(props) {
         super(props);
     }
 
     userHistoryTable(prevUsers) {
+        // Returns a table of all of this task's previously assigned users
         const thead = (
             <thead>
                 <tr>
@@ -47,7 +49,9 @@ class MoreInformation extends Component {
     }
 
     statusTable() {
-        const taskInstanceStatus = JSON.parse(this.props.taskInstance.Status);
+        // Returns a table displaying all of this task's statuses.
+
+        const taskInstanceStatuses = JSON.parse(this.props.taskInstance.Status);
         const statusLabels = [
             'Execution',
             'Cancelled',
@@ -58,8 +62,7 @@ class MoreInformation extends Component {
         ];
         const rows = statusLabels.map((label, index) => (
             <tr key={index}>
-                <th>{label}:</th>
-                <td>{taskInstanceStatus[index]}</td>
+                <th>{label}:</th> <td>{taskInstanceStatuses[index]}</td>
             </tr>
         ));
 
@@ -75,10 +78,15 @@ class MoreInformation extends Component {
 
     render() {
         const prevUsers = JSON.parse(this.props.taskInstance.UserHistory);
+
+        // Remove the currently assigned user from the list of previous users.
+        // The current user will be displayed separately.
         let currentUser = prevUsers.pop();
 
+        // Merge in the current user's email address since we want to display that too.
         const users = this.props.sectionInfo.users;
-        currentUser = { ...currentUser, ...users.find(user => user.id === currentUser.user_id)};
+        const currentUserEmail = users.find(user => user.id === currentUser.user_id).email;
+        currentUser = { ...currentUser, email: currentUserEmail };
 
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
         const taskName = this.props.taskInstance.TaskActivity.DisplayName;
@@ -102,7 +110,7 @@ class MoreInformation extends Component {
                 {this.statusTable()}
                 <hr /> 
 
-                <p> Currently assigned to: {currentUser.email} (User ID: {currentUser.id}) </p>
+                <p> Currently assigned to: {currentUser.email} (User ID: {currentUser.user_id}) </p>
                 <p> For extra credit: {currentUser.is_extra_credit ? 'yes' : 'no'} </p>
                 <br />
                 {this.userHistoryTable(prevUsers)}

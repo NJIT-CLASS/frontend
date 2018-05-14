@@ -2,22 +2,26 @@ import React, { Component } from 'react';
 import Modal from '../shared/modal';
 import apiCall from '../shared/apiCall';
 
+// This component renders a popup message asking for confirmation when a user tries to cancel a task.
+// On confirmation, it performs the cancellation.
 class CancelTask extends Component {
     constructor(props) {
         super(props);
     }
 
     cancelTask() {
+        // This function calls the backend API for cancelling a task.
+        // See the 'Cancel a single task' section of the 'Pool and Reallocation APIs' document
+        // for information about this API call.
+        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
 
         const postBody = {
             ti_id: taskInstanceID
         };
 
-        // See 'Cancel a single task' section of the 'Pool and Reallocation APIs' document
-        // for information about this API call
-        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const url = '/task/cancel';
+        showMessage('Cancelling the task...');
         apiCall.postAsync(url, postBody)
             .then(() => {
                 showMessage('Task successfully cancelled');
@@ -32,13 +36,14 @@ class CancelTask extends Component {
         const cancelLabel = 'Don\'t cancel this task';
 
         const taskID = this.props.taskInstance.TaskInstanceID;
+        const taskName = this.props.taskInstance.TaskActivity.DisplayName;
 
         const message = 
             <div>
                 <p>The following task will be cancelled: </p>
                 <ul>
                     <li>
-                        {taskID}
+                        {`${taskName} (ID: ${taskID})`}
                     </li>
                 </ul>
                 <p style={{fontSize: 'smaller'}}>

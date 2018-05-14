@@ -3,8 +3,20 @@ import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
 import {sortBy} from 'lodash';
 
-const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
-
+// This component renders the filters on the Assignment Status page.
+const FilterSection = ({
+    showAnonymousVersion, 
+    hasInstructorPrivilege, 
+    Filters, 
+    onChangeFilterType, 
+    onChangeFilterStatus, 
+    onChangeFilterUsers, 
+    Strings, 
+    users, 
+    taskActivities
+}) => {
+    // The type filter filters by task activity ID. It shows the task activity's 
+    // name along with the name of the workflow activity it belongs to.
     const typeOptions = taskActivities.map(ta => ({
         value: ta.taskActivityID,
         label: `${ta.workflowActivityName} - ${ta.taskActivityDisplayName}`
@@ -12,7 +24,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
     const typeFilter = (
         <Select
           options={typeOptions}
-          onChange={changeFilterType}
+          onChange={onChangeFilterType}
           value={Filters.Type}
           autosize={true}
           className={'inline-filters'}
@@ -24,6 +36,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
       );
 
 
+    // The status filter filters by task status.
     const statusOptions = [
         {value: 'viewed', label: Strings.Viewed},
         {value: 'complete', label: Strings.Complete},
@@ -37,7 +50,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
     const statusFilter = (
       <Select
         options={statusOptions}
-        onChange={changeFilterStatus}
+        onChange={onChangeFilterStatus}
         value={Filters.Status}
         className={'inline-filters'}
         clearable={true}
@@ -49,6 +62,8 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
       );
 
 
+    // The users filter filters by user ID. Only users with instructor privileges can
+    // see it.
     const userOptions = sortBy(users, user => user.id)
         .map(user => ({
             value: user.id,
@@ -58,7 +73,7 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
         hasInstructorPrivilege ?
             <Select
               options={userOptions}
-              onChange={changeFilterUsers}
+              onChange={onChangeFilterUsers}
               value={Filters.Users}
               autosize={true}
               className={'inline-filters'}
@@ -81,15 +96,3 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
 };
 
 export default FilterSection;
-
-// const workflowFilter = (
-//     <Select options={workflowOptions}
-//         onChange={changeFilterWorkflowID}
-//         value={Filters.WorkflowID}
-//         className={'inline-filters'}
-//         autosize={true}
-//         clearable={false}
-//         searchable={false} />
-//     );
-//
-//     {workflowFilter}

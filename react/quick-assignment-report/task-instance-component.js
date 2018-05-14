@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// This component renders a task instance. It also renders a tooltip (which displays when you hover 
+// over the task) containing buttons for replacing the assigned user, cancelling the task, etc.
 const TaskInstanceComponent = ({
     currentUserID,
     hasInstructorPrivilege,
@@ -13,20 +15,22 @@ const TaskInstanceComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
-    let showTaskInstance = true;
     const taskStatuses = JSON.parse(TaskInstance.Status);
+
+    // We only show this task instance if it matches the status filter
+    // (ie the task instance must have one of the statuses selected in the filter).
+    let showTaskInstance = true;
     if (Filters.Status.length > 0) {
-        showTaskInstance = taskStatuses.some(v => Filters.Status.includes(v));
+        showTaskInstance = taskStatuses.some(aStatus => Filters.Status.includes(aStatus));
     }
+    // We only show task instances that match the users filter (ie the task instance must be assigned 
+    // to one of the users selected in the filter).
     if (Filters.Users.length > 0) {
-        showTaskInstance =
-            showTaskInstance &&
-            Filters.Users.some(
-                filterUserID => filterUserID === TaskInstance.User.UserID
-            );
+        showTaskInstance = showTaskInstance &&
+            Filters.Users.some(filterUserID => filterUserID === TaskInstance.User.UserID);
     }
 
-    //hide according to status filter
+    // Hide according to the filters.
     if (!showTaskInstance) {
         return <div className={'task-instance empty-block-placeholder'} />;
     }
@@ -35,12 +39,11 @@ const TaskInstanceComponent = ({
     const UserContact = TaskInstance.User.UserContact;
     const TaskActivity = TaskInstance.TaskActivity;
     const DisplayName = TaskActivity.DisplayName;
-
     const statusSymbols = getStatusSymbolsString(taskStatuses);
 
-    const link = `/task/${TaskInstance.TaskInstanceID}`;
-
-    //hide details if Automatic task
+    // Automatic tasks show the task name and the status symbols.
+    // If the currently signed in user has instructor privileges (and the page is not in anonymous mode),
+    // then the task ID and the execution status ('automatic') are also shown.
     let taskInformation = null;
     if (taskStatuses[0] === 'automatic') {
         taskInformation = (
@@ -59,6 +62,9 @@ const TaskInstanceComponent = ({
             </div>
         );
     } else {
+        // Non-automatic tasks show the task name and the status symbols.
+        // If the currently signed in user has instructor privileges (and the page is not in anonymous mode),
+        // then the task ID and info about the user assigned to the task are also shown.
         taskInformation = (
             <div>
                 <div className="task-type">{DisplayName}</div>
@@ -70,6 +76,8 @@ const TaskInstanceComponent = ({
                     </div>
                 ) : null}
                 <div>{statusSymbols}</div>
+                {/* We indicate if this task is allocated to the currently signed in user
+                (unless the page is in anonymous mode). */}
                 {!showAnonymousVersion && currentUserID == TaskInstance.User.UserID ? (
                     <div style={{ fontWeight: 'bold' }}> My Task </div>
                 ) : null}
@@ -78,50 +86,49 @@ const TaskInstanceComponent = ({
     }
 
 
-    // showButton is a table that indicates whether the 
-    // 'replace user,' 'bypass task,' 'cancel task,' and 'restart task'
-    // buttons should show based on the task status
+    // This table indicates whether the 'replace user,' 'bypass task,' 'cancel task,' 
+    // and 'restart task' buttons should show based on the task status.
     const showButton = {
         'replace': {
             'automatic': false,
             'started': true,
             'complete': false,
             'bypassed': false,
-            'cancelled': false,
-            'not_yet_started': true
+            'not_yet_started': true,
+            'cancelled': false
         },
         'bypass': {
             'automatic': true,
             'started': true,
             'complete': false,
             'bypassed': false,
-            'cancelled': false,
-            'not_yet_started': false
+            'not_yet_started': false,
+            'cancelled': false
         },
         'cancel': {
             'automatic': false,
             'started': true,
             'complete': false,
             'bypassed': true,
-            'cancelled': false,
-            'not_yet_started': true
+            'not_yet_started': true,
+            'cancelled': false
         },
         'restart': {
             'automatic': true,
             'started': true,
             'complete': true,
             'bypassed': true,
-            'cancelled': true,
-            'not_yet_started': false
+            'not_yet_started': false,
+            'cancelled': true
         },
     };
 
+    // The 'Cancelled' status has highest priority. Otherwise, we use the execution status (the first status).
     const status = taskStatuses.includes('cancelled') ? 'cancelled' : taskStatuses[0];
 
     const taskInstanceTooltip = (
         <div className="task-instance-tooltip">
             <a href={`/task/${TaskInstance.TaskInstanceID}`}>Go to task page</a>
-            <br />
             {hasInstructorPrivilege ? (
                 <div>
                     <div>
@@ -170,7 +177,7 @@ const TaskInstanceComponent = ({
                         <div>
                             <span
                                 style={{ color: 'blue', cursor: 'pointer' }}
-                                onClick={() => {}}
+                                onClick={() => onRestartTaskButtonClick(TaskInstance)}
                             >
                                 Restart this task
                             </span>
@@ -190,7 +197,8 @@ const TaskInstanceComponent = ({
 };
 
 function getStatusSymbolsString(taskStatuses) {
-    const letters = {
+    // Returns a string containing the symbols for all of statuses.
+    const symbols = {
         viewed: '(O)',
         complete: '(C)',
         late: '(L)',
@@ -201,22 +209,23 @@ function getStatusSymbolsString(taskStatuses) {
         automatic: '(A)'
     };
 
-    let statusSymbols = letters[taskStatuses[0]];
+    let statusSymbolsString = symbols[taskStatuses[0]]; // Include the first status (the Execution status, e.g. "Complete," "Started," etc.).
     if (taskStatuses.includes('viewed')) {
-        statusSymbols += letters.viewed;
+        statusSymbolsString += symbols.viewed;
     }
     if (taskStatuses.includes('late')) {
-        statusSymbols += letters.late;
+        statusSymbolsString += symbols.late;
     }
     if (taskStatuses.includes('cancelled')) {
-        statusSymbols += letters.cancelled;
+        statusSymbolsString += symbols.cancelled;
     }
 
-    return statusSymbols;
+    return statusSymbolsString;
 }
 
 function getBackgroundColor(taskStatuses) {
-    const colors = {
+    // Returns the status whose color will be shown on the task instance.
+    const statuses = {
         viewed: 'viewed',
         complete: 'complete',
         late: 'late',
@@ -228,33 +237,33 @@ function getBackgroundColor(taskStatuses) {
     };
 
     /* 
-     * The color of a task instance will be the color of its status
-     * with the highest priority using the hierarchy below:
-     * 1. Cancelled
+     * The color of a task instance will be the color associated with its status that 
+     * has the highest priority using the hierarchy below:
+     * 1. Cancelled (highest)
      * 2. Bypassed
      * 3. Complete
      * 4. Late
      * 5. Viewed
-     * 6. Started, Not Yet Started, Automatic
+     * 6. Started, Not Yet Started, Automatic (lowest)
      * E.g. a cancelled, late, and viewed task will have the 'cancelled'
      * color because 'cancelled' has higher priority than the other two statuses.
      */
 
-    let backgroundColor = colors[taskStatuses[0]];
+    let backgroundColor = statuses[taskStatuses[0]]; // We use the first status (Execution status) by default.
     if (taskStatuses.includes('viewed')) {
-        backgroundColor = colors.viewed;
+        backgroundColor = statuses.viewed;
     }
     if (taskStatuses.includes('late')) {
-        backgroundColor = colors.late;
+        backgroundColor = statuses.late;
     }
     if (taskStatuses.includes('complete')) {
-        backgroundColor = colors.complete;
+        backgroundColor = statuses.complete;
     }
     if (taskStatuses.includes('bypassed')) {
-        backgroundColor = colors.bypassed;
+        backgroundColor = statuses.bypassed;
     }
     if (taskStatuses.includes('cancelled')) {
-        backgroundColor = colors.cancelled;
+        backgroundColor = statuses.cancelled;
     }
 
     return backgroundColor;

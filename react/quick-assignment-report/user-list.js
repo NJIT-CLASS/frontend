@@ -2,6 +2,9 @@ import React from 'react';
 import Checkbox from '../shared/checkbox';
 import { RadioGroup, Radio } from 'react-radio-group';
 
+// This component renders a list of users that is passed down as a prop. The users are
+// grouped by role (ie 'student,' 'instructor,' and 'observer'). The list shows either 
+// a checkbox or a radio button beside each user so that they can be selected.
 class UserList extends React.Component {
     constructor(props) {
         super(props);
@@ -51,7 +54,10 @@ class UserListSection extends React.Component {
     }
 
     render() {
-        const isDisabled = this.props.isDisabled || (() => false);
+        // isDisabled is a callback for indicating whether or not the checkbox/radio button
+        // beside a user should be disabled.
+        const isDisabled = this.props.isDisabled || (user => false);
+
         let users = this.props.users.map(user => (
             <tr key={user.id} className={isDisabled(user) ? 'disabled' : null}>
                 <td>
@@ -59,6 +65,8 @@ class UserListSection extends React.Component {
                         <Radio value={user.id} disabled={isDisabled(user)} />
                     ) : (
                         <Checkbox
+                            // isSelected is a callback for indicating whether or not the 
+                            // checkbox/radio button beside a user should be selected.
                             isClicked={this.props.isSelected(user)}
                             click={() => this.props.onSelectionChange(user.id)}
                             disabled={isDisabled(user)}
@@ -87,6 +95,7 @@ class UserListSection extends React.Component {
                 <table className="user-list">
                     <thead>
                         <tr>
+                            {/* Heading-less column for the checkboxes/radio buttons */}
                             <th />
                             <th>Last Name</th>
                             <th>First Name</th>
@@ -95,9 +104,7 @@ class UserListSection extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.users && this.props.users.length > 0
-                            ? users
-                            : empty}
+                        {users.length > 0 ? users : empty}
                     </tbody>
                 </table>
             </div>
