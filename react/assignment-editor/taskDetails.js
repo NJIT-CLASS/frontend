@@ -1161,6 +1161,14 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
+            const mustCompleteFirst = (
+                <div className="inner">
+                    <label>{strings.MustCompleteFirstLabel}</label>
+                    <Tooltip Text={strings.MustCompleteFirstMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-must-complete-first-tooltip`} />
+                    <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_MustCompleteThisFirst', this.props.index, this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_MustCompleteThisFirst} />
+                </div>
+            );
+
 
             advancedOptionsView = (
                 <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
@@ -1179,6 +1187,7 @@ class TaskDetailsComponent extends React.Component {
                                 <div className="subheading">{strings.TaskDueHeader}</div>
                                 {atDurationEnd}
                                 {whatIfLate}
+                                {mustCompleteFirst}
                             </div>
                             <div className="section-divider">
                                 <div className="subheading">{strings.AssessmentHeader}</div>

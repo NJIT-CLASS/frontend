@@ -137,7 +137,10 @@ const assignmentStrings = {
     Instructions: 'Instructions',
     DefaultAssignmentName: 'Assignment',
     SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page',
-    AssignmentEditor: 'Assignment Editor'
+    AssignmentEditor: 'Assignment Editor',
+    MustCompleteFirstMessage: 'Specifies whether this task needs to be completed before the following tasks can be shown',
+    MustCompleteFirstLabel :'Must complete this task before continuing?'
+    
     
 };
 
