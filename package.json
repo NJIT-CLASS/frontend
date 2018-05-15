@@ -75,6 +75,7 @@
     "react-textarea": "^1.0.4",
     "react-tooltip": "^3.4.0",
     "react-transition-group": "^2.2.1",
+    "react-treeview": "^0.4.7",
     "react-ux-password-field": "git+https://github.com/alanRom/react-ux-password-field.git",
     "reactable": "^0.14.1",
     "redis": "^2.8.0",

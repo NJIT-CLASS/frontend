@@ -7,18 +7,21 @@ const trunc = (str, n ) => {
     return (subString.substr(0, subString.lastIndexOf(' ')) ) + '...';
 };
 
-const ListItemComponent = ({TaskObject, UserID}) => {
+const ListItemComponent = (props) => {
+    const {TaskObject, UserID} = props;
     let taskId = TaskObject.LatestTask;
-    let taskData = JSON.parse(TaskObject.FirstTask.Data);
-
+    let taskData = TaskObject.FirstTask != null ?
+        JSON.parse(TaskObject.FirstTask.Data) :
+        null;
     if(taskData !== null){
         let problemText = trunc(taskData[0][0][0], 100);
-        
         if(taskId != null){
-            return (<li><a target="_blank" href={`/task/${taskId}?visitorId=${UserID}`}>
+            return <li onClick={props.selectWorkflow.bind(this, TaskObject.WorkflowInstanceID)} style={{ cursor: 'pointer' }}>
                 <MarkupView content={problemText} />
-            </a></li>);
-                
+            </li>;
+            // return (<li onClick={props.selectWorkflow}><a target="_blank" href={`/task/${taskId}?visitorId=${UserID}`}>
+            //     <MarkupView content={problemText} />
+            // </a></li>);   
         } else {
             return (<li>
                 <MarkupView content={problemText} />

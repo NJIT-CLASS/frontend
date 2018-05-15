@@ -23,13 +23,17 @@ class AssignmentInstanceSelect extends Component {
 
     getAssignmentList(props){
         apiCall.get(`/getActiveAssignmentsForSection/${props.SectionID}`, (err, res, body) => {
-            let assignmentList = body.Assignments.map((assignment) => {
-                return {value: assignment.AssignmentInstanceID, label: assignment.Assignment.DisplayName};
-            });
-
-            this.setState({
-                AssignmentList: assignmentList
-            });
+            // console.log(res.statusCode);
+            // console.log(body);
+            if (res.statusCode == 200) {
+                let assignmentList = body.Assignments.map((assignment) => {
+                    return {value: assignment.AssignmentInstanceID, label: assignment.Assignment.DisplayName};
+                });
+    
+                this.setState({
+                    AssignmentList: assignmentList
+                });
+            }
         });
     }
     render() {
