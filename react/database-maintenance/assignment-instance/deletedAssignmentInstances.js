@@ -21,7 +21,9 @@ class DeletedAssignments extends Component {
                 courseNumber: assignment.courseNumber,
                 sectionName: assignment.sectionName,
                 semesterName: assignment.semesterName,
-                restoreButton: <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
+                restoreButton: assignment.RemovedAssignment != null || assignment.Assignment == null ?
+                    <Tooltip Text={this.props.strings.restoreInstanceDisabledTootlip} /> :
+                    <button type="button" onClick={this.selectAssignment.bind(this, assignment)}>Restore</button>
             };
         });
     }

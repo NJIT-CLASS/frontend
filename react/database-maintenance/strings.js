@@ -30,5 +30,6 @@ export default {
     categoryPickerTootltip: 'Pick the category you want to archive by.',
     currentTableTooltip: 'Data in the main tables.',
     archivedTableTooltip: 'Data that has been archived from the main tables.',
-    deletedTableTooltip: 'Data that has been deleted from the main tables.'
+    deletedTableTooltip: 'Data that has been deleted from the main tables.',
+    restoreInstanceDisabledTootlip: 'Restore its assignment activity to restore this assignment instance.'
 };

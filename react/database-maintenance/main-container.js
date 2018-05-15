@@ -30,7 +30,7 @@ class DatabaseMaintenanceContainer extends Component {
         this.setState({ selectedCategory: selectedCategory.value });
     }
 
-    render() { 
+    render() {
         let { Strings, selectedCategory } = this.state;
 
         let categoryContainer;
