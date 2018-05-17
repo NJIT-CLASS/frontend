@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import WorkflowComponent from './workflow-component';
 
+// This component renders all of an assigment's workflow activities (ie problem types),
+// each of which is represented as a WorkflowComponent.
 const AssignmentComponent = ({
     currentUserID,
     hasInstructorPrivilege,
@@ -17,14 +19,14 @@ const AssignmentComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
-    const workflowsArray = Object.keys(Assignment).map(key => {
+    const workflowsArray = Object.keys(Assignment).map(workflowActivityID => {
         return (
             <WorkflowComponent
-                WorkflowInstances={Assignment[key].WorkflowInstances}
-                Structure={Assignment[key].Structure}
-                WorkflowActivityName={Assignment[key].Name}
-                WA_ID={key}
-                key={key}
+                WorkflowInstances={Assignment[workflowActivityID].WorkflowInstances}
+                Structure={Assignment[workflowActivityID].Structure}
+                WorkflowActivityName={Assignment[workflowActivityID].Name}
+                WA_ID={workflowActivityID}
+                key={workflowActivityID}
                 Filters={Filters}
                 Strings={Strings}
                 onReplaceUserInTaskButtonClick={onReplaceUserInTaskButtonClick}

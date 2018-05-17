@@ -49,7 +49,7 @@ export default class PendingTaskComponent extends Component {
         if (original.Status[3] === 'late') {
             css = 'task-late';
         }
-        return <span class={css}>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
+        return <span className={css}>{moment(value).format('MMMM Do, YYYY h:mm a')}</span>;
     }
 
     makeRevisionLabel({original, row, value}){

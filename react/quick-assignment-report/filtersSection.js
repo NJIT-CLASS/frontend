@@ -1,34 +1,30 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {TASK_TYPES} from '../../server/utils/react_constants';
+import {sortBy} from 'lodash';
 
-const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, changeFilterType, changeFilterStatus, changeFilterUsers, Strings, users, taskActivities}) => {
-    const typeOptions = taskActivities.map(taskActivity => ({
-        value: taskActivity.Type,
-        label: taskActivity.DisplayName
+// This component renders the filters on the Assignment Status page.
+const FilterSection = ({
+    showAnonymousVersion, 
+    hasInstructorPrivilege, 
+    Filters, 
+    onChangeFilterType, 
+    onChangeFilterStatus, 
+    onChangeFilterUsers, 
+    Strings, 
+    users, 
+    taskActivities
+}) => {
+    // The type filter filters by task activity ID. It shows the task activity's 
+    // name along with the name of the workflow activity it belongs to.
+    const typeOptions = taskActivities.map(ta => ({
+        value: ta.taskActivityID,
+        label: `${ta.workflowActivityName} - ${ta.taskActivityDisplayName}`
     }));
-
-    const statusOptions = [
-        {value: 'viewed', label: Strings.Viewed},
-        {value: 'complete', label: Strings.Complete},
-        {value: 'late', label: Strings.Late},
-        {value: 'cancelled', label: Strings.Cancelled},
-        {value: 'not_yet_started', label: Strings.NotYetStarted},
-        {value: 'started', label: Strings.Started},
-        {value: 'bypassed', label: Strings.Bypassed},
-        {value: 'automatic', label: Strings.Automatic}
-    ];
-
-    const userOptions = users.map(user => ({
-        value: user.id,
-        label: `${user.id} - ${user.firstName} ${user.lastName} - ${user.email}`
-    }));
-
-    const workflowOptions = [{value:'', label: Strings.WorkflowID}];
-
     const typeFilter = (
-        <Select  options={typeOptions}
-          onChange={changeFilterType}
+        <Select
+          options={typeOptions}
+          onChange={onChangeFilterType}
           value={Filters.Type}
           autosize={true}
           className={'inline-filters'}
@@ -40,9 +36,21 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
       );
 
 
+    // The status filter filters by task status.
+    const statusOptions = [
+        {value: 'viewed', label: Strings.Viewed},
+        {value: 'complete', label: Strings.Complete},
+        {value: 'late', label: Strings.Late},
+        {value: 'cancelled', label: Strings.Cancelled},
+        {value: 'not_yet_started', label: Strings.NotYetStarted},
+        {value: 'started', label: Strings.Started},
+        {value: 'bypassed', label: Strings.Bypassed},
+        {value: 'automatic', label: Strings.Automatic}
+    ];
     const statusFilter = (
-      <Select options={statusOptions}
-        onChange={changeFilterStatus}
+      <Select
+        options={statusOptions}
+        onChange={onChangeFilterStatus}
         value={Filters.Status}
         className={'inline-filters'}
         clearable={true}
@@ -53,37 +61,38 @@ const FilterSection = ({showAnonymousVersion, hasInstructorPrivilege, Filters, c
         placeholder={'Status'}/>
       );
 
-    const userFilter = hasInstructorPrivilege && !showAnonymousVersion ? (
-        <Select  options={userOptions}
-          onChange={changeFilterUsers}
-          value={Filters.Users}
-          autosize={true}
-          className={'inline-filters'}
-          searchable={true}
-          placeholder={'User'}
-          clearable={true}
-          multi={true}
-        />
-      ) : null;
 
-    return <div>
-      {typeFilter}
-      {statusFilter}
-      {userFilter}
-  </div>;
+    // The users filter filters by user ID. Only users with instructor privileges can
+    // see it.
+    const userOptions = sortBy(users, user => user.id)
+        .map(user => ({
+            value: user.id,
+            label: `${user.id} - ${user.firstName} ${user.lastName} - ${user.email}`
+        }));
+    const userFilter = (
+        hasInstructorPrivilege ?
+            <Select
+              options={userOptions}
+              onChange={onChangeFilterUsers}
+              value={Filters.Users}
+              autosize={true}
+              className={'inline-filters'}
+              searchable={true}
+              placeholder={'User'}
+              clearable={true}
+              multi={true}
+            />
+            : null
+    );
+
+    return (
+        <div>
+            {typeFilter}
+            {statusFilter}
+            {userFilter}
+        </div>
+    );
 
 };
 
 export default FilterSection;
-
-// const workflowFilter = (
-//     <Select options={workflowOptions}
-//         onChange={changeFilterWorkflowID}
-//         value={Filters.WorkflowID}
-//         className={'inline-filters'}
-//         autosize={true}
-//         clearable={false}
-//         searchable={false} />
-//     );
-//
-//     {workflowFilter}

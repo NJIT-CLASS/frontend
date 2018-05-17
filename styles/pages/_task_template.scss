@@ -1,6 +1,4 @@
-.template-container{
-
-  .error-component {
+.error-component {
     background-color: #ed5565 !important;
     color: #ffffff !important;
 
@@ -180,43 +178,41 @@
     /*background-color: gold;*/
   }
 
-  .section, .faded-big {
-      p {
-          max-width: 100%;
-      }
-      strong {
-        font-weight: bold;
-      }
-      em {
-          font-style: italic;
-      }
-      ul {
-          display: block;
-          list-style-type: disc;
-          padding: 0;
-          padding-left: 40px;
-          li {
-              display: list-item;
-              line-height: 1.5;
-              margin: 0;
-              padding: 5px;
-              font-size: 18px;
-              border-bottom: 0;
-          }
-      }
-      ol {
-          display: block;
-          list-style-type: decimal;
-          padding: 0;
-          padding-left: 40px;
-          li {
-              display: list-item;
-              line-height: 1.5;
-              margin: 0;
-              padding: 5px;
-              font-size: 18px;
-          }
-      }
-  }
-
+.section, .faded-big {
+    p {
+        max-width: 100%;
+    }
+    strong {
+      font-weight: bold;
+    }
+    em {
+        font-style: italic;
+    }
+    ul {
+        display: block;
+        list-style-type: disc;
+        padding: 0;
+        padding-left: 40px;
+        li {
+            display: list-item;
+            line-height: 1.5;
+            margin: 0;
+            padding: 5px;
+            font-size: 18px;
+            border-bottom: 0;
+        }
+    }
+    ol {
+        display: block;
+        list-style-type: decimal;
+        padding: 0;
+        padding-left: 40px;
+        li {
+            display: list-item;
+            line-height: 1.5;
+            margin: 0;
+            padding: 5px;
+            font-size: 18px;
+        }
+    }
 }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
+// This component renders its children in a block that collapses and hides the children 
+// from view when clicked on.
 class CollapsableBlock extends Component {
     constructor(props) {
         super(props);
-        this.state = { showContent: false };
+        this.state = { showContent: false }; // the children are hidden by default
     }
 
     toggleContent() {

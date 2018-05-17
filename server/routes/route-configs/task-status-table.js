@@ -9,7 +9,7 @@ module.exports = {
         admins: true,
         instructors: true,
         students: true,
-        role: ROLES.TEACHER,
+        role: ROLES.PARTICIPANT,
         loggedOut: false
     },
     icon: 'bar-chart',
