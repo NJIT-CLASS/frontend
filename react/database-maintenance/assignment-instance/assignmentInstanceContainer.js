@@ -35,13 +35,7 @@ class AssignmentInstanceContainer extends Component {
                 let activeAssignmentInstances = body.ActiveAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: instance.Assignment != null ?
-                            instance.Assignment.DisplayName :
-                            instance.ArchivedAssignment != null ?
-                                instance.ArchivedAssignment.DisplayName :
-                                instance.RemovedAssignment != null ?
-                                    instance.RemovedAssignment.DisplayName :
-                                    instance.AssignmentInstanceID,
+                        assignmentName: instance.DisplayName,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
                         semesterName: instance.Section.Semester.Name
@@ -58,16 +52,12 @@ class AssignmentInstanceContainer extends Component {
                 let archivedAssignmentInstances = body.ArchivedAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: instance.Assignment != null ?
-                            instance.Assignment.DisplayName :
-                            instance.ArchivedAssignment != null ?
-                                instance.ArchivedAssignment.DisplayName :
-                                instance.RemovedAssignment != null ?
-                                    instance.RemovedAssignment.DisplayName :
-                                    instance.AssignmentInstanceID,
+                        assignmentName: instance.DisplayName,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
-                        semesterName: instance.Section.Semester.Name
+                        semesterName: instance.Section.Semester.Name,
+                        ArchivedAssignment: instance.ArchivedAssignment,
+                        Assignment: instance.Assignment
                     };
                 });
                 this.setState({ archivedAssignmentInstances });
@@ -81,16 +71,12 @@ class AssignmentInstanceContainer extends Component {
                 let deletedAssignmentInstances = body.RemovedAssignmentInstance.map(instance => {
                     return {
                         assignmentId: instance.AssignmentInstanceID,
-                        assignmentName: instance.Assignment != null ?
-                            instance.Assignment.DisplayName :
-                            instance.ArchivedAssignment != null ?
-                                instance.ArchivedAssignment.DisplayName :
-                                instance.RemovedAssignment != null ?
-                                    instance.RemovedAssignment.DisplayName :
-                                    instance.AssignmentInstanceID,
+                        assignmentName: instance.DisplayName,
                         courseNumber: instance.Section.Course.Number,
                         sectionName: instance.Section.Name,
-                        semesterName: instance.Section.Semester.Name
+                        semesterName: instance.Section.Semester.Name,
+                        ArchivedAssignment: instance.ArchivedAssignment,
+                        Assignment: instance.Assignment
                     };
                 });
                 this.setState({ deletedAssignmentInstances });
