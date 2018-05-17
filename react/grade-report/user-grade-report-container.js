@@ -95,11 +95,11 @@ class GradeReport extends React.Component {
                 }
             });
 
-            this.getAssignmentsByStudent();
+            this.getGrades(this.state.displayedSection.sectionData.students, this.state.displayedSection.sectionData.assignments);
         });
     }
 
-    getAssignmentsByStudent(){
+    /*getAssignmentsByStudent(){
         this.state.displayedSection.sectionData.assignments.forEach(assignment => {
             apiCall.post(`/getAssignmentGrades/${assignment.AssignmentInstanceID}`,{},(err,status,body)=>{
                 console.log(body);
@@ -115,7 +115,7 @@ class GradeReport extends React.Component {
                 this.setState({loaded:true});
             });
         });
-    }
+    }*/
 
     instructorAssignmentOnClick(assignmentInstanceID){
         this.state.displayedSection.type="instructorAssignment";
@@ -157,6 +157,77 @@ class GradeReport extends React.Component {
             delete body.SectionUsers;
             this.state.displayedSection.sectionData=body;
             this.setState({loaded:true});
+        });
+    }
+
+    getGrades(students, assignments){
+        //console.log(students);
+        //console.log(assignments);
+        var response = {
+            assignmentGrade:null,
+            assignmentDistribution:null,
+            students:{}   
+        }
+
+        assignments.forEach(assignment => {
+            //console.log(assignment);
+            apiCall.get(`/getAssignmentGrade/${assignment.AssignmentInstanceID}`,{},(err, status, body) => {
+                console.log(body);
+                if( status.statusCode === 200){
+
+                    for( var userID in students){
+                        var sectionUserID = null;
+                        //console.log(student);
+                        //console.log(students[userID]);
+                            
+                        for(var i in body.SectionUsers){
+
+                            if(userID == body.SectionUsers[i].UserID){
+                                sectionUserID = body.SectionUsers[i].SectionUserID;
+                            } else {
+                                continue;
+                            }
+
+                            var studentInfo = {
+                                user: students[userID],
+                                assignmentGrade:null,
+                                simpleGrades:[],
+                                workflowGrades:[],
+                                taskGrades:[]
+                            };
+
+                            body.Grades.Assignment.forEach(ag => {
+                                if( ag.SectionUserID == sectionUserID ){
+                                    studentInfo.assignmentGrade = ag;
+                                }
+                            });
+
+                            body.Grades.SimpleGrade.forEach(sg => {
+                                if( sg.SectionUserID == sectionUserID ){
+                                    studentInfo.simpleGrades.push(sg);
+                                }
+                            });
+
+                            body.Grades.Task.forEach(task => {
+                                if( task.SectionUserID == sectionUserID ){
+                                    studentInfo.taskGrades.push(task);
+                                }
+                            });
+
+                            body.Grades.Workflow.forEach(workflow => {
+                                if( workflow.SectionUserID == sectionUserID ){
+                                    studentInfo.workflowGrades.push(workflow);
+                                }
+                            });
+
+
+                            response.students[sectionUserID] = studentInfo;
+                        }
+
+                        console.log(response);
+                    }
+                }
+            });
         });
     }
 
