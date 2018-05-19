@@ -4,17 +4,19 @@ import CourseSelectComponent from './courseSelect';
 import SectionSelectComponent from './sectionSelect';
 import AssignmentSelectComponent from './assignmentSelect';
 import SemesterSelectComponent from './semesterSelect';
+import TreeComponent from './treeComponent';
 
 
 class MainPageContainer extends Component {
     constructor(props) {
         super(props);
-
+        
         this.state= {
-            AssignmentID: this.props.AssignmentID ,
+            AssignmentID: -1,
             CourseID: -1,
             SectionID: -1,
             SemesterID: -1,
+            WorkflowID: -1,
             Strings: {
                 Course: 'Course',
                 Semester: 'Semester',
@@ -27,6 +29,7 @@ class MainPageContainer extends Component {
         this.selectCourse = this.selectCourse.bind(this);
         this.selectSection = this.selectSection.bind(this);
         this.selectSemester = this.selectSemester.bind(this);
+        this.selectWorkflow = this.selectWorkflow.bind(this);
     }
 
     componentDidMount() {
@@ -57,13 +60,38 @@ class MainPageContainer extends Component {
         });
     }
 
+    selectWorkflow(WorkflowID) {
+        this.setState({ WorkflowID });
+    }
+
+    unselectWorkflow() {
+        this.setState({
+            WorkflowID: -1
+        });
+    }
+
     render() {
         let {AssignmentID, CourseID, SemesterID, SectionID, Strings} = this.state;
         let everyonesWorkSection = null;
-        if(AssignmentID != ':assignmentId'){
-            everyonesWorkSection = (
-                <EveryonesWorkContainer UserID={this.props.UserID} AssignmentID={AssignmentID}/>
-            );
+        if(AssignmentID != -1) {
+            if (this.state.WorkflowID != -1) {
+                everyonesWorkSection = <div>
+                    <button onClick={this.unselectWorkflow.bind(this)}>Back</button>
+                    <TreeComponent
+                        UserID={this.props.UserID}
+                        AssignmentID={AssignmentID}
+                        WorkflowID={this.state.WorkflowID}
+                    />
+                </div>;
+            } else {
+                everyonesWorkSection = (
+                    <EveryonesWorkContainer
+                        UserID={this.props.UserID}
+                        AssignmentID={AssignmentID}
+                        selectWorkflow={this.selectWorkflow}
+                    />
+                );
+            }
         }
         return (
             <div>

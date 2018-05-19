@@ -137,6 +137,7 @@
     "node-sass": "^4.9.0",
     "nodemon": "^1.17.4",
     "pre-commit": "^1.2.2",
+    "react-treeview": "^0.4.7",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watch-lessc": "^0.0.3",

@@ -22,7 +22,6 @@ class EveryonesWorkContainer extends Component {
     
     fetchIDs(props){
         apiCall.get(`/EveryonesWork/AssignmentInstanceID/${props.AssignmentID}`, (err, res, body) => {
-            console.log(body);
             this.setState({
                 ListOfWorkflows: body.Workflows,
                 AssignmentInfo: body.AssignmentInfo,
@@ -38,8 +37,12 @@ class EveryonesWorkContainer extends Component {
         }
         const listofWorkflows = Object.keys(ListOfWorkflows).map((workflowActivityId, workflowIndex) => {
             const listOfTasks = ListOfWorkflows[workflowActivityId].Tasks.map( (taskObject, index) =>
-                <ListItemComponent key={workflowActivityId + ' ' + index} TaskObject={taskObject} 
-                    UserID={UserID}/>
+                <ListItemComponent
+                    key={workflowActivityId + ' ' + index}
+                    TaskObject={taskObject} 
+                    UserID={UserID}
+                    selectWorkflow={this.props.selectWorkflow}
+                />
             );
         
             let titleText = AssignmentInfo.Name == null ? '': `${AssignmentInfo.Name} -`;

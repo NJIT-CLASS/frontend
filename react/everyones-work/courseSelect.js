@@ -25,7 +25,10 @@ class  CourseSelectComponent extends Component {
         apiCall.get(`/course/getCourses/${props.UserID}`, (err, res, bod) => {
             
             let coursesArray = bod.Courses.map(function(course) {
-                return ({value: course.CourseID, label: course.Name});
+                return ({
+                    value: course.CourseID,
+                    label: course.Number + ' - ' + course.Name
+                });
             });
             this.setState({
                 CourseList: coursesArray
