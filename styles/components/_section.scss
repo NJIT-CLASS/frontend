@@ -58,8 +58,11 @@
     width: 100%;
   }
 
-  
-  li {
+  .list-group{
+    margin: 0;
+    padding:0;
+  }
+  .list-group-item {
     @media screen and (max-width: $mobile-brk) {
       width: calc(100vw - 40px);
       padding: 15px 20px;
