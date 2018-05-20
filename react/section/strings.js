@@ -3,4 +3,5 @@ export default {
     Instructors: 'Instructors',
     Observers: 'Observers',
     OngoingAssignments: 'Ongoing Assignments',
+    Cancel: 'Cancel'
 };

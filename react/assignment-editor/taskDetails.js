@@ -608,7 +608,7 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
 
                     <label>{strings.DefaultTaskDuration}</label>
-                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
+                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={1} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
 
                     <label>{strings.ShouldTaskEndAtCertainTime}</label>
                     <Tooltip Text={strings.TaskDueTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-due-type-tooltip`} />

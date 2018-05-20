@@ -20,7 +20,6 @@ export default class PendingTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getPendingTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
-                console.log('Tasks', body);
                 let transformedTaskList = body.PendingTaskInstances.map(task => {
                     return {
                         Assignment: task.AssignmentInstance.Assignment.Name,

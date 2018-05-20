@@ -26,14 +26,14 @@ class ProblemThreadComponent extends React.Component {
             TitleText: 'Problem Thread'
         };
         return ( <div className="section card-2" >
-                  <h2 className = "title template-header" >{strings.TitleText} </h2>
-                  <CommentInfoComponent
-                    TargetID = {this.props.WorkflowInstanceID}
-                    Target = {'WorkflowInstance'}
-                    ComponentTitle = {strings.TitleText}
-                    showComments = {this.props.showComments.bind(this)}
-                  />
-                </div>
+            <h2 className = "title template-header" ><em>{strings.TitleText}</em></h2>
+            <CommentInfoComponent
+                TargetID = {this.props.WorkflowInstanceID}
+                Target = {'WorkflowInstance'}
+                ComponentTitle = {strings.TitleText}
+                showComments = {this.props.showComments.bind(this)}
+            />
+        </div>
         );
     }
 }
