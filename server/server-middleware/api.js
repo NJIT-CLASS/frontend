@@ -18,6 +18,7 @@ const apiMethodInit = function(req,res,next){
             queryParameters = {};
             //queryParameters.token = req.session.token;
         }
+        queryParameters.userId = req.App.user.userId;
         // if(!queryParameters.token){
         //     queryParameters.token = req.session.token;
         // }
@@ -77,6 +78,7 @@ const apiMethodInit = function(req,res,next){
             body = {};
             // body.token = req.session.token;
         }
+        body.userId = req.App.user.userId;
         // if(!body.token){
         //     body.token = req.session.token;
         // }
@@ -137,7 +139,7 @@ const apiMethodInit = function(req,res,next){
         // if(!body.token){
         //     body.token = req.session.token;
         // }
-    
+        body.userId = req.App.user.userId;
         const options = {
             method: 'PUT',
             uri: apiUrl(endpoint),
@@ -197,7 +199,7 @@ const apiMethodInit = function(req,res,next){
         // if(!body.token){
         //     body.token = req.session.token;
         // }
-    
+        body.userId = req.App.user.userId;
         const options = {
             method: 'DELETE',
             uri: apiUrl(endpoint),
