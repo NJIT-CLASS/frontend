@@ -157,7 +157,7 @@ class TemplateContainer extends React.Component {
                         parseTaskList = parseTaskList.reverse();
 
                         parseTaskList.forEach((task, index) => {
-                            if (skipIndeces.includes(index) || task.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Status.includes('bypassed')) {
+                            if (skipIndeces.includes(index) ||  task.Status.includes('bypassed')) {
                                 return;
                             }
                             if (task.TaskActivity.NumberParticipants > 1) {
@@ -564,6 +564,7 @@ class TemplateContainer extends React.Component {
                     Status={this.state.CommentsTaskList[this.state.CommentTarget - 2].Status}
                     Files={this.state.CommentsTaskList[this.state.CommentTarget - 2].Files}
                     TaskActivityFields={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskActivity.Fields}
+                    TaskActivity={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskActivity}
                     Strings={this.state.Strings}
                     TaskID={this.state.CommentsTaskList[this.state.CommentTarget - 2].TaskInstanceID}
                     oneBox={true}

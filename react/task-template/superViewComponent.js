@@ -25,48 +25,12 @@ class SuperViewComponent extends React.Component {
             FieldRubrics: [],
             Ready: false,
             Error: false,
-            IsBypassedDispute: false,
+            IsBypassed: false,
             TaskHistory: null,
             CancelledTask: null
             
         };
     }
-
-    componentDidMount(){
-        console.log(this.props.TaskData, this.props.Status);
-        if(this.props.Status.includes('bypassed')){
-            try{
-                let latestVersion = {};
-                latestVersion.number_of_fields = this.props.TaskActivityFields.number_of_fields;
-                for (let i = 0; i < this.props.TaskActivityFields.number_of_fields; i++) {
-                    try{
-                        if (this.props.TaskActivityFields[i].default_refers_to[0] !== null) {
-                            latestVersion[i] = this.props.getLinkedTaskValues(this.props.TaskActivityFields[i].default_refers_to[0], tAdata[i].default_refers_to[1]);
-                        } else {
-                            latestVersion[i] = this.props.TaskActivityFields[i].default_content;
-                        }
-                    }catch(exc){
-                        latestVersion[i] = ['',''];
-                    }
-                    
-                }
-                this.props.TaskData = latestVersion;
-            } catch(exc){
-                this.setState({
-                    IsBypassedDispute: true
-                });
-            }
-                
-            
-        } 
-        else if(this.props.Status.includes('bypassed')){
-            this.setState({
-                CancelledTask: true
-            });
-        }
-        
-    }
-    
 
     toggleContent() {
         const bool = !this.state.ShowContent;
@@ -112,9 +76,35 @@ class SuperViewComponent extends React.Component {
     }
 
     render() {
-        if(this.state.CancelledTask === true){
+        if(this.props.Status.includes('cancelled')){
             return <div></div>;
         }
+
+        if(this.props.Status.includes('bypassed')){
+            switch(this.props.TaskActivityFields.Type){
+            case TASK_TYPES.DISPUTE:
+                return (<div key={this.props.index + 2001} className="section card-2" >
+                    <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
+                </div>);
+            default:
+                return <div></div>;
+            }
+            
+        }
+
+        if(this.props.TaskActivity.Type === TASK_TYPES.NEEDS_CONSOLIDATION){
+            if(this.props.TaskData.FinalGrade != null){
+                return <div key={this.props.index + 2001} className="section card-2" >
+                    <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
+                        <span>{this.props.Strings.ConsolidateFinalGrade}: {this.props.TaskData.FinalGrade}</span>
+                    </h2>
+                </div>;
+                
+            } else {
+                return <div></div>;
+            }
+        }
+
         let content = null;
         let TA_rubric = null;
         let TA_instructions = null;
@@ -125,11 +115,7 @@ class SuperViewComponent extends React.Component {
             pastVersions = this.props.TaskData.slice(0, this.props.TaskData.length);
             
         }
-        if(this.state.IsBypassedDispute === true){
-            return (<div key={this.props.index + 2001} className="section card-2" >
-                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
-            </div>);
-        }
+        
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
                 <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}

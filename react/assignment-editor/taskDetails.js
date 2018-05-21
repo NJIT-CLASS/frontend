@@ -120,7 +120,7 @@ class TaskDetailsComponent extends React.Component {
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
         const assessmentTypeValues = [{ value: 'grade', label: strings.NumericGrade }, { value: 'rating', label: strings.Rating }, { value: 'pass', label: strings.PassFail }, { value: 'evaluation', label: strings.EvaluationByLabels }];
         const onTaskEndValues = [{ value: 'late', label: strings.Late }/*, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }*/];
-        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }, {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
+        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, /*{ value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember },*/ {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }/*, { value: 'both', label: strings.BothInstructorStudents }*/];
@@ -1123,10 +1123,15 @@ class TaskDetailsComponent extends React.Component {
                     <br />
                     <Select options={assigneeWhoValues} value={this.props.TaskActivityData.TA_assignee_constraints[0]} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                     {showNumberofStudents}
-                    <label>{strings.WillThisBeGroupTask}</label>
+                    {/*
+                            //Remove Group options for now
+ <label>{strings.WillThisBeGroupTask}</label>
                     <Tooltip Text={strings.TaskGroupTaskMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-group-task-tooltip`} />
 
                     <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'} />
+                    
+                    
+                    */}
                     {assigneeRelations}
                 </div>
             );

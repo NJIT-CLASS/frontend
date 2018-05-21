@@ -1358,6 +1358,9 @@ class AssignmentEditorContainer extends React.Component {
         case TASK_TYPES.CRITIQUE:
             prefixString = 'Critique';
             break;
+        case TASK_TYPES.NEEDS_CONSOLIDATION:
+            prefixString = 'Needs Consolidation of';
+            break;
         case TASK_TYPES.CONSOLIDATION:
             prefixString = 'Consolidate';
             break;

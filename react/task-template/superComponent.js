@@ -314,7 +314,12 @@ class SuperComponent extends React.Component {
     handleContentChange(index, event) {
         // updates task data with new user input in grading fields
         const newTaskResponse = this.state.TaskResponse;
-        newTaskResponse[index][0] = event.target.value || event.target.getContent();
+        if(event.target.getContent != null){
+            newTaskResponse[index][0] = event.target.value || event.target.getContent();
+        } else {
+            newTaskResponse[index][0] = event.target.value || '';
+            
+        }
         this.setState({
             TaskResponse: newTaskResponse,
         });
