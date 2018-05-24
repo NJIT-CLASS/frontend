@@ -79,7 +79,7 @@ const TaskInstanceComponent = ({
                 {/* We indicate if this task is allocated to the currently signed in user
                 (unless the page is in anonymous mode). */}
                 {!showAnonymousVersion && currentUserID == TaskInstance.User.UserID ? (
-                    <div style={{ fontWeight: 'bold' }}> My Task </div>
+                    <div style={{ fontWeight: 'bold', fontSize: '18px' }}> ***My Task*** </div>
                 ) : null}
             </div>
         );
