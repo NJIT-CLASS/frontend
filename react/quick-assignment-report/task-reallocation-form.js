@@ -268,6 +268,7 @@ class TaskReallocationForm extends Component {
 
         const taskInstance = this.props.taskInstance;
         const taskName = taskInstance.TaskActivity.DisplayName;
+        const taskID = taskInstance.TaskInstanceID;
         const currentlyAssignedUserID = taskInstance.User.UserID;
         const currentlyAssignedUserEmail = taskInstance.User.UserContact.Email;
         return (
@@ -279,7 +280,7 @@ class TaskReallocationForm extends Component {
                             <div style={{ fontSize: 'smaller', marginTop: '5px' }}>
                                 {`User: ${currentlyAssignedUserEmail} (UserID: ${currentlyAssignedUserID})`}
                                 <br />
-                                {`Task: ${taskName}`} <br />
+                                {`Task: ${taskName} (TaskID: ${taskID})`} <br />
                             </div>
                         </div>
                     }
