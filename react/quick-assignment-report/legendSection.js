@@ -50,8 +50,11 @@ const LegendSection = ({Strings}) => {
         const tooltipString = Strings[statusToString[status] + 'Tooltip'];
         return (
             <div key={status} className={`legend-block ${colors[status]}`}>
-                <div>{statusString} {letters[status]}</div>
-                <Tooltip ID={status + 'Tooltip'} Text={tooltipString} />
+                <span>{statusString} {letters[status]}</span>
+                <Tooltip
+                    ID={status + 'Tooltip'}
+                    Text={tooltipString}
+                    style={{ float: 'right' }}/>
             </div>
         );
     });

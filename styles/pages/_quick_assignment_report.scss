@@ -60,16 +60,12 @@
   .legend-table{
     display: flex;
     flex-direction: row;
-    height: 50px;
   }
 
   .legend-block{
     padding:10px;
     border:1px solid #bfbfbf;
-    flex: 0 1 150px;
-    width: 172px;
-    display: flex;
-    justify-content: space-between;
+    width: 178px;
   }
 
   .disabled {
