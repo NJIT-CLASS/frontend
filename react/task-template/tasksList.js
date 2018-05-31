@@ -56,6 +56,7 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
+                                    TaskActivity={task.TaskActivity}
                                     TaskActivityFields={task.TaskActivity.Fields}
                                     TaskID={task.TaskInstanceID}
                                     Strings={Strings}

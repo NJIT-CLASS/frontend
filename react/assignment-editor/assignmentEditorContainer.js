@@ -2146,6 +2146,9 @@ class AssignmentEditorContainer extends React.Component {
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
             if(e.value == 'instructor'){
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = false;
+                if(this.hasConsolidate(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex)){
+                    this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                }
             } else {
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = true;
             }
