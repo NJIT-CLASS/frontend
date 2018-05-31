@@ -1627,6 +1627,8 @@ class AssignmentEditorContainer extends React.Component {
         }
         newData[workflowIndex].Workflow[parentIndex].AllowConsolidation = false;
         this.setState({WorkflowDetails: newData});
+        this.propogateNameChangeDownTree(parentIndex, workflowIndex);
+        
     }
 
     removeDispute(parentIndex, workflowIndex) {
@@ -2145,12 +2147,17 @@ class AssignmentEditorContainer extends React.Component {
         case 'TA_assignee_constraints':
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
             if(e.value == 'instructor'){
+
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = false;
-                if(this.hasConsolidate(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex)){
-                    this.removeConsolidation(this.getAssessIndex(taskIndex, workflowIndex), workflowIndex);
+                if(this.hasConsolidate(taskIndex, workflowIndex)){
+                    this.removeConsolidation(taskIndex, workflowIndex);
                 }
             } else {
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = true;
+                let numOfParts = newData[workflowIndex].Workflow[taskIndex].TA_number_participant;
+                if(numOfParts > 1){
+                    this.addConsolidation(newData, taskIndex, workflowIndex);
+                }
             }
             break;
         case 'TA_function_type_Assess':
@@ -2181,7 +2188,22 @@ class AssignmentEditorContainer extends React.Component {
             ? this.getReflectIndex(taskIndex, workflowIndex, newData)
             : this.getAssessIndex(taskIndex, workflowIndex, newData); // taskIndex of child (reflect/assess) node
         newData[workflowIndex].Workflow[target]['TA_assignee_constraints'][0] = e.value;
+        
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+        if(e.value == 'instructor'){
+            if(this.hasConsolidate(target, workflowIndex)){
+                this.removeConsolidation(target, workflowIndex);
+            }
+        } else {
+            let numOfParts = reflect
+            ? this.getReflectNumberofParticipants(taskIndex, workflowIndex)
+            : this.getAssessNumberofParticipants(taskIndex, workflowIndex);
+
+            if(numOfParts > 1){
+                this.addConsolidation(newData, target, workflowIndex);
+            }
+        }
     }
 
     getAssigneeInChild(reflect, taskIndex, workflowIndex) {

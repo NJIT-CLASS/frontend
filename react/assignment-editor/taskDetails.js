@@ -104,7 +104,6 @@ class TaskDetailsComponent extends React.Component {
     }
 
     mapFieldDistToOptions(){
-        console.log('Feild Dist:', this.props.TaskActivityData.TA_fields.field_distribution);
         if(this.props.TaskActivityData.TA_fields.field_distribution === undefined){
             return [];
         }
@@ -325,7 +324,6 @@ class TaskDetailsComponent extends React.Component {
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers && this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)) {
                 const defaultParentTaskId = this.props.callTaskFunction('getFieldDefaultContentValue', 0, index, this.props.index, this.props.workflowIndex);
-                console.log('Fields for', index, defaultParentTaskId, this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex));
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex).map(field => {
                     let parentId = field.value.split(':')[0];
                     if(parentId != defaultParentTaskId){
@@ -384,7 +382,7 @@ class TaskDetailsComponent extends React.Component {
                     </div>
                 );
             
-
+                
                 
             } else  if(this.props.TaskActivityData.TA_fields[index].field_type === 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type === 'self assessment' ){
                 switch(this.props.TaskActivityData.TA_fields[index].assessment_type){
@@ -480,7 +478,24 @@ class TaskDetailsComponent extends React.Component {
                 );
             }
 				  
+            defaultContentButton = (
+                <div
+                    style={{
+                        display: 'inline',
+                    }}
+                >
+                    <label>{strings.GetDataFromAnotherTaskInstead}</label>
+                    <Tooltip Text={strings.TaskGetFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-get-field-content-tooltip`} />
 
+                    <Checkbox
+                        isClicked={this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)} click={() => {
+                            this.props.callTaskFunction('toggleDefaultFieldRefersTo', index, this.props.index, this.props.workflowIndex);
+                        }}
+                    />
+
+                </div>
+            );
+            
             let removeButtonView = null;
             if (index != 0) {
                 removeButtonView = (<div className="remove-button" onClick={this.props.callTaskFunction.bind(this, 'removeFieldButton', this.props.index, this.props.workflowIndex, index)}>
@@ -830,7 +845,6 @@ class TaskDetailsComponent extends React.Component {
 
 
             );
-
 
             // TA_allow_reflection
             let allowReflectionOptions = null;
