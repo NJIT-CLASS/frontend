@@ -11,23 +11,21 @@ class RestartTask extends Component {
     }
 
     restartTask() {
-        /* TODO: Implement this when the backend API is ready.
-
+        /* TODO: Implement this when the backend API is ready.*/
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
-
         const postBody = {
-
+            ti_id: taskInstanceID,
+            keep_content: false,
+            duration: []
         };
 
-        const url = '';
+        const url = '/task/reset';
 
         apiCall.postAsync(url, postBody)
             .then(() => {
                 showMessage('Task successfully restarted');
                 this.props.onRestartTask();
             });
-
-        */
 
         this.props.onClose();
     }
@@ -43,7 +41,6 @@ class RestartTask extends Component {
         const message = 
             <div>
                 {/* TODO: remove this message when implemented */}
-                <p> Note: This feature is not yet implemented. </p>
                 <p>The following task will be restarted: </p>
                 <ul>
                     <li>
