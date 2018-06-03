@@ -55,13 +55,11 @@ class TreeComponent extends Component {
                     taskInvertedByActivityID[currentTaskActivityID].push(taskInstance);
                 }
             });
-            console.log(treeArray);
             
             const treeStructure = this.unflattenTreeStructure(treeArray);
             treeStructure.walk({strategy: 'pre'},node => {
                 node.Tasks = taskInvertedByActivityID[node.model.id];
             }, this);
-            debugger;
 
 
             this.setState({
@@ -81,8 +79,8 @@ class TreeComponent extends Component {
 
     render() {
         return <div className="card">
-            {/*this.makeTreeView(this.state.WorkflowStructure)*/}
-            <TreeView nodeLabel={<a href="http://localhost:4001/task/1675" target="_blank"><span className="node">Create Problem 1</span></a>}>
+            {this.makeTreeView(this.state.WorkflowStructure)}
+            {/*<TreeView nodeLabel={<a href="http://localhost:4001/task/1675" target="_blank"><span className="node">Create Problem 1</span></a>}>
                 <TreeView nodeLabel={<a href="http://localhost:4001/task/1675" target="_blank"><span className="node">Revise 1</span></a>}>
                     <TreeView nodeLabel={<span className="node">Needs Consolidation</span>}>
                         <div>Consolidate revise</div>
@@ -119,6 +117,7 @@ class TreeComponent extends Component {
                 </TreeView>
                 <div>Grade Problem 2</div>
             </TreeView>
+    */}
         </div>;
     }
 

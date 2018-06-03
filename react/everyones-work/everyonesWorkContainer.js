@@ -75,7 +75,7 @@ class EveryonesWorkContainer extends Component {
             );
         });
         return (
-            <div>
+            <div className="list-group">
                 { listofWorkflows}
             </div>
     

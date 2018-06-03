@@ -18,14 +18,14 @@ const ListItemComponent = (props) => {
     if(taskData !== null){
         let problemText = trunc(taskData[0][0][0], 100);
         if(taskId != null){
-            return <li onClick={props.selectWorkflow.bind(this, TaskObject.WorkflowInstanceID)} style={{ cursor: 'pointer' }}>
+            return <li className="list-group-item item-hover" onClick={props.selectWorkflow.bind(this, TaskObject.WorkflowInstanceID)} style={{ cursor: 'pointer' }}>
                 <MarkupView content={problemText} />
             </li>;
             // return (<li onClick={props.selectWorkflow}><a target="_blank" href={`/task/${taskId}?visitorId=${UserID}`}>
             //     <MarkupView content={problemText} />
             // </a></li>);   
         } else {
-            return (<li className="list-group-item">
+            return (<li className="list-group-item item-hover">
                 <MarkupView content={problemText} />
             </li>);
         }
