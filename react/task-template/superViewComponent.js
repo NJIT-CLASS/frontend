@@ -239,14 +239,17 @@ class SuperViewComponent extends React.Component {
                 </div>);
             }
 
-
+            let latestVersionView = <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />;
+            if(this.props.Status.includes('complete') && pastVersions.length > 0){
+                latestVersionView = <div></div>;
+            }
             return (<div>
                 <div className="template-field-title">{fieldTitle}</div>
                 {fieldInstructions}
                 {fieldRubric}
 
                 <br />
-                <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                {latestVersionView}
                 <VersionView Versions={pastVersions} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);

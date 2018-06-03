@@ -21,6 +21,7 @@ import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
+import {cloneDeep, clone} from 'lodash';
 
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
@@ -238,10 +239,13 @@ class SuperComponent extends React.Component {
             // check if input is valid
             const validData = this.isValidData();
             if (validData) {
+
+                const responseToSubmit = cloneDeep(this.state.TaskResponse);
+                delete responseToSubmit.revise_and_resubmit;
                 const options = {
                     taskInstanceid: this.props.TaskID,
                     userid: this.props.UserID,
-                    taskInstanceData: this.state.TaskResponse,
+                    taskInstanceData: responseToSubmit,
                 };
                 this.setState({
                     LockSubmit: true
@@ -814,7 +818,7 @@ class SuperComponent extends React.Component {
             
             if(this.state.ShowHistory){
                         
-                versionHistoryView = <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length - 1)} 
+                versionHistoryView = <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length )} 
                     Field={this.state.TaskActivityFields[idx]} 
                     FieldIndex={idx} Strings={this.props.Strings} />;
             }
