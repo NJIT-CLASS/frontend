@@ -21,11 +21,12 @@ const strings = {
     Bypassed: 'Bypassed',
     Automatic: 'Automatic',
     TaskType: 'Task Type',
+    ProblemType: 'Problem Type',
     WorkflowID: 'WorkflowID',
     ReplaceInAssignmentTooltip: 'This button will open a form for replacing users in the assignment',
     RemoveProblemThreadsTooltip: `<p>This button will reveal checkboxes next to each problem thread. 
         Use them to select problem threads to remove.</p>`,
-    WorkflowActivityTooltip: `<p>The assignment has several different problem types.
+    WorkflowActivityTooltip: `<p>An assignment has one or more problem types.
         To the left is the internal ID and name of one of these problem types.
         Below are all of the problem threads grouped for this problem type.</p>`,
     WorkflowInstanceTooltip: `<p>Each row shows all of the tasks for one of the problem threads 
@@ -44,7 +45,8 @@ const strings = {
         Removing a problem thread will cancel all of its tasks.
         The users will be shuffled to ensure that they all have an even number of tasks assigned to them.
         You can only remove problem threads without any completed tasks.
-        It is most efficent to remove multiple problem threads at once instead of doing this individually.</p>`
+        It is most efficent to remove multiple problem threads at once instead of doing this individually.</p>`,
+    NumberOfSetsTooltip: 'This is the number of problems of this type that each student creates/solves. All of them are included among the problem threads below.'
 };
 
 export default strings;

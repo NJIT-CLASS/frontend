@@ -19,10 +19,10 @@ const TaskComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
+    // We only show task instances that match the task type filter
+    // Otherwise, an empty block is shown as a placeholder.
     let taskInstancesArray = TaskActivity
-        // We only show task instances that match the task type filter (which filters by task activity ID).
-        // Otherwise, an empty block is shown as a placeholder.
-        .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.TaskActivityID))
+        .filter(taskInstance => Filters.TaskType.length === 0 || Filters.TaskType.includes(taskInstance.TaskActivity.TaskActivityID))
         .map((taskInstance, index) => {
             return (
                 <TaskInstanceComponent
