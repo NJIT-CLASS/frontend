@@ -127,6 +127,7 @@ class AssignmentEditorContainer extends React.Component {
                     'none', 'don\'t wait'
                 ],
                 TA_allow_assessment: 'none',
+                TA_allow_follow_on_assessment: false,
                 TA_allow_revisions: false,
                 TA_number_participant: 1,
                 TA_function_type: 'max',
@@ -1865,6 +1866,7 @@ class AssignmentEditorContainer extends React.Component {
         case 'assess':
             newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[taskIndex].TA_allow_assessment = 'none';
+            newData[workflowIndex].Workflow[taskIndex].TA_allow_follow_on_assessment = false;
             break;
         case 'dispute':
             break;
@@ -1886,6 +1888,18 @@ class AssignmentEditorContainer extends React.Component {
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
+    }
+
+    isChecked(field, taskIndex, workflowIndex, stateData){
+        let newData = stateData == null ? this.state.WorkflowDetails : stateData;
+
+        if(newData[workflowIndex].Workflow[taskIndex][field] === true){
+            return true;
+        } else if(newData[workflowIndex].Workflow[taskIndex][field] === false){
+            return false
+        } else {
+            return null;
+        }
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, stateData) {
@@ -1959,6 +1973,43 @@ class AssignmentEditorContainer extends React.Component {
                 }
             }
             break;
+        case 'TA_allow_follow_on_assessment':
+        {
+            if (newData[workflowIndex].Workflow[taskIndex][stateField] === true) {
+                let taskChildrenNodes = this.taskChildren(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
+                if(taskChildrenNodes.length == 0){
+                    this.dropTask('assess', taskIndex, workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = false;
+                } else {
+                    let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
+                            <br />
+                            <ul>
+                        ${taskChildrenNodes.map((task) => { return (`<li>${task}</li>`); }).reduce((val, acc) => { return acc + val; }, '')}
+                        </ul>
+                        <br />
+                        ${this.state.Strings.AreYouSureYouWantToContinue}?`;
+                    confirmModal({
+                        confirmation: messageDiv,
+                        list: taskChildrenNodes,
+                        okLabel: this.state.Strings.Ok,
+                        cancelLabel: this.state.Strings.Cancel,
+                        title: this.state.Strings.DroppingMultipleTask
+                    }).then(() => {
+                        this.dropTask('assess', taskIndex, workflowIndex);
+                        
+                    }, () => {
+                    }).catch(() => { });
+                    
+
+                }
+                
+            } else {
+                newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
+                newData = this.refreshGradeDist(newData, workflowIndex);
+                newData[workflowIndex].Workflow[taskIndex][stateField] = true;
+            }
+        }
+        break;
         case 'TA_leads_to_new_problem':
             {
                 if (newData[workflowIndex].Workflow[taskIndex][stateField]) {
@@ -2138,7 +2189,9 @@ class AssignmentEditorContainer extends React.Component {
             break;
         case 'TA_allow_assessment':
             {
-                newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+                if(newData[workflowIndex].Workflow[taskIndex].TA_allow_follow_on_assessment !== true){
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+                }
                 this.changeAssessment(taskIndex, workflowIndex, e.value);
                 this.propogateNameChangeDownTree(taskIndex, workflowIndex);
 
@@ -2208,7 +2261,11 @@ class AssignmentEditorContainer extends React.Component {
 
     getAssigneeInChild(reflect, taskIndex, workflowIndex) {
         let targetIndex = (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
-        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
+        try{
+            return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
+        } catch(e){
+            return '';
+        }
     }
 
     getTaskRevisioninChild(taskIndex, workflowIndex){
@@ -2345,6 +2402,17 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field].title = e.target.value;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles[field] = e.target.value;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+    }
+
+    getAssessmentTask(taskIndex, workflowIndex){
+        var returnTask = null;
+        try{
+            let targetIndex = this.getAssessIndex(taskIndex, workflowIndex);
+            returnTask = this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex];
+        } catch(e) {
+
+        }
+        return returnTask;
     }
 
     changeFieldCheck(stateField, taskIndex, field, workflowIndex) {
