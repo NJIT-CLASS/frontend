@@ -22,7 +22,7 @@ class QuickAssignmentReport extends Component {
         this.state = {
             AssignmentData: {},
             AssignmentDataLoaded: false,
-            Filters: { Type: [], Status: [], Users: [] },
+            Filters: { ProblemType: null, TaskType: [], Status: [], Users: [] },
             Strings: strings,
             sectionInfo: null,
             sectionInfoLoaded: false,
@@ -43,7 +43,8 @@ class QuickAssignmentReport extends Component {
             showAnonymousVersion: false
         };
 
-        this.changeFilterType = this.changeFilterType.bind(this);
+        this.changeFilterTaskType = this.changeFilterTaskType.bind(this);
+        this.changeFilterProblemType = this.changeFilterProblemType.bind(this);
         this.changeFilterStatus = this.changeFilterStatus.bind(this);
         this.changeFilterUsers = this.changeFilterUsers.bind(this);
     }
@@ -174,9 +175,20 @@ class QuickAssignmentReport extends Component {
     }
 
 
-    changeFilterType(typeArray){
+    changeFilterTaskType(taskTypeArray){
         let newFilters = this.state.Filters;
-        newFilters.Type = typeArray.map(t => t.value);
+        newFilters.TaskType = taskTypeArray.map(t => t.value);
+        this.setState({
+            Filters: newFilters
+        });
+    }
+
+    changeFilterProblemType(problemType){
+        let newFilters = this.state.Filters;
+        newFilters.ProblemType = problemType;
+        // The task type filter should only display tasks that belong to the selected problem type,
+        // so since the problem type changed, we must reset the task type filter:
+        newFilters.TaskType = [];
         this.setState({
             Filters: newFilters
         });
@@ -355,8 +367,9 @@ class QuickAssignmentReport extends Component {
 
                 <FilterSection
                     Filters={this.state.Filters}
+                    onChangeFilterProblemType={this.changeFilterProblemType}
                     onChangeFilterStatus={this.changeFilterStatus}
-                    onChangeFilterType={this.changeFilterType}
+                    onChangeFilterTaskType={this.changeFilterTaskType}
                     onChangeFilterUsers={this.changeFilterUsers}
                     Strings={this.state.Strings}
                     users={this.state.sectionInfoLoaded ? this.state.sectionInfo.users : []}

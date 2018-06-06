@@ -19,8 +19,9 @@ const AssignmentComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
-    const workflowsArray = Object.keys(Assignment).map(workflowActivityID => {
-        return (
+    const workflowsArray = Object.keys(Assignment)
+        .filter(workflowActivityID => Filters.ProblemType == null || Filters.ProblemType.value == workflowActivityID)
+        .map(workflowActivityID => (
             <WorkflowComponent
                 WorkflowInstances={Assignment[workflowActivityID].WorkflowInstances}
                 Structure={Assignment[workflowActivityID].Structure}
@@ -41,8 +42,7 @@ const AssignmentComponent = ({
                 onCancelTaskButtonClick={onCancelTaskButtonClick}
                 onRestartTaskButtonClick={onRestartTaskButtonClick}
             />
-        );
-    });
+    ));
 
     return <div>{workflowsArray}</div>;
 };

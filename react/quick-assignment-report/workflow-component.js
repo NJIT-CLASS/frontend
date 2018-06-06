@@ -70,9 +70,7 @@ const WorkflowComponent = ({
         return (
             <div className="workflow-activity-block">
                 <div className="workflow-activity-label">
-                    {/* This shows the workflow activity's ID and name above its workflow instances.
-                     An explanatory tooltip is shown too. */}
-                    {WA_ID} - {WorkflowActivityName}<Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
+                    <span style={{fontSize: '20px'}}>{WA_ID} - {WorkflowActivityName}</span><Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
                 </div>
                 {workflowInstancesArray}
             </div>
