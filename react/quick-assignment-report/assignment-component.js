@@ -41,6 +41,7 @@ const AssignmentComponent = ({
                 onBypassTaskButtonClick={onBypassTaskButtonClick}
                 onCancelTaskButtonClick={onCancelTaskButtonClick}
                 onRestartTaskButtonClick={onRestartTaskButtonClick}
+                numberOfProblemTypes={Object.keys(Assignment).length}
             />
     ));
 

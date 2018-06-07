@@ -22,7 +22,8 @@ const WorkflowComponent = ({
     selectedWorkflowIDs,
     onBypassTaskButtonClick,
     onCancelTaskButtonClick,
-    onRestartTaskButtonClick
+    onRestartTaskButtonClick,
+    numberOfProblemTypes
 }) => {
     const workflowInstancesArray = Object.keys(WorkflowInstances)
         .filter(workflowInstanceID => {
@@ -70,7 +71,10 @@ const WorkflowComponent = ({
         return (
             <div className="workflow-activity-block">
                 <div className="workflow-activity-label">
-                    <span style={{fontSize: '20px'}}>{WA_ID} - {WorkflowActivityName}</span><Tooltip Text={Strings.WorkflowActivityTooltip} ID={WA_ID} />
+                    <span style={{fontSize: '20px'}}>{WA_ID} - {WorkflowActivityName}</span>
+                    <Tooltip Text={numberOfProblemTypes > 1
+                        ? Strings.WorkflowActivityMultipleProblemTooltip
+                        : Strings.WorkflowActivitySingleProblemTooltip} ID={WA_ID} />
                 </div>
                 {workflowInstancesArray}
             </div>

@@ -26,7 +26,9 @@ const strings = {
     ReplaceInAssignmentTooltip: 'This button will open a form for replacing users in the assignment',
     RemoveProblemThreadsTooltip: `<p>This button will reveal checkboxes next to each problem thread. 
         Use them to select problem threads to remove.</p>`,
-    WorkflowActivityTooltip: `<p>An assignment has one or more problem types.
+    WorkflowActivitySingleProblemTooltip: `<p>To the left is the internal ID and name of this assignment's problem type.
+        Below are all of the problem threads grouped for this problem type.</p>`,
+    WorkflowActivityMultipleProblemTooltip: `<p>This assignment has multiple problem types.
         To the left is the internal ID and name of one of these problem types.
         Below are all of the problem threads grouped for this problem type.</p>`,
     WorkflowInstanceTooltip: `<p>Each row shows all of the tasks for one of the problem threads 
