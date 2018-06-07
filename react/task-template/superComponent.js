@@ -170,7 +170,7 @@ class SuperComponent extends React.Component {
                     return false;
                 }
             }
-            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 10000000) { // checks to see if the input is a reasonable length
                 showMessage(this.props.Strings.StringLengthResponse);
                 console.log('strin length error');
                 return false;
@@ -343,7 +343,7 @@ class SuperComponent extends React.Component {
     }
 
     handleJustificationChange(index, event) {
-        if (event.target.getContent().length > 45000) { // checks to see if input is reasosnable length, makes sure browser doesn't crash on long input
+        if (event.target.getContent().length >  10000000) { // checks to see if input is reasosnable length
             return;
         }
         // updates task data with new user input in justification fields

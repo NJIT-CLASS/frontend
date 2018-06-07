@@ -2851,7 +2851,7 @@ class AssignmentEditorContainer extends React.Component {
         if (event.target.id.includes('tiny')) {
             content = event.target.getContent();
         }
-        if (content.length > 45000) {
+        if (content.length > 10000000) {
             return;
         }
         if (fieldName == 'AA_name') {

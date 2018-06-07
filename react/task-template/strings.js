@@ -78,7 +78,7 @@ let strings = {
     MissingResponse: 'One of your answers is blank',
     IsNanResponse: 'One of your numeric answers was not a valid number',
     MinMaxResponse: 'One of your numeric answers was outside the acceptable range',
-    StringLengthResponse: 'One of your text inputs was too long ( limit of 45000 characters)',
+    StringLengthResponse: 'One of your text inputs was too large. Try using smaller images.',
     ConsolidateFinalGrade: 'The consolidated grade is'
     
 };
