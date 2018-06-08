@@ -1121,7 +1121,7 @@ class TaskDetailsComponent extends React.Component {
                                 {simpleGrade}
                                 {allowAssessment}
                             </div>
-                            {followOnAssessmentTaskView}
+                            {/*followOnAssessmentTaskView*/}
                             <div className="section-divider">
                                 <div className="subheading">{strings.FollowOnHeader}</div>
                                 {leadsToNewProblem}
