@@ -19,7 +19,7 @@ const apiMethodInit = function(req,res,next){
             //queryParameters.token = req.session.token;
         }
         if(req.App.user != null){
-            queryParameters.userId = req.App.user.userId;
+            queryParameters.UserID = req.App.user.userId;
         }
         // if(!queryParameters.token){
         //     queryParameters.token = req.session.token;
@@ -81,7 +81,7 @@ const apiMethodInit = function(req,res,next){
             // body.token = req.session.token;
         }
         if(req.App.user != null){
-            body.userId = req.App.user.userId;
+            body.UserID = req.App.user.userId;
         }
         // if(!body.token){
         //     body.token = req.session.token;
@@ -145,7 +145,7 @@ const apiMethodInit = function(req,res,next){
         //     body.token = req.session.token;
         // }
         if(req.App.user != null){
-            body.userId = req.App.user.userId;
+            body.UserID = req.App.user.userId;
         }
         const options = {
             method: 'PUT',
@@ -207,7 +207,7 @@ const apiMethodInit = function(req,res,next){
         //     body.token = req.session.token;
         // }
         if(req.App.user != null){
-            body.userId = req.App.user.userId;
+            body.UserID = req.App.user.userId;
         }
         const options = {
             method: 'DELETE',

@@ -28,6 +28,17 @@ class AllowFollowOnAssessmentComponent extends Component{
         let numberOfAssessView = null;
         let seeSibblingsView = null;
         
+
+        if(this.props.TaskActivityData.TA_allow_assessment !== 'none'){
+            return <div>
+                <div className="inner">
+                    <label>{strings.AllowAFollowOnAssessment}</label>
+                    <Tooltip Text={strings.TaskAllowAssessmentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-assessment-tooltip`} />
+                    <span>{strings.FollowOnAssessmentPlaceholder}</span>
+                    {allowAssesmentOptions}
+                </div>
+            </div>;
+        }
         if (this.props.TaskActivityData.TA_allow_follow_on_assessment == true && this.props.TaskActivityData.TA_allow_assessment === 'none') {
             assessConstraint = this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex);
             if(assessConstraint == 'student' || assessConstraint == 'both'){
@@ -124,7 +135,12 @@ class AllowFollowOnAssessmentComponent extends Component{
                 (
                     <div>
                         {strings.AssessWhichTask}
-                        <Select options={alreadyCreatedTasks} />
+                        <Select options={alreadyCreatedTasks} 
+                            value={this.props.TaskActivityData.RefersToWhichTask} 
+                            clearable={false} 
+                            searchable={false}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_follow_on_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment}
+                        />
                         <br/>                    
                         <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
                         <label>{strings.WhoCanAssess}</label>

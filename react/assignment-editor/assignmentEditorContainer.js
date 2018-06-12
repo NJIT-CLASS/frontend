@@ -969,7 +969,10 @@ class AssignmentEditorContainer extends React.Component {
                     currentRefersToTarget = node.parent.model.id;
                 }
 
-                workflow.Workflow[node.model.id].RefersToWhichTask = currentRefersToTarget;
+                if(workflow.Workflow[node.model.id].RefersToWhichTask === null){
+                    workflow.Workflow[node.model.id].RefersToWhichTask = currentRefersToTarget;
+
+                }
 
                 if(!node.hasChildren()){
                     currentRefersToTarget = null;
@@ -1867,6 +1870,8 @@ class AssignmentEditorContainer extends React.Component {
             newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[taskIndex].TA_allow_assessment = 'none';
             newData[workflowIndex].Workflow[taskIndex].TA_allow_follow_on_assessment = false;
+            newData[workflowIndex].Workflow[taskIndex].RefersToWhichTask = null;
+            
             break;
         case 'dispute':
             break;
@@ -1980,6 +1985,7 @@ class AssignmentEditorContainer extends React.Component {
                 if(taskChildrenNodes.length == 0){
                     this.dropTask('assess', taskIndex, workflowIndex);
                     newData[workflowIndex].Workflow[taskIndex][stateField] = false;
+                    newData[workflowIndex].Workflow[taskIndex].RefersToWhichTask = null;
                 } else {
                     let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
                             <br />
@@ -2197,6 +2203,10 @@ class AssignmentEditorContainer extends React.Component {
 
             }
             break;
+        case 'TA_allow_follow_on_assessment':
+            const targetIndex = this.getAssessIndex(taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex].RefersToWhichTask = e.value;
+        break;
         case 'TA_assignee_constraints':
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
             if(e.value == 'instructor'){

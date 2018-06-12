@@ -20,6 +20,19 @@ class AllowAssessmentComponent extends Component{
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
         
 
+
+        if(this.props.TaskActivityData.TA_allow_follow_on_assessment === true){
+            return <div>
+                <div className="inner">
+                    <label>{strings.AllowAnAssessment}</label>
+                    <Tooltip Text={strings.TaskAllowAssessmentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-assessment-tooltip`} />
+
+                    <span>{strings.AssessmentPlaceholder}</span>
+
+                </div>
+            </div>;
+        }
+
         let allowAssesmentOptions = null;
         let assessShowDispute = null;
         let assessConsolidateOptions = null;
@@ -28,9 +41,11 @@ class AllowAssessmentComponent extends Component{
         let numberOfAssessView = null;
         let seeSibblingsView = null;
         const assessmentTask = this.props.callTaskFunction('getAssessmentTask', this.props.index, this.props.workflowIndex);
+        
+        
+        
+        
         if (assessmentTask != null && !isEmpty(assessmentTask) && this.props.TaskActivityData.TA_allow_follow_on_assessment !== true) {
-            debugger;
-            
             assessConstraint = assessmentTask['TA_assignee_constraints'][0];
             if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
                 if(assessConstraint == 'student' || assessConstraint == 'both'){

@@ -1086,7 +1086,7 @@ class TaskDetailsComponent extends React.Component {
             let followOnAssessmentTaskView = <div></div>;
 
             if(taskCreatedList.length > 0){
-                followOnAssessmentTaskView = <div className="section-divider">
+                followOnAssessmentTaskView =  <div className="section-divider">
                     <div className="subheading">{strings.AssessmentFollowOnHeader}</div>
                     {allowFollowOnAssessment}
                 </div>;
@@ -1121,7 +1121,7 @@ class TaskDetailsComponent extends React.Component {
                                 {simpleGrade}
                                 {allowAssessment}
                             </div>
-                            {/*followOnAssessmentTaskView*/}
+                            {followOnAssessmentTaskView}
                             <div className="section-divider">
                                 <div className="subheading">{strings.FollowOnHeader}</div>
                                 {leadsToNewProblem}
