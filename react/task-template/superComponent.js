@@ -22,7 +22,7 @@ import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
 import {cloneDeep, clone} from 'lodash';
-
+import Checkbox from '../shared/checkbox';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
 import CommentInfoComponent from './commentInfoComponent';
@@ -69,7 +69,6 @@ class SuperComponent extends React.Component {
         this.state = state;
 
         this.toggleHistory = this.toggleHistory.bind(this);
-        this.handleZeroStars = this.handleZeroStars.bind(this);
     }
 
     componentWillUnmount(){
@@ -369,7 +368,7 @@ class SuperComponent extends React.Component {
         
     }
 
-    handleZeroStars(){
+    handleZeroStars(index){
         let newResponse = this.state.TaskResponse;
         newResponse[index][0] = 0;
     
@@ -850,9 +849,9 @@ class SuperComponent extends React.Component {
                 case 'rating':
                     fieldInput = (
                         <div style={{display: 'inline-block'}}>
-                            <span>Click here for 0 stars:</span>
+                            <span>{this.props.Strings.ZeroStars}:</span>
                             <Checkbox
-                                click={this.handleZeroStars}
+                                click={this.handleZeroStars.bind(this,idx)}
                                 isClicked={latestVersion[idx][0] === 0}
                             />
                             &nbsp;
