@@ -28,6 +28,7 @@ class AllowFollowOnAssessmentComponent extends Component{
         let numberOfAssessView = null;
         let seeSibblingsView = null;
         
+        const assessmentTask = this.props.callTaskFunction('getAssessmentTask', this.props.index, this.props.workflowIndex);
 
         if(this.props.TaskActivityData.TA_allow_assessment !== 'none'){
             return <div>
@@ -136,10 +137,10 @@ class AllowFollowOnAssessmentComponent extends Component{
                     <div>
                         {strings.AssessWhichTask}
                         <Select options={alreadyCreatedTasks} 
-                            value={this.props.TaskActivityData.RefersToWhichTask} 
+                            value={assessmentTask.RefersToWhichTask} 
                             clearable={false} 
                             searchable={false}
-                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_follow_on_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment}
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_follow_on_assessment', this.props.index, this.props.workflowIndex)} 
                         />
                         <br/>                    
                         <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
