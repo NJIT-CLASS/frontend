@@ -14,9 +14,9 @@ class RestartTask extends Component {
         /* TODO: Implement this when the backend API is ready.*/
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
         const postBody = {
-            ti_id: taskInstanceID,
-            keep_content: false,
-            duration: []
+            ti_id: `${taskInstanceID}`,
+            keep_content: 'false',
+            duration: '[]'
         };
 
         const url = '/task/reset';
