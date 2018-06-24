@@ -13,6 +13,8 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
             result: ''
 
         }; //initial state, only manually assigned here, elsewhere it's this.setState()
+
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     handleChange(event) {
@@ -76,7 +78,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                 <div className="loggedout-container">
                     <div className="login-container">
                         <h2>
-                            <i className="fa fa-graduation-cap"></i>
+                            <i className="fa fa-graduation-cap" onClick={this.handleCancel}></i>
                             <span>Participatory Learning</span>
                         </h2>
 
@@ -105,7 +107,7 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                                 }
 
                                 <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
-                                <button type="button" onClick={this.handleCancel.bind(this)}>{strings.Cancel}</button>
+                                <button type="button" onClick={this.handleCancel}>{strings.Cancel}</button>
                                 &nbsp;
                                 {submitButton}
                             </div>

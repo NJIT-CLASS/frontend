@@ -129,7 +129,7 @@ class AssignmentDetailsComponent extends React.Component{
                                 <Tooltip Text={strings.AssignmentInstructionsMessage} ID={'AA_instructions_tooltip'} />
                                 <br />
                                 <Editor
-                                    initialvalue={this.props.AssignmentActivityData.AA_instructions}
+                                    initialValue={this.props.AssignmentActivityData.AA_instructions}
                                     init={tinymceOptions}
                                     onChange={this.props.changeAssignmentInput.bind(this, 'AA_instructions')}
                                 />
