@@ -1,5 +1,4 @@
 .sectionTable {
-    .section-content {
       @media screen and (max-width: $mobile-brk) {
         padding: 10px 12px;
       }
@@ -94,7 +93,7 @@
                 font-weight: bold;
             }
         }
-    }
+    
     li {
         display: flex;
         align-items: center;

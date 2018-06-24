@@ -439,6 +439,8 @@ class TaskDetailsComponent extends React.Component {
                     break;
                 case 'pass':
                     defaultContentView = (<div className="true-checkbox">
+                        <label>{strings.DefaultContentForField}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                         <RadioGroup
                             selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                             onChange={(val) => {
