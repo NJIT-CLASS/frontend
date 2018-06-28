@@ -40,17 +40,14 @@ class FileUpload extends React.Component{
         });
         let filesAr = [];
         let upperLimit = 0;
-        console.log('Maximum:', this.props.MaxUploads, this.props.MaxUploads === null || this.props.MaxUploads === undefined, typeof this.props.MaxUploads);
         upperLimit = files.length;
         if(this.props.MaxUploads === null || this.props.MaxUploads === undefined){
-            console.log('No limit found');
             [].forEach.call(files, function (file) {
                 filesAr.push(file);
                 formData.append('files', file);
             });
         }
         else{
-            console.log('limit found');
                 
             let totalUploads = this.props.NumberUploaded;
             upperLimit = files.length < (this.props.MaxUploads - totalUploads) ?files.length : (this.props.MaxUploads - totalUploads);
@@ -76,8 +73,6 @@ class FileUpload extends React.Component{
                 if(this.status == 200){
                     let netChangeInFiles = upperLimit;
                     let newNum = x.props.NumberUploaded + netChangeInFiles;
-                    console.log('num vars', netChangeInFiles, newNum);
-                    console.log(JSON.parse(this.responseText));
                     x.setState({
                         UploadStatus: 'success',
                         Response: this.responseText,

@@ -7,19 +7,41 @@ exports.get = (req, res) => {
         delete req.session.masqueraderId;
     }
 
+    var existUsers = req.app.get('isInitial');
+    if(existUsers == null || existUsers === false){
+        req.app.set('isInitial', false);
+        req.App.api.get('/initial', (err, statusCode, body) => {
+
+            if(statusCode == 400){
+                req.app.set('isInitial', false);
+                return res.redirect('/onboarding');
+            }
+            req.app.set('isInitial', true);
+            return res.render('home',{
+                returnUrl: req.query.url,
+                layout:'logged_out',
+                title: 'Login | CLASS Learning System'
+            });
+        });
+    }  else {
+        if(existUsers){
+            return res.render('home',{
+                returnUrl: req.query.url,
+                layout:'logged_out',
+                title: 'Login | CLASS Learning System'
+            });
+        }
+        else {
+            return res.render('home',{
+                returnUrl: req.query.url,
+                layout:'logged_out',
+                title: 'Login | CLASS Learning System'
+            });
+        }
+    }
   
 
-    req.App.api.get('/initial', (err, statusCode, body) => {
-        if(statusCode == 400){
-            return res.redirect('/onboarding');
-        }
-
-        return res.render('home',{
-            returnUrl: req.query.url,
-            layout:'logged_out',
-            title: 'Login | CLASS Learning System'
-        });
-    });
+    
     return;
 };
 

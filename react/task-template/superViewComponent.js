@@ -5,15 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
-import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import CommentInfoComponent from './commentInfoComponent';
-import apiCall from '../shared/apiCall';
-import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
-import {  isEmpty } from 'lodash';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -115,7 +111,7 @@ class SuperViewComponent extends React.Component {
             pastVersions = this.props.TaskData.slice(0, this.props.TaskData.length);
             
         }
-        
+        /*
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
                 <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
@@ -124,7 +120,7 @@ class SuperViewComponent extends React.Component {
                 </h2>
             </div>);
         }
-
+        */
 
         if (this.props.Rubric !== '' && this.props.Rubric !== null) { // if no Rubric, don't show it
             let TA_rubric_content = <div></div>;
@@ -255,7 +251,7 @@ class SuperViewComponent extends React.Component {
         }, this);
 
         content = (
-            <div key={this.props.index + 2003} className="section-content">
+            <div key={this.props.index + 2003} className="section-content" style={{display: this.state.ShowContent? 'block' : 'none'}}>
                 {TA_instructions}
                 {TA_rubric}
                 <FileManagerComponent TaskID={this.props.TaskID}
@@ -271,7 +267,7 @@ class SuperViewComponent extends React.Component {
                 {!this.props.oneBox &&
             (<div>
                 <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
-                    <span className="fa fa-angle-up" style={{float: 'right'}}></span></h2>
+                    <span className={this.state.ShowContent ? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
                 <CommentInfoComponent
                     TargetID = {this.props.TaskID}
                     Target = {'TaskInstance'}
