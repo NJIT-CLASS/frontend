@@ -22,3 +22,5 @@
     "transform-runtime"
   ]
 }
+/*,
+    "transform-remove-console"*/

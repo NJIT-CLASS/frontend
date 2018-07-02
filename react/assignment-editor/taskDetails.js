@@ -253,7 +253,11 @@ class TaskDetailsComponent extends React.Component {
 
         // inputFields
 
-        const inputFields = this.props.TaskActivityData.TA_fields.field_titles.map(function (field, index) {
+        const inputFields = [];
+        Object.keys(this.props.TaskActivityData.TA_fields).forEach(function (index) {
+            if(isNaN(index)){
+                return;
+            }
             let assessmentTypeView = null; // options that change on assessment type selection
             let defaultContentView = null;
             const showDefaultFromOthers = taskCreatedList.length > 0;
@@ -506,7 +510,7 @@ class TaskDetailsComponent extends React.Component {
                 </div>);
             }
 
-            return (
+            inputFields.push(
                 <div
                     className="section-divider" key={`Task ${this.props.index} of Workflow
                   ${this.props.workflowIndex} Field ${index}`}

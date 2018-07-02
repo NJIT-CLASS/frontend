@@ -4,6 +4,7 @@ import NumberField from '../../shared/numberField';
 import Tooltip from '../../shared/tooltip';
 import { RadioGroup, Radio } from 'react-radio-group';
 import Select from 'react-select';
+import { TASK_TYPES } from '../../../server/utils/react_constants';
 
 class AllowFollowOnAssessmentComponent extends Component{
     constructor(props){
@@ -29,7 +30,6 @@ class AllowFollowOnAssessmentComponent extends Component{
         let seeSibblingsView = null;
         
         const assessmentTask = this.props.callTaskFunction('getAssessmentTask', this.props.index, this.props.workflowIndex);
-
         if(this.props.TaskActivityData.TA_allow_assessment !== 'none'){
             return <div>
                 <div className="inner">
@@ -131,6 +131,16 @@ class AllowFollowOnAssessmentComponent extends Component{
             );
 
 
+            let assessTaskType = '';
+            switch(assessmentTask.TA_type){
+                case TASK_TYPES.GRADE_PROBLEM:
+                    assessTaskType = 'grade';
+                    break;
+                case TASK_TYPES.CRITIQUE:
+                    assessTaskType = 'critique';
+                    break;
+            }
+
 
             allowAssesmentOptions = 
                 (
@@ -143,7 +153,12 @@ class AllowFollowOnAssessmentComponent extends Component{
                             onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_follow_on_assessment', this.props.index, this.props.workflowIndex)} 
                         />
                         <br/>                    
-                        <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
+                        <Select options={assessmentValues} 
+                            onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)}
+                            value={assessTaskType} 
+                            clearable={false} 
+                            searchable={false}
+                        />
                         <label>{strings.WhoCanAssess}</label>
                         <Tooltip Text={strings.TaskWhoCanAssessMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-assess-tooltip`} />
                         <br />

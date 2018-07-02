@@ -77,14 +77,14 @@ class SuperViewComponent extends React.Component {
         }
 
         if(this.props.Status.includes('bypassed')){
-            switch(this.props.TaskActivityFields.Type){
-            case TASK_TYPES.DISPUTE:
-                return (<div key={this.props.index + 2001} className="section card-2" >
-                    <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
-                </div>);
-            default:
-                return <div></div>;
-            }
+            return (<div key={this.props.index + 2001} className="section card-2" >
+                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
+                    {this.props.ComponentTitle}
+                </h2>
+                <div className="section-content">
+                    {this.props.Strings.BypassedDisputeMessage}
+                </div>
+            </div>);
             
         }
 
