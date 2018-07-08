@@ -7,9 +7,7 @@ exports.get = (req, res) => {
     }
 
     var userIDToUse = req.App.user.userId;
-    if(req.session.masqueraderId != null && req.session.masqueraderId != undefined){
-        userIDToUse = req.session.masqueraderId;
-    }
+    
     res.render('task-template', {
         scripts: ['/static/react_apps.js'],
         userId: userIDToUse ,

@@ -21,10 +21,11 @@
     padding: 8px;
   }
   .workflow-instance-label{
-    width: 20px;
+    width: 25px;
     padding: 8px;
     border:1px solid #bfbfbf;
     align-self: stretch;
+    text-align: center;
   }
   .workflow-instance{
     display: flex;
@@ -59,13 +60,12 @@
   .legend-table{
     display: flex;
     flex-direction: row;
-    height: 50px;
   }
 
   .legend-block{
     padding:10px;
     border:1px solid #bfbfbf;
-    flex: 0 1 150px;
+    width: 178px;
   }
 
   .disabled {

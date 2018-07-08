@@ -5,15 +5,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MarkupText from '../shared/markupTextView';
-import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import CommentInfoComponent from './commentInfoComponent';
-import apiCall from '../shared/apiCall';
-import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
-import {  isEmpty } from 'lodash';
 
 class SuperViewComponent extends React.Component {
     constructor(props) {
@@ -25,48 +21,12 @@ class SuperViewComponent extends React.Component {
             FieldRubrics: [],
             Ready: false,
             Error: false,
-            IsBypassedDispute: false,
+            IsBypassed: false,
             TaskHistory: null,
             CancelledTask: null
             
         };
     }
-
-    componentDidMount(){
-        console.log(this.props.TaskData, this.props.Status);
-        if(this.props.Status.includes('bypassed')){
-            try{
-                let latestVersion = {};
-                latestVersion.number_of_fields = this.props.TaskActivityFields.number_of_fields;
-                for (let i = 0; i < this.props.TaskActivityFields.number_of_fields; i++) {
-                    try{
-                        if (this.props.TaskActivityFields[i].default_refers_to[0] !== null) {
-                            latestVersion[i] = this.props.getLinkedTaskValues(this.props.TaskActivityFields[i].default_refers_to[0], tAdata[i].default_refers_to[1]);
-                        } else {
-                            latestVersion[i] = this.props.TaskActivityFields[i].default_content;
-                        }
-                    }catch(exc){
-                        latestVersion[i] = ['',''];
-                    }
-                    
-                }
-                this.props.TaskData = latestVersion;
-            } catch(exc){
-                this.setState({
-                    IsBypassedDispute: true
-                });
-            }
-                
-            
-        } 
-        else if(this.props.Status.includes('bypassed')){
-            this.setState({
-                CancelledTask: true
-            });
-        }
-        
-    }
-    
 
     toggleContent() {
         const bool = !this.state.ShowContent;
@@ -112,9 +72,35 @@ class SuperViewComponent extends React.Component {
     }
 
     render() {
-        if(this.state.CancelledTask === true){
+        if(this.props.Status.includes('cancelled')){
             return <div></div>;
         }
+
+        if(this.props.Status.includes('bypassed')){
+            return (<div key={this.props.index + 2001} className="section card-2" >
+                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
+                    {this.props.ComponentTitle}
+                </h2>
+                <div className="section-content">
+                    {this.props.Strings.BypassedDisputeMessage}
+                </div>
+            </div>);
+            
+        }
+
+        if(this.props.TaskActivity.Type === TASK_TYPES.NEEDS_CONSOLIDATION){
+            if(this.props.TaskData.FinalGrade != null){
+                return <div key={this.props.index + 2001} className="section card-2" >
+                    <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
+                        <span>{this.props.Strings.ConsolidateFinalGrade}: {this.props.TaskData.FinalGrade}</span>
+                    </h2>
+                </div>;
+                
+            } else {
+                return <div></div>;
+            }
+        }
+
         let content = null;
         let TA_rubric = null;
         let TA_instructions = null;
@@ -125,11 +111,7 @@ class SuperViewComponent extends React.Component {
             pastVersions = this.props.TaskData.slice(0, this.props.TaskData.length);
             
         }
-        if(this.state.IsBypassedDispute === true){
-            return (<div key={this.props.index + 2001} className="section card-2" >
-                <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >{this.props.Strings.BypassedDisputeMessage}</h2>
-            </div>);
-        }
+        /*
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
             return (<div key={this.props.index + 2001}className="section card-2" >
                 <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
@@ -138,7 +120,7 @@ class SuperViewComponent extends React.Component {
                 </h2>
             </div>);
         }
-
+        */
 
         if (this.props.Rubric !== '' && this.props.Rubric !== null) { // if no Rubric, don't show it
             let TA_rubric_content = <div></div>;
@@ -253,20 +235,23 @@ class SuperViewComponent extends React.Component {
                 </div>);
             }
 
-
+            let latestVersionView = <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />;
+            if(this.props.Status.includes('complete') && pastVersions.length > 0){
+                latestVersionView = <div></div>;
+            }
             return (<div>
                 <div className="template-field-title">{fieldTitle}</div>
                 {fieldInstructions}
                 {fieldRubric}
 
                 <br />
-                <VersionView Versions={latestVersion} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
+                {latestVersionView}
                 <VersionView Versions={pastVersions} Field={this.props.TaskActivityFields[index]} FieldIndex={index} Strings={this.props.Strings} />
             </div>);
         }, this);
 
         content = (
-            <div key={this.props.index + 2003} className="section-content">
+            <div key={this.props.index + 2003} className="section-content" style={{display: this.state.ShowContent? 'block' : 'none'}}>
                 {TA_instructions}
                 {TA_rubric}
                 <FileManagerComponent TaskID={this.props.TaskID}
@@ -282,7 +267,7 @@ class SuperViewComponent extends React.Component {
                 {!this.props.oneBox &&
             (<div>
                 <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
-                    <span className="fa fa-angle-up" style={{float: 'right'}}></span></h2>
+                    <span className={this.state.ShowContent ? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
                 <CommentInfoComponent
                     TargetID = {this.props.TaskID}
                     Target = {'TaskInstance'}

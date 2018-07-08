@@ -75,11 +75,11 @@ class CommentInfoComponent extends React.Component {
             TooltipC: (this.state.NumRatings === 1) ? ' rating' : ' ratings'
         };
         return (
-            <div style={{whiteSpace: 'nowrap'}}>
+            <div >
                 <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
-                    <i className="fa fa-comment-o fa-stack-1x"></i>
+                    <i className="fa fa-comment-o  fa-stack-1x"></i>
                     <span className="fa fa-stack-1x">
-                        <span className = "comment-number">{this.state.NumberComments}</span>
+                        <span className="comment-number">{this.state.NumberComments}</span>
                     </span>
                 </span>
                 <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>

@@ -14,6 +14,7 @@ import Tooltip from '../shared/tooltip';
 import Rater from 'react-rater';
 import TaskDisplayName from './taskComponents/taskDisplayName';
 import AllowAssessmentComponent from './taskComponents/allowAssessmentComponent';
+import AllowFollowOnAssessmentComponent from './taskComponents/allowFollowOnAssessmentComponent';
 
 //Initial state, needed to maintain across mount and unmount
 
@@ -104,7 +105,6 @@ class TaskDetailsComponent extends React.Component {
     }
 
     mapFieldDistToOptions(){
-        console.log('Feild Dist:', this.props.TaskActivityData.TA_fields.field_distribution);
         if(this.props.TaskActivityData.TA_fields.field_distribution === undefined){
             return [];
         }
@@ -120,7 +120,7 @@ class TaskDetailsComponent extends React.Component {
         const fieldTypeValues = [{ value: 'text', label: strings.TextInput }, { value: 'numeric', label: strings.Numeric }, { value: 'assessment', label: strings.Assessment }, { value: 'self assessment', label: strings.SelfAssessment }];
         const assessmentTypeValues = [{ value: 'grade', label: strings.NumericGrade }, { value: 'rating', label: strings.Rating }, { value: 'pass', label: strings.PassFail }, { value: 'evaluation', label: strings.EvaluationByLabels }];
         const onTaskEndValues = [{ value: 'late', label: strings.Late }/*, { value: 'resolved', label: strings.Resolved }, { value: 'abandon', label: strings.Abandon }, { value: 'complete', label: strings.Complete }*/];
-        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, { value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember }, {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
+        const onLateValues = [{ value: 'keep_same_participant', label: strings.KeepSameParticipant }, { value: 'allocate_new_participant_from_contigency_pool', label: strings.AllocateNewParticipant }, { value: 'allocate_to_instructor', label: strings.AllocateToInstructor }, /*{ value: 'allocate_to different_person_in_same_group', label: strings.AllocateToDifferentGroupMember },*/ {value: 'allocate_new_participant_extra_credit', label: strings.AllocateExtraCredit}];
         const reflectionValues = [{ value: 'edit', label: strings.Edit }, { value: 'comment', label: strings.CommentText }];
         const assessmentValues = [{ value: 'grade', label: strings.Grade }, { value: 'critique', label: strings.Critique }];
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }/*, { value: 'both', label: strings.BothInstructorStudents }*/];
@@ -253,7 +253,11 @@ class TaskDetailsComponent extends React.Component {
 
         // inputFields
 
-        const inputFields = this.props.TaskActivityData.TA_fields.field_titles.map(function (field, index) {
+        const inputFields = [];
+        Object.keys(this.props.TaskActivityData.TA_fields).forEach(function (index) {
+            if(isNaN(index)){
+                return;
+            }
             let assessmentTypeView = null; // options that change on assessment type selection
             let defaultContentView = null;
             const showDefaultFromOthers = taskCreatedList.length > 0;
@@ -325,7 +329,6 @@ class TaskDetailsComponent extends React.Component {
             // Default Content from Other Tasks Logic
             if (showDefaultFromOthers && this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)) {
                 const defaultParentTaskId = this.props.callTaskFunction('getFieldDefaultContentValue', 0, index, this.props.index, this.props.workflowIndex);
-                console.log('Fields for', index, defaultParentTaskId, this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex));
                 const fieldSelectionList = this.props.callTaskFunction('getTaskFields', defaultParentTaskId, this.props.workflowIndex).map(field => {
                     let parentId = field.value.split(':')[0];
                     if(parentId != defaultParentTaskId){
@@ -384,7 +387,7 @@ class TaskDetailsComponent extends React.Component {
                     </div>
                 );
             
-
+                
                 
             } else  if(this.props.TaskActivityData.TA_fields[index].field_type === 'assessment' || this.props.TaskActivityData.TA_fields[index].field_type === 'self assessment' ){
                 switch(this.props.TaskActivityData.TA_fields[index].assessment_type){
@@ -440,6 +443,8 @@ class TaskDetailsComponent extends React.Component {
                     break;
                 case 'pass':
                     defaultContentView = (<div className="true-checkbox">
+                        <label>{strings.DefaultContentForField}</label>
+                        <Tooltip Text={strings.TaskDefaultFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-F${index}-default-content-tooltip`} />
                         <RadioGroup
                             selectedValue={this.props.TaskActivityData.TA_fields[index].default_content[0]}
                             onChange={(val) => {
@@ -480,7 +485,23 @@ class TaskDetailsComponent extends React.Component {
                 );
             }
 				  
+            defaultContentButton = (
+                <div
+                    style={{
+                        display: 'inline',
+                    }}
+                >
+                    <label>{strings.GetDataFromAnotherTaskInstead}</label>
+                    <Tooltip Text={strings.TaskGetFieldContentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-get-field-content-tooltip`} />
 
+                    <Checkbox
+                        isClicked={this.props.callTaskFunction('isDefaultFieldRefersToToggled', index, this.props.index, this.props.workflowIndex)} click={() => {
+                            this.props.callTaskFunction('toggleDefaultFieldRefersTo', index, this.props.index, this.props.workflowIndex);
+                        }}
+                    />
+                </div>
+            );
+            
             let removeButtonView = null;
             if (index != 0) {
                 removeButtonView = (<div className="remove-button" onClick={this.props.callTaskFunction.bind(this, 'removeFieldButton', this.props.index, this.props.workflowIndex, index)}>
@@ -489,7 +510,7 @@ class TaskDetailsComponent extends React.Component {
                 </div>);
             }
 
-            return (
+            inputFields.push(
                 <div
                     className="section-divider" key={`Task ${this.props.index} of Workflow
                   ${this.props.workflowIndex} Field ${index}`}
@@ -608,7 +629,7 @@ class TaskDetailsComponent extends React.Component {
                 <div className="inner">
 
                     <label>{strings.DefaultTaskDuration}</label>
-                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={0} max={200} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
+                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_due_type[1] / 1440} min={1} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_due_type', this.props.index, this.props.workflowIndex)} />
 
                     <label>{strings.ShouldTaskEndAtCertainTime}</label>
                     <Tooltip Text={strings.TaskDueTypeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-due-type-tooltip`} />
@@ -708,118 +729,7 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
-            // TA_allow_assessment
-            let allowAssesmentOptions = null;
-            let assessShowDispute = null;
-            let assessConsolidateOptions = null;
-            let assessShowConsol = null;
-            let assessConstraint = null;
-            let numberOfAssessView = null;
-            if (this.props.TaskActivityData.TA_allow_assessment !== 'none') {
-                assessShowDispute = (
-                    <div>
-                        <label>
-                            {strings.CanStudentsDisputeAssessment}
-                        </label>
-
-                        <Tooltip Text={strings.TaskCanDisputeMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-dispute-tooltip`} />
-
-                        <Checkbox isClicked={this.props.callTaskFunction('canDispute', this.props.index, this.props.workflowIndex, false)} click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Dispute', this.props.index, this.props.workflowIndex)} />
-                    </div>
-                );
-                if(this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)){
-                    assessConsolidateOptions = <div>
-                        <label>{strings.GradingThreshold}</label>
-                        <Tooltip Text={strings.TaskConsolidateThresholdMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-grading-threshold-tooltip`} />
-
-                        <br />
-                        <RadioGroup
-                            selectedValue={this.props.callTaskFunction('getTriggerConsolidationRadioOption', this.props.index, this.props.workflowIndex, false)} onChange={(val) => {
-                                this.props.callTaskFunction('changeRadioData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex, val);
-                                const newGrades = this.state.GradingThreshold;
-                                newGrades[1] = val;
-                                this.setState({ GradingThreshold: newGrades });
-                            }}
-                        >
-                            <label>
-                                {strings.Points}
-                                <Radio value="points" />
-                            </label>
-                            <label>
-                                {strings.Percent}
-                                <Radio value="percent" />
-                            </label>
-
-                        </RadioGroup>
-                        <br />
-                        <NumberField value={this.props.callTaskFunction('getTriggerConsolidationThreshold', this.props.index, this.props.workflowIndex, false)} min={0} max={100} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_trigger_consolidation_threshold_assess', this.props.index, this.props.workflowIndex)} size={6} />
-                        <br />
-                        <label>{strings.ToBeConsolidatedAssessment}</label>
-                        <Tooltip Text={strings.TaskConsolidateFunctionMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-consolidation-function-tooltip`} />
-
-                        <Select options={consolidationTypeValues} value={this.props.callTaskFunction('getConsolidateValue', this.props.index, this.props.workflowIndex, true)} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_function_type_Assess', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
-                    </div>;
-                   
-                }
-                assessShowConsol = this.props.callTaskFunction('getAssessNumberofParticipants', this.props.index, this.props.workflowIndex) > 1
-                    ? (
-                        <div>
-                            <label>{strings.ShouldAssessmentsBeConsolidated}</label>
-                            <Tooltip Text={strings.TaskCanConsolidateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-can-consolidate-tooltip`} />
-
-                            <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'Assess_Consolidate', this.props.index, this.props.workflowIndex)} isClicked={this.props.callTaskFunction('canConsolidate', this.props.index, this.props.workflowIndex, false)} />
-                            <br />
-                            {assessConsolidateOptions}
-                            <div>
-                                <label>{strings.SeeSibblingsInParent}</label>
-                                <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-see-sibblings-tooltip`} />
-                                <Checkbox
-                                    click={this.props.callTaskFunction.bind(this, 'setSeeSibblings', this.props.index, this.props.workflowIndex, true)}
-                                    isClicked={this.props.callTaskFunction('getSeeSibblings', this.props.index, this.props.workflowIndex, true)}
-                                />
-                            </div>
-                        </div>
-                    )
-                    : null;
-                assessConstraint = this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex);
-                numberOfAssessView = (assessConstraint == 'student' || assessConstraint == 'both')
-                    ? (
-                        <div>
-                            <br />
-                            <label>{strings.NumberOfAssessors}</label>
-                            <Tooltip Text={strings.TaskAssessmentNumberOfParticipantsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-number-of-participants-tooltip`} />
-                            <br />
-                            <NumberField value={this.props.callTaskFunction('getAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} min={1} max={20} onChange={this.props.callTaskFunction.bind(this, 'setAssessNumberofParticipants', this.props.index, this.props.workflowIndex)} />
-                            <br />
-                            <div className="inner">
-                                {assessShowConsol}
-                            </div>
-                        </div>
-                    )
-                    : null;
-                allowAssesmentOptions = this.props.TaskActivityData.TA_allow_assessment != 'none'
-                    ? (
-                        <div>
-
-                            <div className="inner">
-                                <Select options={assessmentValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_allow_assessment', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_allow_assessment} clearable={false} searchable={false} />
-                                <label>{strings.WhoCanAssess}</label>
-                                <Tooltip Text={strings.TaskWhoCanAssessMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-who-can-assess-tooltip`} />
-
-                                <br />
-                                <Select options={assigneeWhoValues} value={this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex)} onChange={this.props.callTaskFunction.bind(this, 'changeAssigneeInChild', false, this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
-                            </div>
-                            <div>
-                                {numberOfAssessView}
-                            </div>
-                            <br />
-                            <div className="inner">
-                                {assessShowDispute}
-                            </div>
-                        </div>
-                    )
-                    : null;
-            }
+            
 
             const allowAssessment = (
                 <AllowAssessmentComponent TaskActivityData={this.props.TaskActivityData}
@@ -827,10 +737,15 @@ class TaskDetailsComponent extends React.Component {
                     index={this.props.index}
                     workflowIndex={this.props.workflowIndex}
                     callTaskFunction={this.callTaskFunction}/>
-
-
             );
 
+            const allowFollowOnAssessment = (
+                <AllowFollowOnAssessmentComponent TaskActivityData={this.props.TaskActivityData}
+                    Strings={strings}
+                    index={this.props.index}
+                    workflowIndex={this.props.workflowIndex}
+                    callTaskFunction={this.callTaskFunction}/>
+            );
 
             // TA_allow_reflection
             let allowReflectionOptions = null;
@@ -1123,10 +1038,15 @@ class TaskDetailsComponent extends React.Component {
                     <br />
                     <Select options={assigneeWhoValues} value={this.props.TaskActivityData.TA_assignee_constraints[0]} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} clearable={false} searchable={false} />
                     {showNumberofStudents}
-                    <label>{strings.WillThisBeGroupTask}</label>
+                    {/*
+                            //Remove Group options for now
+ <label>{strings.WillThisBeGroupTask}</label>
                     <Tooltip Text={strings.TaskGroupTaskMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-task-group-task-tooltip`} />
 
                     <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_assignee_constraints', this.props.index, this.props.workflowIndex)} isClicked={this.props.TaskActivityData.TA_assignee_constraints[1] == 'group'} />
+                    
+                    
+                    */}
                     {assigneeRelations}
                 </div>
             );
@@ -1161,6 +1081,22 @@ class TaskDetailsComponent extends React.Component {
                 </div>
             );
 
+            const mustCompleteFirst = (
+                <div className="inner">
+                    <label>{strings.MustCompleteFirstLabel}</label>
+                    <Tooltip Text={strings.MustCompleteFirstMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-must-complete-first-tooltip`} />
+                    <Checkbox click={this.props.callTaskFunction.bind(this, 'changeDataCheck', 'TA_MustCompleteThisFirst', this.props.index, this.props.workflowIndex)}  isClicked={this.props.TaskActivityData.TA_MustCompleteThisFirst} />
+                </div>
+            );
+
+            let followOnAssessmentTaskView = <div></div>;
+
+            if(taskCreatedList.length > 0){
+                followOnAssessmentTaskView =  <div className="section-divider">
+                    <div className="subheading">{strings.AssessmentFollowOnHeader}</div>
+                    {allowFollowOnAssessment}
+                </div>;
+            }
 
             advancedOptionsView = (
                 <div key={`Advanced Task-level Parameters for ${this.props.index} in ${this.props.workflowIndex}`} className="section card-2">
@@ -1179,17 +1115,19 @@ class TaskDetailsComponent extends React.Component {
                                 <div className="subheading">{strings.TaskDueHeader}</div>
                                 {atDurationEnd}
                                 {whatIfLate}
-                            </div>
-                            <div className="section-divider">
-                                <div className="subheading">{strings.AssessmentHeader}</div>
-                                {simpleGrade}
-                                {allowAssessment}
+                                {mustCompleteFirst}
                             </div>
                             <div className="section-divider">
                                 <div className="subheading">{strings.ReflectionHeader}</div>
                                 {allowReflection}
                                 {allowRevision}
                             </div>
+                            <div className="section-divider">
+                                <div className="subheading">{strings.AssessmentHeader}</div>
+                                {simpleGrade}
+                                {allowAssessment}
+                            </div>
+                            {followOnAssessmentTaskView}
                             <div className="section-divider">
                                 <div className="subheading">{strings.FollowOnHeader}</div>
                                 {leadsToNewProblem}

@@ -46,7 +46,7 @@ const compileReact = (rootFile, outputName, watch) => {
                 })
                 .pipe(source(`${outputName}.js`))
                 .pipe(buffer())
-                //.pipe(uglifyes()) //Working but disabled for useful testing info
+                .pipe(uglifyes()) //Working but disabled for useful testing info
                 .pipe(gulp.dest('./.build/static'))
                 .on('end', function(){
                     console.log('-> Done rebundling React. Ready to go.');
@@ -55,7 +55,7 @@ const compileReact = (rootFile, outputName, watch) => {
         } else{
 
             bundler.transform(babelify, {
-                'presets': ['es2015', 'react', 'es2017','stage-0'],
+                'presets': ['env', 'react'],
                 'plugins': ['transform-flow-strip-types', 'transform-object-rest-spread'],
             })
                 .bundle()

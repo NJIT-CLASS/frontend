@@ -18,6 +18,7 @@ const taskStrings = {
     DefaultContentForField: 'Default content for the field (optional)',
     DefaultContentLinked: 'Linked',
     GetDataFromAnotherTaskInstead: 'Get the data from another task instead',
+    AssessWhichTask: 'Assesses which task:',
     InputFields: 'Input Fields',
     FieldName: 'Field Name',
     ShowThisName: 'Show this name',
@@ -39,7 +40,9 @@ const taskStrings = {
     No: 'No',
     Ok: 'Ok',
     Cancel: 'Cancel',
-    AreYouSureYouWantToContinue: 'Are you sure you want to continue?',
+    AreYouSureYouWantToContinue: 'Are you sure you want to continue',
+    FollowOnAssessmentPlaceholder: '(not available when assessing this task specified above)',
+    AssessmentPlaceholder: '(not available with the follow-on assessment specified below)',
     FollowingTasksWillDrop: 'The following tasks will be dropped',
     DroppingMultipleTask: 'Dropping Multiple Tasks',
     Yes: 'Yes',
@@ -63,6 +66,7 @@ const taskStrings = {
     ToBeConsolidatedReflection: 'To be consolidated, the reflections should be',
     ShouldReflectionsBeConsolidated: 'Should the reflections be consolidated',
     NumberOfStudents: 'Number of Students',
+    AllowAFollowOnAssessment: 'Does this lead to a new assessment of a different task?',
     WhoCanReflect: 'Who can reflect',
     AllowReflection: 'Allow a reflection of this task',
     AllowRevision: 'Allow a revision of this task',
@@ -137,7 +141,10 @@ const assignmentStrings = {
     Instructions: 'Instructions',
     DefaultAssignmentName: 'Assignment',
     SubmitReminderMessage: 'Remember to specify any additional tasks as necessary before submitting at the top of the page',
-    AssignmentEditor: 'Assignment Editor'
+    AssignmentEditor: 'Assignment Editor',
+    MustCompleteFirstMessage: 'Specifies whether this task needs to be completed before the following tasks can be shown',
+    MustCompleteFirstLabel :'Must complete this task before continuing?'
+    
     
 };
 
@@ -151,7 +158,8 @@ const headerStrings = {
     assignment you should define:`,
     TaskDurationHeader: 'Task Duration and Start Time Defaults',
     TaskDueHeader: 'When Task is Due',
-    AssessmentHeader: 'Assessment Parameters (Grading/Critique)',
+    AssessmentHeader: 'Assessment Parameters (Grading/Critique) For This Task',
+    AssessmentFollowOnHeader: 'Does an Assessment of a Different Task Follow-on?',
     ReflectionHeader: 'Reflection Parameters (Edit/Comment on/Revise & Resubmit Task)',
     FollowOnHeader: 'Does a Solution or Problem Follow-on?',
     AssigneeConstraintHeader: 'Who Sees/Does this Task?',

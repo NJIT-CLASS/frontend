@@ -10,10 +10,10 @@ class UserList extends Component {
         let {Users, Role} = this.props;
         return <div className="section">
             <h2 className="title">{Role}</h2>
-            <ul>
+            <ul className="list-group">
                 {
                     Users.map((user) => {
-                        return <li>{user.User.FirstName} {user.User.LastName}</li>;
+                        return <li className="list-group-item" key={user.UserID}>{user.User.FirstName} {user.User.LastName}</li>;
                     })
                 }
             </ul>

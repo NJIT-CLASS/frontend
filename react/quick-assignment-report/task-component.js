@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
 
+// This component renders a task activity.
+// It contains all of the task activity's task instances.
 const TaskComponent = ({
     currentUserID,
     hasInstructorPrivilege,
@@ -17,8 +19,10 @@ const TaskComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
+    // We only show task instances that match the task type filter
+    // Otherwise, an empty block is shown as a placeholder.
     let taskInstancesArray = TaskActivity
-        .filter(taskInstance => Filters.Type.length === 0 || Filters.Type.includes(taskInstance.TaskActivity.Type))
+        .filter(taskInstance => Filters.TaskType.length === 0 || Filters.TaskType.includes(taskInstance.TaskActivity.TaskActivityID))
         .map((taskInstance, index) => {
             return (
                 <TaskInstanceComponent

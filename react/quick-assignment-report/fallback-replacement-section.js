@@ -4,6 +4,8 @@ import CollapsableBlock from './collapsable-block';
 import UserList from './user-list';
 import Tooltip from '../shared/tooltip';
 
+// This component renders a form section for choosing a fallback replacement user.
+// Used by TaskReallocationForm and AssignmentReallocationForm.
 class FallbackReplacementSection extends Component {
     constructor(props) {
         super(props);
@@ -19,9 +21,7 @@ class FallbackReplacementSection extends Component {
                     <Tooltip Text={tooltip} ID="fallback-tooltip" />
                 </div>
                 <RadioGroup
-                    selectedValue={
-                        this.props.useDefaultFallback && !this.props.mustSpecifyFallback
-                    }
+                    selectedValue={this.props.useDefaultFallback && !this.props.mustSpecifyFallback}
                     onChange={this.props.onUseDefaultFallbackChange}
                 >
                     <label>

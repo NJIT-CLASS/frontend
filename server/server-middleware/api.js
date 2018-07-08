@@ -18,6 +18,9 @@ const apiMethodInit = function(req,res,next){
             queryParameters = {};
             //queryParameters.token = req.session.token;
         }
+        if(req.session != null){
+            queryParameters.UserID = req.session.userId;
+        }
         // if(!queryParameters.token){
         //     queryParameters.token = req.session.token;
         // }
@@ -46,7 +49,7 @@ const apiMethodInit = function(req,res,next){
                         },
                         body: {
                             refreshToken:  req.session.refreshToken,
-                            userId: req.App.user.userId
+                            UserID: req.session.userId
                         },
                         json: true
                     };
@@ -77,6 +80,9 @@ const apiMethodInit = function(req,res,next){
             body = {};
             // body.token = req.session.token;
         }
+        if(req.session != null){
+            body.UserID = req.session.userId;
+        }
         // if(!body.token){
         //     body.token = req.session.token;
         // }
@@ -101,7 +107,7 @@ const apiMethodInit = function(req,res,next){
                         body: {
                             refreshToken:  req.session.refreshToken,
                             token: req.session.token,
-                            userId: req.App.user.userId
+                            UserID: req.session.userId
                         },
                         json: true
                     };
@@ -134,10 +140,13 @@ const apiMethodInit = function(req,res,next){
             body = {};
             //body.token = req.session.token;
         }
+
         // if(!body.token){
         //     body.token = req.session.token;
         // }
-    
+        if(req.session != null){
+            body.UserID = req.session.userId;
+        }
         const options = {
             method: 'PUT',
             uri: apiUrl(endpoint),
@@ -161,7 +170,7 @@ const apiMethodInit = function(req,res,next){
                         body: {
                             refreshToken:  req.session.refreshToken,
                             token: req.session.token,
-                            userId: req.App.user.userId
+                            UserID: req.session.userId
                         },
                         json: true
                     };
@@ -197,7 +206,9 @@ const apiMethodInit = function(req,res,next){
         // if(!body.token){
         //     body.token = req.session.token;
         // }
-    
+        if(req.session != null){
+            body.UserID = req.session.userId;
+        }
         const options = {
             method: 'DELETE',
             uri: apiUrl(endpoint),
@@ -220,7 +231,7 @@ const apiMethodInit = function(req,res,next){
                         body: {
                             refreshToken:  req.session.refreshToken,
                             token: req.session.token,
-                            userId: req.App.user.userId
+                            UserID: req.session.userId
                         },
                         json: true
                     };

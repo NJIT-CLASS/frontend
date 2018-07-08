@@ -55,7 +55,8 @@
 @import 'pages/grade_report';
 @import 'pages/section';
 @import 'pages/assignment_status_table';
-@import 'pages/_database_maintenance';
+@import 'pages/database_maintenance';
+@import 'pages/course_section_management';
 //>>INSERTSCSS
 
 // external components
@@ -69,6 +70,7 @@
 //@import 'vendor/react-select.min';
 @import 'vendor/react-quill/react-quill-snow';
 @import 'vendor/react-table/react-table';
+@import 'vendor/react-treeview.scss';
 
 body {
     font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
