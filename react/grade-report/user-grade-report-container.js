@@ -166,7 +166,7 @@ class GradeReport extends React.Component {
         assignments.forEach(assignment => {
             //console.log(assignment);
             apiCall.get(`/getAssignmentGrade/${assignment.AssignmentInstanceID}`,{},(err, status, body) => {
-                //console.log(body);
+                console.log(body);
                 if( status.statusCode === 200){
                     apiCallCount++;
                     for( var userID in students){
@@ -270,7 +270,7 @@ class GradeReport extends React.Component {
                             var correctGradeDistribution = {};
                             for(var [taskAcivityID, gradePercentage] of Object.entries(workflowGradeDistribution)){
                                 if(taskAcivityID === "simple"){
-                                    // TODO implement simple grades
+                                    correctGradeDistribution["simple"] = gradePercentage;
                                 } else {
                                     correctGradeDistribution[ assignmentData.taskActivities[taskAcivityID].RefersToWhichTask ] = gradePercentage;
                                 }
@@ -282,6 +282,13 @@ class GradeReport extends React.Component {
                             for( var [taskID, taskData] of Object.entries(workflowData["regularTasks"])){
                                 workflowGrade += correctGradeDistribution[taskData.TaskActivityID] * (taskData.Grade / taskData.MaxGrade);
                             }
+
+                            var totalSimpleScore = 0;
+                            for( var [taskID, taskData] of Object.entries(workflowData["simpleTasks"])){
+                                totalSimpleScore += taskData.Grade;
+                            }
+                            workflowGrade += correctGradeDistribution["simple"] * (totalSimpleScore / workflowData.length);
+
 
                             if( Object.keys(workflowData["regularTasks"]).length === 0 ) continue;
                             workflowData["workflowGrade"]["Grade"] = workflowGrade;
@@ -508,20 +515,15 @@ class GradeReport extends React.Component {
             var nestedTables = [];
             var tableEntries = [];
             var tableData = [];
-
+            var assignmentGrade = null;
             for( var [studentID, studentData] of Object.entries(sectionData.grades)){
                 console.log(studentData);
-                var fn = studentData.user.User.FirstName ? studentData.user.User.FirstName : "N/A";
-                var ln = studentData.user.User.LastName ? studentData.user.User.LastName : "N/A";
 
                 for( var [assignmentID, assignment] of Object.entries(studentData.assignments)){
                     console.log(assignment);
-                    var grade = assignment.assignmentGrade.Grade;
+                    assignmentGrade = assignment.assignmentGrade.Grade;
                     tableData.push({
-                        firstName: fn,
-                        lastName: ln,
-                        email:"N\A",
-                        grade:grade
+                        workflow:"Problem thread "+(nestedTables.length+1).toString()
                     })
 
                     for(var [workflowID, workflow] of Object.entries(assignment.workflows)){
@@ -533,17 +535,19 @@ class GradeReport extends React.Component {
                         simpleGrades.push(<tr><th>Simple Tasks</th><th>Grade</th><th>Is Extra Credit</th></tr>);
                         for(var [regularTaskID, regularTask] of Object.entries(workflow.regularTasks)){
                             let isExtraCredit = regularTask.IsExtraCredit ? "Yes" : "No";
+
                             regularGrades.push(<tr>
                                 <td>{assignment.taskActivities[regularTask.TaskActivityID].DisplayName}</td><td>{regularTask.Grade}</td><td>{isExtraCredit}</td>
                             </tr>);
                         }
 
-                        for(var [simpleTaskID, simpleTask] of Object.entries(workflow.simpleTasks)){
+                        /*for(var [simpleTaskID, simpleTask] of Object.entries(workflow.simpleTasks)){
                             let isExtraCredit = simpleTask.IsExtraCredit ? "Yes" : "No";
+                            console.log(simpleTask.TaskActivityID);
                             simpleGrades.push(<tr>
                                 <td>{assignment.taskActivities[simpleTask.TaskActivityID].DisplayName}}</td><td>{simpleTask.Grade}</td><td>{isExtraCredit}</td>
                             </tr>);
-                        }
+                        }*/
 
                         workflowGradesTable.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
@@ -562,13 +566,11 @@ class GradeReport extends React.Component {
             
             let assignmentName = sectionData.assignments[0].Assignment.DisplayName;
             let section = sectionData.Section.Course.Number + " " + sectionData.Section.Course.Name + " " + sectionData.Section.Name;
-            tableHeader = (<div><h2 className="title">{section} <br/> Assignment: {assignmentName}</h2></div>);
+
+            tableHeader = (<div><h2 className="title">{section} <br/> Assignment: {assignmentName} <br /> Grade: {assignmentGrade}</h2></div>);
             tableView = (<ReactTable defaultPageSize={10} className="-striped -highlight" resizable={true} data={tableData}
                     columns={[
-                        {Header: "First Name",accessor: 'firstName'},
-                        {Header: "Last Name",accessor: 'lastName'},
-                        {Header: "Email",accessor: 'email'},
-                        {Header: "Final Grade",accessor: 'grade'}
+                        {Header: "Problem Thread",accessor: 'workflow'}
                     ]} 
                     noDataText="Please choose an assignment or overview"
                     SubComponent={(row) => { return nestedTables[row.index]; }}
