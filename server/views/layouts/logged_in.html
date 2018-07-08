@@ -132,12 +132,15 @@
         </div>
         <script>
             var child = document.getElementById('sidebar-icons');
-            child.style.right = "-" + (child.offsetWidth - child.clientWidth) + "px";
-
+            if((child.offsetWidth - child.clientWidth) != 0 ){
+                child.style.right = "-" + (child.offsetWidth - child.clientWidth) + "px";
+            }
         </script>
         {{#each scripts}}
             <script src="{{this}}" type="text/javascript" charset="utf-8" defer></script>
         {{/each}}
         <script src="/static/shared.js" type="text/javascript" charset="utf-8" defer></script>
+        <script src="/static/vendor/prism.js"></script>
+        
     </body>
 </html>

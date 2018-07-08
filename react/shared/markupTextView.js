@@ -79,21 +79,24 @@ class MarkupText extends React.Component {
             mode: 'white',
             list: this.whitelist
         };
+
+        this.markupRef = React.createRef();
     }
 
     componentDidMount() {
-        Prism.highlightAll();
+        //Prism.highlightAll();
+        Prism.highlightAllUnder(this.refs.task);
         MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     componentDidUpdate() {
-        Prism.highlightAll();
+        //Prism.highlightAll();
         MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     render() {
         return(
-            <div className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></div>
+            <div ref="task" className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></div>
         );
     }
 }

@@ -39,7 +39,7 @@ export default class CoursesComponent extends Component {
                 <h2 className="title">{Strings.CurrentCourses}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                        <ul>
+                        <ul className="list-group">
                             {courseList}
                         </ul>
                     </div>

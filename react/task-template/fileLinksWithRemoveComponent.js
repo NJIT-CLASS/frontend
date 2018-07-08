@@ -43,7 +43,7 @@ class FileLinkRemoveComponent extends Component {
                     return <div key={`file-${file.FileID}`} className="file-link">
                         <a target="_blank" href={downloadLink + file.FileID}>{file.filename} - {bytes}</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a key={`file-delete-${file.FileID}`} onClick={this.deleteFile.bind(this, file)}><i class="fa fa-times" aria-hidden="true"></i></a><br />
+                        <a key={`file-delete-${file.FileID}`} onClick={this.deleteFile.bind(this, file)}><i className="fa fa-times" aria-hidden="true"></i></a><br />
                     </div>;
                 }, this)
             }

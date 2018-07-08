@@ -1,10 +1,8 @@
 .sectionTable {
-    .section-content {
       @media screen and (max-width: $mobile-brk) {
         padding: 10px 12px;
       }
-        padding: 20px 30px;
-        overflow: auto;
+        
 
 
         table {
@@ -94,7 +92,7 @@
                 font-weight: bold;
             }
         }
-    }
+    
     li {
         display: flex;
         align-items: center;

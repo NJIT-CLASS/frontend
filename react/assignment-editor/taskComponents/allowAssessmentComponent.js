@@ -4,6 +4,7 @@ import NumberField from '../../shared/numberField';
 import Tooltip from '../../shared/tooltip';
 import { RadioGroup, Radio } from 'react-radio-group';
 import Select from 'react-select';
+import {cloneDeep, clone, isEmpty, indexOf} from 'lodash';
 
 class AllowAssessmentComponent extends Component{
     constructor(props){
@@ -19,6 +20,19 @@ class AllowAssessmentComponent extends Component{
         const assigneeWhoValues = [{ value: 'student', label: strings.Student }, { value: 'instructor', label: strings.Instructor }, { value: 'both', label: strings.BothInstructorStudents }];
         
 
+
+        if(this.props.TaskActivityData.TA_allow_follow_on_assessment === true){
+            return <div>
+                <div className="inner">
+                    <label>{strings.AllowAnAssessment}</label>
+                    <Tooltip Text={strings.TaskAllowAssessmentMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-allow-assessment-tooltip`} />
+
+                    <span>{strings.AssessmentPlaceholder}</span>
+
+                </div>
+            </div>;
+        }
+
         let allowAssesmentOptions = null;
         let assessShowDispute = null;
         let assessConsolidateOptions = null;
@@ -26,11 +40,13 @@ class AllowAssessmentComponent extends Component{
         let assessConstraint = null;
         let numberOfAssessView = null;
         let seeSibblingsView = null;
-
-        if (this.props.TaskActivityData.TA_allow_assessment !== 'none') {
-            
-            assessConstraint = this.props.callTaskFunction('getAssigneeInChild', false, this.props.index, this.props.workflowIndex);
-            
+        const assessmentTask = this.props.callTaskFunction('getAssessmentTask', this.props.index, this.props.workflowIndex);
+        
+        
+        
+        
+        if (assessmentTask != null && !isEmpty(assessmentTask) && this.props.TaskActivityData.TA_allow_follow_on_assessment !== true) {
+            assessConstraint = assessmentTask['TA_assignee_constraints'][0];
             if(this.props.TaskActivityData.TA_allow_assessment != 'none'){
                 if(assessConstraint == 'student' || assessConstraint == 'both'){
 
@@ -83,14 +99,14 @@ class AllowAssessmentComponent extends Component{
 
                         seeSibblingsView = (
                             <div>
-                            <label>{strings.SeeSibblingsInParent}</label>
-                            <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-see-sibblings-tooltip`} />
-                            <Checkbox
-                                click={this.props.callTaskFunction.bind(this, 'setSeeSibblings', this.props.index, this.props.workflowIndex, true)}
-                                isClicked={this.props.callTaskFunction('getSeeSibblings', this.props.index, this.props.workflowIndex, true)}
-                            />
-                        </div>
-                        )
+                                <label>{strings.SeeSibblingsInParent}</label>
+                                <Tooltip Text={strings.TaskSeeSibblingsMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-assessment-see-sibblings-tooltip`} />
+                                <Checkbox
+                                    click={this.props.callTaskFunction.bind(this, 'setSeeSibblings', this.props.index, this.props.workflowIndex, true)}
+                                    isClicked={this.props.callTaskFunction('getSeeSibblings', this.props.index, this.props.workflowIndex, true)}
+                                />
+                            </div>
+                        );
                     }
 
                     numberOfAssessView = (
@@ -152,7 +168,7 @@ class AllowAssessmentComponent extends Component{
                 </div>
                 <div className="inner">
                     {seeSibblingsView}
-                     {assessShowDispute}
+                    {assessShowDispute}
                 </div>
                 
 

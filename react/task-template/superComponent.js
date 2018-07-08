@@ -21,7 +21,8 @@ import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
 import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
-
+import {cloneDeep, clone} from 'lodash';
+import Checkbox from '../shared/checkbox';
 import { TASK_TYPES } from '../../server/utils/react_constants'; // contains constants and their values
 
 import CommentInfoComponent from './commentInfoComponent';
@@ -169,7 +170,7 @@ class SuperComponent extends React.Component {
                     return false;
                 }
             }
-            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 45000) { // checks to see if the input is a reasonable length
+            else if (typeof (this.state.TaskResponse[i][0]) === 'string' && this.state.TaskResponse[i][0].length > 10000000) { // checks to see if the input is a reasonable length
                 showMessage(this.props.Strings.StringLengthResponse);
                 console.log('strin length error');
                 return false;
@@ -238,10 +239,13 @@ class SuperComponent extends React.Component {
             // check if input is valid
             const validData = this.isValidData();
             if (validData) {
+
+                const responseToSubmit = cloneDeep(this.state.TaskResponse);
+                delete responseToSubmit.revise_and_resubmit;
                 const options = {
                     taskInstanceid: this.props.TaskID,
                     userid: this.props.UserID,
-                    taskInstanceData: this.state.TaskResponse,
+                    taskInstanceData: responseToSubmit,
                 };
                 this.setState({
                     LockSubmit: true
@@ -314,7 +318,12 @@ class SuperComponent extends React.Component {
     handleContentChange(index, event) {
         // updates task data with new user input in grading fields
         const newTaskResponse = this.state.TaskResponse;
-        newTaskResponse[index][0] = event.target.value || event.target.getContent();
+        if(event.target.getContent != null){
+            newTaskResponse[index][0] = event.target.value || event.target.getContent();
+        } else {
+            newTaskResponse[index][0] = event.target.value || '';
+            
+        }
         this.setState({
             TaskResponse: newTaskResponse,
         });
@@ -334,7 +343,7 @@ class SuperComponent extends React.Component {
     }
 
     handleJustificationChange(index, event) {
-        if (event.target.getContent().length > 45000) { // checks to see if input is reasosnable length, makes sure browser doesn't crash on long input
+        if (event.target.getContent().length >  10000000) { // checks to see if input is reasosnable length
             return;
         }
         // updates task data with new user input in justification fields
@@ -357,6 +366,15 @@ class SuperComponent extends React.Component {
             });
         }
         
+    }
+
+    handleZeroStars(index){
+        let newResponse = this.state.TaskResponse;
+        newResponse[index][0] = 0;
+    
+        this.setState({
+            TaskResponse: newResponse,
+        });
     }
 
     toggleFieldRubric(index) {
@@ -809,7 +827,7 @@ class SuperComponent extends React.Component {
             
             if(this.state.ShowHistory){
                         
-                versionHistoryView = <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length - 1)} 
+                versionHistoryView = <VersionView Versions={this.state.TaskData.slice(0, this.state.TaskData.length )} 
                     Field={this.state.TaskActivityFields[idx]} 
                     FieldIndex={idx} Strings={this.props.Strings} />;
             }
@@ -829,7 +847,18 @@ class SuperComponent extends React.Component {
                     </div>);
                     break;
                 case 'rating':
-                    fieldInput = (<Rater total={this.state.TaskActivityFields[idx].rating_max} rating={latestVersion[idx][0]} onRate={this.handleStarChange.bind(this, idx)} />);
+                    fieldInput = (
+                        <div style={{display: 'inline-block'}}>
+                            <span>{this.props.Strings.ZeroStars}:</span>
+                            <Checkbox
+                                click={this.handleZeroStars.bind(this,idx)}
+                                isClicked={latestVersion[idx][0] === 0}
+                            />
+                            &nbsp;
+                            <Rater total={this.state.TaskActivityFields[idx].rating_max} rating={latestVersion[idx][0]} onRate={this.handleStarChange.bind(this, idx)} />
+
+                        </div>
+                    );
                     break;
                 case 'pass':
                     fieldInput = (<div className="true-checkbox">

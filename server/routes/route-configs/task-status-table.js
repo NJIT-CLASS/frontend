@@ -8,8 +8,8 @@ module.exports = {
     access: {
         admins: true,
         instructors: true,
-        students: false,
-        role: ROLES.TEACHER,
+        students: true,
+        role: ROLES.PARTICIPANT,
         loggedOut: false
     },
     icon: 'bar-chart',

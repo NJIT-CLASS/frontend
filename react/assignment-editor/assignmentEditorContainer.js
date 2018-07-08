@@ -127,12 +127,14 @@ class AssignmentEditorContainer extends React.Component {
                     'none', 'don\'t wait'
                 ],
                 TA_allow_assessment: 'none',
+                TA_allow_follow_on_assessment: false,
                 TA_allow_revisions: false,
                 TA_number_participant: 1,
                 TA_function_type: 'max',
                 TA_allow_dispute: false,
                 AllowConsolidation: false,
                 TA_trigger_consolidation_threshold: [],
+                RefersToWhichTask: null,
                 TA_leads_to_new_problem: false,
                 TA_leads_to_new_solution: false
             };
@@ -862,8 +864,6 @@ class AssignmentEditorContainer extends React.Component {
         };
 
         sendData.WorkflowActivity.forEach((workflow, index) => {
-
-
             // B.1 Clean Workflow array
             let counter = 0;
             let mapping = {}; //new IDs of tasks after B.1
@@ -909,11 +909,15 @@ class AssignmentEditorContainer extends React.Component {
                 });
 
                 if(task.TA_fields){
-                    for(let k = 0; k < task.TA_fields.number_of_fields; k++){ //clean default refers to in TA_fields
+                    Object.keys(task.TA_fields).forEach(function(k){
+                        if(isNaN(k)){ //check if field is not number
+                            return;
+                        }
                         if(!task.TA_fields[k].default_refers_to[0]){
                             task.TA_fields[k].default_refers_to[0] = mapping[task.TA_fields[k].default_refers_to[0]];
                         }
-                    }
+                    });
+                    
                 }
 
                 //Make Number of Students accurately reflect number of participants
@@ -957,6 +961,27 @@ class AssignmentEditorContainer extends React.Component {
 
             });
             // B.6 Flatten workflow
+
+            let currentRefersToTarget = null;
+            let RefersToTargetTypes = [TASK_TYPES.EDIT, TASK_TYPES.GRADE_PROBLEM, TASK_TYPES.CRITIQUE];
+            workflow.WorkflowStructure.walk(function(node){
+                if(node.model.id === -1 ){
+                    return;
+                }
+
+                if(RefersToTargetTypes.includes(workflow.Workflow[node.model.id].TA_type)){
+                    currentRefersToTarget = node.parent.model.id;
+                }
+
+                if(workflow.Workflow[node.model.id].RefersToWhichTask === null){
+                    workflow.Workflow[node.model.id].RefersToWhichTask = currentRefersToTarget;
+
+                }
+
+                if(!node.hasChildren()){
+                    currentRefersToTarget = null;
+                }
+            });
 
             workflow.WorkflowStructure = this.flattenTreeStructure(workflow.WorkflowStructure);
 
@@ -1160,7 +1185,7 @@ class AssignmentEditorContainer extends React.Component {
 
         let changeIndex = this.getAssessIndex(parentIndex, workflowIndex);
         let newTask = {};
-
+        let oldRefersTo = newData[workflowIndex].Workflow[changeIndex].RefersToWhichTask;
         if (value == 'grade') {
             newTask = this.createNewTask(newData, this.gradeSolutionTask, parentIndex, workflowIndex, 'Grade');
         } else if (value == 'critique') {
@@ -1169,7 +1194,7 @@ class AssignmentEditorContainer extends React.Component {
             return;
         }
         newData[workflowIndex].Workflow[changeIndex] = newTask;
-
+        newData[workflowIndex].Workflow[changeIndex].RefersToWhichTask = oldRefersTo;
         this.setState({WorkflowDetails: newData});
     }
 
@@ -1340,6 +1365,9 @@ class AssignmentEditorContainer extends React.Component {
             break;
         case TASK_TYPES.CRITIQUE:
             prefixString = 'Critique';
+            break;
+        case TASK_TYPES.NEEDS_CONSOLIDATION:
+            prefixString = 'Needs Consolidation of';
             break;
         case TASK_TYPES.CONSOLIDATION:
             prefixString = 'Consolidate';
@@ -1607,6 +1635,8 @@ class AssignmentEditorContainer extends React.Component {
         }
         newData[workflowIndex].Workflow[parentIndex].AllowConsolidation = false;
         this.setState({WorkflowDetails: newData});
+        this.propogateNameChangeDownTree(parentIndex, workflowIndex);
+        
     }
 
     removeDispute(parentIndex, workflowIndex) {
@@ -1780,28 +1810,46 @@ class AssignmentEditorContainer extends React.Component {
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
         let oldFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
         
-        workflowData[taskIndex].TA_fields = linkedFields;
-        for(let j = 0; j < linkedNumberOfFields; j++){
-            let copiedField = workflowData[taskIndex].TA_fields[j];
+        workflowData[taskIndex].TA_fields = {};//cloneDeep(linkedFields);
+        workflowData[taskIndex].TA_fields.field_distribution = {};
+        var finalFieldCounter = 0;
+        Object.keys(linkedFields).forEach(function(j){
+            if(isNaN(j)){ //check if field is not number
+                return;
+            }
+
+            let copiedField = linkedFields[j];
             if(workflowData[taskIndex].TA_type === TASK_TYPES.EDIT){
                 //If an edit task, set default content of linked fields to point to linked task
                 if(copiedField.default_content[0] === ''  && copiedField.default_refers_to[0] === null){
                     copiedField.default_refers_to = [taskIndex, j];
                 }
+                
             }
-        }
 
-        for(let i = 0; i < oldNumberOfFields; i++){
+            workflowData[taskIndex].TA_fields[finalFieldCounter] = copiedField;
+            workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = linkedFields[j];
+            finalFieldCounter += 1;
+        });
+
+        Object.keys(oldFields).forEach(function(i){
             let copiedField = cloneDeep(oldFields[i]);
-            workflowData[taskIndex].TA_fields[i + linkedNumberOfFields] = copiedField;
-        }
+            workflowData[taskIndex].TA_fields[finalFieldCounter] = copiedField;
+
+
+            finalFieldCounter += 1;
+
+            if(oldFieldDistribution !== undefined){
+                workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = oldFieldDistribution[i];
+            }
+        });
         
-        if(oldFieldDistribution !== undefined){
-            let oldFieldDistFields =Object.keys(oldFieldDistribution);
-            oldFieldDistFields.forEach((key) => {
-                workflowData[taskIndex].TA_fields.field_distribution[linkedNumberOfFields + parseInt(key)] = oldFieldDistribution[key];
-            });
-        }
+        // if(oldFieldDistribution !== undefined){
+        //     let oldFieldDistFields =Object.keys(oldFieldDistribution);
+        //     oldFieldDistFields.forEach((key) => {
+        //         workflowData[taskIndex].TA_fields.field_distribution[linkedNumberOfFields + parseInt(key)] = oldFieldDistribution[key];
+        //     });
+        // }
         
 
         workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedNumberOfFields;
@@ -1822,12 +1870,51 @@ class AssignmentEditorContainer extends React.Component {
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
     }
 
+    changeDefaultFieldReferences(taskIndexBeingRemoved, fieldIndexBeingRemoved, workflowIndex, stateData){
+        let newData = stateData || this.state.WorkflowDetails;
+        var taskListToCheck = this.getAlreadyCreatedTasks(taskIndexBeingRemoved, workflowIndex, stateData);
+
+        taskListToCheck.forEach(function(taskInfo){
+            var task = newData[workflowIndex].Workflow[taskInfo.value];
+
+            Object.keys(task.TA_fields).forEach(function(key){
+                if(isNaN(key)){
+                    return;
+                }
+                var defaultRefersTo = task.TA_fields[key].default_refers_to;
+                if( defaultRefersTo !== null && defaultRefersTo[0] !== null){
+                    if(defaultRefersTo[0] == taskIndexBeingRemoved){
+                        var savedIndex = typeof defaultRefersTo[1] == 'string' ? parseInt(defaultRefersTo[1]) : defaultRefersTo[1];
+                        var removingIndex = typeof fieldIndexBeingRemoved == 'string' ? parseInt(fieldIndexBeingRemoved) : fieldIndexBeingRemoved;
+                        if(savedIndex === removingIndex){
+                            task.TA_fields[key].default_refers_to = [null, null];
+                        } else if (savedIndex > removingIndex){
+                            task.TA_fields[key].default_refers_to[1]  = savedIndex - 1;
+                        }
+                    }
+                }
+
+                defaultRefersTo = null;
+            })
+        }, this);
+
+        if(stateData != null){
+            return newData;
+        } else {
+            this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndexBeingRemoved});
+        }
+
+    }
+
     removeFieldButton(taskIndex, workflowIndex, fieldIndex){
         let newData = this.state.WorkflowDetails;
         delete newData[workflowIndex].Workflow[taskIndex].TA_fields[fieldIndex];
+        //getAlreadyCreatedTasks
+
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles.splice(fieldIndex, 1);
         newData[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields -= 1;
         newData = this.refreshTaskFieldDistribution(taskIndex, workflowIndex, newData);
+        newData = this.changeDefaultFieldReferences(taskIndex,fieldIndex, workflowIndex, newData);
         
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
@@ -1843,6 +1930,9 @@ class AssignmentEditorContainer extends React.Component {
         case 'assess':
             newData = this.removeTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
             newData[workflowIndex].Workflow[taskIndex].TA_allow_assessment = 'none';
+            newData[workflowIndex].Workflow[taskIndex].TA_allow_follow_on_assessment = false;
+            newData[workflowIndex].Workflow[taskIndex].RefersToWhichTask = null;
+            
             break;
         case 'dispute':
             break;
@@ -1864,6 +1954,18 @@ class AssignmentEditorContainer extends React.Component {
 
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
 
+    }
+
+    isChecked(field, taskIndex, workflowIndex, stateData){
+        let newData = stateData == null ? this.state.WorkflowDetails : stateData;
+
+        if(newData[workflowIndex].Workflow[taskIndex][field] === true){
+            return true;
+        } else if(newData[workflowIndex].Workflow[taskIndex][field] === false){
+            return false;
+        } else {
+            return null;
+        }
     }
 
     changeDataCheck(stateField, taskIndex, workflowIndex, stateData) {
@@ -1934,6 +2036,44 @@ class AssignmentEditorContainer extends React.Component {
                     newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
                     newData = this.refreshGradeDist(newData, workflowIndex);
                     newData[workflowIndex].Workflow[taskIndex][stateField] = 'grade';
+                }
+            }
+            break;
+        case 'TA_allow_follow_on_assessment':
+            {
+                if (newData[workflowIndex].Workflow[taskIndex][stateField] === true) {
+                    let taskChildrenNodes = this.taskChildren(this.getAssessIndex(taskIndex, workflowIndex, newData), workflowIndex);
+                    if(taskChildrenNodes.length == 0){
+                        this.dropTask('assess', taskIndex, workflowIndex);
+                        newData[workflowIndex].Workflow[taskIndex][stateField] = false;
+                        newData[workflowIndex].Workflow[taskIndex].RefersToWhichTask = null;
+                    } else {
+                        let messageDiv = `${this.state.Strings.FollowingTasksWillDrop}:
+                            <br />
+                            <ul>
+                        ${taskChildrenNodes.map((task) => { return (`<li>${task}</li>`); }).reduce((val, acc) => { return acc + val; }, '')}
+                        </ul>
+                        <br />
+                        ${this.state.Strings.AreYouSureYouWantToContinue}?`;
+                        confirmModal({
+                            confirmation: messageDiv,
+                            list: taskChildrenNodes,
+                            okLabel: this.state.Strings.Ok,
+                            cancelLabel: this.state.Strings.Cancel,
+                            title: this.state.Strings.DroppingMultipleTask
+                        }).then(() => {
+                            this.dropTask('assess', taskIndex, workflowIndex);
+                        
+                        }, () => {
+                        }).catch(() => { });
+                    
+
+                    }
+                
+                } else {
+                    newData = this.addTask(newData, this.ASSESS_IDX, taskIndex, workflowIndex);
+                    newData = this.refreshGradeDist(newData, workflowIndex);
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = true;
                 }
             }
             break;
@@ -2116,18 +2256,32 @@ class AssignmentEditorContainer extends React.Component {
             break;
         case 'TA_allow_assessment':
             {
-                newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+                if(newData[workflowIndex].Workflow[taskIndex].TA_allow_follow_on_assessment !== true){
+                    newData[workflowIndex].Workflow[taskIndex][stateField] = e.value;
+                }
                 this.changeAssessment(taskIndex, workflowIndex, e.value);
                 this.propogateNameChangeDownTree(taskIndex, workflowIndex);
 
             }
             break;
+        case 'TA_allow_follow_on_assessment':
+            const targetIndex = this.getAssessIndex(taskIndex, workflowIndex);
+            newData[workflowIndex].Workflow[targetIndex].RefersToWhichTask = e.value;
+            break;
         case 'TA_assignee_constraints':
             newData[workflowIndex].Workflow[taskIndex][stateField][0] = e.value;
             if(e.value == 'instructor'){
+
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = false;
+                if(this.hasConsolidate(taskIndex, workflowIndex)){
+                    this.removeConsolidation(taskIndex, workflowIndex);
+                }
             } else {
                 newData[workflowIndex].Workflow[taskIndex].SeeSameActivity = true;
+                let numOfParts = newData[workflowIndex].Workflow[taskIndex].TA_number_participant;
+                if(numOfParts > 1){
+                    this.addConsolidation(newData, taskIndex, workflowIndex);
+                }
             }
             break;
         case 'TA_function_type_Assess':
@@ -2158,12 +2312,31 @@ class AssignmentEditorContainer extends React.Component {
             ? this.getReflectIndex(taskIndex, workflowIndex, newData)
             : this.getAssessIndex(taskIndex, workflowIndex, newData); // taskIndex of child (reflect/assess) node
         newData[workflowIndex].Workflow[target]['TA_assignee_constraints'][0] = e.value;
+        
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+
+        if(e.value == 'instructor'){
+            if(this.hasConsolidate(target, workflowIndex)){
+                this.removeConsolidation(target, workflowIndex);
+            }
+        } else {
+            let numOfParts = reflect
+                ? this.getReflectNumberofParticipants(taskIndex, workflowIndex)
+                : this.getAssessNumberofParticipants(taskIndex, workflowIndex);
+
+            if(numOfParts > 1){
+                this.addConsolidation(newData, target, workflowIndex);
+            }
+        }
     }
 
     getAssigneeInChild(reflect, taskIndex, workflowIndex) {
         let targetIndex = (reflect ? this.getReflectIndex(taskIndex, workflowIndex) : this.getAssessIndex(taskIndex, workflowIndex));
-        return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
+        try{
+            return this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex]['TA_assignee_constraints'][0];
+        } catch(e){
+            return '';
+        }
     }
 
     getTaskRevisioninChild(taskIndex, workflowIndex){
@@ -2300,6 +2473,17 @@ class AssignmentEditorContainer extends React.Component {
         newData[workflowIndex].Workflow[taskIndex].TA_fields[field].title = e.target.value;
         newData[workflowIndex].Workflow[taskIndex].TA_fields.field_titles[field] = e.target.value;
         this.setState({WorkflowDetails: newData, LastTaskChanged: taskIndex});
+    }
+
+    getAssessmentTask(taskIndex, workflowIndex){
+        var returnTask = null;
+        try{
+            let targetIndex = this.getAssessIndex(taskIndex, workflowIndex);
+            returnTask = this.state.WorkflowDetails[workflowIndex].Workflow[targetIndex];
+        } catch(e) {
+
+        }
+        return returnTask;
     }
 
     changeFieldCheck(stateField, taskIndex, field, workflowIndex) {
@@ -2641,16 +2825,18 @@ class AssignmentEditorContainer extends React.Component {
         let fieldsList = new Array();
         const stateDataToCheck = stateData === undefined ?  this.state.WorkflowDetails : stateData;
         let numberOfFields = stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields.number_of_fields;
-
-        for(let i = 0; i < numberOfFields; i++){
-            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'assessment' /*||
+        Object.keys(stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields).forEach(function(key){
+            if(isNaN(key)){ //check if field is not number
+                return;
+            }
+            if (stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[key].field_type === 'assessment' /*||
         stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].field_type === 'self assessment'*/) {
                 fieldsList.push({
-                    value: i,
-                    label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[i].title
+                    value: key,
+                    label: stateDataToCheck[workflowIndex].Workflow[taskIndex].TA_fields[key].title
                 });
             }
-        }
+        });
         
         return fieldsList;
 
@@ -2738,7 +2924,7 @@ class AssignmentEditorContainer extends React.Component {
         if (event.target.id.includes('tiny')) {
             content = event.target.getContent();
         }
-        if (content.length > 45000) {
+        if (content.length > 10000000) {
             return;
         }
         if (fieldName == 'AA_name') {

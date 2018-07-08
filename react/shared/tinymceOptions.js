@@ -26,10 +26,11 @@ import 'tinymce/plugins/wordcount';
 const tinymceOptions = {
     skin_url: '/static/tinymce_skins/lightgray',
     height: '150px',
-    width: '500px',
+    width: '570px',
     menubar: true,
     plugins: ['advlist autolink charmap codesample colorpicker contextmenu directionality fullscreen help image imagetools insertdatetime link lists media paste preview print searchreplace table textcolor textpattern wordcount'],
-    toolbar: 'bold italic underline | forecolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | tiny_mce_wiris_formulaEditor',
+    toolbar: 'bold italic underline | forecolor backcolor | alignleft aligncenter alignright alignjustify  | outdent indent | numlist bullist | removeformat | tiny_mce_wiris_formulaEditor',
+    contextmenu: "cut copy paste | link | selectall",
     content_css: [
         '/static/main.css',
         '/static/vendor/prism.css',
@@ -42,6 +43,27 @@ const tinymceOptions = {
     external_plugins: {
         'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
     },
+    file_picker_types: 'image',
+    file_picker_callback: function(cb, value, meta) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.onchange = function() {
+            var file = this.files[0];
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                var id = 'blobid' + (new Date()).getTime();
+                var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                var base64 = reader.result.split(',')[1];
+                var blobInfo = blobCache.create(id, file, base64);
+                blobCache.add(blobInfo);
+                cb(blobInfo.blobUri(), { title: file.name });
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
 };
 
 export default tinymceOptions;

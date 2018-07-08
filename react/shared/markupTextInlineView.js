@@ -82,18 +82,20 @@ class MarkupTextInline extends React.Component {
     }
 
     componentDidMount() {
-        Prism.highlightAll();
+        //Prism.highlightAll();
+        Prism.highlightAllUnder(this.refs.task);
+
         MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     componentDidUpdate() {
-        Prism.highlightAll();
+        //Prism.highlightAll();
         MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
     }
 
     render() {
         return(
-            <span className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></span>
+            <span ref="task" className={this.props.classNames} dangerouslySetInnerHTML={{__html: bleach.sanitize(this.props.content, this.options)}}></span>
         );
     }
 }

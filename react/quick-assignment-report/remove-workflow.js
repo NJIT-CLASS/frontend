@@ -2,14 +2,21 @@ import React, { Component } from 'react';
 import Modal from '../shared/modal';
 import apiCall from '../shared/apiCall';
 
+// This component renders a popup message asking for confirmation when the user tries to remove 
+// problem threads. On confirmation, it performs the removal.
 class RemoveWorkflow extends Component {
     constructor(props) {
         super(props);
     }
 
     cancelWorkflows() {
+        // This function calls the backend API for cancelling (removing) workflows.
+        // See the 'To Cancel Workflows' section of the 'Pool and Reallocation APIs' document
+        // for information about this API call.
+        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
 
-        // The API requires the IDs to be Numbers to work properly so we have to convert them from String to Number
+        // The API requires the submitted IDs to be Numbers to work properly so we have to 
+        // convert them from String to Number.
         const assignmentID = parseInt(this.props.assignmentID, 10);
         const workflowIDs = this.props.workflowIDs.map(id => parseInt(id, 10));
 
@@ -18,12 +25,14 @@ class RemoveWorkflow extends Component {
             wi_ids: workflowIDs
         };
 
-        // See 'To Cancel Workflows' section of the 'Pool and Reallocation APIs' document
-        // for information about this API call
-        // (https://drive.google.com/open?id=1IID3sbmgdTUW2X5E7Buve18UnDR3cM-k)
         const cancelWorkflowURL = '/reallocate/cancel_workflows';
+        showMessage('Cancelling problem threads...');
         apiCall.postAsync(cancelWorkflowURL, cancelWorkflowPostBody)
             .then(response => {
+                // The API requires confirmation before it does the cancellation if the workflow 
+                // removals will result in students having an unequal number of tasks. We do the 
+                // confirmation immediately here, but in the future, we may want to display a message 
+                // to the user asking for further confirmation that they want to go through with this.
                 const confirmCancelURL = '/reallocate/confirm_cancellation';
                 const data = response.data;
                 if (data.confirmation_required) {
@@ -31,11 +40,13 @@ class RemoveWorkflow extends Component {
                         data: data.data
                     };
                     return apiCall.postAsync(confirmCancelURL, confirmCancelPostBody);
+                } else {
+                    return response;
                 }
             })
             .then(() => {
-                showMessage('Problem threads successfully cancelled');
                 this.props.onWorkflowCancel();
+                showMessage('Problem threads successfully cancelled');
             });
         this.props.onClose();
     }
@@ -45,12 +56,14 @@ class RemoveWorkflow extends Component {
         const okLabel = 'Remove problem threads';
         const cancelLabel = 'Don\'t remove problem threads';
 
-        const workflowsToRemoveList = 
+        const workflowsToRemoveList = this.props.workflowIDs.length > 0 ?
             <ul>
                 {this.props.workflowIDs.map(
                     workflowID => <li key={workflowID}>{`Problem thread: ${workflowID}`}</li>
                 )}
-            </ul>;
+            </ul>
+             : <p>No problem threads selected</p>;
+
         const message = 
             <div>
                 <p>The following problem threads will be removed: </p>

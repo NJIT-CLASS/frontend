@@ -34,11 +34,13 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
+                                    TaskActivity={task.TaskActivity}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
                                     TaskID={task.TaskInstanceID}
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
+                                    Status={task.Status}
 
         					/>
                             );
@@ -54,11 +56,13 @@ class TasksList extends React.Component{
         						Files={task.Files}
         						Instructions={task.TaskActivity.Instructions}
         						Rubric={task.TaskActivity.Rubric}
+                                    TaskActivity={task.TaskActivity}
                                     TaskActivityFields={task.TaskActivity.Fields}
                                     TaskID={task.TaskInstanceID}
                                     Strings={Strings}
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
+                                    Status={task.Status}
 								
         					/>
                             );
@@ -108,7 +112,8 @@ class TasksList extends React.Component{
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
                                     Status={task.Status}
-        						Files={task.Files}
+                                    Files={task.Files}
+                                    TaskActivity={task.TaskActivity}
         						TaskActivityFields={task.TaskActivity.Fields}
         						Strings={Strings}
                                     TaskID={task.TaskInstanceID}

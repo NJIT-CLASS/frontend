@@ -494,24 +494,27 @@ class UserManager extends React.Component {
             statusHeader=(<th>{this.props.strings.status}</th>);
         }
         let list = (
-            <div className='card'>
+            <div className='card '>
                 <h2 className='title'>{this.props.title}</h2>
                 <button type='button' style={{margin: '10px 0'}} onClick={this.add.bind(this)}>{this.props.strings.add}</button>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>{this.props.strings.email}</th>
-                            <th>{this.props.strings.firstName}</th>
-                            <th>{this.props.strings.lastName}</th>
-                            <th>{this.props.strings.active}</th>
-                            {volunteerHeader}
-                            {statusHeader}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { this.state.users && this.state.users.length > 0 ? users : empty }
-                    </tbody>
-                </table>
+                <div className="section-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{this.props.strings.email}</th>
+                                <th>{this.props.strings.firstName}</th>
+                                <th>{this.props.strings.lastName}</th>
+                                <th>{this.props.strings.active}</th>
+                                {volunteerHeader}
+                                {statusHeader}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { this.state.users && this.state.users.length > 0 ? users : empty }
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
         );
         // conditional rendering based on state

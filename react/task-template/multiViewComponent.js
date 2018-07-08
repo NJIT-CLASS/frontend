@@ -84,9 +84,11 @@ class MutliViewComponent extends React.Component {
                             Instructions={task.TaskActivity.Instructions}
                             Rubric={task.TaskActivity.Rubric}
                             TaskActivityFields={task.TaskActivity.Fields}
+                            TaskActivity={task.TaskActivity}
                             Strings={this.props.Strings}
                             TaskID={task.TaskInstanceID}
                             showComments={this.props.showComments.bind(this)}
+                            Status={task.Status}
                         />
                     </div>
                 );

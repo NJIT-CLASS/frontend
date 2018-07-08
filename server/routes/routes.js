@@ -27,7 +27,7 @@ const pages = [
     'volunteer-pool',
     'section',
     'user-management',
-    //'everyones-work',
+    'everyones-work',
     'reallocation',
     'about',
     'section',
