@@ -657,7 +657,11 @@ class TaskDetailsComponent extends React.Component {
                         <label>
                             <Radio value />{strings.StartAfterPriorTaskEndsBy}</label>
                     </RadioGroup>
-                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_start_delay} min={0} max={60} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_start_delay', this.props.index, this.props.workflowIndex)} />
+                    <NumberField label={strings.Days}
+                     value={this.props.TaskActivityData.TA_start_delay} 
+                     min={0} max={60} 
+                     onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_start_delay', this.props.index, this.props.workflowIndex)} 
+                     />
                 </div>
 
             );

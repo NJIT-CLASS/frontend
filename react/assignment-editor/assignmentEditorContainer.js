@@ -19,6 +19,7 @@ import confirmModal from './confirmModal';
 import HeaderComponent from './headerComponent';
 import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/react_constants';
 import Strings from './assignmentEditorStrings';
+import { debug } from 'util';
 
 class AssignmentEditorContainer extends React.Component {
     constructor(props) {
@@ -913,8 +914,11 @@ class AssignmentEditorContainer extends React.Component {
                         if(isNaN(k)){ //check if field is not number
                             return;
                         }
-                        if(!task.TA_fields[k].default_refers_to[0]){
-                            task.TA_fields[k].default_refers_to[0] = mapping[task.TA_fields[k].default_refers_to[0]];
+                        var field = task.TA_fields[k];
+                        
+                        if(field.default_refers_to[0] !== null){
+                            debugger;
+                            field.default_refers_to[0] = mapping[field.default_refers_to[0]];
                         }
                     });
                     
