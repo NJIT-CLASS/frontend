@@ -29,9 +29,14 @@ class GradeReport extends React.Component {
         this.getSections(this.state.userID);
     }
 
+    /**
+     * 
+     * Get all sections that the current user attends or instructs.
+     * Then get all assignments for those sections using the function getAssignments 
+     */
     getSections(userID){
         apiCall.get(`/SectionsByUser/${userID}`,{},(err,status,body)=>{
-            console.log(body);
+            //console.log(body);
             if(status.statusCode === 200){
                 if(body["Sections"].length == 0){
                     this.setState({loaded:true});
@@ -44,10 +49,21 @@ class GradeReport extends React.Component {
         });
     }
 
+    /**
+     * 
+     * @param {*} section Section data returned from the backend
+     * @param {*} numSections Number of sections to keep track of when to call setState
+     * 
+     */
     getAssignments(section,numSections){
         apiCall.get(`/getActiveAssignmentsForSection/${section.SectionID}`,{},(err,status,body)=>{
             if(status.statusCode===200){
+                //Add the assignment to the section data
                 section["assignments"]=body.Assignments;
+
+                // If the user is an instructor add section to list of instructor sections, otherwise add 
+                // to student sections.
+                // When all sections are accounted for, call setState.
                 if(section.Role==="Instructor"){
                     this.state.instructorSections.push(section);
                 }
@@ -63,6 +79,12 @@ class GradeReport extends React.Component {
         });     
     }
 
+    /**
+     * 
+     * @param {*} section Section data
+     * @param {*} overviewOnclick onclick function for the overview, can be both student and instructor overview
+     * @param {*} assignmentOnclick onclick funciton for assignment, can be both student and instructor assignment
+     */
     createCollapsableMenu(section, overviewOnclick, assignmentOnclick){
         //console.log(section);
         let sectionName = section.Section.Course.Number + "  "+ section.Section.Name+"  " + section.Section.Course.Name;
@@ -98,24 +120,6 @@ class GradeReport extends React.Component {
         });
     }
 
-    /*getAssignmentsByStudent(){
-        this.state.displayedSection.sectionData.assignments.forEach(assignment => {
-            apiCall.post(`/getAssignmentGrades/${assignment.AssignmentInstanceID}`,{},(err,status,body)=>{
-                console.log(body);
-                body.SectionUsers.forEach(user => {
-                    if(user.Role === "Student"){
-                        var ag = "-";
-                        if(user.assignmentGrade){
-                            ag = user.assignmentGrade.Grade;
-                        }
-                        this.state.displayedSection.sectionData.students[user.UserID].gradedAssignments.push({assignmentName:body.AssignmentInstance.Assignment.DisplayName,assignmentGrade:ag});
-                    }
-                });
-                this.setState({loaded:true});
-            });
-        });
-    }*/
-
     instructorAssignmentOnClick(assignment, section){
         this.state.displayedSection.type="instructorAssignment";
         this.state.displayedSection.sectionData=section;
@@ -146,7 +150,7 @@ class GradeReport extends React.Component {
     }
 
     studentAssignmentOnClick(assignment,section){
-        console.log(section);
+        //console.log(section);
 
         this.state.displayedSection.type="studentassignment";
         this.state.displayedSection.sectionData=section;
@@ -156,32 +160,41 @@ class GradeReport extends React.Component {
         user[this.state.userID] = {};
         this.getGrades(user, [assignment]);
     }
-
+    /**
+     * 
+     * @param {*} students array of student data, must at least contain userID
+     * @param {*} assignments array of assignments, must at least contain AssignmentInstanceID
+     * 
+     * Formats grade data into a more usable form, a tree structure. Top level being a list of sectionUserID's to user data.
+     * Inside that user data is an entry called assignments that contains a dictionary mapping assignment Id's to assignment data.
+     * Inside that assignment data is an entry called workflows that maps workflow activity Id to workflow data.
+     * Inside workflow data are entries for regular tasks and simple tasks.  
+     * 
+     * This way any number of students and any number assignments can be passed and the resulting structure will always be the same 
+     * when it comes to displaying it
+     */
     getGrades(students, assignments){
-        console.log(students);
-        console.log(assignments);
         var response = {};
         var apiCallCount = 0;
 
+        // Call getAssignmentGrade for each assignment
         assignments.forEach(assignment => {
-            //console.log(assignment);
+
             apiCall.get(`/getAssignmentGrade/${assignment.AssignmentInstanceID}`,{},(err, status, body) => {
-                console.log(body);
+
                 if( status.statusCode === 200){
                     apiCallCount++;
                     for( var userID in students){
                         var sectionUserID = null;
-                        //console.log(student);
-                        //console.log(students[userID]);
-                            
+                        
+                        // Retrieve section user ID
                         for(var i in body.SectionUsers){
                             if(userID == body.SectionUsers[i].UserID){
                                 sectionUserID = body.SectionUsers[i].SectionUserID;
                             }
                         }
 
-                        //console.log(sectionUserID);
-
+                        //For the first iteration, when the initial entry of the section user ID doesn't exist
                         if(!(sectionUserID in response)){
                             response[sectionUserID] = {
                                 user: students[userID],
@@ -189,22 +202,26 @@ class GradeReport extends React.Component {
                             };
                         }
 
+                        // Start a new assignment entry
                         var newAssignmentEntry = {
                             "assignment": body.AssignmentActivity,
                             "workflows":{},
                             "taskActivities":{}
                         }
 
+                        // Add the task activities at the assignment level
                         body.TaskActivity.forEach(taskActivity => {
                             newAssignmentEntry.taskActivities[taskActivity.TaskActivityID] = taskActivity;
                         });
 
+                        //Add in the assignment grade if it exists
                         body.Grades.Assignment.forEach(ag => {
                             if( ag.SectionUserID == sectionUserID ){
                                 newAssignmentEntry["assignmentGrade"] = ag;
                             }
                         });
 
+                        // Add in the workflows associated with the assignment, also add in entries for simple and regular tasks
                         body.WorkflowActivity.forEach(workflow => {
                             var workflowCopy = Object.assign({},workflow);
                             workflowCopy["simpleTasks"] = {};
@@ -212,28 +229,32 @@ class GradeReport extends React.Component {
                             newAssignmentEntry.workflows[workflow.WorkflowActivityID] = workflowCopy;
                         });
 
-
+                        // Add in workflow grade if it exists
                         body.Grades.Workflow.forEach(workflowGrade => {
                             if( workflowGrade.SectionUserID == sectionUserID ){
                                 newAssignmentEntry.workflows[workflowGrade.WorkflowActivityID]["workflowGrade"] = workflowGrade;
                             }
                         });
 
+                        // Add in all simple tasks to the associated workflow
                         body.Grades.SimpleGrade.forEach(sg => {
                             if( sg.SectionUserID == sectionUserID ){
                                 newAssignmentEntry.workflows[sg.WorkflowActivityID]["simpleTasks"][sg.TaskSimpleGradeID] = sg;
                             }
                         });
 
+                        //Add in all regular tasks to the associated workflow
                         body.Grades.Task.forEach(task => {
                             if( task.SectionUserID == sectionUserID ){
                                 newAssignmentEntry.workflows[task.WorkflowActivityID]["regularTasks"][task.TaskInstanceID] = task;
                             }
                         });
 
+                        //Add the the asssignment data to the assignment list inside the section user id entry
                         response[sectionUserID].assignments[assignment.AssignmentInstanceID] = newAssignmentEntry;
                     }
 
+                    //Calculate the grades and set it to the grades entry in sectionData
                     if(apiCallCount == assignments.length){
                         //console.log(response);
                         this.calculateGrades(response);
@@ -245,29 +266,45 @@ class GradeReport extends React.Component {
         });
     }
 
+    /**
+     * 
+     * @param {*} root result data from getGrades
+     * 
+     * Iterates down through tree structure until it reaches the bottom or finds grade data already calculated by the backend,
+     * adds any of the missing grade data, and returns the structure
+     */
     calculateGrades(root){
-        console.log(root);
-        // User Level
+
+        //console.log(root);
+
+        // Loop through each user
         for( var [sectionUserID, studentData] of Object.entries(root)){
-            //console.log(studentData);
 
-            // Assignment Level
+            // Loop through each assignment
             for( var [assignmentID, assignmentData] of Object.entries(studentData["assignments"])){
-                //console.log(assignmentData);
 
+                // If the backend hasn't calculated the grade up to assignment level, continue deeper.
+                // Otherwise continue interating through the structure
                 if(!("assignmentGrade" in assignmentData)){
+                    // Add entry for assignment grade and get the grade distribution
                     assignmentData["assignmentGrade"] = { Grade: null};
                     var assignmentGrade = 0;
                     var assignmentGradeDistribution = JSON.parse(assignmentData.assignment.GradeDistribution);
 
-                    // Workflow level
+                    // assignmentGradeAvailable flag notifies when assignment grade can be added
+                    var assignmentGradeAvailable = false;
+                    // Loop through each workflow
                     for( var [workflowID, workflowData] of Object.entries(assignmentData["workflows"])){
 
+                        // If workflow grade doesn't exist, continue deeper
                         if(!("workflowGrade" in workflowData)){
                             workflowData["workflowGrade"] = {Grade:null};
                             var workflowGrade = 0;
                             var workflowGradeDistribution = JSON.parse(workflowData["GradeDistribution"]);
                             var correctGradeDistribution = {};
+
+                            // Since the grading task gets the grade instead of the task thats being graded, 
+                            // the assignment distribution must be shifted using refersToWhich task 
                             for(var [taskAcivityID, gradePercentage] of Object.entries(workflowGradeDistribution)){
                                 if(taskAcivityID === "simple"){
                                     correctGradeDistribution["simple"] = gradePercentage;
@@ -279,25 +316,30 @@ class GradeReport extends React.Component {
 
                             workflowData["correctGradeDistribution"] = correctGradeDistribution;
 
+                            //Calculate and add in regular tasks
                             for( var [taskID, taskData] of Object.entries(workflowData["regularTasks"])){
                                 workflowGrade += correctGradeDistribution[taskData.TaskActivityID] * (taskData.Grade / taskData.MaxGrade);
                             }
 
+                            //Calculate and add in simple tasks
                             var totalSimpleScore = 0;
                             for( var [taskID, taskData] of Object.entries(workflowData["simpleTasks"])){
-                                totalSimpleScore += taskData.Grade;
+                                totalSimpleScore += taskData.Grade/taskData;
                             }
                             workflowGrade += correctGradeDistribution["simple"] * (totalSimpleScore / workflowData.length);
 
 
-                            if( Object.keys(workflowData["regularTasks"]).length === 0 ) continue;
+                            if( Object.keys(workflowData["regularTasks"]).length === 0 && Object.keys(workflowData["simpleTasks"]).length === 0 ) continue;
                             workflowData["workflowGrade"]["Grade"] = workflowGrade;
                         }
 
                         if( !workflowData["workflowGrade"]["Grade"] ) continue;
+                        assignmentGradeAvailable = true;
                         assignmentGrade += assignmentGradeDistribution[workflowID] * (workflowData["workflowGrade"]["Grade"] / 100);
                     }
-                    assignmentData["assignmentGrade"]["Grade"] = assignmentGrade;
+                    if(assignmentGradeAvailable){
+                        assignmentData["assignmentGrade"]["Grade"] = assignmentGrade;
+                    }
                 }
             }
         }
@@ -336,22 +378,22 @@ class GradeReport extends React.Component {
         }
 
         if(error){
-            console.log(error);
+            //console.log(error);
         }
 
         if(displayType==="instructorOverview"){
-            console.log(sectionData);
+            //console.log(sectionData);
             let overviewEntries = [];
             let nestedTables = [];
             for(var studentID in sectionData.grades){
-                console.log(sectionData.grades[studentID]);
+                //console.log(sectionData.grades[studentID]);
                 overviewEntries.push({ firstName: sectionData.grades[studentID].user.User.FirstName, lastName: sectionData.grades[studentID].user.User.LastName});
 
                 var nestedTableRows = [];
 
                 for( var [assignmentID, assignmentData] of Object.entries(sectionData.grades[studentID].assignments)){
-
-                    nestedTableRows.push((<tr><td>{assignmentData.assignment.DisplayName}</td><td>{assignmentData.assignmentGrade.Grade}</td></tr>));
+                    let grade = assignmentData.assignmentGrade.Grade ?assignmentData.assignmentGrade.Grade :"-";
+                    nestedTableRows.push((<tr><td>{assignmentData.assignment.DisplayName}</td><td>{grade}</td></tr>));
                 }
 
                 nestedTables.push( 
@@ -414,19 +456,19 @@ class GradeReport extends React.Component {
 
         }
         else if(displayType==="instructorAssignment"){
-            console.log(sectionData);
+            //console.log(sectionData);
             var nestedTables = [];
             var tableEntries = [];
             var tableData = [];
 
             for( var [studentID, studentData] of Object.entries(sectionData.grades)){
-                console.log(studentData);
+                //console.log(studentData);
                 var fn = studentData.user.User.FirstName ? studentData.user.User.FirstName : "N/A";
                 var ln = studentData.user.User.LastName ? studentData.user.User.LastName : "N/A";
 
                 for( var [assignmentID, assignment] of Object.entries(studentData.assignments)){
                     console.log(assignment);
-                    var grade = assignment.assignmentGrade.Grade;
+                    var grade = assignment.assignmentGrade.Grade ? assignment.assignmentGrade.Grade : "-";
                     tableData.push({
                         firstName: fn,
                         lastName: ln,
@@ -434,17 +476,20 @@ class GradeReport extends React.Component {
                         grade:grade
                     })
 
+                    var assignmentGradeDistribution = JSON.parse(assignment.assignment.GradeDistribution);
+
                     for(var [workflowID, workflow] of Object.entries(assignment.workflows)){
-                        console.log(workflow);
+                        var workflowGradeDistribution = JSON.parse(workflow.GradeDistribution);
+                        //console.log(workflow);
                         var regularGrades = [];
                         var simpleGrades = [];
                         var workflowGradesTable = [];
-                        regularGrades.push(<tr><th>Regular Tasks</th><th>Grade</th><th>Is Extra Credit</th></tr>);
+                        regularGrades.push(<tr><th>Regular Tasks</th><th>Weight</th><th>Grade</th><th>Is Extra Credit</th></tr>);
                         simpleGrades.push(<tr><th>Simple Tasks</th><th>Grade</th><th>Is Extra Credit</th></tr>);
                         for(var [regularTaskID, regularTask] of Object.entries(workflow.regularTasks)){
                             let isExtraCredit = regularTask.IsExtraCredit ? "Yes" : "No";
                             regularGrades.push(<tr>
-                                <td>{assignment.taskActivities[regularTask.TaskActivityID].DisplayName}</td><td>{regularTask.Grade}</td><td>{isExtraCredit}</td>
+                                <td>{assignment.taskActivities[regularTask.TaskActivityID].DisplayName}</td><td>{workflowGradeDistribution[regularTaskID] }</td><td>{regularTask.Grade}</td><td>{isExtraCredit}</td>
                             </tr>);
                         }
 
@@ -455,9 +500,11 @@ class GradeReport extends React.Component {
                             </tr>);
                         }
 
+                        var threadGrade = workflow.workflowGrade.Grade ? workflow.workflowGrade.Grade : "-";
+
                         workflowGradesTable.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
-                            <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Grade: {workflow.workflowGrade.Grade}</th></tr>
+                            <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Weight: {assignmentGradeDistribution[workflowID]}% | Grade: {threadGrade}</th></tr>
                         </thead>
                         <tbody>
                         {regularGrades}
@@ -478,22 +525,23 @@ class GradeReport extends React.Component {
                         {Header: "First Name",accessor: 'firstName'},
                         {Header: "Last Name",accessor: 'lastName'},
                         {Header: "Email",accessor: 'email'},
-                        {Header: "Final Grade",accessor: 'grade'}
+                        {Header: "Grade",accessor: 'grade'}
                     ]} 
                     noDataText="Please choose an assignment or overview"
                     SubComponent={(row) => { return nestedTables[row.index]; }}
                     />);
         }
         else if(displayType==="studentoverview"){
-            console.log(sectionData);
+            //console.log(sectionData);
 
             const tableData = [];
             for( var [sectionUserID, sectionUser] of Object.entries(sectionData.grades)){
                 for( var [assignmentID, assignment] of Object.entries(sectionUser.assignments)){
                     console.log(assignment);
+                    let grade = assignment.assignmentGrade.Grade? assignment.assignmentGrade.Grade :"-";
                     tableData.push({
                         name:assignment.assignment.DisplayName,
-                        grade:assignment.assignmentGrade.Grade
+                        grade:grade
                     });
                 }
             }
@@ -510,24 +558,24 @@ class GradeReport extends React.Component {
             />);
         }
         else if(displayType==="studentassignment"){
-            console.log(sectionData);
+            //console.log(sectionData);
 
             var nestedTables = [];
             var tableEntries = [];
             var tableData = [];
             var assignmentGrade = null;
             for( var [studentID, studentData] of Object.entries(sectionData.grades)){
-                console.log(studentData);
+                //(studentData);
 
                 for( var [assignmentID, assignment] of Object.entries(studentData.assignments)){
-                    console.log(assignment);
+                    //console.log(assignment);
                     assignmentGrade = assignment.assignmentGrade.Grade;
                     tableData.push({
                         workflow:"Problem thread "+(nestedTables.length+1).toString()
                     })
 
                     for(var [workflowID, workflow] of Object.entries(assignment.workflows)){
-                        console.log(workflow);
+                        //console.log(workflow);
                         var regularGrades = [];
                         var simpleGrades = [];
                         var workflowGradesTable = [];
@@ -535,23 +583,15 @@ class GradeReport extends React.Component {
                         simpleGrades.push(<tr><th>Simple Tasks</th><th>Grade</th><th>Is Extra Credit</th></tr>);
                         for(var [regularTaskID, regularTask] of Object.entries(workflow.regularTasks)){
                             let isExtraCredit = regularTask.IsExtraCredit ? "Yes" : "No";
-
+                            let grade = regularTask.Grade ? regularTask.Grade : "-";
                             regularGrades.push(<tr>
-                                <td>{assignment.taskActivities[regularTask.TaskActivityID].DisplayName}</td><td>{regularTask.Grade}</td><td>{isExtraCredit}</td>
+                                <td>{assignment.taskActivities[regularTask.TaskActivityID].DisplayName}</td><td>{grade}</td><td>{isExtraCredit}</td>
                             </tr>);
                         }
-
-                        /*for(var [simpleTaskID, simpleTask] of Object.entries(workflow.simpleTasks)){
-                            let isExtraCredit = simpleTask.IsExtraCredit ? "Yes" : "No";
-                            console.log(simpleTask.TaskActivityID);
-                            simpleGrades.push(<tr>
-                                <td>{assignment.taskActivities[simpleTask.TaskActivityID].DisplayName}}</td><td>{simpleTask.Grade}</td><td>{isExtraCredit}</td>
-                            </tr>);
-                        }*/
-
+                        let grade = workflow.workflowGrade.Grade ? workflow.workflowGrade.Grade : "-";
                         workflowGradesTable.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
-                            <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Grade: {workflow.workflowGrade.Grade}</th></tr>
+                            <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Grade: {grade}</th></tr>
                         </thead>
                         <tbody>
                         {regularGrades}
@@ -575,57 +615,6 @@ class GradeReport extends React.Component {
                     noDataText="Please choose an assignment or overview"
                     SubComponent={(row) => { return nestedTables[row.index]; }}
                     />);
-
-
-            /*let nestedTables = [];
-            let tableData = null;
-            let grade = "No grade data";
-            if(sectionData.userAssignmentGrades.assignmentGrade){ 
-                tableData = sectionData.userAssignmentGrades.assignmentGrade.WorkflowActivityGrades.map( waGrade => {
-                    var regularGrades = [];
-                    var extraCreditGrades = [];
-                    regularGrades.push(<tr><th>Regular Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
-                    extraCreditGrades.push(<tr><th>Extra Credit Tasks</th><th>Quality Grade</th><th>Task Completed On Time Grade</th></tr>);
-
-                    waGrade.WorkflowActivity.users_WA_Tasks.forEach( task => {
-                        let taskSimpleGrade = task.taskSimpleGrade ? task.taskSimpleGrade.Grade : "-";
-                        let taskGrade = task.taskGrade ? task.taskGrade.Grade : "-";
-                        if(task.IsExtraCredit){
-                            extraCreditGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td>
-                            </tr>);
-                        } else {
-                            regularGrades.push(<tr>
-                                <td>{task.taskActivity.Name}</td><td>{taskGrade}</td><td>{taskSimpleGrade}</td>
-                            </tr>);
-                        }
-                    });
-
-
-                    if(regularGrades.length <= 1){regularGrades = null;}
-                    if(extraCreditGrades.length <=1){extraCreditGrades = null;}
-
-                    nestedTables.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
-                    <tbody>
-                    {regularGrades}
-                    {extraCreditGrades}
-                    </tbody>
-                </table>);
-                    return {workflow: (nestedTables.length).toString()};
-                });
-                grade = sectionData.userAssignmentGrades.assignmentGrade.Grade;
-                grade = "N/A";
-                tableView = (<ReactTable defaultPageSize={10} className="-striped -highlight" resizable={true}  data={tableData}
-                columns={[
-                    {Header: "Problem Thread",accessor: 'workflow'}
-                ]} 
-                noDataText="No grade data"
-                SubComponent={(row) => { return nestedTables[row.index]; }}
-                />);
-            }
-
-            tableHeader = (<div><h2 className="title">{sectionData.AssignmentInstance.Section.Course.Number +" "
-            + sectionData.AssignmentInstance.Section.Course.Name}<br/>{sectionData.AssignmentInstance.Assignment.Name}<br/>Grade: {grade}</h2></div>);  */
         }
 
         instructorSectionsCollapsible = instructorSections.map(section=>{
