@@ -60,7 +60,8 @@ class TemplateContainer extends React.Component {
             NotAllowedMessage: '',
             IsRevision: false,
             CommentTargetList: [],
-            BoxHide: false
+            BoxHide: false,
+            SetFlag: false
         };
 
         console.log(props.UserType, props.Admin);
@@ -392,10 +393,10 @@ class TemplateContainer extends React.Component {
         let target = this.getQS('target');
         let targetID = this.getQS('targetID');
         if ((target != undefined) && (targetID != undefined)) {
-            this.showComments(target, targetID, 1);
+            this.showComments(target, targetID, 1, false);
         }
         else {
-            this.showComments('TaskInstance', this.props.TaskID, 0);
+            this.showComments('TaskInstance', this.props.TaskID, 0, false);
         }
     }
 
@@ -457,7 +458,7 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    showComments(target, id, tab) {
+    showComments(target, id, tab, type) {
         let show;
         for (let i of this.state.CommentTargetList) {
             if ((i.Target == target) && (i.ID == id)) {
@@ -465,7 +466,7 @@ class TemplateContainer extends React.Component {
             }
         }
         console.log('show', show);
-        this.setState({CommentTarget: show, TabSelected: tab});
+        this.setState({CommentTarget: show, TabSelected: tab, SetFlag: type});
         this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
@@ -613,6 +614,7 @@ class TemplateContainer extends React.Component {
                           CommentTargetList={this.state.CommentTargetList}
                           CommentTargetOnList={this.state.CommentTarget}
                           Emphasize={false}
+                          SetFlag={this.state.SetFlag}
                       />
                   </div>)
                         }

@@ -52,8 +52,8 @@ class CommentInfoComponent extends React.Component {
         });
     }
 
-    handleCommentClick() {
-        this.props.showComments(this.props.Target, this.props.TargetID, 1);
+    handleCommentClick(type) {
+        this.props.showComments(this.props.Target, this.props.TargetID, 1, type);
     }
 
     render() {
@@ -76,13 +76,13 @@ class CommentInfoComponent extends React.Component {
         };
         return (
             <div style={{whiteSpace: 'nowrap'}}>
-                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this, false)}>
                     <i className="fa fa-comment-o fa-stack-1x"></i>
                     <span className="fa fa-stack-1x">
                         <span className = "comment-number">{this.state.NumberComments}</span>
                     </span>
                 </span>
-                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this)}>
+                <span className="fa-stack fa-2x" onClick={this.handleCommentClick.bind(this, true)}>
                     <i className="fa fa-flag-o fa-stack-1x"></i>
                     <span className="fa fa-stack-1x">
                         <span className = "comment-number" style={{marginTop: -3}}>{this.state.NumberFlags}</span>
