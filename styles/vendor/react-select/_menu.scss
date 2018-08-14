@@ -18,7 +18,8 @@
 	box-sizing: border-box;
 	margin-top: -1px;
 	max-height: $select-menu-max-height;
-	position: absolute;
+	//position: absolute;
+	position: relative;
 	top: 100%;
 	width: 100%;
 	z-index: $select-menu-zindex;

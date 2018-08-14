@@ -61,7 +61,8 @@ class TemplateContainer extends React.Component {
             IsRevision: false,
             CommentTargetList: [],
             BoxHide: false,
-            ErrorStatus: null
+            ErrorStatus: null,
+            SetFlag: false
         };
 
     }
@@ -102,12 +103,12 @@ class TemplateContainer extends React.Component {
             this.props.__(strings, (newStrings) => {
 
                 apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
-                    
+
 
                     const taskList = new Array();
                     const skipIndeces = new Array();
                     let currentTaskStatus = '';
-                    
+
 
                     if (bod.error === true) {
                         return this.setState({
@@ -284,7 +285,7 @@ class TemplateContainer extends React.Component {
                         //         return node.model.id === parseInt(this.props.TaskID);
                         //     });
 
-                        //     
+                        //
 
                         // });
                     }
@@ -309,7 +310,7 @@ class TemplateContainer extends React.Component {
                         CommentsTaskList: commentsTaskList,
                     });
                     this.createCommentList();
-                    
+
                 });
             });
         });
@@ -321,16 +322,16 @@ class TemplateContainer extends React.Component {
                 this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
             }
             else {
-                
+
             }
         });
     }
 
     getCommentData(target, ID, type) {
-        
+
         if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
             apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-                
+
                 let list = [];
                 if (body != undefined ) {
                     for (let com of body.Comments) {
@@ -341,7 +342,7 @@ class TemplateContainer extends React.Component {
                     });
                 }
                 else {
-                    
+
                     this.setState({
                         commentList: list
                     });
@@ -390,16 +391,16 @@ class TemplateContainer extends React.Component {
         let target = this.getQS('target');
         let targetID = this.getQS('targetID');
         if ((target != undefined) && (targetID != undefined)) {
-            this.showComments(target, targetID, 1);
+            this.showComments(target, targetID, 1, false);
         }
         else {
-            this.showComments('TaskInstance', this.props.TaskID, 0);
+            this.showComments('TaskInstance', this.props.TaskID, 0, false);
         }
     }
 
     showSingleComment() {
         let commentsID = this.getQS('commentsID');
-        
+
         if (commentsID != undefined) {
             this.setState({EmphasizeID: commentsID});
         }
@@ -479,14 +480,15 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    showComments(target, id, tab) {
+    showComments(target, id, tab, type) {
         let show;
         for (let i of this.state.CommentTargetList) {
             if ((i.Target == target) && (i.ID == id)) {
                 show = i.value;
             }
         }
-        this.setState({CommentTarget: show, TabSelected: tab});
+        console.log('show', show);
+        this.setState({CommentTarget: show, TabSelected: tab, SetFlag: type});
         this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
@@ -511,7 +513,7 @@ class TemplateContainer extends React.Component {
                 return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}.</div>;
             default:
                 return <ErrorComponent />;
-            
+
             }
         }
         if (this.state.NotAllowed === true) {
@@ -645,6 +647,7 @@ class TemplateContainer extends React.Component {
                           CommentTargetList={this.state.CommentTargetList}
                           CommentTargetOnList={this.state.CommentTarget}
                           Emphasize={false}
+                          SetFlag={this.state.SetFlag}
                       />
                   </div>)
                         }
