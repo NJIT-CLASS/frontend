@@ -14,12 +14,11 @@ class InstructorVolunteerComponent extends Component { //create a class for the 
         this.state = {
             Tasks:[],
             Volunteer: false,
-            SectionListOn: this.props.SectionID,
         };
     }
     componentWillMount () {
       this.fetchTasks(this.props.UserID, this.props.SectionID);
-      console.log('Instructor volunteer component user ID ', this.props.UserID, this.props.FirstName, this.props.LastName);
+      console.log('Instructor volunteer component user ID ', this.props.UserID, this.props.FirstName, this.props.LastName, 'section ID ', this.props.SectionID);
       if (this.getQS('user') == this.props.UserID) {
         this.openModal();
       }
@@ -35,78 +34,8 @@ class InstructorVolunteerComponent extends Component { //create a class for the 
     }
 
     Update() {
-        this.fetchTasks(this.props.UserID, this.state.SectionListOn);
+        this.fetchTasks(this.props.UserID, this.props.SectionID);
         console.log('instructorVolunteerComponent update was called');
-    }
-
-    toggleOnVolunteer(assignmentInstanceId, vpID){
-        let postVars = {
-            UserID: this.props.UserID,
-            SectionID: this.state.SectionListOn,
-            AssignmentInstanceID: assignmentInstanceId,
-            VolunteerPoolID: vpID,
-        };
-        console.log(this.props.AssignmentInstanceID);
-        let endpoint = '/VolunteerPool/add';
-
-        apiCall.post(endpoint, postVars, (err, res, body) => {
-            console.log(res, body);
-            this.Update();
-            if(res.statusCode === 200){
-                if(body){
-                    this.setState({
-                        Volunteer: true,
-                        VolunteerPoolID: body.VolunteerPoolID
-                    });
-                } else {
-                    this.setState({
-                        Volunteer: false,
-                        VolunteerPoolID: -1
-                    });
-                }
-
-            }
-        });
-    }
-
-    toggleOffVolunteer(assignmentInstanceId, vpID){
-        let postVars = {
-            UserID: this.props.UserID,
-            SectionID: this.state.SectionListOn,
-            AssignmentInstanceID: assignmentInstanceId,
-            VolunteerPoolID: vpID,
-        };
-        console.log(this.props.AssignmentInstanceID);
-        let endpoint = '/VolunteerPool/deleteVolunteer';
-        apiCall.post(endpoint, postVars, (err, res, body) => {
-            console.log(res, body);
-            this.Update();
-            if(res.statusCode === 200){
-                if(body){
-                    this.setState({
-                        Volunteer: true,
-                        VolunteerPoolID: body.VolunteerPoolID
-                    });
-                } else {
-                    this.setState({
-                        Volunteer: false,
-                        VolunteerPoolID: -1
-                    });
-                }
-
-            }
-        });
-    }
-
-    handleChangeAll(type) {
-      for (let i of this.state.Tasks) {
-        if (type = 'on') {
-          this.toggleOnVolunteer(i.AssignmentInstanceID, i.vpID);
-        }
-        else {
-          this.toggleOnVolunteer(i.AssignmentInstanceID, i.vpID);
-        }
-      }
     }
 
     GlobalUpdate(){
@@ -174,7 +103,7 @@ class InstructorVolunteerComponent extends Component { //create a class for the 
                                 <ToggleInstructorVolunteerComponent
                                       AssignmentInstanceID={row.original.AssignmentInstanceID}
                                       UserID={this.props.UserID}
-                                      SectionID={this.state.SectionListOn}
+                                      SectionID={this.props.SectionID}
                                       Volunteer={(row.original.Status == null) ? false : true}
                                       VolunteerPoolID={row.original.VolunteerPoolID}
                                       Update={() => this.Update()}

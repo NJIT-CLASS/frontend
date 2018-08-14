@@ -122,7 +122,7 @@ class User extends React.Component {
                 <td>{this.props.lastName}</td>
                 <td><div style={{margin: '0 auto', width: 'fit-content'}}><Toggle isClicked={this.state.Active}
                     click={this.toggleActive} /></div></td>
-                {this.state.Active && <InstructorVolunteerComponent UserID={this.props.UserID} SectionID={this.props.SectionID} FirstName={this.props.firstName} LastName={this.props.lastName} Email={this.props.email}/>}
+                //{this.state.Active && <InstructorVolunteerComponent UserID={this.props.UserID} SectionID={this.props.SectionID} FirstName={this.props.firstName} LastName={this.props.lastName} Email={this.props.email}/>}
                 {(this.props.role === 'Student' && this.state.Active) && <td>{this.props.volunteer}</td>}
             </tr>
         );

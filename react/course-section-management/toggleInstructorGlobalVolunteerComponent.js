@@ -19,21 +19,6 @@ class ToggleInstructorGlobalVolunteerComponent extends Component { //create a cl
       }
     }
 
-    toggleVolunteer(assignmentInstanceId){
-        let postVars = {
-            UserID: this.props.UserID,
-            SectionID: this.props.SectionID,
-            AssignmentInstanceID: assignmentInstanceId,
-            //VolunteerPoolID: this.state.VolunteerPoolID,
-        };
-        console.log(this.props.AssignmentInstanceID, this.state.VolunnteerPoolID);
-
-        apiCall.post('/VolunteerPool/appoint', postVars, (err, res, body) => {
-            console.log(res, body);
-            this.props.Update();
-        });
-    }
-
     handleChangeStatus(status){
       apiCall.post(`/sectionUsers/changeVolunteer/${this.props.UserID}/${this.props.SectionID}/${status.value}/${'instructor'}`, (err, res, body) => {
           if(res.statusCode === 201){

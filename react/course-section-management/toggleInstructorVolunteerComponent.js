@@ -41,7 +41,7 @@ class ToggleInstructorVolunteerComponent extends Component { //create a class fo
     }
 
     handleAppoint() {
-      apiCall.post('/VolunteerPool/appoint', {UserID: this.props.UserID, SectionID: this.props.SectionID, AssignmentInstanceID: this.props.AssignmentInstanceID}, (err, res, body) => {
+      apiCall.post('/VolunteerPool/appoint', {userId: this.props.UserID, SectionID: this.props.SectionID, AssignmentInstanceID: this.props.AssignmentInstanceID}, (err, res, body) => {
           console.log(res, body);
           this.props.Update();
       });
@@ -56,7 +56,7 @@ class ToggleInstructorVolunteerComponent extends Component { //create a class fo
       //  });
       //}
       //else {
-      apiCall.post('/VolunteerPool/individualStatusUpdate', {VolunteerPoolID: this.state.VolunteerPoolID, UserID: this.props.UserID, status: event.value}, (err, res, body) => {
+      apiCall.post('/VolunteerPool/individualStatusUpdate', {VolunteerPoolID: this.state.VolunteerPoolID, status: event.value}, (err, res, body) => {
           console.log(res, body);
           this.props.Update();
       });
