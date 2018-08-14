@@ -1,6 +1,8 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import InstructorVolunteerComponent from './instructorVolunteerComponent.js';
+import TableComponent from '../shared/tableComponent';
 
 class SectionManager extends React.Component {
     constructor(props){
@@ -160,6 +162,7 @@ class SectionManager extends React.Component {
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>
 					<Select options={this.state.list} value={this.state.id} onChange={this.changeID.bind(this)} resetValue={''} clearable={true} searchable={true}/>
 				</form>
+        {/*<InstructorVolunteerComponent SectionID={this.state.id} UserID={73} />*/}
 			</div>
 		);
 
