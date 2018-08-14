@@ -55,6 +55,7 @@ class AssignmentEditorContainer extends React.Component {
             Loaded: false,
             Courses: null,
             Semesters: null,
+            SubmitInProgress: false,
             CourseSelected: {
                 Name: '',
                 Number: ''
@@ -821,7 +822,7 @@ class AssignmentEditorContainer extends React.Component {
           C. Send to DB.
         */
 
-        if(this.state.SubmitSuccess === true){
+        if(this.state.SubmitSuccess === true || this.state.SubmitInProgress === true){
             return;
         }
 
@@ -917,7 +918,6 @@ class AssignmentEditorContainer extends React.Component {
                         var field = task.TA_fields[k];
                         
                         if(field.default_refers_to[0] !== null){
-                            debugger;
                             field.default_refers_to[0] = mapping[field.default_refers_to[0]];
                         }
                     });
@@ -993,8 +993,9 @@ class AssignmentEditorContainer extends React.Component {
         }, this);
 
 
-        console.log(sendData);
-
+        this.setState({
+            SubmitInProgress: true
+        });
 
         const options = {
             assignment: sendData,
@@ -1012,13 +1013,18 @@ class AssignmentEditorContainer extends React.Component {
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitSuccessMessage,
                     InfoMessageType: 'success',
-                    SubmitButtonShow: false});
+                    SubmitButtonShow: false,
+                    SubmitInProgress: false
+                
+                });
             } else {
                 
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
                     InfoMessage: this.state.Strings.ErrorMessage,
-                    InfoMessageType: 'error'
+                    InfoMessageType: 'error',
+                    SubmitInProgress: false
+
                 });
             }
 
@@ -1899,7 +1905,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
 
                 defaultRefersTo = null;
-            })
+            });
         }, this);
 
         if(stateData != null){
@@ -3191,6 +3197,8 @@ class AssignmentEditorContainer extends React.Component {
         let count = this.state.WorkflowDetails[workflowIndex].Workflow.length;
         for (var i = 0; i < count; i++) {
             if(this.state.WorkflowDetails[workflowIndex].Workflow[i].TA_simple_grade !== 'none'){
+                debugger;
+                
                 return true;
             }
         }
@@ -3284,46 +3292,14 @@ class AssignmentEditorContainer extends React.Component {
 
     render() {
         let infoMessage = null;
-        let submitButtonView = (
+        let submitButtonView = this.state.SubmitInProgress ? <div></div> : (
             <button  type="button" onClick={this.onSubmit.bind(this)}>
                 <i className="fa fa-check"></i>{this.state.Strings.Submit}
             </button>
         );
         let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
 
-        // if(this.state.SaveSuccess){
-        //     infoMessage = (
-        //       <span onClick={() => {
-        //           this.setState({SubmitSuccess: false});
-        //       }} className="small-info-message">
-        //       <span className="success-message">
-        //         {this.state.Strings.SaveSuccessMessage}
-        //       </span>
-        //       </span>
-        //   );
-        // }
-        //
-        // if (this.state.SubmitSuccess) {
-        //     infoMessage = (
-        //         <span onClick={() => {
-        //             this.setState({SubmitSuccess: false});
-        //         }} className="small-info-message">
-        //         <span className="success-message">
-        //           {this.state.Strings.SubmitSuccessMessage}
-        //         </span>
-        //         </span>
-        //     );
-        //
-        // }
-        // if (this.state.SubmitError && !this.state.SubmitSuccess) {
-        //     infoMessage = (
-        //         <span onClick={() => {
-        //             this.setState({SubmitError: false});
-        //         }} className="small-info-message">
-        //         <div className="error-message">{this.state.Strings.ErrorMessage}</div>
-        //         </span>
-        //     );
-        // }
+        
 
         if(this.state.InfoMessage !== ''){
             infoMessage = (

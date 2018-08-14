@@ -1168,7 +1168,11 @@ class TaskDetailsComponent extends React.Component {
         let fieldDistWeights = this.mapFieldDistToOptions();
         let fieldDistView = null;
         if(fieldDistWeights.length > 1){
-            fieldDistView = <ul>
+            fieldDistView = 
+            
+            <div>
+            <h3 className="subheading">{strings.FieldWeights}</h3>
+            <ul>
                 {
                     fieldDistWeights.map((fieldObject) => {
                         return <li className="thin-number-field" key={'workflowWeight' + fieldObject.id}>
@@ -1180,7 +1184,8 @@ class TaskDetailsComponent extends React.Component {
                         </li>;
                     })
                 }
-            </ul>;
+            </ul>
+            </div>;
         }
 
         if(this.state.ShowUserFields){

@@ -4,7 +4,6 @@
 * request to get the initial data, and a POST request for final submission.
 */
 import React from 'react';
-import tinymce from 'tinymce/tinymce';
 import { Editor } from '@tinymce/tinymce-react';
 import tinymceOptions from '../shared/tinymceOptions';
 import PropTypes from 'prop-types';
@@ -15,11 +14,9 @@ import { RadioGroup, Radio } from 'react-radio-group';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import DisputeModal from './disputeModal';
 import ReactLoading from 'react-loading';
-import FileUpload from '../shared/fileUpload';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
-import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
 import {cloneDeep, clone} from 'lodash';
 import Checkbox from '../shared/checkbox';

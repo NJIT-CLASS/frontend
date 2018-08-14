@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TaskInstanceComponent from './task-instance-component';
+import { TASK_TYPES } from '../../server/utils/react_constants';
 
 // This component renders a task activity.
 // It contains all of the task activity's task instances.
@@ -22,7 +23,7 @@ const TaskComponent = ({
     // We only show task instances that match the task type filter
     // Otherwise, an empty block is shown as a placeholder.
     let taskInstancesArray = TaskActivity
-        .filter(taskInstance => Filters.TaskType.length === 0 || Filters.TaskType.includes(taskInstance.TaskActivity.TaskActivityID))
+        .filter(taskInstance => Filters.TaskType.length === 0 || Filters.TaskType.includes(taskInstance.TaskActivity.TaskActivityID) || taskInstance.TaskActivity.Type == TASK_TYPES.NEEDS_CONSOLIDATION)
         .map((taskInstance, index) => {
             return (
                 <TaskInstanceComponent

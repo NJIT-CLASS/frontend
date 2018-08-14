@@ -411,8 +411,10 @@ class TemplateContainer extends React.Component {
      * @param  {[number]} fieldIndex     [field index in the Task Activity Fields object, second index on default_refers_to]
      * @return {[array]}                ['response', 'justification']
      */
-    getLinkedTaskValues(taskActivityID, fieldIndex){
+    async getLinkedTaskValues(taskActivityID, fieldIndex){
         let returningValues = ['', ''];
+
+        var foundInLoadedTaskList = false;
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
                 /// If multiple participants, assume that whichever is first in the array is desired
@@ -420,6 +422,7 @@ class TemplateContainer extends React.Component {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
                         returningValues = miniTask.Data[miniTask.Data.length - 1][fieldIndex];
+                        foundInLoadedTaskList = true;
                     }
                 });
             } else {
@@ -428,6 +431,8 @@ class TemplateContainer extends React.Component {
                     try{
                         if(task.Data !== null && task.Data.length !== 0){
                             returningValues = task.Data[task.Data.length - 1][fieldIndex];
+                            foundInLoadedTaskList = true;
+
                         } else {
                             returningValues = ['',''];
                         }
@@ -437,6 +442,18 @@ class TemplateContainer extends React.Component {
                 }
             }
         });
+
+        // if(!foundInLoadedTaskList){
+        //     var target = '/taskInstance/getSingle';
+        //     var fetchTaskPostVars = {
+        //         taskInstanceId: this.props.TaskID,
+        //         taskActivityId: taskActivityID
+        //     };
+        //     const foreignTaskData = await apiCall.postAsync(target, fetchTaskPostVars);
+        //     console.log(foreignTaskData);
+
+        // }
+
         return returningValues;
     }
 
