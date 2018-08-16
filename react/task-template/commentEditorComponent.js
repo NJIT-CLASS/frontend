@@ -300,14 +300,14 @@ class CommentEditorComponent extends React.Component {
 
                 <form role="form">
                     <div className="title-no-hover">{IntroText}</div>
-                    <div style={{width: 110, display: 'inline-flex'}}><Select placeholder='' style={{width: 100}} options={[{value: 'comment', label: strings.Comment}, {value: 'flag', label: strings.Flag}]} value={this.state.NewCommentType} onChange={this.handleChangeType.bind(this)} clearable={false}/></div>
+                    <div style={{width: 110, height: 10, display: 'inline-flex'}}><Select placeholder='' style={{width: 100}} options={[{value: 'comment', label: strings.Comment}, {value: 'flag', label: strings.Flag}]} value={this.state.NewCommentType} onChange={this.handleChangeType.bind(this)} clearable={false}/></div>
                     {((this.props.ReplyLevel == 0) && (this.props.Edit == false)) && (<span style={{padding: 10}}>{strings.OnText.concat(this.props.CommentTargetList[this.props.CommentTargetOnList].label)}</span>)}
                     {/*{(this.props.ReplyLevel == 0) &&
                   (<div style={{width: 320, display: 'inline-flex'}}>
                       <Select options={this.props.CommentTargetList} value={this.state.NewCommentTarget} onChange={this.handleChangeTarget.bind(this)} clearable={false} searchable={true} required/>
                   </div>)}*/}
                     {(this.state.NewCommentType == 'comment') && <label style={{padding: 10}}>{strings.RatingLabel}</label>}
-                    {(this.state.NewCommentType == 'comment') && <div style={{width: 50, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>}
+                    {(this.state.NewCommentType == 'comment') && <div style={{width: 50, height: 10, display: 'inline-flex'}} ><Select placeholder='' style={{width: 'inherit'}} options={ratingList} value={this.state.NewCommentRating} onChange={this.handleChangeRating.bind(this)} resetValue={null} clearable={true} searchable={true}/></div>}
                     <div className="regular-text comtext">
                         <input placeholder={inputPlaceholderText} type="text" maxLength="255" value={this.state.NewCommentValue} onChange={this.handleChangeText.bind(this)}/>
                         <button onClick={this.handleSubmit.bind(this)}>{strings.ButtonText0}</button>
