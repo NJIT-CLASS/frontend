@@ -25,6 +25,14 @@ class MoreInformation extends Component {
             let allocatonDate = new Date(prevUser.time);
             allocatonDate = allocatonDate.toDateString() + ' ' + allocatonDate.toTimeString().split(' ')[0];
             const user = this.props.sectionInfo.users.find(user => user.id === prevUser.user_id);
+            if(user == undefined || user == null){
+                return <tr>
+                    <td></td>    
+                    <td></td>    
+                    <td></td>    
+                    <td></td>    
+                </tr>;
+            }
             return (
                 <tr key={index}>
                     <td>{user.id}</td>
@@ -85,7 +93,13 @@ class MoreInformation extends Component {
 
         // Merge in the current user's email address since we want to display that too.
         const users = this.props.sectionInfo.users;
-        const currentUserEmail = users.find(user => user.id === currentUser.user_id).email;
+        var currentUserID = this.props.taskInstance.User.UserID;
+        var currentUserData = users.find(user => user.id === currentUser.user_id);
+        var currentUserEmail = null;
+        if(currentUserData == null || currentUserData.length == 0){
+            currentUserData =  users.find(user => user.id === currentUserID);
+        }
+        currentUserEmail = currentUserData.email;
         currentUser = { ...currentUser, email: currentUserEmail };
 
         const taskInstanceID = this.props.taskInstance.TaskInstanceID;
