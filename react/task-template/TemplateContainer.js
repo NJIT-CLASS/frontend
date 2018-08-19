@@ -21,6 +21,7 @@ import Tooltip from '../shared/tooltip';
 import ErrorComponent from '../shared/ErrorComponent';
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
+import {cloneDeep, clone} from 'lodash';
 
 const ReactTabs = require('react-tabs');
 const Tab = ReactTabs.Tab;
@@ -62,9 +63,13 @@ class TemplateContainer extends React.Component {
             CommentTargetList: [],
             BoxHide: false,
             ErrorStatus: null,
-            SetFlag: false
+            SetFlag: false,
+            ShowTaskFlags: null
         };
 
+
+        this.expandAllTasks = this.expandAllTasks.bind(this);
+        this.contractAllTasks = this.contractAllTasks.bind(this);
     }
 
     unflattenTreeStructure(flatTreeString) {
@@ -108,7 +113,7 @@ class TemplateContainer extends React.Component {
                     const taskList = new Array();
                     const skipIndeces = new Array();
                     let currentTaskStatus = '';
-
+                    
 
                     if (bod.error === true) {
                         return this.setState({
@@ -158,6 +163,7 @@ class TemplateContainer extends React.Component {
                         parseTaskList = parseTaskList.reverse();
 
                         parseTaskList.forEach((task, index) => {
+                            
                             if (skipIndeces.includes(index) ||  task.Status.includes('bypassed')) {
                                 return;
                             }
@@ -294,6 +300,23 @@ class TemplateContainer extends React.Component {
 
                     console.log('tasklist', taskList);
 
+                    //Set fields to hide/show content
+                    const taskListShow = {};
+                    taskList.forEach(function(taskData){
+                        if (Array.isArray(taskData)){
+                            taskData.forEach(function(innerTaskData){
+                                taskListShow[innerTaskData.TaskInstanceID] = false;
+                            });
+                        } else {
+                            taskListShow[taskData.TaskInstanceID] = false;
+
+                        }
+
+                    });
+
+                    //make current task content expanded by default
+                    taskListShow[this.props.TaskID] = true;
+
                     this.setState({
                         Loaded: true,
                         CourseName: body.courseName,
@@ -308,6 +331,7 @@ class TemplateContainer extends React.Component {
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
                         CommentsTaskList: commentsTaskList,
+                        ShowTaskFlags: taskListShow
                     });
                     this.createCommentList();
 
@@ -373,6 +397,43 @@ class TemplateContainer extends React.Component {
         if (tab === 'comments') {
             this.setState({TabSelected: 1});
             //this.showComments(target, targetID);
+        }
+    }
+
+    toggleTaskContent(taskInstanceID) {
+        // shows or hides the component's section-content for accordian view
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            newTaskFlags[taskInstanceID] = !newTaskFlags[taskInstanceID];
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
+        }
+    }
+
+    expandAllTasks() {
+        // expands all the tasks in the list
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            Object.keys(newTaskFlags).forEach(function(key){
+                newTaskFlags[key] = true;
+            });
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
+        }
+    }
+
+    contractAllTasks() {
+        // expands all the tasks in the list
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            Object.keys(newTaskFlags).forEach(function(key){
+                newTaskFlags[key] = false;
+            });
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
         }
     }
 
@@ -519,16 +580,27 @@ class TemplateContainer extends React.Component {
         if (this.state.NotAllowed === true) {
             return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
         } else {
-            renderView = (<TasksList
-                TasksArray={this.state.Data}
-                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                TaskID={this.props.TaskID}
-                UserID={this.props.UserID}
-                Strings={this.state.Strings}
-                showComments={this.showComments.bind(this)}
-                TaskStatus={this.state.TaskStatus}
-                IsRevision={this.state.IsRevision}
-            />);
+            renderView = (
+                <div>
+                    <div>
+                        <button type="button" onClick={this.expandAllTasks}>{this.state.Strings.ExpandAll}</button>
+                        <button type="button" onClick={this.contractAllTasks}>{this.state.Strings.ContractAll}</button>
+                        <button type="button" onClick={()=>{window.location.href='#latestTaskForm';}}>{this.state.Strings.GoToLast}</button>
+                    </div>
+                    <TasksList
+                        TasksArray={this.state.Data}
+                        getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                        TaskID={this.props.TaskID}
+                        UserID={this.props.UserID}
+                        Strings={this.state.Strings}
+                        showComments={this.showComments.bind(this)}
+                        TaskStatus={this.state.TaskStatus}
+                        IsRevision={this.state.IsRevision}
+                        toggleTaskContent = {this.toggleTaskContent.bind(this)}
+                        TaskContentFlags = {this.state.ShowTaskFlags}
+                    />
+                </div>
+            );
         }
 
         return (

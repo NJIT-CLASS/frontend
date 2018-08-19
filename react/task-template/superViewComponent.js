@@ -29,11 +29,13 @@ class SuperViewComponent extends React.Component {
     }
 
     toggleContent() {
-        const bool = !this.state.ShowContent;
+        // const bool = !this.state.ShowContent;
 
-        this.setState({
-            ShowContent: bool,
-        });
+        // this.setState({
+        //     ShowContent: bool,
+        // });
+        this.props.toggleTaskContent(this.props.TaskID);
+
     }
 
     toggleRubric() {
@@ -72,6 +74,15 @@ class SuperViewComponent extends React.Component {
     }
 
     render() {
+
+        let showContent = null;
+
+        try{
+            showContent = this.props.TaskContentFlags[this.props.TaskID];
+        } catch(e){
+            showContent = true;
+        }
+        
         if(this.props.Status.includes('cancelled')){
             return <div></div>;
         }
@@ -251,7 +262,7 @@ class SuperViewComponent extends React.Component {
         }, this);
 
         content = (
-            <div key={this.props.index + 2003} className="section-content" style={{display: this.state.ShowContent? 'block' : 'none'}}>
+            <div key={this.props.index + 2003} className="section-content" style={{display: showContent? 'block' : 'none'}}>
                 {TA_instructions}
                 {TA_rubric}
                 <FileManagerComponent TaskID={this.props.TaskID}
@@ -267,7 +278,7 @@ class SuperViewComponent extends React.Component {
                 {!this.props.oneBox &&
             (<div>
                 <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
-                    <span className={this.state.ShowContent ? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
+                    <span className={ showContent? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
                 <CommentInfoComponent
                     TargetID = {this.props.TaskID}
                     Target = {'TaskInstance'}
@@ -282,7 +293,7 @@ class SuperViewComponent extends React.Component {
 }
 
 SuperViewComponent.propTypes = {
-    TaskActivityFields: PropTypes.object.isRequired,
+    TaskActivityFields: PropTypes.array.isRequired,
     TaskData: PropTypes.object.isRequired,
     Strings: PropTypes.object.isRequired,
     ComponentTitle: PropTypes.string.isRequired,

@@ -305,11 +305,13 @@ class SuperComponent extends React.Component {
 
     toggleContent() {
         // shows or hides the component's section-content for accordian view
-        const bool = !this.state.ShowContent;
+        // const bool = !this.state.ShowContent;
 
-        this.setState({
-            ShowContent: bool,
-        });
+        // this.setState({
+        //     ShowContent: bool,
+        // });
+
+        this.props.toggleTaskContent(this.props.TaskID);
     }
 
     handleContentChange(index, event) {
@@ -527,7 +529,13 @@ class SuperComponent extends React.Component {
         let revisionRejectView = null;
         let revisionApproveView = null;
         let viewHistoryButton = null;
-        
+        let showContent = null;
+
+        try{
+            showContent = this.props.TaskContentFlags[this.props.TaskID];
+        } catch(e){
+            showContent = true;
+        }
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
         // if invalid data, shows error message
@@ -949,7 +957,7 @@ class SuperComponent extends React.Component {
             viewHistoryButton = <button type="button" onClick={this.toggleHistory} >{this.props.Strings.ShowHistory}</button>;
         }       
 
-        if (this.state.ShowContent) {
+        if (showContent) {
             content = (<div className="section-content">
                 {TA_instructions}
                 {TA_rubric}
@@ -965,13 +973,13 @@ class SuperComponent extends React.Component {
         
         return ( // main render return()
             <div>
-                <form method="POST" onSubmit={this.submitData.bind(this)} >
+                <form method="POST" onSubmit={this.submitData.bind(this)} id="latestTaskForm">
 
                     {infoMessage}
                     <div className="section card-2">
                         <div onClick={this.toggleContent.bind(this)}>
                             <h2 className="title">{this.props.ComponentTitle}
-                                <span className={'fa fa-angle-' + (this.state.ShowContent ? 'up' : 'down')} style={{float: 'right'}}></span>
+                                <span className={'fa fa-angle-' + (showContent ? 'up' : 'down')} style={{float: 'right'}}></span>
                             </h2>
                         </div>
                         <CommentInfoComponent
