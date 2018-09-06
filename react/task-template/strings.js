@@ -81,6 +81,9 @@ let strings = {
     StringLengthResponse: 'One of your text inputs was too large. Try using smaller images.',
     ConsolidateFinalGrade: 'The consolidated grade is',
     ZeroStars: 'Click here for 0 stars',
+    ExpandAll: 'Expand All',
+    ContractAll: 'Contract All',
+    GoToLast: 'Go to latest task'
     
 };
 

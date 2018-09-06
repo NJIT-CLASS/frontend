@@ -122,6 +122,7 @@ const taskStrings = {
     TaskParamHeader: 'Task-level Parameters',
     UserFieldHeader: 'User Input Fields',
     AdvancedTaskParamHeader: 'Advanced Task-level Parameters',
+    FieldWeights: 'Field Weights'
 };
 const assignmentStrings = {
     Essay: 'Essay', //AssignmentDetails Strings

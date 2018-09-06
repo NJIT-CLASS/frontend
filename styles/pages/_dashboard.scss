@@ -1,6 +1,6 @@
 .dashboard-container {
   width: 100%;
-  
+
 
   #left-half{
     width:30%;
@@ -15,10 +15,6 @@
     overflow: visible;
   }
 
-  .task-late{
-    color:red;
-  }
-
   @media screen and (max-width: $mobile-brk) {
     #left-half{
       text-align: center;
@@ -28,4 +24,22 @@
       width:100%;
     }
   }
+}
+.notification {
+    color: #1D578C;
+    border: 1px solid #1D578C;
+    padding: 10px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    .timestamp{
+      color:#262626;
+      font-weight: bold;
+      margin-top: 3px;
+      font-size: 10px;
+    }
+    .notification-number{
+      font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      display: block;
+    }
 }

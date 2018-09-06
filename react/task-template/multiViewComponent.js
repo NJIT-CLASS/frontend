@@ -18,6 +18,8 @@ class MutliViewComponent extends React.Component {
             TaskStatus:'',
             Error:false
         };
+
+        this.toggleTaskContent = this.props.toggleTaskContent.bind(this);
     }
 
     componentWillMount(){
@@ -89,6 +91,8 @@ class MutliViewComponent extends React.Component {
                             TaskID={task.TaskInstanceID}
                             showComments={this.props.showComments.bind(this)}
                             Status={task.Status}
+                            toggleTaskContent = {this.toggleTaskContent}
+                            TaskContentFlags={this.props.TaskContentFlags}
                         />
                     </div>
                 );

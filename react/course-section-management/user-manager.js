@@ -4,6 +4,7 @@ import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Toggle from '../shared/toggleSwitch';
 import TableComponent from '../shared/tableComponent';
+import InstructorVolunteerComponent from './instructorVolunteerComponent.js';
 
 var parse = require('csv-parse/lib/sync');
 
@@ -49,8 +50,8 @@ class User extends React.Component {
                         VolunteerPoolID: -1
                     });
                 }
-                    
-            } 
+
+            }
         });
     }
 
@@ -91,8 +92,8 @@ class User extends React.Component {
         let volunteerToggle = null;
         let statusToggle = null;
         let statusList = [{label:this.props.strings.Pending,value:'Pending'},{label:this.props.strings.Approved,value:'Approved'},{label:this.props.strings.Inactive,value:'Inactive'}];
-        
-        
+
+
         if(this.props.role === 'Student'){
             volunteerToggle = (<td>
                 <Toggle isClicked={this.state.Volunteer}
@@ -107,11 +108,11 @@ class User extends React.Component {
             } else {
                 statusToggle = (<td>
                     <Select className="small-select" disabled={true} options={statusList}  resetValue={''} clearable={false} searchable={false}/>
-                    
+
                 </td>);
-                
+
             }
-            
+
         }
         console.log('Status: ', this.state.Status);
         return (
@@ -121,8 +122,8 @@ class User extends React.Component {
                 <td>{this.props.lastName}</td>
                 <td><div style={{margin: '0 auto', width: 'fit-content'}}><Toggle isClicked={this.state.Active}
                     click={this.toggleActive} /></div></td>
-                {volunteerToggle}
-                {statusToggle}
+                //{this.state.Active && <InstructorVolunteerComponent UserID={this.props.UserID} SectionID={this.props.SectionID} FirstName={this.props.firstName} LastName={this.props.lastName} Email={this.props.email}/>}
+                {(this.props.role === 'Student' && this.state.Active) && <td>{this.props.volunteer}</td>}
             </tr>
         );
     }
@@ -391,6 +392,20 @@ class UserManager extends React.Component {
     onSubmit(event) {
         event.preventDefault();
     }
+
+    toggleActiveTable(sectionUserId, newStatus){
+        let postVars = {
+            active: newStatus
+        };
+        let endpoint = `/sectionUsers/changeActive/${sectionUserId}`;
+
+        apiCall.post(endpoint, postVars, (err, res, body) => {
+            if(res.statusCode === 201){
+              console.log('Successfully changed active state', sectionUserId, newStatus);
+              this.fetchAll(this.props.sectionID);
+            }
+        });
+    }
     render() {
         // set header order options for CSV input
         let header_options = [
@@ -493,28 +508,79 @@ class UserManager extends React.Component {
             volunteerHeader = (<th>{this.props.strings.volunteer}</th>);
             statusHeader=(<th>{this.props.strings.status}</th>);
         }
+        let strings={
+          Email: 'Email',
+          FirstName: 'First Name',
+          LastName: 'Last Name',
+          Active: 'Active',
+          Volunteer: 'Volunteer',
+          Status: 'Volunteer Status',
+          NoUsers: 'There are no users to display'
+        }
+        let length = 100;
+        if (this.state.users != undefined) {
+          length = this.state.users.length;
+        }
         let list = (
             <div className='card '>
                 <h2 className='title'>{this.props.title}</h2>
                 <button type='button' style={{margin: '10px 0'}} onClick={this.add.bind(this)}>{this.props.strings.add}</button>
-                <div className="section-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{this.props.strings.email}</th>
-                                <th>{this.props.strings.firstName}</th>
-                                <th>{this.props.strings.lastName}</th>
-                                <th>{this.props.strings.active}</th>
-                                {volunteerHeader}
-                                {statusHeader}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { this.state.users && this.state.users.length > 0 ? users : empty }
-                        </tbody>
-                    </table>
-                </div>
-                
+                {/*<table>
+                    <thead>
+                        <tr>
+                            <th>{this.props.strings.email}</th>
+                            <th>{this.props.strings.firstName}</th>
+                            <th>{this.props.strings.lastName}</th>
+                            <th>{this.props.strings.active}</th>
+                            {volunteerHeader}
+                            {statusHeader}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { this.state.users && this.state.users.length > 0 ? users : empty }
+                    </tbody>
+                </table>*/}
+                  <TableComponent
+                      data={this.state.users}
+                      columns={[
+                          {
+                              Header: strings.Email,
+                              accessor: (row) => row.email,
+                              id: 'email',
+
+                          },
+                          {
+                              Header: strings.FirstName,
+                              accessor: (row) => row.firstName,
+                              id: 'firstName',
+                          },
+                          {
+                              Header: strings.LastName,
+                              accessor: (row) => row.lastName,
+                              id: 'lastName',
+                          },
+                          {
+                              Header: strings.Active,
+                              accessor: (row) => row.active,
+                              id: 'active',
+                              Cell: (row) => <Toggle isClicked={row.original.active} click={this.toggleActiveTable.bind(this, row.original.sectionUserId, (row.original.active == 0 ? 1 : 0))} />
+                          },
+                          {
+                              Header: strings.Volunteer,
+                              id: 'volunteer',
+                              Cell: (row) => (row.original.active == 1) ? <InstructorVolunteerComponent UserID={row.original.id} SectionID={this.props.sectionID} FirstName={row.original.firstName} LastName={row.original.lastName} Email={row.original.email}/> : <div></div>
+                          },
+                          {
+                              Header: strings.Status,
+                              accessor: (row) => row.volunteer,
+                              id: 'volunteer',
+                          },
+                      ]}
+                      noDataText={strings.NoUsers}
+                      showPagination={false}
+                      minRows={5}
+                      pageSize={length}
+                  />
             </div>
         );
         // conditional rendering based on state
