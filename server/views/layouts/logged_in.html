@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome.min.css">
         <link rel="stylesheet" rel="stylesheet/less" href="/static/main.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=MML_HTMLorMML"></script>
+        <script src="/static/vendor/MathJax/MathJax.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/vendor/prism.css">
     </head>
     <body class="logged-in">
@@ -18,7 +18,7 @@
             <div class="sidebar collapsed">
                 <h2 onclick="(function(e){
                   location.href = '/'
-                })(event)" ><i class="fa fa-graduation-cap"></i><span>{{ __ "CLASS System" }}</span></h2>
+                })(event)" ><i class="fa fa-graduation-cap"></i><span>{{ __ "Participatory Learning" }}</span></h2>
                 <div class="icons-wrapper">
                   <ul id="sidebar-icons">
                       {{#each sidebarNavItems}}

@@ -9,17 +9,19 @@ import SuperViewComponent from './superViewComponent';
 class TasksList extends React.Component{
     constructor(props){
         super(props);
+
+        this.toggleTaskContent = this.props.toggleTaskContent.bind(this);
     }
 
     render(){
-        let { TasksArray, TaskID, UserID, Strings, getLinkedTaskValues } = this.props;
+        let { TasksArray, TaskID, UserID, Strings, getLinkedTaskValues,TaskContentFlags } = this.props;
 
+        
         return <div>
             {
                 TasksArray.map(function(task, idx) {
         		// Goes over the array of tasks(starting from first task to this task)
         		// and gives the Components an appropriate title.
-        		// Also finds grading tasks and puts them in a gradedComponent (although this wasn't tested properly)
 
                     let compString = null;
                     if (idx == TasksArray.length - 1) {
@@ -41,7 +43,8 @@ class TasksList extends React.Component{
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
                                     Status={task.Status}
-
+                                    toggleTaskContent = {this.toggleTaskContent}
+                                    TaskContentFlags={TaskContentFlags}
         					/>
                             );
                         }
@@ -63,6 +66,8 @@ class TasksList extends React.Component{
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
                                     Status={task.Status}
+                                    toggleTaskContent = {this.toggleTaskContent}
+                                    TaskContentFlags={TaskContentFlags}
 								
         					/>
                             );
@@ -87,7 +92,9 @@ class TasksList extends React.Component{
         						Strings={Strings}
                                     showComments={this.props.showComments.bind(this)}
                                     IsRevision={this.props.IsRevision}
-        					/>
+                                    toggleTaskContent = {this.toggleTaskContent}
+                                    TaskContentFlags={TaskContentFlags}
+                                />
                             );
                         }
                     } else {
@@ -99,7 +106,9 @@ class TasksList extends React.Component{
         						UserID={UserID}
         						Strings={Strings}
                                     showComments={this.props.showComments.bind(this)}
-        					/>
+                                    toggleTaskContent = {this.toggleTaskContent}
+                                    TaskContentFlags={TaskContentFlags}
+                                />
                             );
                         } else {
 
@@ -119,6 +128,8 @@ class TasksList extends React.Component{
                                     TaskID={task.TaskInstanceID}
                                     showComments={this.props.showComments.bind(this)}
                                     Type={task.TaskActivity.Type}
+                                    toggleTaskContent = {this.toggleTaskContent}
+                                    TaskContentFlags={TaskContentFlags}
 									
         					/>
                             );

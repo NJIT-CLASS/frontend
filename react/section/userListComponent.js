@@ -13,7 +13,7 @@ class UserList extends Component {
             <ul className="list-group">
                 {
                     Users.map((user) => {
-                        return <li className="list-group-item" key={user.UserID}>{user.User.FirstName} {user.User.LastName}</li>;
+                        return <li className="list-group-item" key={user.UserID}>{user.User.FirstName} {user.User.LastName} <div style={{color:"orangered"}}>{!user.Active ? "(Inactive)":null}</div></li>;
                     })
                 }
             </ul>

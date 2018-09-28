@@ -82,6 +82,7 @@ class Container extends React.Component {
         this.props.__(this.strings, (newStrings) => {
             this.setState({Strings: newStrings});
         });
+        this.switchTab();
     }
     // store selected organization ID to state, reset downstream IDs
     changeOrganizationID(organizationID) {
@@ -110,6 +111,26 @@ class Container extends React.Component {
     changeSectionID(sectionID) {
         this.setState({
             sectionID: sectionID
+        });
+    }
+
+    getQS(field) {
+        let url = window.location.href;
+        let regex = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+        let string = regex.exec(url);
+        return string ? string[1] : null;
+    }
+
+    switchTab() {
+        let org = this.getQS('org');
+        let course = this.getQS('course');
+        let semester = this.getQS('semester');
+        let section = this.getQS('section');
+        this.setState({
+            organizationID: org,
+            courseID: course,
+            semesterID: semester,
+            sectionID: section
         });
     }
 

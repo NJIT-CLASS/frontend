@@ -21,6 +21,7 @@ import Tooltip from '../shared/tooltip';
 import ErrorComponent from '../shared/ErrorComponent';
 // This constains all the hard-coded strings used on the page. They are translated on startup
 import strings from './strings';
+import {cloneDeep, clone} from 'lodash';
 
 const ReactTabs = require('react-tabs');
 const Tab = ReactTabs.Tab;
@@ -61,9 +62,14 @@ class TemplateContainer extends React.Component {
             IsRevision: false,
             CommentTargetList: [],
             BoxHide: false,
-            ErrorStatus: null
+            ErrorStatus: null,
+            SetFlag: false,
+            ShowTaskFlags: null
         };
 
+
+        this.expandAllTasks = this.expandAllTasks.bind(this);
+        this.contractAllTasks = this.contractAllTasks.bind(this);
     }
 
     unflattenTreeStructure(flatTreeString) {
@@ -102,7 +108,7 @@ class TemplateContainer extends React.Component {
             this.props.__(strings, (newStrings) => {
 
                 apiCall.get(`/taskInstanceTemplate/main/${this.props.TaskID}`, options, (err, res, body) => {
-                    
+
 
                     const taskList = new Array();
                     const skipIndeces = new Array();
@@ -157,6 +163,7 @@ class TemplateContainer extends React.Component {
                         parseTaskList = parseTaskList.reverse();
 
                         parseTaskList.forEach((task, index) => {
+                            
                             if (skipIndeces.includes(index) ||  task.Status.includes('bypassed')) {
                                 return;
                             }
@@ -284,7 +291,7 @@ class TemplateContainer extends React.Component {
                         //         return node.model.id === parseInt(this.props.TaskID);
                         //     });
 
-                        //     
+                        //
 
                         // });
                     }
@@ -292,6 +299,23 @@ class TemplateContainer extends React.Component {
 
 
                     console.log('tasklist', taskList);
+
+                    //Set fields to hide/show content
+                    const taskListShow = {};
+                    taskList.forEach(function(taskData){
+                        if (Array.isArray(taskData)){
+                            taskData.forEach(function(innerTaskData){
+                                taskListShow[innerTaskData.TaskInstanceID] = false;
+                            });
+                        } else {
+                            taskListShow[taskData.TaskInstanceID] = false;
+
+                        }
+
+                    });
+
+                    //make current task content expanded by default
+                    taskListShow[this.props.TaskID] = true;
 
                     this.setState({
                         Loaded: true,
@@ -307,9 +331,10 @@ class TemplateContainer extends React.Component {
                         TaskStatus: currentTaskStatus,
                         Strings: newStrings,
                         CommentsTaskList: commentsTaskList,
+                        ShowTaskFlags: taskListShow
                     });
                     this.createCommentList();
-                    
+
                 });
             });
         });
@@ -321,16 +346,16 @@ class TemplateContainer extends React.Component {
                 this.setState({WorkflowInstanceID: body.WorkflowInstanceID, AssignmentInstanceID: body.AssignmentInstanceID});
             }
             else {
-                
+
             }
         });
     }
 
     getCommentData(target, ID, type) {
-        
+
         if (((this.state.CommentTargetList[this.state.CommentTarget].Target == target) && (this.state.CommentTargetList[this.state.CommentTarget].ID == ID)) || type == 'change') {
             apiCall.get(`/comments/ti/${target}/id/${ID}`, (err, res, body) => {
-                
+
                 let list = [];
                 if (body != undefined ) {
                     for (let com of body.Comments) {
@@ -341,7 +366,7 @@ class TemplateContainer extends React.Component {
                     });
                 }
                 else {
-                    
+
                     this.setState({
                         commentList: list
                     });
@@ -375,6 +400,43 @@ class TemplateContainer extends React.Component {
         }
     }
 
+    toggleTaskContent(taskInstanceID) {
+        // shows or hides the component's section-content for accordian view
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            newTaskFlags[taskInstanceID] = !newTaskFlags[taskInstanceID];
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
+        }
+    }
+
+    expandAllTasks() {
+        // expands all the tasks in the list
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            Object.keys(newTaskFlags).forEach(function(key){
+                newTaskFlags[key] = true;
+            });
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
+        }
+    }
+
+    contractAllTasks() {
+        // expands all the tasks in the list
+        if(this.state.ShowTaskFlags != null){
+            let newTaskFlags = cloneDeep(this.state.ShowTaskFlags);
+            Object.keys(newTaskFlags).forEach(function(key){
+                newTaskFlags[key] = false;
+            });
+            this.setState({
+                ShowTaskFlags: newTaskFlags
+            });
+        }
+    }
+
     createCommentList() {
         let commentTargetList = [];
         commentTargetList.push({Target: 'AssignmentInstance', ID: this.state.AssignmentInstanceID, value: commentTargetList.length, label: this.state.Assignment.DisplayName});
@@ -390,16 +452,16 @@ class TemplateContainer extends React.Component {
         let target = this.getQS('target');
         let targetID = this.getQS('targetID');
         if ((target != undefined) && (targetID != undefined)) {
-            this.showComments(target, targetID, 1);
+            this.showComments(target, targetID, 1, false);
         }
         else {
-            this.showComments('TaskInstance', this.props.TaskID, 0);
+            this.showComments('TaskInstance', this.props.TaskID, 0, false);
         }
     }
 
     showSingleComment() {
         let commentsID = this.getQS('commentsID');
-        
+
         if (commentsID != undefined) {
             this.setState({EmphasizeID: commentsID});
         }
@@ -411,8 +473,10 @@ class TemplateContainer extends React.Component {
      * @param  {[number]} fieldIndex     [field index in the Task Activity Fields object, second index on default_refers_to]
      * @return {[array]}                ['response', 'justification']
      */
-    getLinkedTaskValues(taskActivityID, fieldIndex){
+    async getLinkedTaskValues(taskActivityID, fieldIndex){
         let returningValues = ['', ''];
+
+        var foundInLoadedTaskList = false;
         this.state.Data.forEach((task) => {
             if(Array.isArray(task)){
                 /// If multiple participants, assume that whichever is first in the array is desired
@@ -420,6 +484,7 @@ class TemplateContainer extends React.Component {
                     if(miniTask.TaskActivity.TaskActivityID === taskActivityID){
                     //if multiple versions, assume that the lastest version is desired
                         returningValues = miniTask.Data[miniTask.Data.length - 1][fieldIndex];
+                        foundInLoadedTaskList = true;
                     }
                 });
             } else {
@@ -428,6 +493,8 @@ class TemplateContainer extends React.Component {
                     try{
                         if(task.Data !== null && task.Data.length !== 0){
                             returningValues = task.Data[task.Data.length - 1][fieldIndex];
+                            foundInLoadedTaskList = true;
+
                         } else {
                             returningValues = ['',''];
                         }
@@ -437,6 +504,18 @@ class TemplateContainer extends React.Component {
                 }
             }
         });
+
+        // if(!foundInLoadedTaskList){
+        //     var target = '/taskInstance/getSingle';
+        //     var fetchTaskPostVars = {
+        //         taskInstanceId: this.props.TaskID,
+        //         taskActivityId: taskActivityID
+        //     };
+        //     const foreignTaskData = await apiCall.postAsync(target, fetchTaskPostVars);
+        //     console.log(foreignTaskData);
+
+        // }
+
         return returningValues;
     }
 
@@ -462,14 +541,15 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    showComments(target, id, tab) {
+    showComments(target, id, tab, type) {
         let show;
         for (let i of this.state.CommentTargetList) {
             if ((i.Target == target) && (i.ID == id)) {
                 show = i.value;
             }
         }
-        this.setState({CommentTarget: show, TabSelected: tab});
+        console.log('show', show);
+        this.setState({CommentTarget: show, TabSelected: tab, SetFlag: type});
         this.getCommentData(this.state.CommentTargetList[show].Target, this.state.CommentTargetList[show].ID);
     }
 
@@ -494,22 +574,33 @@ class TemplateContainer extends React.Component {
                 return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}.</div>;
             default:
                 return <ErrorComponent />;
-            
+
             }
         }
         if (this.state.NotAllowed === true) {
             return <div style={{textAlign: 'center'}}>{this.state.Strings.NotAllowed}: <br/>{this.state.NotAllowedMessage}</div>;
         } else {
-            renderView = (<TasksList
-                TasksArray={this.state.Data}
-                getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
-                TaskID={this.props.TaskID}
-                UserID={this.props.UserID}
-                Strings={this.state.Strings}
-                showComments={this.showComments.bind(this)}
-                TaskStatus={this.state.TaskStatus}
-                IsRevision={this.state.IsRevision}
-            />);
+            renderView = (
+                <div>
+                    <div>
+                        <button type="button" onClick={this.expandAllTasks}>{this.state.Strings.ExpandAll}</button>
+                        <button type="button" onClick={this.contractAllTasks}>{this.state.Strings.ContractAll}</button>
+                        <button type="button" onClick={()=>{window.location.href='#latestTaskForm';}}>{this.state.Strings.GoToLast}</button>
+                    </div>
+                    <TasksList
+                        TasksArray={this.state.Data}
+                        getLinkedTaskValues={this.getLinkedTaskValues.bind(this)}
+                        TaskID={this.props.TaskID}
+                        UserID={this.props.UserID}
+                        Strings={this.state.Strings}
+                        showComments={this.showComments.bind(this)}
+                        TaskStatus={this.state.TaskStatus}
+                        IsRevision={this.state.IsRevision}
+                        toggleTaskContent = {this.toggleTaskContent.bind(this)}
+                        TaskContentFlags = {this.state.ShowTaskFlags}
+                    />
+                </div>
+            );
         }
 
         return (
@@ -628,6 +719,7 @@ class TemplateContainer extends React.Component {
                           CommentTargetList={this.state.CommentTargetList}
                           CommentTargetOnList={this.state.CommentTarget}
                           Emphasize={false}
+                          SetFlag={this.state.SetFlag}
                       />
                   </div>)
                         }

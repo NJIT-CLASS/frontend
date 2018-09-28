@@ -32,7 +32,8 @@ const pages = [
     'about',
     'section',
     //'assignment-status-table',
-    'database-maintenance'
+    'database-maintenance',
+    'assignments-page'
 ];
 
 var pageConfigs = [];

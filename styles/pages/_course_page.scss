@@ -57,3 +57,17 @@
   }
   
 }
+
+.dropdown {
+    display: relative;
+}
+
+.dropdown__content {
+z-index: 99999;
+    display: none;
+    position: absolute;
+}
+
+.dropdown--active .dropdown__content {
+    display: block;
+}
