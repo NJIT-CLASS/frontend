@@ -15,5 +15,6 @@ export default {
     Notifications: 'Notifications',
     NoNotifications: 'You currently have no notifications',
     OldNotifications: 'Old Notifications',
-    RedHeader: 'Tasks in Red are considered late'
+    RedHeader: 'Tasks in Red are considered late',
+    CodeHeader:'Code(s)'
 };

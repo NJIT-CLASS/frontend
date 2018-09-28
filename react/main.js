@@ -32,6 +32,8 @@ import SectionPage from './section/main-container';
 import ErrorComponent from './shared/ErrorComponent';
 import AssignmentStatusTable from './assignment-status-table/main-container';
 import DatabaseMaintenance from './database-maintenance/main-container';
+import CoursePage from './course-page/course-page';
+import Assignments from './assignments/assignments-container';
 //>>INSERTIMPORT
 
 const translationFunction = (objOfStrings, cb) => {
@@ -58,6 +60,7 @@ const assignmentId = reactElem.dataset.assignmentId;
 const userType = reactElem.dataset.userType;
 const sectionId = reactElem.dataset.sectionId;
 const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege === 'true';
+
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
@@ -156,7 +159,12 @@ case 'assignment-status-table':
     break; 
 case 'database-maintenance':
     componentForCurrentPage = <DatabaseMaintenance UserID={userId}  __={translationFunction} />;
-    break;    
+    break; 
+case 'course-page':
+    componentForCurrentPage = <CoursePage UserID={userId} CourseID={courseId} Role={userType}  __={translationFunction}/>
+    break;
+case 'assignments-page':
+    componentForCurrentPage = <Assignments UserID={userId}  __={translationFunction}/>
 //>>INSERTCASE
 
 

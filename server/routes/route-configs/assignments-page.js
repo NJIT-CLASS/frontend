@@ -1,17 +1,17 @@
-const handler = require('../route-handlers/reallocation.js');
+const handler = require('../route-handlers/assignments-page');
 import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
-    route: '/reallocation',
-    title: 'Reallocations',
+    route: '/assignments_page',
+    title: 'Assignments Status',
     routeHandler: handler,
     access: {
         admins: true,
         instructors: true,
         students: false,
-        role: ROLES.ADMIN,
+        role: ROLES.PARTICIPANT,
         loggedOut: false
     },
-    icon: 'exchange',
-    sidebar: false
-};
+    icon: 'paper',
+    sidebar: true
+};  

@@ -21,6 +21,17 @@ export default class PendingTaskComponent extends Component {
         apiCall.get(`/getPendingTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
                 let transformedTaskList = body.PendingTaskInstances.map(task => {
+
+                    console.log(task);
+                    var code = "";
+
+                    if(task.TaskActivity.MustCompleteThisFirst){
+                        code += " #1 ";
+                    }
+                    if(task.Status.indexOf("late") !== -1){
+                        code += " ! ";
+                    }
+                    
                     return {
                         Assignment: task.AssignmentInstance.Assignment.Name,
                         TaskID: task.TaskInstanceID,
@@ -31,6 +42,7 @@ export default class PendingTaskComponent extends Component {
                         Revision: task.TaskActivity.AllowRevision,
                         Status: typeof task.Status === 'string' ? JSON.parse(task.Status) : task.Status,//task.Status,
                         Date:task.EndDate,
+                        Code:code
                     };
                 });
                 this.setState({
@@ -81,6 +93,16 @@ export default class PendingTaskComponent extends Component {
         }
         return <div>{displayText}</div>;
     }
+
+    makeCode({ original, row, value }){
+        if(value.indexOf("#1") !== -1){
+            return <div style={{position:"relative"}}><div style={{color:"orange",display:"inline-block"}}>#1 </div><div style={{display:"inline-block"}} className="task-late">{value.substring(value.indexOf("#1")+3,value.length)}</div></div>;
+        }
+
+        if (original.Status[3] === 'late') {
+            return <div className="task-late">{value}</div>;
+        }
+    }
     
     render() {
         let {Strings} = this.props;
@@ -122,6 +144,12 @@ export default class PendingTaskComponent extends Component {
                                     resizable:true,
                                     accessor: 'Date',
                                     Cell: this.makeDate
+                                },
+                                {
+                                    Header: Strings.CodeHeader,
+                                    resizable:true,
+                                    accessor: 'Code',
+                                    Cell:this.makeCode
                                 }
                             ]}
                             defaultSorted={[
