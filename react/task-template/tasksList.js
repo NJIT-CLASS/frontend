@@ -16,7 +16,7 @@ class TasksList extends React.Component{
     render(){
         let { TasksArray, TaskID, UserID, Strings, getLinkedTaskValues,TaskContentFlags } = this.props;
 
-        
+
         return <div>
             {
                 TasksArray.map(function(task, idx) {
