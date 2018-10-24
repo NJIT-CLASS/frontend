@@ -30,6 +30,7 @@ class CoursePage extends Component{
             coursesUrl = '/getActiveEnrolledSections/';
         }
         apiCall.get(`${coursesUrl}${this.state.courseId}?studentID=${this.state.userID}`, {},(err, statusCode, body) =>{
+            console.log(body);
             const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
 
             apiCall.get('/getAssignments/' + this.state.courseId,{}, (err, statusCode, assignmentsBody) => {
@@ -80,6 +81,7 @@ class CoursePage extends Component{
                                 "instructorOrAdmin": instructOrAdmin,
                                 "courseTitle": body.Course.Name,
                                 "courseNumber": body.Course.Number,
+                                "courseOrganization":body.Course.Organization.Name,
                                 "courseDescription": body.Course.Description
                             };
                             console.log(this.state.pageData);
@@ -236,7 +238,7 @@ class CoursePage extends Component{
                 {this.state.showModal ? (<Modal children={this.state.modalContent}/>):null}
                 <div className="block-container">
                     <div className="course_header">
-                        <h2 className="title">{this.state.pageData.courseNumber} {this.state.pageData.courseTitle}</h2>
+                        <h2 className="title">{this.state.pageData.courseOrganization}: {this.state.pageData.courseNumber} {this.state.pageData.courseTitle}</h2>
                         <div className="description">{this.state.pageData.courseDescription}</div>
                     </div>
                 </div>
