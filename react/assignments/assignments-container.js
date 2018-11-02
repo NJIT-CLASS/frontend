@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import TableComponent from '../shared/tableComponent';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import { Editor } from '@tinymce/tinymce-react';
+import tinymceOptions from '../shared/tinymceOptions';
 
 class Assignments extends Component {
     
