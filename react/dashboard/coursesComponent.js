@@ -28,7 +28,7 @@ export default class CoursesComponent extends Component {
         if(Courses.length > 0){
             courseList = Courses.map(course => {
                 return <li key={course.CourseID} className="list-group-item">
-                    <a href={`/course_page/${course.CourseID}`}>{course.Name}</a>
+                    <a href={`/course_page/${course.CourseID}`}>{course.Number} {course.Name}</a>
                 </li>;
             });
         } else{

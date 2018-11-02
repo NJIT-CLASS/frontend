@@ -48,6 +48,8 @@ class Container extends React.Component {
             newOrganization: 'New Organization',
             newSection: 'New Section',
             newSemester: 'New Semester',
+            newSemesterName:"Name (include year)",
+            newSemesterToolTip:"The semester name will be displayed distinguish sections with the same identifier.  We recommend including the year in the semester name to distinguish semesters with the same name.    Each semester is only used by one organization.",
             number: 'Number',
             observer: 'Observer',
             observers: 'Observers',

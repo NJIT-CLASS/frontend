@@ -14,7 +14,7 @@ import { TASK_TYPES } from '../../server/utils/react_constants'; // contains con
 class SuperViewComponent extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
             ShowContent: false,
             ShowRubric: false,

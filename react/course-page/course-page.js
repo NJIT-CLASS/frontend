@@ -30,6 +30,7 @@ class CoursePage extends Component{
             coursesUrl = '/getActiveEnrolledSections/';
         }
         apiCall.get(`${coursesUrl}${this.state.courseId}?studentID=${this.state.userID}`, {},(err, statusCode, body) =>{
+            console.log(body);
             const sectionIDsArray = body.Sections.filter(section => {return section.SectionID;});
 
             apiCall.get('/getAssignments/' + this.state.courseId,{}, (err, statusCode, assignmentsBody) => {
@@ -67,7 +68,7 @@ class CoursePage extends Component{
                                 sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                             }
-                            
+                            console.log(body);
                             let instructOrAdmin = canRoleAccess(this.state.role, ROLES.TEACHER);
                             let isInstructor = this.state.role === ROLES.TEACHER;
                             this.state.pageData = {
@@ -80,6 +81,7 @@ class CoursePage extends Component{
                                 "instructorOrAdmin": instructOrAdmin,
                                 "courseTitle": body.Course.Name,
                                 "courseNumber": body.Course.Number,
+                                "courseOrganization":body.Course.Organization.Name,
                                 "courseDescription": body.Course.Description
                             };
                             console.log(this.state.pageData);
@@ -236,7 +238,7 @@ class CoursePage extends Component{
                 {this.state.showModal ? (<Modal children={this.state.modalContent}/>):null}
                 <div className="block-container">
                     <div className="course_header">
-                        <h2 className="title">{this.state.pageData.courseTitle}</h2>
+                        <h2 className="title">{this.state.pageData.courseOrganization}: {this.state.pageData.courseNumber} {this.state.pageData.courseTitle}</h2>
                         <div className="description">{this.state.pageData.courseDescription}</div>
                     </div>
                 </div>
@@ -248,7 +250,11 @@ class CoursePage extends Component{
                             <div className="section-content">
                                 <ul className="list-group">
                                     {this.state.pageData.sectionList.map(section =>{
-                                        return (<li className="list-group-item"><a href={`/section/${section.SectionID}`}>{section.Name} - {section.Semester.Name}</a></li>);
+                                        var instructors = section.instructors.map(instructor=>{
+                                            return instructor.User.FirstName +" "+instructor.User.LastName;
+                                        }).join(", ");
+                                        
+                                        return (<li className="list-group-item"><a href={`/section/${section.SectionID}`}>{section.Name} - {section.Semester.Name} - {instructors}</a></li>);
                                     })}
                                 </ul>
                             </div>

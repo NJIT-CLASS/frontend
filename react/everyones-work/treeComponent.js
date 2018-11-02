@@ -1,6 +1,6 @@
 import React, { Component, Children } from 'react';
 
-import TreeView from 'react-treeview';
+//mport TreeView from 'react-treeview';
 import apiCall from '../shared/apiCall';
 var TreeModel = require('tree-model'); /// references: http://jnuno.com/tree-model-js/  https://github.com/joaonuno/tree-model-js
 let FlatToNested = require('flat-to-nested');
@@ -31,9 +31,9 @@ class TreeComponent extends Component {
         if(node.children.length != 0){
             nodeChildrenTrees = node.children.map( x=>this.makeTreeView(x));
         }
-        let treeViewElement =  <TreeView nodeLabel={nodeLink}>
-            {nodeChildrenTrees}
-        </TreeView>;
+        //let treeViewElement =  <TreeView nodeLabel={nodeLink}>
+        //    {nodeChildrenTrees}
+        //</TreeView>;
 
         return treeViewElement;
     }
