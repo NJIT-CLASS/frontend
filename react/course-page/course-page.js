@@ -19,7 +19,8 @@ class CoursePage extends Component{
             showModal:false,
             modalContent:null,
             pageData:null,
-            loaded:false
+            loaded:false,
+            message:null
         };
     }
 
@@ -68,7 +69,7 @@ class CoursePage extends Component{
                                 sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                             }
-                            console.log(body);
+                            var courseOrganization = body.Course.Organization.Name ? body.Course.Organization.Name : "";
                             let instructOrAdmin = canRoleAccess(this.state.role, ROLES.TEACHER);
                             let isInstructor = this.state.role === ROLES.TEACHER;
                             this.state.pageData = {
@@ -81,7 +82,7 @@ class CoursePage extends Component{
                                 "instructorOrAdmin": instructOrAdmin,
                                 "courseTitle": body.Course.Name,
                                 "courseNumber": body.Course.Number,
-                                "courseOrganization":body.Course.Organization.Name,
+                                "courseOrganization":courseOrganization,
                                 "courseDescription": body.Course.Description
                             };
                             console.log(this.state.pageData);
@@ -93,13 +94,17 @@ class CoursePage extends Component{
         });
     }
  
-    duplicateAssignment(e, data){
-        console.log(data.partialAssignmentId);
+    duplicateAssignment(partialAssignmentId){
 
-        apiCall.get(`/partialAssignments/duplicate/${data.partialAssignmentId}`,{},(err, statusCode, body)=>{
+        apiCall.get(`/partialAssignments/duplicate/${partialAssignmentId}`,{},(err, statusCode, body)=>{
             console.log(err);
             console.log(statusCode);
             console.log(body);
+            if(!body.Error && !err){
+                this.setState({message:this.notification("success form-success","Assignment duplicated successfully")});
+            } else {
+                this.setState({message:this.notification("error form-error","Unable to duplicate assignment")});
+            }
         });
     }
 
@@ -136,6 +141,15 @@ class CoursePage extends Component{
     updateCourseID(e){
         console.log(e.currentTarget.value);
         this.setState({copyToCourseID:e.currentTarget.value});
+    }
+
+    notification(classType, message){
+        return (
+            <div className={classType} role="alert">
+                <i className="fa fa-exclamation-circle"></i>
+                {message}
+            </div>
+        );
     }
     
 
@@ -193,23 +207,38 @@ class CoursePage extends Component{
         if(this.state.pageData.partialAssignments){
             partialAssignments = (<div className="section">
                 <h2 className="title">Saved Assignments</h2>
-                <div className="section-content">
+                <div className="section-content" style={{maxHeight:"100%"}}>
                     <div className="col-xs-6">
                         <ul className="list-group">
                             {this.state.pageData.partialAssignments.map(assignment =>{
-                                return (<li className="list-group-item">
-                                    <ContextMenuTrigger id={`contextmenu-${assignment.PartialAssignmentID}`}>
-                                        <a href={`/asa/${this.state.pageData.courseID}?partialAssignmentId=${assignment.PartialAssignmentID}`} onContextMenu={this.contextMenu}>{assignment.PartialAssignmentName}</a>
-                                    </ContextMenuTrigger>
-                                    <ContextMenu id={`contextmenu-${assignment.PartialAssignmentID}`}>
-                                    <MenuItem data={{"partialAssignmentId":assignment.PartialAssignmentID}} onClick={this.duplicateAssignment.bind(this)}>
-                                        <a>Create a copy for this course</a>
-                                    </MenuItem>
-                                    <MenuItem data={{"partialAssignmentId":assignment.PartialAssignmentID}} onClick={this.copyAssignmentToAnotherCourse.bind(this)}>
-                                        <a >Copy to another course</a>
-                                    </MenuItem>
-                                    </ContextMenu>
+
+                                return (<li className="list-group-item ">
+                                    <div className = "partial-assignment">
+                                        <div>
+                                            <a href={`/asa/${this.state.pageData.courseID}?partialAssignmentId=${assignment.PartialAssignmentID}`} >{assignment.PartialAssignmentName}</a>
+                                        </div>
+
+                                        <div className="partial-assignment-dropdown">
+                                            <a href={`/asa/${this.state.pageData.courseID}?partialAssignmentId=${assignment.PartialAssignmentID}`} >Edit Assignment</a>
+                                            <br /><a href="#" onClick={this.duplicateAssignment.bind(this, assignment.PartialAssignmentID)}>Create a copy for this course</a>
+                                            {/* <br /><a data={{"partialAssignmentId":assignment.PartialAssignmentID}} onClick={this.copyAssignmentToAnotherCourse.bind(this)} >Copy to another course</a> */}
+                                        </div>
+                                    </div>
                                 </li>);
+
+                                // return (<li className="list-group-item">
+                                //     <ContextMenuTrigger id={`contextmenu-${assignment.PartialAssignmentID}`}>
+                                //         <a href={`/asa/${this.state.pageData.courseID}?partialAssignmentId=${assignment.PartialAssignmentID}`} onContextMenu={this.contextMenu}>{assignment.PartialAssignmentName}</a>
+                                //     </ContextMenuTrigger>
+                                //     <ContextMenu id={`contextmenu-${assignment.PartialAssignmentID}`}>
+                                //     <MenuItem data={{"partialAssignmentId":assignment.PartialAssignmentID}} onClick={this.duplicateAssignment.bind(this)}>
+                                //         <a>Create a copy for this course</a>
+                                //     </MenuItem>
+                                //     <MenuItem data={{"partialAssignmentId":assignment.PartialAssignmentID}} onClick={this.copyAssignmentToAnotherCourse.bind(this)}>
+                                //         <a >Copy to another course</a>
+                                //     </MenuItem>
+                                //     </ContextMenu>
+                                // </li>);
                             })}
                         </ul>
                     </div>
@@ -242,7 +271,7 @@ class CoursePage extends Component{
                         <div className="description">{this.state.pageData.courseDescription}</div>
                     </div>
                 </div>
-
+                {this.state.message}
                 <div className="block-container">
                     <div className="flex-container">
                         <div className="section">
