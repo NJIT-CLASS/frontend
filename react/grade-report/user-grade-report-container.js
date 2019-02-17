@@ -30,9 +30,9 @@ class GradeReport extends React.Component {
     }
 
     /**
-     * 
+     *
      * Get all sections that the current user attends or instructs.
-     * Then get all assignments for those sections using the function getAssignments 
+     * Then get all assignments for those sections using the function getAssignments
      */
     getSections(userID){
         apiCall.get(`/SectionsByUser/${userID}`,{},(err,status,body)=>{
@@ -50,10 +50,10 @@ class GradeReport extends React.Component {
     }
 
     /**
-     * 
+     *
      * @param {*} section Section data returned from the backend
      * @param {*} numSections Number of sections to keep track of when to call setState
-     * 
+     *
      */
     getAssignments(section,numSections){
         apiCall.get(`/getActiveAssignmentsForSection/${section.SectionID}`,{},(err,status,body)=>{
@@ -61,7 +61,7 @@ class GradeReport extends React.Component {
                 //Add the assignment to the section data
                 section["assignments"]=body.Assignments;
 
-                // If the user is an instructor add section to list of instructor sections, otherwise add 
+                // If the user is an instructor add section to list of instructor sections, otherwise add
                 // to student sections.
                 // When all sections are accounted for, call setState.
                 if(section.Role==="Instructor"){
@@ -76,11 +76,11 @@ class GradeReport extends React.Component {
             } else {
                 this.setState({loaded:true,error:body});
             }
-        });     
+        });
     }
 
     /**
-     * 
+     *
      * @param {*} section Section data
      * @param {*} overviewOnclick onclick function for the overview, can be both student and instructor overview
      * @param {*} assignmentOnclick onclick funciton for assignment, can be both student and instructor assignment
@@ -161,16 +161,16 @@ class GradeReport extends React.Component {
         this.getGrades(user, [assignment]);
     }
     /**
-     * 
+     *
      * @param {*} students array of student data, must at least contain userID
      * @param {*} assignments array of assignments, must at least contain AssignmentInstanceID
-     * 
+     *
      * Formats grade data into a more usable form, a tree structure. Top level being a list of sectionUserID's to user data.
      * Inside that user data is an entry called assignments that contains a dictionary mapping assignment Id's to assignment data.
      * Inside that assignment data is an entry called workflows that maps workflow activity Id to workflow data.
-     * Inside workflow data are entries for regular tasks and simple tasks.  
-     * 
-     * This way any number of students and any number assignments can be passed and the resulting structure will always be the same 
+     * Inside workflow data are entries for regular tasks and simple tasks.
+     *
+     * This way any number of students and any number assignments can be passed and the resulting structure will always be the same
      * when it comes to displaying it
      */
     getGrades(students, assignments){
@@ -186,7 +186,7 @@ class GradeReport extends React.Component {
                     apiCallCount++;
                     for( var userID in students){
                         var sectionUserID = null;
-                        
+
                         // Retrieve section user ID
                         for(var i in body.SectionUsers){
                             if(userID == body.SectionUsers[i].UserID){
@@ -267,9 +267,9 @@ class GradeReport extends React.Component {
     }
 
     /**
-     * 
+     *
      * @param {*} root result data from getGrades
-     * 
+     *
      * Iterates down through tree structure until it reaches the bottom or finds grade data already calculated by the backend,
      * adds any of the missing grade data, and returns the structure
      */
@@ -303,8 +303,8 @@ class GradeReport extends React.Component {
                             var workflowGradeDistribution = JSON.parse(workflowData["GradeDistribution"]);
                             var correctGradeDistribution = {};
 
-                            // Since the grading task gets the grade instead of the task thats being graded, 
-                            // the assignment distribution must be shifted using refersToWhich task 
+                            // Since the grading task gets the grade instead of the task thats being graded,
+                            // the assignment distribution must be shifted using refersToWhich task
                             for(var [taskAcivityID, gradePercentage] of Object.entries(workflowGradeDistribution)){
                                 if(taskAcivityID === "simple"){
                                     correctGradeDistribution["simple"] = gradePercentage;
@@ -357,7 +357,7 @@ class GradeReport extends React.Component {
         var studentSectionsCollapsible=(<h3>No sections attending</h3>);
         var instructorSectionsView = null;
         var studentSectionsView = null;
-        var tableView = (<ReactTable 
+        var tableView = (<ReactTable
                         defaultPageSize={10}
                         className="-striped -highlight"
                         resizable={true}
@@ -396,7 +396,7 @@ class GradeReport extends React.Component {
                     nestedTableRows.push((<tr><td>{assignmentData.assignment.DisplayName}</td><td>{grade}</td></tr>));
                 }
 
-                nestedTables.push( 
+                nestedTables.push(
                     <table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
                             <tr>
@@ -410,7 +410,7 @@ class GradeReport extends React.Component {
 
             }
 
-            var exportFileName = sectionData.Section.Course.Number+"_"+sectionData.Section.Name;            
+            var exportFileName = sectionData.Section.Course.Number+"_"+sectionData.Section.Name;
             var sectionName = sectionData.Section.Course.Name+" "+sectionData.Section.Course.Number+"_"+sectionData.Section.Name;
             tableView = (<ReactTable
             defaultPageSize={10}
@@ -426,7 +426,7 @@ class GradeReport extends React.Component {
                     Header: "Last Name",
                     accessor: 'lastName'
                 }
-            ]} 
+            ]}
             noDataText="Please choose an assignment or overview"
             SubComponent={(row) => {return nestedTables[row.index]; }}
             />);
@@ -451,7 +451,7 @@ class GradeReport extends React.Component {
                     {collumns}
                 </Workbook.Sheet>
             </Workbook>);*/
-            //tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/>{exportGrades}</div>);            
+            //tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/>{exportGrades}</div>);
             tableHeader = (<div><h2 className="title">{sectionName}<br/>Student Overview</h2><br/></div>);
 
         }
@@ -493,12 +493,13 @@ class GradeReport extends React.Component {
                             </tr>);
                         }
 
-                        for(var [simpleTaskID, simpleTask] of Object.entries(workflow.simpleTasks)){
+                        /*for(var [simpleTaskID, simpleTask] of Object.entries(workflow.simpleTasks)){
                             let isExtraCredit = simpleTask.IsExtraCredit ? "Yes" : "No";
+                            console.log(simpleTask  );
                             simpleGrades.push(<tr>
                                 <td>{assignment.taskActivities[simpleTask.TaskActivityID].DisplayName}}</td><td>{simpleTask.Grade}</td><td>{isExtraCredit}</td>
                             </tr>);
-                        }
+                        }*/
 
                         var threadGrade = workflow.workflowGrade.Grade ? workflow.workflowGrade.Grade : "-";
 
@@ -516,7 +517,7 @@ class GradeReport extends React.Component {
                     nestedTables.push(workflowGradesTable);
                 }
             }
-            
+
             let assignmentName = sectionData.assignments[0].Assignment.DisplayName;
             let section = sectionData.Section.Course.Number + " " + sectionData.Section.Course.Name + " " + sectionData.Section.Name;
             tableHeader = (<div><h2 className="title">{section} <br/> Assignment: {assignmentName}</h2></div>);
@@ -526,7 +527,7 @@ class GradeReport extends React.Component {
                         {Header: "Last Name",accessor: 'lastName'},
                         {Header: "Email",accessor: 'email'},
                         {Header: "Grade",accessor: 'grade'}
-                    ]} 
+                    ]}
                     noDataText="Please choose an assignment or overview"
                     SubComponent={(row) => { return nestedTables[row.index]; }}
                     />);
@@ -552,13 +553,13 @@ class GradeReport extends React.Component {
             columns={[
                 {Header: "Assignment Name",accessor: 'name'},
                 {Header: "Grade",accessor: 'grade'},
-            ]} 
+            ]}
             noDataText="No grade data"
             SubComponent={null}
             />);
         }
         else if(displayType==="studentassignment"){
-            //console.log(sectionData);
+            console.log(sectionData);
 
             var nestedTables = [];
             var tableEntries = [];
@@ -570,12 +571,13 @@ class GradeReport extends React.Component {
                 for( var [assignmentID, assignment] of Object.entries(studentData.assignments)){
                     //console.log(assignment);
                     assignmentGrade = assignment.assignmentGrade.Grade;
-                    tableData.push({
-                        workflow:"Problem thread "+(nestedTables.length+1).toString()
-                    })
+
 
                     for(var [workflowID, workflow] of Object.entries(assignment.workflows)){
-                        //console.log(workflow);
+                        tableData.push({
+                            workflow:"Problem thread "+(nestedTables.length+1).toString()
+                        })
+                        console.log(workflow);
                         var regularGrades = [];
                         var simpleGrades = [];
                         var workflowGradesTable = [];
@@ -591,19 +593,18 @@ class GradeReport extends React.Component {
                         let grade = workflow.workflowGrade.Grade ? workflow.workflowGrade.Grade : "-";
                         workflowGradesTable.push(<table width="80%" className="sticky-enabled tableheader-processed sticky-table">
                         <thead>
-                            <tr><th colSpan="4">Problem Thread {(workflowGradesTable.length + 1).toString()} | Grade: {grade}</th></tr>
+                            <tr><th colSpan="4">Problem Thread {(nestedTables.length + 1).toString()} | Grade: {grade}</th></tr>
                         </thead>
                         <tbody>
                         {regularGrades}
                         {simpleGrades}
                         </tbody>
                         </table>);
+                        nestedTables.push(workflowGradesTable);
                     }
-
-                    nestedTables.push(workflowGradesTable);
                 }
             }
-            
+
             let assignmentName = sectionData.assignments[0].Assignment.DisplayName;
             let section = sectionData.Section.Course.Number + " " + sectionData.Section.Course.Name + " " + sectionData.Section.Name;
 
@@ -611,7 +612,7 @@ class GradeReport extends React.Component {
             tableView = (<ReactTable defaultPageSize={10} className="-striped -highlight" resizable={true} data={tableData}
                     columns={[
                         {Header: "Problem Thread",accessor: 'workflow'}
-                    ]} 
+                    ]}
                     noDataText="Please choose an assignment or overview"
                     SubComponent={(row) => { return nestedTables[row.index]; }}
                     />);
