@@ -3253,12 +3253,14 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFinalGradeTasksArray(workflowIndex, stateData = this.state.WorkflowDetails) { //gets a list of all the tasks that will be accounted for in grading distribution
+        let x = this;
         let newArray = new Array();
         let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM];
         stateData[workflowIndex].Workflow.forEach(function(task, index) {
             if (Object.keys(task).length > 0) {
                 if (assessmentTypes.includes(task.TA_type)) {
-                    newArray.push(index);
+                    let parentIndex = x.getParentIndex(index, workflowIndex, stateData);
+                    newArray.push(parentIndex);
                 }
             }
         });
