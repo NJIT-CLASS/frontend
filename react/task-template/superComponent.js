@@ -740,6 +740,7 @@ class SuperComponent extends React.Component {
             const latestVersion = this.state.TaskResponse;
             let latestVersionComment = null;
             let versionHistoryView = null;
+            console.log(this.state.TaskActivityFields);
             if (latestVersion[idx] == null) {
                 latestVersion[idx] = [this.state.TaskActivityFields[idx].default_content[0], this.state.TaskActivityFields[idx].default_content[1]];
             }

@@ -69,7 +69,7 @@ class CoursePage extends Component{
                                 sectionList[i].assignments = assignmentResults[currentSectionId][1].Assignments;
 
                             }
-                            var courseOrganization = body.Course.Organization.Name ? body.Course.Organization.Name : "";
+                            var courseOrganization = body.Course.Organization && body.Course.Organization.Name ? body.Course.Organization.Name : "";
                             let instructOrAdmin = canRoleAccess(this.state.role, ROLES.TEACHER);
                             let isInstructor = this.state.role === ROLES.TEACHER;
                             this.state.pageData = {

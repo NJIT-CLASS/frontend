@@ -16,7 +16,7 @@ class TasksList extends React.Component{
     render(){
         let { TasksArray, TaskID, UserID, Strings, getLinkedTaskValues,TaskContentFlags } = this.props;
 
-
+        console.log(TasksArray);
         return <div>
             {
                 TasksArray.map(function(task, idx) {
@@ -30,7 +30,8 @@ class TasksList extends React.Component{
                             return (
         					<SuperViewComponent
         						key={idx + 2000}
-        						index={idx}
+                                index={idx}
+                                IsLastTask={true}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
         						Files={task.Files}
@@ -53,7 +54,8 @@ class TasksList extends React.Component{
                             return (
         					<SuperViewComponent
         						key={idx + 2000}
-        						index={idx}
+                                index={idx}
+                                IsLastTask={true}
         						ComponentTitle={task.TaskActivity.DisplayName}
         						TaskData={task.Data}
         						Files={task.Files}
@@ -77,6 +79,7 @@ class TasksList extends React.Component{
         					<SuperComponent
         						key={idx + 2000}
                                     index={idx}
+                                    IsLastTask={true}
         						TaskID={TaskID}
         						UserID={UserID}
         						Files={task.Files}
