@@ -4,7 +4,10 @@
         <span>{{ __ "Participatory Learning" }}</span>
     </h2>
     <form role="form" class="section" method="POST" action="/">
-        <h3 class="title">{{__ "Please Sign In"}}</h3>
+        <h3 class="title tooltip">{{__ "Please Sign In"}}
+            <span class="tooltiptext">
+                Only users who are invited to join the Participatory Learning system may login.  Use the email address you were invited with and the specific PL password.
+        </h3>
         <div class="section-content">
             <input type="hidden" name="url" value="{{returnUrl}}"/>
             {{#if passwordReset}}
@@ -32,11 +35,15 @@
                   <span>{{__ "The website is experiencing some internal errors. Please try again later."}}</span>
                 </div>
             {{/if}}
-            <div class="form-group">
+            <div class="form-group tooltip">
                 <input class="form-control" placeholder="{{ __ "Email" }}" name="email" type="email" autofocus>
+                <span class="tooltiptext">
+                    Use the email address you were invited with originally.   This may be different from your personal or institutional email address.
             </div>
-            <div class="form-group">
+            <div class="form-group tooltip">
                 <input class="form-control" placeholder="{{ __ "Password" }}" name="password" type="password" value="">
+                <span class="tooltiptext">
+                    The PL system uses a password independent from your personal or institutional accounts.  You can only use your PL password.   If you were sent a temporary password by email then enter that here.   If you need to reset your password, click on the link below.
             </div>
             <div class="row">
                 <div>
@@ -52,4 +59,67 @@
     </form>
     <p>{{ __ "Forgot your password?" }} <a href="/reset-password" class="link">{{ __ "Click here to reset it." }}</a></p>
     <p>{{ __ "What is Participatory Learning?" }}<a href="/about" class="link">{{ __ "Click here to learn more." }}</a></p>
+       
+    <style>
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black;
+          width: 100%;
+        }
+        
+        .tooltiptext {
+          visibility: hidden;
+          width: 680px;
+          background-color: white;
+          color: black;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px 0;
+          bottom: 100%;
+          left: 50%; 
+          margin-left: -60px;
+        
+          /* Position the tooltip */
+          position: absolute;
+          z-index: 1;
+        }
+        
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+        </style>
+        <body style="text-align:center;">
+        
+        
+        <div class="tooltip">
+                <p>{{ __ ""}} <a href="/" class="link">{{ __ "Having problems logging in?"}}</a></p>
+               
+          <span class="tooltiptext">
+              
+                <form role="form" class="section">
+                    <h3 class="title">{{__ "Logging into the Participatory Learning system:"}}</h3>
+                    <div class="section-content">
+                            <ul>
+                                    <li> Note: the login and password is different from your official login and password (from your school or organization). </li>
+                                    <li> If your instructor has invited you to the PL system, you should have received a temporary password from "njit.plamaster@gmail.com" to your official email address.  Use this password to log in.  You will be prompted to change your password.
+                                        </li>
+                                    <li>            If you didn't get the email invitation, please do the following:
+                                        </li>
+                                    <li>            Check your spam folder.  Under Settings > Filters and Blocked Addresses, allow all emails from this account in the future.   (The system will notify you by email every time you have a new task waiting.) 
+                            
+                                    <li>
+                                            Be sure to look in your spam folder on BOTH your school account AND wherever your email is forwarded to.
+                                    </li>
+                                    <li>
+                                            Try clicking on reset password link at the bottom of the page (https://pla.njit.edu:4001) for another temporary password email.
+                                    </li>
+                                    <li>
+                                            If after all these steps you do not get a notification with a temporary password, please contact Dr. Bieber at bieber@njit.edu</span>
+                                    </li>
+                            </ul>  
+                    </div>
+                </form>
+        </div>   
+</div>
 </div>

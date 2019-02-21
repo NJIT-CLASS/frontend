@@ -459,13 +459,13 @@ class TemplateContainer extends React.Component {
         }
     }
 
-    showSingleComment() {
-        let commentsID = this.getQS('commentsID');
+    // showSingleComment() {
+    //     let commentsID = this.getQS('commentsID');
 
-        if (commentsID != undefined) {
-            this.setState({EmphasizeID: commentsID});
-        }
-    }
+    //     if (commentsID != undefined) {
+    //         this.setState({EmphasizeID: commentsID});
+    //     }
+    // }
 
     /**
      * [getLinkedTaskValues Gets the Data for a linked task that uses default_refers_to]
