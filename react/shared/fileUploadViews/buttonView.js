@@ -59,21 +59,6 @@ class ButtonView extends React.Component {
       </button>
     );
 
-    let fileInstructionButtonView = (
-      <Popup trigger={<button>File Upload Instructions</button>}>
-            <div style="overflow-y:auto;">
-              <ul>
-                  <li>First select file(s), then choose “Upload”</li>
-                  <li>There may be a 1-3 minute delay before you see the file you uploaded</li>
-                  <li>To remove or replace a file, click on the “x” and then optionally upload a new one</li>
-                  <li>To download the file, click on the link</li>
-                  <li>If the file doesn’t download or you can’t read the downloaded file, right click on the file name and choose “Save As” and select the correct file type</li>
-                  <li>If you still have trouble downloading, try in other browser</li>
-              </ul>
-              </div>
-          </Popup>
-    );
-
     switch (UploadStatus) {
       case "start":
         uploadView = (
@@ -91,7 +76,6 @@ class ButtonView extends React.Component {
               {MinUploads} {Strings.Max}: {MaxUploads}
             </div>
             {buttonView}
-            {fileInstructionButtonView}
           </form>
         );
         break;
@@ -115,7 +99,6 @@ class ButtonView extends React.Component {
                 {MinUploads} {Strings.Max}: {MaxUploads}
               </div>
               {buttonView}
-              {fileInstructionButtonView}
             </form>
           );
         } else {
@@ -140,7 +123,6 @@ class ButtonView extends React.Component {
                 {MinUploads} {Strings.Max}: {MaxUploads}
               </div>
               {buttonView}
-              {fileInstructionButtonView}
             </form>
           </div>
         );
