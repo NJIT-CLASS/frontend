@@ -13,6 +13,6 @@ module.exports = {
         role: ROLES.TEACHER,
         loggedOut: false
     },
-    icon: 'file-text',
+    icon: 'edit',
     sidebar: true
 };

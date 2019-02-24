@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.PARTICIPANT,
         loggedOut: false
     },
-    icon: 'dashboard',
+    icon: 'home',
     sidebar: true
 };

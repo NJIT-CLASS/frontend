@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.GUEST,
         loggedOut: false
     },
-    icon: 'user',
+    icon: 'user-circle',
     sidebar: true
 };
