@@ -17,6 +17,7 @@
     "@tinymce/tinymce-react": "^2.2.5",
     "async": "^2.6.1",
     "axios": "^0.18.0",
+    "babel-code-frame": "^6.26.0",
     "bleach": "^0.3.0",
     "body-parser": "^1.18.3",
     "connect-redis": "^3.3.3",
@@ -43,6 +44,7 @@
     "natives": "^1.1.6",
     "npm": "^6.8.0",
     "prop-types": "^15.6.2",
+    "psl": "^1.1.31",
     "rc-tooltip": "^3.7.2",
     "react": "^16.4.1",
     "react-addons-shallow-compare": "^15.6.2",
@@ -89,7 +91,8 @@
     "run-sequence": "^2.2.1",
     "serialize-javascript": "^1.5.0",
     "tinymce": "^4.7.13",
-    "tree-model": "^1.0.7"
+    "tree-model": "^1.0.7",
+    "upath": "^1.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^8.6.3",

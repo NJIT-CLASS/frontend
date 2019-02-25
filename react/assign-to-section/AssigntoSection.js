@@ -109,6 +109,7 @@ class AssignToSectionContainer extends React.Component
                 });
 
                 let newA= this.state.Assignment;
+                console.log(body.assignment)
                 newA.AssigmentName = body.assignment.DisplayName;
                 this.setState({
                     Assignment: newA,
