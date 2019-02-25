@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.ADMIN,
         loggedOut: false
     },
-    icon: 'database',
+    icon: 'archive',
     sidebar: true
 };
