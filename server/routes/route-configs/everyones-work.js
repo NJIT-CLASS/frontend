@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/everyones-work/:assignmentId?',
-    title: 'Everyone\'s Work' ,
+    title: 'See Everyone\'s Work' ,
     routeHandler: handler,
     access: {
         admins: true,

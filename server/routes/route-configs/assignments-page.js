@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/assignments_page',
-    title: 'Assignments Status',
+    title: 'All Assignments\' Status',
     routeHandler: handler,
     access: {
         admins: true,
@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.PARTICIPANT,
         loggedOut: false
     },
-    icon: 'tasks',
+    icon: 'list',
     sidebar: true
 };  

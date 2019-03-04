@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/account',
-    title: 'Account',
+    title: 'My Profile',
     routeHandler: handler,
     access: {
         admins: true,
