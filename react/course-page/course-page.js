@@ -165,7 +165,7 @@ class CoursePage extends Component{
         let courseAssignments = null;
         if(this.state.pageData.instructorOrAdmin && this.state.pageData.assignmentsList){
             courseAssignments = (<div className="section">
-            <h2 className="title">Course Assignments</h2>
+            <h2 className="title">Course Assignments (click to launch assignment) </h2>
             <div className="section-content">
             <div className="col-xs-6">
                     <ul className="list-group">
@@ -206,7 +206,7 @@ class CoursePage extends Component{
         let partialAssignments = null;
         if(this.state.pageData.partialAssignments){
             partialAssignments = (<div className="section">
-                <h2 className="title">Saved Assignments</h2>
+                <h2 className="title">Saved Assignments (click to update assignment) </h2>
                 <div className="section-content" style={{maxHeight:"100%"}}>
                     <div className="col-xs-6">
                         <ul className="list-group">
