@@ -125,7 +125,7 @@ class UserManagementContainer extends Component{
 
     changeRole(userID,name,oldRole,newRole){
         console.log(newRole,userID);
-        apiCall.post('/usermanagement/role',{Role:newRole.value,UserID:userID},(err,status,body)=>{
+        apiCall.post('/usermanagement/role',{Role:newRole.value,memberID:userID},(err,status,body)=>{
             if(status.statusCode === 200){
                 this.state.changeUserRoleNotification = this.notification("success form-success",name+": role changed from "+oldRole+" to "+newRole.value);
                 this.fetchUsers();
@@ -273,7 +273,7 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
-            console.log(user);
+            //console.log(user);
             var organizationGroup = user.OrganizationGroup;
             var isBlocked = "Blocked" in user.UserLogin ? user.UserLogin.Blocked : false;
             var timeout = user.UserLogin.Timeout;
@@ -349,7 +349,7 @@ class UserManagementContainer extends Component{
             status = changeRoleNotification;
             this.state.changeUserRoleNotification = null;
         }
-console.log(this.state.addAdminUserData);
+//console.log(this.state.addAdminUserData);
         //=================================================================================================
         // Total content returned
         return ( 

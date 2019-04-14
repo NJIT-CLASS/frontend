@@ -23,6 +23,42 @@ export default {
     CombinedWeight: 'Combined Weight',
     WeightedGrade: 'Weighted Grade',
     UserName: 'UserName',
+    LastName: "Last Name",
+    FirstName:"First Name",
+    AssignmentGrade:"Assignment Grade",
+    CurrXCreditGrade:"Current Extra Credit Grade",
+    NumXCreditTasks:"# Extra Credit Tasks",
+    AssignmentGradeNoData:"No grades available for this assignment",
+    AGRHeader:"Assignment Grades Report",
+    PGRHeader:"Problem Grades Report",
+
+    Problem:"Problem",
+    ProblemGrade:'Problem Grade',
+    ProblemsPerStudent: 'Original # Problems Per Student',
+    WeightWithinAssignment: 'Weight Within Assignment',
+    ScaledGrade: 'Scaled Grade Within Assignment',
+
+    WeightWithinProblem:'Weight Within Problem',
+    ProblemGradeNoData: 'There are no grades for this problem',
+    PTTGRHeader:'Problem Task and Timeliness Report',
+    TimelinessGrade:'Timeliness Grade',
+
+    Field:'Field',
+    Type:'Type',
+    Value:'Value',
+    Max:'Max',
+    WeightWTask:'Weight Within Task',
+    ScaledGradeTask:'Scaled Grade Within Task',
+    TaskGradeNoData:'There are no grades for this task',
+    TGFRHeader: 'Task Grades Field Report',
     
+    PTGDRGHeader: 'Problem Timeliness Grade Details Report',
+    Status: 'Status',
+    DaysLate: 'Days Late',
+    PenaltyPerDay: 'Penalty Per Day',
+    TotalPenalty: 'Total Penalty',
+    
+
+
 
 };

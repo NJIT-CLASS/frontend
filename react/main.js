@@ -21,7 +21,7 @@ import QuickAssignmentReport from './quick-assignment-report/main-container';
 import AboutContainer from './about/about-container';
 import ForgotPasswordContainer from './forgot-password/forgot-password-container';
 import SectionsContainer from './sections/sections-container';
-import UserGradeReportContainer from './grade-report/user-grade-report-container';
+import UserGradeReportContainer from './grade-report/main-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import EveryonesWorkMain from './everyones-work/main-container';
