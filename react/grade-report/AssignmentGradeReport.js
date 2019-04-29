@@ -14,7 +14,7 @@ class AssignmentGradeReport extends React.Component {
     }
 
     componentDidMount(){
-        apiCall.post(`/gradeReport`,{ai_id:1},(err,status,body)=>{
+        apiCall.post(`/gradeReport`,{ai_id:11},(err,status,body)=>{
             if(status.statusCode === 200){
                 console.log(body);
                 this.setState({GradeReportRoot:body.assignmentGradeReport, loaded:true});
@@ -41,6 +41,14 @@ class AssignmentGradeReport extends React.Component {
         let AGRData = [];
         for(var userID in GradeReportRoot){
             let userReport = GradeReportRoot[userID];
+            console.log(userReport);
+
+            // TODO: change spelling error in backend, switching to correct spelling for now
+            // if(typeof userReport !== "string"){
+            //     userReport.assignmentGrade = userReport.assginmentGrade;
+            //     delete userReport.assginmentGrade;
+            // }
+            
             AGRData.push({
                 LastName:userReport.lastName,
                 FirstName:userReport.firstName,
