@@ -14,7 +14,7 @@ class AssignmentGradeReport extends React.Component {
     }
 
     componentDidMount(){
-        apiCall.post(`/gradeReport`,{ai_id:11},(err,status,body)=>{
+        apiCall.post(`/gradeReport`,{ai_id:this.props.AI_ID},(err,status,body)=>{
             if(status.statusCode === 200){
                 console.log(body);
                 this.setState({GradeReportRoot:body.assignmentGradeReport, loaded:true});
@@ -43,12 +43,6 @@ class AssignmentGradeReport extends React.Component {
             let userReport = GradeReportRoot[userID];
             console.log(userReport);
 
-            // TODO: change spelling error in backend, switching to correct spelling for now
-            // if(typeof userReport !== "string"){
-            //     userReport.assignmentGrade = userReport.assginmentGrade;
-            //     delete userReport.assginmentGrade;
-            // }
-            
             AGRData.push({
                 LastName:userReport.lastName,
                 FirstName:userReport.firstName,
@@ -65,7 +59,6 @@ class AssignmentGradeReport extends React.Component {
                 <h2 className="title">{strings.AGRHeader}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                        <span style={{backgroundColor: '#C7C7C7', fontSize: '14px', textAlign: 'center', display: 'inline-block', padding: '5px', width: '99%'}}>{"Temp"}</span>
                         <TableComponent
                             data={AGRData}
                             columns={[

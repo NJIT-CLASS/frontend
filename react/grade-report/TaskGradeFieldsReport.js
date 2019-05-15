@@ -44,7 +44,6 @@ class TaskGradeFieldsReport extends React.Component {
                 <h2 className="title">{strings.TGFRHeader}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                        <span style={{backgroundColor: '#C7C7C7', fontSize: '14px', textAlign: 'center', display: 'inline-block', padding: '5px', width: '99%'}}>{"Temp"}</span>
                         <TableComponent
                             data={TableTGFRGradeData}
                             columns={[

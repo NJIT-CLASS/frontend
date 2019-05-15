@@ -17,6 +17,7 @@ class GradeReport extends React.Component {
 
         this.state = {
             Strings:null,
+            assignmentGradereport:null,
             problemGradeReport:null,
             problemTaskAndTimelinessGradeReport:null,
             taskGradeFieldsReport:null,
@@ -26,6 +27,7 @@ class GradeReport extends React.Component {
             assignmentExtraCreditTimelinessGradesDetailReport:null
         };
 
+        this.displayAssignmentGradeReport = this.displayAssignmentGradeReport.bind(this);
         this.displayProblemGradeReport = this.displayProblemGradeReport.bind(this);
         this.displayProblemTaskAndTimelinessGradeReport = this.displayProblemTaskAndTimelinessGradeReport.bind(this);
         this.displayTaskGradeFields = this.displayTaskGradeFields.bind(this);
@@ -36,6 +38,11 @@ class GradeReport extends React.Component {
         this.props.__(strings, (newStrings) => {
             this.setState({Strings:newStrings});
         });
+    }
+
+    displayAssignmentGradeReport(gradeData){
+        console.log(gradeData);
+        this.setState({assignmentGradereport:(<AssignmentGradeReport strings={this.state.Strings} displayProblemGradeReport={this.displayProblemGradeReport} AI_ID={gradeData}></AssignmentGradeReport>)})
     }
 
     displayProblemGradeReport(gradeData){
@@ -59,6 +66,7 @@ class GradeReport extends React.Component {
     render(){
         let {
             Strings, 
+            assignmentGradereport,
             problemGradeReport, 
             problemTaskAndTimelinessGradeReport, 
             taskGradeFieldsReport, 
@@ -75,8 +83,8 @@ class GradeReport extends React.Component {
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
         return (
             <div>
-                <SelectAssignment strings={Strings} UserID={this.props.UserID}></SelectAssignment>
-                <AssignmentGradeReport strings={Strings} displayProblemGradeReport={this.displayProblemGradeReport}></AssignmentGradeReport>
+                <SelectAssignment strings={Strings} UserID={this.props.UserID} displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
+                {assignmentGradereport}
                 {problemGradeReport}
                     {problemTaskAndTimelinessGradeReport}
                         {taskGradeFieldsReport}
