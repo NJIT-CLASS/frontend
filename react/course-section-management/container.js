@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '../shared/tooltip';
 import Select from 'react-select';
 
 // important component cards for each entity type
@@ -53,6 +54,7 @@ class Container extends React.Component {
             number: 'Number',
             observer: 'Observer',
             observers: 'Observers',
+			observerToolTip:"Observers are not currently implemented",
             organization: 'Organization',
             save: 'Save',
             section: 'Section',
@@ -180,6 +182,7 @@ class Container extends React.Component {
                     userID={this.props.UserID}
                     courseID={this.state.courseID}
                     semesterID={this.state.semesterID}
+                    Tooltip={this.strings.observerToolTip}
                 />
             );
 
@@ -196,6 +199,7 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Student"
                     title={this.strings.students}
+                    Tooltip = ""
                 />
             );
             output.push(
@@ -206,6 +210,7 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Instructor"
                     title={this.strings.instructors}
+                    Tooltip = ""
                 />
             );
             output.push(
@@ -216,7 +221,9 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Observer"
                     title={this.strings.observers}
+                    Tooltip={this.strings.observerToolTip}
                 />
+                //<Tooltip Text = { this.strings.observerToolTip} ID = { 'CM_noObservers_tooltip'}/>
             );
         }
         return (<div>
