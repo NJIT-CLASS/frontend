@@ -5,6 +5,7 @@ import Select from 'react-select';
 import Toggle from '../shared/toggleSwitch';
 import TableComponent from '../shared/tableComponent';
 import InstructorVolunteerComponent from './instructorVolunteerComponent.js';
+import Tooltip from '../shared/tooltip';
 
 var parse = require('csv-parse/lib/sync');
 
@@ -521,9 +522,14 @@ class UserManager extends React.Component {
         if (this.state.users != undefined) {
           length = this.state.users.length;
         }
+        let observerTTDiv = "";
+        if (this.props.Tooltip == "Observers are not currently implemented") {
+            observerTTDiv = (<Tooltip Text={this.props.Tooltip} ID={'AA_number_of_workflows_tooltips'} />);
+        }
         let list = (
             <div className='card '>
                 <h2 className='title'>{this.props.title}</h2>
+                {observerTTDiv}
                 <button type='button' style={{margin: '10px 0'}} onClick={this.add.bind(this)}>{this.props.strings.add}</button>
                 {/*<table>
                     <thead>
