@@ -705,7 +705,7 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner">
                         <label>
                             {strings.WhatIfLate}</label>
-                        <Tooltip Text={strings.TaskWhatIfLateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-what-if-late-tooltip`} />
+                        <Tooltip Text={strings.TaskWhatHappensIfLateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-what-if-late-tooltip`} />
 
                         <Select options={onLateValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_what_if_late', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_what_if_late} clearable={false} searchable={false} autoBlur />
                     </div>
