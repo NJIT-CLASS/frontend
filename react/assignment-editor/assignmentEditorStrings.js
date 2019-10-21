@@ -223,14 +223,15 @@ const fieldStrings = {
 };
 
 const tooltipMessages = {
+    ActivityCourseMessage: 'Assignments are defined for a single course. (You can share them with other courses elsewhere.)',
     AssigmentNameMessage: 'This name will appear every time this assignment is used in any section.  Please make it descriptive.',
     AssigmentTypeMessage: 'This is for documentation purposes only, and is not displayed or used otherwise.',
     TaskInputFieldsHeaderMessage: 'These fields will be displayed to users for entering content as part of this task.  (You can add additional fields.)',
     TaskFieldRubricMessage: 'Optional rubric and/or guidelines to display for this input field.',
-    TaskWhatHappensIfLateMessage: 'After the due date, you have indicated that this task be marked as late.  Should the system (1) keep the current user; or instead: (2) automatically allocate to a different user/group (chosen from the volunteer pool when available), (3) allocate to an instructor, (4) allocate to a different member of the current group',
+    TaskWhatHappensIfLateMessage: 'When this task reaches its deadline, should the task automatically (1) Keep Same Participant: continue as late but allocate to the same user; (2) Allocate New Participant: continue but allocate to a new user, if possible from the volunteer pool, without extra credit; (3) Reassign for Extra Credit: continue but allocate to a new user, if possible from the volunteer pool, for extra credit; (4) Allocate to Instructor: continue but allocate to the instructor to complete.',
     TaskSimpleGrade: 'Grade users for completing this task (regardless of any assessment)?  You will be able to specify a reduction per day late.  (You can specify the overall grade weighting elsewhere.)',
     ProblemGradeWeightsTitleMessage: 'You have specified multiple grade components.  Please weight these so they add up to 100.',
-    AggregatedGradeForOnTimeMessage: 'This is the "completion grade" weight for doing the tasks on time that you have indicated in the advanced options. This weight component will be divided by the number of tasks indicated to utilize completion grades.',
+    AggregatedGradeForOnTimeMessage: 'This is the "timeliness grade" weight for doing the tasks on time that you have indicated in the advanced options. This weight component will be divided by the number of tasks indicated to utilize timeliness grades.',
     AssignmentNumberProblemsMessage: 'Each problem TYPE will have an independent structure, parameter values and instructions/rubrics. E.g., your assignment may have a "short answer" and a "fill in the blank" problem.  (Specify how many problems of each type elsewhere.)',
     AssignmentInstructionsMessage: 'This is the global assignment instructions to display.  You may instead wish to only specify instructions with each problem and/or task type elsewhere.',
     ProblemNameMessage: 'This is the name displayed for this PROBLEM TYPE.',
@@ -281,8 +282,8 @@ const tooltipMessages = {
     TaskConstraintNotInMessage: 'The user must NOT be the same as one allocated to the task checked below.  (If two columns of check boxes appear, then use the column corresponding to the first or all subsequent users as appropriate.)',
     TaskConstraintChooseFromMessage: 'The user must be selected from the users allocated to one of the tasks checked below.  (If two columns of check boxes appear, then use the column corresponding to the first or all subsequent users as appropriate.)',
     // I don't know what this is...
-    TaskGetFieldContentMessage: '',
-    TaskRequiresJustificationMessage:'',
+    TaskGetFieldContentMessage: 'Checking this box will let you specify that the default field content will be copied from a field of a prior task.',
+    TaskRequiresJustificationMessage:'Checking this box will add a mandatory justification input box (along with this user input field).  Users will have to then input both the field content and a justification for this content.  Please provide instructions for the justification below.',
     TaskGroupTaskMessage:'Should this task be conducted jointly by a group or by a single user.  (Not used.  Currently groups are not implemented.)',
     TaskConsolidateFunctionMessage: 'If the system to automatically consolidate/aggregate the values from multiple independent assessments, it will use the (1) maximum, (2) minimum, or (3) average of the assessment values as the result.',
     TaskWhoCanDoMessage:'The type of user to allocate to this task: (1) student(s) (2) instructor (3) both students and an instructor.  (For assessment/reflection tasks, this will be indicated previously within the parameters of the prior task requiring reflection/assessment.)',

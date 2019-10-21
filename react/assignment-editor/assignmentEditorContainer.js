@@ -251,6 +251,7 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: [strings.Field],
                 field_distribution: {},
+                //CHANGE 10/5/19
                 0: cloneDeep(this.defaultFields)
             }
         });
@@ -1812,9 +1813,13 @@ class AssignmentEditorContainer extends React.Component {
 
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
         let linkedFields = JSON.parse(JSON.stringify((workflowData[linkedIndex].TA_fields)));
+        console.log("linkedFields");
+        console.log(linkedFields);
         let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
         let linkedFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
-        
+        console.log("linkedFieldDistrubtion");
+        console.log(linkedFieldDistribution);
+        console.log(linkedFieldDistribution.length);
         let oldFields = JSON.parse(JSON.stringify((workflowData[taskIndex].TA_fields)));
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
@@ -1829,6 +1834,8 @@ class AssignmentEditorContainer extends React.Component {
             }
 
             let copiedField = linkedFields[j];
+            //console.log("copiedField");
+            //console.log(copiedField);
             if(workflowData[taskIndex].TA_type === TASK_TYPES.EDIT){
                 //If an edit task, set default content of linked fields to point to linked task
                 if(copiedField.default_content[0] === ''  && copiedField.default_refers_to[0] === null){
@@ -1838,7 +1845,13 @@ class AssignmentEditorContainer extends React.Component {
             }
 
             workflowData[taskIndex].TA_fields[finalFieldCounter] = copiedField;
-            workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = linkedFields[j];
+            //changed linkedFields[j] to linkedFields.field_distribution
+            workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = linkedFields.field_distribution;
+            
+            console.log("linkedFields[j]");
+            console.log(linkedFields[j]);
+            console.log("workflow task");
+            console.log(workflowData[taskIndex]);
             finalFieldCounter += 1;
         });
 
@@ -1864,7 +1877,11 @@ class AssignmentEditorContainer extends React.Component {
 
         workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedNumberOfFields;
         workflowData[taskIndex].TA_fields.field_titles = [...linkedFields.field_titles, ...oldFieldTitles];
-
+        workflowData[taskIndex].TA_fields.field_distribution = linkedFields.field_distribution;
+        console.log("linkedField\'s field_distribution");
+        console.log(linkedFields.field_distribution);
+        console.log("old field distribution");
+        console.log(oldFieldDistribution); 
         return workflowData;
     }
 
