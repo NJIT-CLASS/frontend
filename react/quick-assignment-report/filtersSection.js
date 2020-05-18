@@ -109,11 +109,19 @@ const FilterSection = ({
     );
 
     return (
-        <div >
-            {problemTypeFilter}
-            {taskTypeFilter}
-            {statusFilter}
-            {userFilter}
+        <div style={{display: "flex", flexDirection: "row", maxHeight: "56px"}}>
+            <div>
+                {problemTypeFilter}
+            </div>
+            <div>
+                {taskTypeFilter}
+            </div>
+            <div>
+                {statusFilter}
+            </div>
+            <div>
+                {userFilter}
+            </div>   
         </div>
     );
 
