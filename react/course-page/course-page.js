@@ -267,7 +267,7 @@ class CoursePage extends Component{
                 {this.state.showModal ? (<Modal children={this.state.modalContent}/>):null}
                 <div className="block-container">
                     <div className="course_header">
-                        <h2 className="title">{this.state.pageData.courseOrganization}: {this.state.pageData.courseNumber} {this.state.pageData.courseTitle}</h2>
+                        <h2 className="title">{this.state.pageData.courseOrganization}{this.state.pageData.courseNumber} {this.state.pageData.courseTitle}</h2>
                         <div className="description">{this.state.pageData.courseDescription}</div>
                     </div>
                 </div>
@@ -290,7 +290,7 @@ class CoursePage extends Component{
                         </div>
                         {courseAssignments}
                         {activeAssignments}
-                        {partialAssignments}
+                        {(this.state.pageData.instructor) ? partialAssignments: null}
                         {addAssignmentButton}
                     </div>
                 </div>

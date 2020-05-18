@@ -109,7 +109,7 @@ const FilterSection = ({
     );
 
     return (
-        <div style={{maxHeight: "55px"}}>
+        <div >
             {problemTypeFilter}
             {taskTypeFilter}
             {statusFilter}

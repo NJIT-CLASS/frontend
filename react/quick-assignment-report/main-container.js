@@ -268,7 +268,6 @@ class QuickAssignmentReport extends Component {
     }
 
     render() {
-
         if (!this.state.AssignmentDataLoaded) {
             return null;
         }
@@ -332,17 +331,31 @@ class QuickAssignmentReport extends Component {
                     </button>
                 </div>;
         }
-
-        return (
+        
+        return ( 
             <div className="quick-assignment-report">
                 {this.state.sectionInfoLoaded?
-                    (<div className="details">
-                        {`${this.state.sectionInfo.courseNumber} - 
-                          ${this.state.sectionInfo.courseName} - 
-                          ${this.state.sectionInfo.sectionName} - 
-                          ${this.state.sectionInfo.semesterName} - 
-                          ${this.state.sectionInfo.assignmentName}`}
-                    </div>)
+                    (
+                    <div className="details">
+                        <div>
+                            {`${this.state.sectionInfo.courseNumber} - 
+                            ${this.state.sectionInfo.courseName} - 
+                            ${this.state.sectionInfo.sectionName} - 
+                            ${this.state.sectionInfo.semesterName} - 
+                            ${this.state.sectionInfo.assignmentName}`
+                            }
+                            {
+                                (!this.props.hasInstructorPrivilege) ? 
+                                    <Tooltip
+                                        ID={status + 'Tooltip'}
+                                        Text={this.state.Strings.DescriptionTooltip}
+                                    />: null
+                            }
+                           
+                            
+                        </div>
+                    </div>
+                    )
                 :null}
 
                 {this.props.hasInstructorPrivilege ? // Only instructors/admins should see the anonymous mode switch

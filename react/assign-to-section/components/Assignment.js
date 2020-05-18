@@ -117,7 +117,7 @@ class Assignment extends React.Component {
                             </tr>
 
                             <tr className="children">
-                                <td className="children">
+                                <td className="children" style={{width: "fit-content"}}>
                                     <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
                                         name="Days" value="Days">
                                     </input>

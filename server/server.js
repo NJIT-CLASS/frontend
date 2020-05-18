@@ -321,7 +321,7 @@ for (const route of loggedOutRoutes) {
                                     options.languageOptions = req.App.langOptions;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
-                                        options.title = `${route.title} | CLASS Learning System`;
+                                        options.title = `${route.title} | PL System`;
                                     }
     
                                     // set the page header to be the route title if the pageHeader is not set
@@ -656,7 +656,7 @@ for (const route of loggedInRoutes) {
                                     options.admin = route.access.admins;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
-                                        options.title = `${route.title} | CLASS Learning System`;
+                                        options.title = `${route.title} | PL System`;
                                     }
     
                                     // set the page header to be the route title if the pageHeader is not set
