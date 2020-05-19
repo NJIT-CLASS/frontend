@@ -20,7 +20,7 @@ class AboutContainer extends Component { //create a class for the component
                 semesterTitle: strings.SubTitle10,
                 topPerformers: ["Brandon Caton (2017-2019)", "Jimmy Lu (2016-2019)",
                  "Alan Romano (2016-2018)", "Michael Raman (2017-2019)", "Erick Sanchez Suasnabar (2013-)"],
-                contributors: []
+                contributors: [],
             },
             {
                 semesterTitle: strings.SubTitle11,
@@ -80,14 +80,14 @@ class AboutContainer extends Component { //create a class for the component
                             <p>{strings.Sentence1}</p>
 
                             <ul>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step0}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step1}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step2}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step3}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step4}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step5}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step6}</li>
-                                <li><span><i class="fa fa-check icon"></i></span>{strings.Step7}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step0}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step1}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step2}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step3}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step4}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step5}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step6}</li>
+                                <li><span ><i className="fa fa-check icon"></i></span>{strings.Step7}</li>
                             </ul>
                             <img src={'../../static/images/process-figure.png'} style={{width: '100%'}} />
                         </div>
@@ -100,13 +100,17 @@ class AboutContainer extends Component { //create a class for the component
                     {
                         studentData.map( semesterData => {
                             const topPerformerList = semesterData.topPerformers.map(
-                                student => <li><b style={{fontWeight: '600'}}>{student}</b></li>
+                                student => <li key={student}><b 
+                                    style={{fontWeight: '600'}}
+                                    >
+                                        {student}
+                                    </b></li>
                             );
 
                             const contributorList = semesterData.contributors.map(
-                                student => <li>{student}</li>
+                                student => <li key={student}>{student}</li>
                             );
-                            return <div className="section">
+                            return <div className="section" key={semesterData.semesterTitle}>
                                 <h2 className="title" style={{width: '75%'}}>{semesterData.semesterTitle}</h2>
                                 <div className="section-content" >
                                     <ul>
