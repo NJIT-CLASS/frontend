@@ -143,7 +143,7 @@
     "gulp-uglify": "^3.0.0",
     "gulp-uglify-es": "^1.0.4",
     "inquirer": "^6.0.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "nodemon": "^1.18.10",
     "pre-commit": "^1.2.2",
     "react-treeview": "^0.4.7",

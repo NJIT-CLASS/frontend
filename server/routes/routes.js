@@ -9,6 +9,7 @@ const pages = [
 
     'account',
     'about',
+    'about-loggedout',
     'course-section-management',
     'assignment-editor',
     'user-management',
