@@ -663,6 +663,10 @@ for (const route of loggedInRoutes) {
                                     if (!('pageHeader' in options)) {
                                         options.pageHeader = route.title;
                                     }
+
+                                    if(route.route == '/dashboard'){
+                                        options.expanded = true;
+                                    }
     
                                     // pass masquerading info to template
                                     if (req.session.masqueraderId && options.route !== '/') {
