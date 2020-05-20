@@ -22,6 +22,7 @@ export default {      // define all your strings in an object like this one (the
     SubTitle8: 'Fall 2017',
     SubTitle9: 'Spring 2018',
     SubTitle6: 'For technical assistance please contact:',
+    // For information about Participatory Learning Research or using this for your own courses, please contact:
     SubTitle7: 'For technical assistance, and information about…',
     SubTitle10: "Core Devolopment Team",
     SubTitle11: "Evaluation Team"

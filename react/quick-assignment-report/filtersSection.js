@@ -109,7 +109,7 @@ const FilterSection = ({
     );
 
     return (
-        <div style={{display: "flex", flexDirection: "row", maxHeight: "56px"}}>
+        <div style={{display: "flex", flexDirection: "row", maxHeight: "56px", zIndex: "100"}}>
             <div>
                 {problemTypeFilter}
             </div>

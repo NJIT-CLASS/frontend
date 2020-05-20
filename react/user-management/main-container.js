@@ -300,15 +300,29 @@ class UserManagementContainer extends Component{
                 orgs = orgs.filter(org=>org != null);
                 orgs = orgs.join();
             } 
-
+           
             return {
                 email: email,
                 firstName: user.FirstName,
                 lastName: user.LastName,
                 organization: orgs,
                 testUser:isTestUser,
-                systemRole:(<Select className="change-role-select" cssClassNamePrefix="user-manage-" onChange={this.changeRole.bind(this,userID,user.FirstName+" "+user.LastName,userRole)} clearable={false} searchable={false} value={userRole} options={selectOptions}/>),
-                blockedStatus: (<ToggleSwitch isClicked={isBlocked} click={this.changeBlockedStatus.bind(this, userID, email, isBlocked)} />),
+                systemRole:(
+                    <Select 
+                        className="change-role-select" 
+                        cssClassNamePrefix="user-manage-" 
+                        onChange={this.changeRole.bind(this,userID,user.FirstName+" "+user.LastName,userRole)} 
+                        clearable={false} 
+                        searchable={false} 
+                        value={userRole} 
+                        options={selectOptions}
+                    />
+                        ),
+                blockedStatus: (
+                    <ToggleSwitch 
+                        isClicked={isBlocked} 
+                        click={this.changeBlockedStatus.bind(this, userID, email, isBlocked)} 
+                    />),
                 resetPassword: (<button type='button' onClick={this.resetPassword.bind(this, email)}>Reset</button>),
                 removeUser: (<button type='button' onClick={this.removeUser.bind(this, userID, email)}>Remove</button>),
                 timeoutStatus:timeout,
@@ -352,6 +366,12 @@ class UserManagementContainer extends Component{
 //console.log(this.state.addAdminUserData);
         //=================================================================================================
         // Total content returned
+
+        //style for the each of the cell of the react-table
+        let td_styles = {
+            margin: "auto"
+        }
+
         return ( 
             <div>
                 <div>
@@ -400,54 +420,93 @@ class UserManagementContainer extends Component{
                         {status}
 
                         <ReactTable
-                        filterable
-                        defaultPageSize={10}
-                        className="user-management-table"
-                        resizable={true}
-                        data={tableData}
-                        columns={[
-                        {
-                        Header: strings.email,
-                        accessor: 'email',
-                        },
-                        {
-                        Header: strings.fn,
-                        accessor: 'firstName',
-                        },
-                        {
-                        Header: strings.ln,
-                        accessor: 'lastName'
-                        },
-                        {
-                        Header: strings.organization,
-                        accessor: 'organization',
-                        },
-                        {
-                        Header: strings.sysRole,
-                        accessor: 'systemRole',
-                        },
-                        {
-                        Header: strings.testUser,
-                        accessor: 'testUser',
-                        },
-                        {
-                        Header: strings.blocked,
-                        accessor: 'blockedStatus',
-                        },
-                        {
-                        Header: strings.timeout,
-                        accessor: 'timeoutStatus',
-                        },
-                        {
-                        Header: strings.lastlogin,
-                        accessor: 'lastlogin',
-                        },
-                        {
-                        Header: strings.resetPW,
-                        accessor: 'resetPassword',
-                        },
-                        ]} 
-                        noDataText={strings.noUsers}
+                            filterable
+                            defaultPageSize={10}
+                            className="user-management-table"
+                            resizable={true}
+                            data={tableData}
+                            // className="-striped -highlight"
+                            columns={[
+                                {
+                                    Header: strings.email,
+                                    accessor: 'email',
+                                    minWidth: 200,
+                                    style: td_styles
+        
+                                },
+                                {
+                                    Header: strings.fn,
+                                    accessor: 'firstName',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.ln,
+                                    accessor: 'lastName',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.organization,
+                                    accessor: 'organization',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.sysRole,
+                                    accessor: 'systemRole',
+                                    minWidth: 288,
+                                    style: td_styles,
+                                    sortMethod: (a, b, desc) => {
+                                        const aVal = a.props.value
+                                        const bVal = b.props.value
+                
+                                        if(aVal > bVal){
+                                            return 1
+                                        }
+                                        if(aVal < bVal){
+                                            return -1
+                                        }
+                                
+                                        return 0
+                                    }
+                                },
+                                {
+                                    Header: strings.testUser,
+                                    accessor: 'testUser',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.blocked,
+                                    accessor: 'blockedStatus',
+                                    style: td_styles,
+                                    sortMethod: (a, b, desc) => {
+                                        if(a.props.isClicked == b.props.isClicked){
+                                            return 0;
+                                        }
+                                        if(a.props.isClicked && !b.props.isClicked){
+                                            return 1;
+                                        }
+                                        if(!a.props.isClicked && b.props.isClicked){
+                                            return -1;
+                                        }
+                                    }
+
+                                },
+                                {
+                                    Header: strings.timeout,
+                                    accessor: 'timeoutStatus',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.lastlogin,
+                                    accessor: 'lastlogin',
+                                    style: td_styles
+                                },
+                                {
+                                    Header: strings.resetPW,
+                                    accessor: 'resetPassword',
+                                    style: td_styles
+                                },
+                            ]} 
+                            noDataText={strings.noUsers}
                         />
                     </div>
                 </form>
