@@ -66,7 +66,6 @@ class UserManagementContainer extends Component{
 
     fetchOrganizations(){
         apiCall.getAsync('/organization',{}).then(body => {
-            //console.log(body);
             let orgs = body.data.Organization.map(org=>{
                 return {label:org.Name,value:org.OrganizationID};
             });
@@ -273,7 +272,6 @@ class UserManagementContainer extends Component{
 
         // Forming rows for the user management table =====================================================
         tableData = users.map(user=>{
-            //console.log(user);
             var organizationGroup = user.OrganizationGroup;
             var isBlocked = "Blocked" in user.UserLogin ? user.UserLogin.Blocked : false;
             var timeout = user.UserLogin.Timeout;
@@ -363,7 +361,6 @@ class UserManagementContainer extends Component{
             status = changeRoleNotification;
             this.state.changeUserRoleNotification = null;
         }
-//console.log(this.state.addAdminUserData);
         //=================================================================================================
         // Total content returned
 
