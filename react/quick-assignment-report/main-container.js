@@ -3,7 +3,7 @@ import AssignmentComponent from './assignment-component';
 import FilterSection from './filtersSection';
 import LegendSection from './legendSection';
 import strings from './strings';
-import apiCall from '../shared/apiCall';
+import apiCall from '../shared/apiCall'; 
 import {flatten, uniqBy, flatMap, sortBy} from 'lodash';
 import TaskReallocationForm from './task-reallocation-form';
 import AssignmentReallocationForm from './assignment-reallocation-form';
