@@ -33,7 +33,7 @@ export default class PendingTaskComponent extends Component {
                     }
                     
                     return {
-                        Assignment: task.AssignmentInstance.Assignment.Name,
+                        Assignment: task.AssignmentInstance.DisplayName,
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         Course: task.AssignmentInstance.Section.Course.Name,
