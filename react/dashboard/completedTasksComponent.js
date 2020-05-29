@@ -19,7 +19,7 @@ export default class CompletedTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getCompletedTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
-                console.log(body)
+                // console.log(body)
                 let transformedTaskList = body.CompletedTaskInstances.map(task => {
                     return {
                         Assignment: task.AssignmentInstance.DisplayName,

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
 import TableComponent from '../shared/tableComponent';
+import Tooltip from '../shared/tooltip';
+
 
 export default class PendingTaskComponent extends Component {
     constructor(props) {
@@ -22,7 +24,7 @@ export default class PendingTaskComponent extends Component {
             if(res.statusCode === 200){
                 let transformedTaskList = body.PendingTaskInstances.map(task => {
 
-                    console.log(task);
+                    // console.log(task);
                     var code = "";
 
                     if(task.TaskActivity.MustCompleteThisFirst){
@@ -107,6 +109,18 @@ export default class PendingTaskComponent extends Component {
     render() {
         let {Strings} = this.props;
         let {PendingTasks, PendingTasksData} = this.state;
+
+        const codeHeader = (
+        <span>
+            {Strings.CodeHeader} 
+            <Tooltip 
+                ID='Tooltip'
+                // style={{ float: 'bottom' }}
+                multiline={true}
+                place="bottom"
+                Text={Strings.CodeTooltipExplaination}
+            />
+        </span>)
         
         return (
             <div className="section card-2 sectionTable">
@@ -146,7 +160,7 @@ export default class PendingTaskComponent extends Component {
                                     Cell: this.makeDate
                                 },
                                 {
-                                    Header: Strings.CodeHeader,
+                                    Header: codeHeader,
                                     resizable:true,
                                     accessor: 'Code',
                                     Cell:this.makeCode
