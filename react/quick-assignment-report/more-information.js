@@ -100,36 +100,52 @@ class MoreInformation extends Component {
     }
 
     timeLine(){
+        const timeString = (hours, minutes, seconds) => {
+            const bold = {fontWeight: "700"}
+            return (
+                <span>
+                    {hours}&nbsp;<span style={bold}>{hours <= 1 ? "hr-":"hrs-"}</span>
+                    {minutes}&nbsp;<span style={bold}>{minutes <= 1 ? "min-":"mins-"}</span>
+                    {seconds}&nbsp;<span style={bold}>{seconds <= 1 ? "sec":"secs"}</span>
+                </span>
+            )
+        }
         let {StartDate, EndDate, ActualEndDate } = this.props.taskInstance;
         let submitted = ActualEndDate !== null
         StartDate = new Date(StartDate)
         EndDate = new Date(EndDate)
         ActualEndDate = new Date(ActualEndDate)
         let timeLapesedInMilliSecs = Date.now() - StartDate;
-        const [hrs, mins, secs] = covertToHMS(timeLapesedInMilliSecs/1000);
+        let timeToCompleteTaskInMilliSecs = ActualEndDate - StartDate;
+        let lateByInMilliSecs = Date.now() - EndDate;
+
         
-        const bold = {fontWeight: "700"}
-        
-    let timeLapesedString = (<span>{hrs}&nbsp;<span style={bold}>hrs-</span>{mins}&nbsp;<span style={bold}>mins-</span>{secs}&nbsp;<span style={bold}>secs</span></span> )
+
+        let [hrs, mins, secs] = covertToHMS(timeLapesedInMilliSecs/1000);
+        let timeLapesedString = timeString(hrs, mins, secs)
+        let [hrs1, mins1, secs1] = covertToHMS(timeToCompleteTaskInMilliSecs/1000);
+        let timeToCompleteString = timeString(hrs1, mins1, secs1)
+        let [hrs2, mins2, secs2] = covertToHMS(lateByInMilliSecs/1000);
+        let lateBySting = timeString(hrs2, mins2, secs2)
         let tableBody = null
-
-
+        
         const [execution, cancelled, revision, dueStatus, pageInteraction, reallocation ] = JSON.parse(this.props.taskInstance.Status)
+                
         switch(execution){
             case "complete":
                 tableBody = (
                     <tbody>
                         <tr>
-                            <th>Time Elapsed:</th> <td>{timeLapesedString}</td>
+                            <th>Completed in:</th><td>{timeToCompleteString}</td>
                         </tr>
                         <tr>
-                            <th>Started At:</th> <td>{StartDate.toUTCString()}</td>
+                            <th>Started At:</th><td>{StartDate.toUTCString()}</td>
                         </tr>
                         <tr>
-                            <th>Submission Deadline:</th> <td>{EndDate.toUTCString()}</td>
+                            <th>Submission Deadline:</th><td>{EndDate.toUTCString()}</td>
                         </tr>
                         <tr>
-                            <th>{cancelled!=="normal" ? "Cancelled At" : "Submitted At"}:</th> <td>{ActualEndDate.toUTCString()}</td>
+                            <th>{cancelled!=="normal" ? "Cancelled At" : "Submitted At"}:</th><td>{ActualEndDate.toUTCString()}</td>
                         </tr>
                     </tbody>
                 )
@@ -139,16 +155,16 @@ class MoreInformation extends Component {
                     tableBody = (
                         <tbody>
                             <tr>
-                                <th>Time Elapsed:</th> <td>Not Started...</td>
+                                <th>Time Elapsed:</th><td>Not Started...</td>
                             </tr>
                             <tr>
-                                <th>Started At:</th> <td>Not Started...</td>
+                                <th>Started At:</th><td>Not Started...</td>
                             </tr>
                             <tr>
-                                <th>Submission Deadline:</th> <td>Not Started...</td>
+                                <th>Submission Deadline:</th><td>Not Started...</td>
                             </tr>
                             <tr>
-                                <th>Submitted At:</th> <td>Not Started...</td>
+                                <th>Submitted At:</th><td>Not Started...</td>
                             </tr>
                         </tbody>   
                     )
@@ -156,16 +172,16 @@ class MoreInformation extends Component {
                     tableBody = (
                         <tbody>
                             <tr>
-                                <th>Time Elapsed:</th> <td>Cancelled...</td>
+                                <th>Time Elapsed:</th><td>Cancelled...</td>
                             </tr>
                             <tr>
-                                <th>Started At:</th> <td>Cancelled...</td>
+                                <th>Started At:</th><td>Cancelled...</td>
                             </tr>
                             <tr>
-                                <th>Submission Deadline:</th> <td>Cancelled...</td>
+                                <th>Submission Deadline:</th><td>Cancelled...</td>
                             </tr>
                             <tr>
-                                <th>Cancelled At:</th> <td>{ActualEndDate.toUTCString()}</td>
+                                <th>Cancelled At:</th><td>{ActualEndDate.toUTCString()}</td>
                             </tr>
                         </tbody>   
                     )
@@ -173,37 +189,57 @@ class MoreInformation extends Component {
                 
                 break
             case "started":
-                tableBody = (
-                    <tbody>
-                        <tr>
-                            <th>Time Elapsed:</th> <td>{timeLapesedString}</td>
-                        </tr>
-                        <tr>
-                            <th>Started At:</th> <td>{StartDate.toUTCString()}</td>
-                        </tr>
-                        <tr>
-                            <th>Submission Deadline:</th> <td>{EndDate.toUTCString()}</td>
-                        </tr>
-                        <tr>
-                            <th>Submitted At:</th> <td>{!submitted ? "Not Submitted": ActualEndDate.toUTCString()}</td>
-                        </tr>
-                    </tbody> 
-                )
+                if(cancelled!=="cancelled"){
+                    tableBody = (
+                        <tbody>
+                            <tr>
+                                <th>{dueStatus === "late" ? "Overdue by":"Time Elapsed"}:</th><td>{dueStatus === "late" ? lateBySting:timeLapesedString}</td>
+                            </tr>
+                            <tr>
+                                <th>Started At:</th><td>{StartDate.toUTCString()}</td>
+                            </tr>
+                            <tr>
+                                <th>Submission Deadline:</th><td>{EndDate.toUTCString()}</td>
+                            </tr>
+                            <tr>
+                                <th>Submitted At:</th><td>{!submitted ? "Not Submitted": ActualEndDate.toUTCString()}</td>
+                            </tr>
+                        </tbody> 
+                    )
+                }else{
+                    tableBody = (
+                        <tbody>
+                            <tr>
+                                <th>Time Elapsed:</th><td>Cancelled...</td>
+                            </tr>
+                            <tr>
+                                <th>Started At:</th><td>Cancelled...</td>
+                            </tr>
+                            <tr>
+                                <th>Submission Deadline:</th><td>Cancelled...</td>
+                            </tr>
+                            <tr>
+                                <th>Cancelled At:</th><td>{ActualEndDate.toUTCString()}</td>
+                            </tr>
+                        </tbody>   
+                    )
+                }
+                
                 break
             case "bypassed":
                 tableBody = (
                     <tbody>
                         <tr>
-                            <th>Time Elapsed:</th> <td>Bypassed</td>
+                            <th>Time Elapsed:</th><td>Bypassed</td>
                         </tr>
                         <tr>
-                            <th>Started At:</th> <td>{StartDate.toUTCString()}</td>
+                            <th>Started At:</th><td>{StartDate.toUTCString()}</td>
                         </tr>
                         <tr>
-                            <th>Submission Deadline:</th> <td>{EndDate.toUTCString()}</td>
+                            <th>Submission Deadline:</th><td>{EndDate.toUTCString()}</td>
                         </tr>
                         <tr>
-                            <th>Bypassed At:</th> <td>{ActualEndDate.toUTCString()}</td>
+                            <th>Bypassed At:</th><td>{ActualEndDate.toUTCString()}</td>
                         </tr>
                     </tbody> 
                 )
@@ -212,16 +248,16 @@ class MoreInformation extends Component {
                 tableBody = (
                     <tbody>
                         <tr>
-                            <th>Time Elapsed:</th> <td>Automatic</td>
+                            <th>Time Elapsed:</th><td>Automatic</td>
                         </tr>
                         <tr>
-                            <th>Start At:</th> <td>{StartDate.toUTCString()}</td>
+                            <th>Start At:</th><td>Automatic</td>
                         </tr>
                         <tr>
-                            <th>Submit By:</th> <td>{EndDate.toUTCString()}</td>
+                            <th>Submit By:</th><td>Automatic</td>
                         </tr>
                         <tr>
-                            <th>Submitted At:</th> <td>{ActualEndDate.toUTCString()}</td>
+                            <th>Submitted At:</th><td>Automatic</td>
                         </tr>
                     </tbody>
                 )
