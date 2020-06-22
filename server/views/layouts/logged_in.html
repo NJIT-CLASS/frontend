@@ -14,8 +14,11 @@
     <body class="logged-in">
         <div class="main-container" id="app-container">
 
-
+        {{#if expanded }}
+            <div class="sidebar">
+        {{else}}
             <div class="sidebar collapsed">
+        {{/if}}
                 <h2 onclick="(function(e){
                   location.href = '/'
                 })(event)" ><i class="fa fa-graduation-cap"></i><span>{{ __ "Participatory Learning" }}</span></h2>

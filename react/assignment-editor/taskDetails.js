@@ -1097,7 +1097,7 @@ class TaskDetailsComponent extends React.Component {
 
             if(taskCreatedList.length > 0){
                 followOnAssessmentTaskView =  <div className="section-divider">
-                    <div className="subheading">{strings.AssessmentFollowOnHeader}</div>
+                    {/* <div className="subheading">{strings.AssessmentFollowOnHeader}</div> */}
                     {allowFollowOnAssessment}
                 </div>;
             }

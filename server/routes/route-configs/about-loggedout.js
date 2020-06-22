@@ -2,7 +2,7 @@ const handler = require('../route-handlers/about');
 import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
-    route: '/about',
+    route: '/about-loggedout',
     title: 'About Participatory Learning',
     routeHandler: handler,
     access: {
@@ -10,9 +10,9 @@ module.exports = {
         instructors: true,
         students: true,
         role: ROLES.GUEST,
-        loggedOut: false
+        loggedOut: true
     },
     icon: 'info-circle',
-    sidebar: true
+    sidebar: false
 };
  

@@ -415,15 +415,18 @@ class AssignToSectionContainer extends React.Component
                 </span>
             </span>);
         }
+        
+        console.log("Workflow", this.state.WorkFlow )
         let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
         {
             let tasks = workflow.Tasks.map(function(task, index){
                 if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
                     return null;
                 }
-
+                // console.log(index)
                 return (
                     <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
+
                         onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
                         onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
                         onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
@@ -448,9 +451,11 @@ class AssignToSectionContainer extends React.Component
                 </div>);
         }, this);
 
+        console.log("Sections", this.state.Sections)
+        console.log("Semesters", this.state.Semesters)
+
         return (
             <div>
-
                 <Assignment Assignment={this.state.Assignment}
                     SectionsList={this.state.Sections}
                     Semesters={this.state.Semesters}
