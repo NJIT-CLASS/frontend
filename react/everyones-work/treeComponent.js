@@ -25,8 +25,28 @@ class TreeComponent extends Component {
     }
 
     makeTreeView(node){
+        console.log(node);
         if(node == null || node.model.id == -1 || node.Tasks == undefined) return <span></span>;
-        let nodeLink = <a href={'/task/'+node.Tasks[0].TaskInstanceID} target="_blank"><span className="node">{node.Tasks[0].TaskActivity.DisplayName}</span></a>;
+
+        let nodeLink = null;
+        let status = JSON.parse(node.Tasks[0].Status)[0];
+        switch(status){
+            case "complete":
+                nodeLink = <a href={'/task/'+node.Tasks[0].TaskInstanceID} target="_blank"><span className="node">{node.Tasks[0].TaskActivity.DisplayName}</span></a>;
+                break;
+            case "bypassed":
+                nodeLink = <span className="node">{node.Tasks[0].TaskActivity.DisplayName} (bypassed)</span>;
+                break;
+            case "cancelled":
+                nodeLink = <span className="node">{node.Tasks[0].TaskActivity.DisplayName} (cancelled)</span>;
+                break;
+            case "automatic":
+                nodeLink = <span className="node">{node.Tasks[0].TaskActivity.DisplayName} (automatic)</span>;
+                break;
+            default:
+                nodeLink = <span className="node">{node.Tasks[0].TaskActivity.DisplayName}</span>;
+        }
+
         let nodeChildrenTrees = [];
         if(node.children.length != 0){
             nodeChildrenTrees = node.children.map( x=>this.makeTreeView(x));
@@ -41,10 +61,19 @@ class TreeComponent extends Component {
     componentDidMount() {
         apiCall.get(`/EveryonesWork/alternate/${this.props.AssignmentID}`, (err, res, body) => {
             console.log(body);
-            const firstKey = Object.keys(body.Workflows)[0];
-            let treeArray = body.Workflows[firstKey].Structure;
-            let workflowInstanceSelected = body.Workflows[firstKey].WorkflowInstances.filter(x => x.WorkflowInstanceID == this.props.WorkflowID)[0];
-            let tasksForStructure = workflowInstanceSelected.Tasks;
+            console.log(body.Workflows.length);
+
+            for(var i=0; i<Object.keys(body.Workflows).length; i++) {
+                const firstKey = Object.keys(body.Workflows)[i];
+                var workflowInstanceSelected = body.Workflows[firstKey].WorkflowInstances.filter(x => x.WorkflowInstanceID == this.props.WorkflowID)[0];
+                console.log(workflowInstanceSelected);
+                if(workflowInstanceSelected){
+                    var treeArray = body.Workflows[firstKey].Structure;
+                    var tasksForStructure = workflowInstanceSelected.Tasks;
+                    break;
+                }
+            }
+
             let taskInvertedByActivityID = {};
 
             tasksForStructure.forEach(taskInstance => {

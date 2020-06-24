@@ -33,7 +33,8 @@ class AssignToSectionContainer extends React.Component
                 Section:[],
                 Semester: null,
                 Time:moment().format('YYYY-MM-DD HH:mm:ss'),
-                AssigmentName:''
+                AssigmentName:'',
+                ValidDate: true
             },
             Sections: [],
             DataLoaded: false,
@@ -108,6 +109,7 @@ class AssignToSectionContainer extends React.Component
                 });
 
                 let newA= this.state.Assignment;
+                console.log(body.assignment)
                 newA.AssigmentName = body.assignment.DisplayName;
                 this.setState({
                     Assignment: newA,
@@ -146,6 +148,15 @@ class AssignToSectionContainer extends React.Component
             showMessage(this.state.Strings.NoSectionsSelected);
             this.setState({
                 InfoMessage: this.state.Strings.NoSectionsSelected,
+                InfoMessageType: 'error'
+            });
+            return;
+        }
+
+        if(!this.state.Assignment.ValidDate){
+            showMessage("Invalid date chosen");
+            this.setState({
+                InfoMessage: "Invalid date chosen",
                 InfoMessageType: 'error'
             });
             return;
@@ -211,9 +222,15 @@ class AssignToSectionContainer extends React.Component
     //////////////// Functions used in the Assignment Component ////////////////////
     onChangeCalendarAssignment(dateString) //dateString is supplied by Datetime module
     {
-
         let newA = this.state.Assignment;
-        newA.Time = dateString.format('YYYY-MM-DD HH:mm:ss');
+
+        if(typeof dateString === "string" || dateString.isBefore(moment())){
+            newA.ValidDate = false;
+        } else {
+            newA.ValidDate = true;
+            newA.Time = dateString.format('YYYY-MM-DD HH:mm:ss');
+        }
+
         this.setState({Assignment: newA});
     }
 
@@ -398,15 +415,18 @@ class AssignToSectionContainer extends React.Component
                 </span>
             </span>);
         }
+        
+        console.log("Workflow", this.state.WorkFlow )
         let workflowView = this.state.WorkFlow.map(function(workflow, workindex)
         {
             let tasks = workflow.Tasks.map(function(task, index){
                 if(task.Type == TASK_TYPES.NEEDS_CONSOLIDATION || task.Type == TASK_TYPES.COMPLETED ){
                     return null;
                 }
-
+                // console.log(index)
                 return (
                     <Tasks key = {index} Tasks={task} index={index} workflowIndex={workindex}
+
                         onChangeCalendarTasks={this.onChangeCalendarTasks.bind(this)}
                         onChangeMultipleTasks={this.onChangeMultipleTasks.bind(this)}
                         onChangeExpireNumberOfDaysTasks={this.onChangeExpireNumberOfDaysTasks.bind(this)}
@@ -431,9 +451,11 @@ class AssignToSectionContainer extends React.Component
                 </div>);
         }, this);
 
+        console.log("Sections", this.state.Sections)
+        console.log("Semesters", this.state.Semesters)
+
         return (
             <div>
-
                 <Assignment Assignment={this.state.Assignment}
                     SectionsList={this.state.Sections}
                     Semesters={this.state.Semesters}
@@ -444,7 +466,6 @@ class AssignToSectionContainer extends React.Component
                     onChangeSectionAssignment = {this.onChangeSectionAssignment.bind(this)}
                     onChangeSemesterAssignment = {this.onChangeSemesterAssignment.bind(this)}
                     Strings={strings}
-
                 />
 
 

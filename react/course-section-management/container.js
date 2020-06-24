@@ -1,4 +1,5 @@
 import React from 'react';
+import Tooltip from '../shared/tooltip';
 import Select from 'react-select';
 
 // important component cards for each entity type
@@ -48,9 +49,12 @@ class Container extends React.Component {
             newOrganization: 'New Organization',
             newSection: 'New Section',
             newSemester: 'New Semester',
+            newSemesterName:"Name (include year)",
+            newSemesterToolTip:"The semester name will be displayed distinguish sections with the same identifier.  We recommend including the year in the semester name to distinguish semesters with the same name.    Each semester is only used by one organization.",
             number: 'Number',
             observer: 'Observer',
             observers: 'Observers',
+			observerToolTip:"Observers are not currently implemented",
             organization: 'Organization',
             save: 'Save',
             section: 'Section',
@@ -82,6 +86,7 @@ class Container extends React.Component {
         this.props.__(this.strings, (newStrings) => {
             this.setState({Strings: newStrings});
         });
+        this.switchTab();
     }
     // store selected organization ID to state, reset downstream IDs
     changeOrganizationID(organizationID) {
@@ -110,6 +115,26 @@ class Container extends React.Component {
     changeSectionID(sectionID) {
         this.setState({
             sectionID: sectionID
+        });
+    }
+
+    getQS(field) {
+        let url = window.location.href;
+        let regex = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+        let string = regex.exec(url);
+        return string ? string[1] : null;
+    }
+
+    switchTab() {
+        let org = this.getQS('org');
+        let course = this.getQS('course');
+        let semester = this.getQS('semester');
+        let section = this.getQS('section');
+        this.setState({
+            organizationID: org,
+            courseID: course,
+            semesterID: semester,
+            sectionID: section
         });
     }
 
@@ -157,6 +182,7 @@ class Container extends React.Component {
                     userID={this.props.UserID}
                     courseID={this.state.courseID}
                     semesterID={this.state.semesterID}
+                    Tooltip={this.strings.observerToolTip}
                 />
             );
 
@@ -173,6 +199,7 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Student"
                     title={this.strings.students}
+                    Tooltip = ""
                 />
             );
             output.push(
@@ -183,6 +210,7 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Instructor"
                     title={this.strings.instructors}
+                    Tooltip = ""
                 />
             );
             output.push(
@@ -193,7 +221,9 @@ class Container extends React.Component {
                     sectionID={this.state.sectionID}
                     role="Observer"
                     title={this.strings.observers}
+                    Tooltip={this.strings.observerToolTip}
                 />
+                //<Tooltip Text = { this.strings.observerToolTip} ID = { 'CM_noObservers_tooltip'}/>
             );
         }
         return (<div>

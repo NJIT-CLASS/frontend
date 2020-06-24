@@ -13,5 +13,5 @@ module.exports = {
         loggedOut: false
     },
     icon: 'address-book',
-    sidebar: true
+    sidebar: false
 };

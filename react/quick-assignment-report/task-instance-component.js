@@ -15,6 +15,7 @@ const TaskInstanceComponent = ({
     onCancelTaskButtonClick,
     onRestartTaskButtonClick
 }) => {
+    // console.log(TaskInstance)
     const taskStatuses = JSON.parse(TaskInstance.Status);
 
     // We only show this task instance if it matches the status filter

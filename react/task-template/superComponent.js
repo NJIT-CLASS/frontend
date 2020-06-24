@@ -4,7 +4,6 @@
 * request to get the initial data, and a POST request for final submission.
 */
 import React from 'react';
-import tinymce from 'tinymce/tinymce';
 import { Editor } from '@tinymce/tinymce-react';
 import tinymceOptions from '../shared/tinymceOptions';
 import PropTypes from 'prop-types';
@@ -15,11 +14,9 @@ import { RadioGroup, Radio } from 'react-radio-group';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import DisputeModal from './disputeModal';
 import ReactLoading from 'react-loading';
-import FileUpload from '../shared/fileUpload';
 import MarkupText from '../shared/markupTextView';
 import ErrorComponent from './errorComponent';
 import VersionView from './individualFieldVersionsComponent';
-import FileLinksComponent from './fileLinksComponent';
 import FileManagerComponent from './fileManagerComponent';
 import {cloneDeep, clone} from 'lodash';
 import Checkbox from '../shared/checkbox';
@@ -308,11 +305,13 @@ class SuperComponent extends React.Component {
 
     toggleContent() {
         // shows or hides the component's section-content for accordian view
-        const bool = !this.state.ShowContent;
+        // const bool = !this.state.ShowContent;
 
-        this.setState({
-            ShowContent: bool,
-        });
+        // this.setState({
+        //     ShowContent: bool,
+        // });
+
+        this.props.toggleTaskContent(this.props.TaskID);
     }
 
     handleContentChange(index, event) {
@@ -530,7 +529,13 @@ class SuperComponent extends React.Component {
         let revisionRejectView = null;
         let revisionApproveView = null;
         let viewHistoryButton = null;
-        
+        let showContent = null;
+
+        try{
+            showContent = this.props.TaskContentFlags[this.props.TaskID];
+        } catch(e){
+            showContent = true;
+        }
         const indexer = 'content';
         const TA_rubricButtonText = this.state.ShowRubric ? this.props.Strings.HideTaskRubric : this.props.Strings.ShowTaskRubric;
         // if invalid data, shows error message
@@ -735,6 +740,7 @@ class SuperComponent extends React.Component {
             const latestVersion = this.state.TaskResponse;
             let latestVersionComment = null;
             let versionHistoryView = null;
+            console.log(this.state.TaskActivityFields);
             if (latestVersion[idx] == null) {
                 latestVersion[idx] = [this.state.TaskActivityFields[idx].default_content[0], this.state.TaskActivityFields[idx].default_content[1]];
             }
@@ -952,7 +958,7 @@ class SuperComponent extends React.Component {
             viewHistoryButton = <button type="button" onClick={this.toggleHistory} >{this.props.Strings.ShowHistory}</button>;
         }       
 
-        if (this.state.ShowContent) {
+        if (showContent) {
             content = (<div className="section-content">
                 {TA_instructions}
                 {TA_rubric}
@@ -968,13 +974,13 @@ class SuperComponent extends React.Component {
         
         return ( // main render return()
             <div>
-                <form method="POST" onSubmit={this.submitData.bind(this)} >
+                <form method="POST" onSubmit={this.submitData.bind(this)} id="latestTaskForm">
 
                     {infoMessage}
                     <div className="section card-2">
                         <div onClick={this.toggleContent.bind(this)}>
                             <h2 className="title">{this.props.ComponentTitle}
-                                <span className={'fa fa-angle-' + (this.state.ShowContent ? 'up' : 'down')} style={{float: 'right'}}></span>
+                                <span className={'fa fa-angle-' + (showContent ? 'up' : 'down')} style={{float: 'right'}}></span>
                             </h2>
                         </div>
                         <CommentInfoComponent

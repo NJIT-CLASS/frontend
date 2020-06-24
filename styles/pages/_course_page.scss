@@ -57,3 +57,45 @@
   }
   
 }
+
+.dropdown {
+    display: relative;
+}
+
+.dropdown__content {
+z-index: 99999;
+    display: none;
+    position: absolute;
+}
+
+.dropdown--active .dropdown__content {
+    display: block;
+}
+
+  .partial-assignment {
+    &:hover > .partial-assignment-dropdown {
+          visibility: visible;
+    }
+  }
+
+  .partial-assignment-dropdown {
+      visibility: hidden;
+      position: absolute;
+      z-index: 1;
+      background-color: #ddd;
+      padding: 10px 10px 10px 10px;
+      line-height: 1.6;
+      &:hover {
+          visibility: visible;
+      }
+
+      &::after {
+          content: "";
+          position: absolute;
+          margin-left: -10px;
+          border-width: 10px;
+          border-style: solid;
+          border-color: transparent transparent #ddd transparent;
+      }
+  }
+

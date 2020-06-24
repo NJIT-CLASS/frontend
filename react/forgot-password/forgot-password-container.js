@@ -1,5 +1,6 @@
 import React, { Component } from 'react'; //import the React library and the Component class from the react package
 import apiCall from '../shared/apiCall';
+import Tooltip from '../shared/tooltip';
 
 class ForgotPasswordContainer extends Component { //create a class for the component
     //it will be called in the main.js file under /react
@@ -83,7 +84,10 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                         </h2>
 
                         <form role="form" className="section" style={{margin: '0 auto', width: 313.91}} onSubmit={this.handleSubmit.bind(this)}>
-                            <h2 className="title" style={{marginBottom: 0}}>{strings.ActionText}</h2>
+                            <div style={{position:"relative"}}>
+                                <h3 style={{display:"inline-block",paddingRight:"0%",marginBottom: 0}} className="title">{strings.ActionText}</h3>
+                                <Tooltip style={{display:"inline-block",marginTop:"8%"}} Text={"If you change your password, PL will send a temporary password to your registered PL email address.  You will be asked to choose a new password when you log in."} ID={'reset_password_tooltip'} />
+                            </div>
                             <div className="section-content">
 
                                 {
@@ -106,13 +110,13 @@ class ForgotPasswordContainer extends Component { //create a class for the compo
                                     </div>)
                                 }
 
-                                <input placeholder={strings.PlaceHolderText} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} />
+                                <input placeholder={strings.PlaceHolderText} style={{width:"80%"}} type="email" value={this.state.value} onChange={this.handleChange.bind(this)} /><Tooltip Text={"Use the email address you were invited with originally.   This may be different from your personal or institutional email address."} ID={'passwordreset_email_tooltip'} />
                                 <button type="button" onClick={this.handleCancel}>{strings.Cancel}</button>
                                 &nbsp;
                                 {submitButton}
                             </div>
                         </form>
-
+                        <p>What is Participatory Learning?<a href="/about" class="link">Click here to learn more.</a></p>
                     </div>
                 </div>
             </div>

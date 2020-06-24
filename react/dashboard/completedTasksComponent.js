@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
 import moment from 'moment';
 import TableComponent from '../shared/tableComponent';
+import { concatSeries } from 'async';
 
 export default class CompletedTaskComponent extends Component {
     constructor(props) {
@@ -18,9 +19,10 @@ export default class CompletedTaskComponent extends Component {
     fetchCompleted(userId){
         apiCall.get(`/getCompletedTaskInstances/${userId}`, (err, res,body)=> {
             if(res.statusCode === 200){
+                // console.log(body)
                 let transformedTaskList = body.CompletedTaskInstances.map(task => {
                     return {
-                        Assignment: task.AssignmentInstance.Assignment.Name,
+                        Assignment: task.AssignmentInstance.DisplayName,
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         CourseNumber: task.AssignmentInstance.Section.Course.Number,
@@ -55,6 +57,7 @@ export default class CompletedTaskComponent extends Component {
     render() {
         let {Strings} = this.props;
         let {CompletedTasks, CompletedTasksData} = this.state;
+        console.log(CompletedTasksData)
         
         
         return (

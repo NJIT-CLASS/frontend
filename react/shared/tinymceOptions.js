@@ -40,9 +40,7 @@ const tinymceOptions = {
     branding: false,
     elementpath: false,
     block_formats: 'Header 1=h1;Header 2=h2;Paragraph=p;',
-    external_plugins: {
-        'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js',
-    },
+    external_plugins: {},
     file_picker_types: 'image',
     file_picker_callback: function(cb, value, meta) {
         var input = document.createElement('input');

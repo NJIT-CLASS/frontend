@@ -21,7 +21,7 @@ import QuickAssignmentReport from './quick-assignment-report/main-container';
 import AboutContainer from './about/about-container';
 import ForgotPasswordContainer from './forgot-password/forgot-password-container';
 import SectionsContainer from './sections/sections-container';
-import UserGradeReportContainer from './grade-report/user-grade-report-container';
+import UserGradeReportContainer from './grade-report/main-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import EveryonesWorkMain from './everyones-work/main-container';
@@ -32,6 +32,8 @@ import SectionPage from './section/main-container';
 import ErrorComponent from './shared/ErrorComponent';
 import AssignmentStatusTable from './assignment-status-table/main-container';
 import DatabaseMaintenance from './database-maintenance/main-container';
+import CoursePage from './course-page/course-page';
+import Assignments from './assignments/assignments-container';
 //>>INSERTIMPORT
 
 const translationFunction = (objOfStrings, cb) => {
@@ -58,6 +60,7 @@ const assignmentId = reactElem.dataset.assignmentId;
 const userType = reactElem.dataset.userType;
 const sectionId = reactElem.dataset.sectionId;
 const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege === 'true';
+
 /**
  * Decide which page is displayed currently and render the appropriate component
  */
@@ -156,7 +159,12 @@ case 'assignment-status-table':
     break; 
 case 'database-maintenance':
     componentForCurrentPage = <DatabaseMaintenance UserID={userId}  __={translationFunction} />;
-    break;    
+    break; 
+case 'course-page':
+    componentForCurrentPage = <CoursePage UserID={userId} CourseID={courseId} Role={userType}  __={translationFunction}/>
+    break;
+case 'assignments-page':
+    componentForCurrentPage = <Assignments UserID={userId}  __={translationFunction}/>
 //>>INSERTCASE
 
 
