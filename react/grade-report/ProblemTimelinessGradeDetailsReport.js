@@ -27,9 +27,9 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
                 Task: timelinessGrade.name,
                 Status: timelinessGrade.status,
                 DaysLate: timelinessGrade.daysLate,
-                PenaltyPerDay: timelinessGrade.penalty,
-                TotalPenalty: timelinessGrade.totalPenalty,
-                Grade: timelinessGrade.grade
+                PenaltyPerDay: timelinessGrade.penalty + "%",
+                TotalPenalty: timelinessGrade.totalPenalty + "%",
+                TimelinessGrade: timelinessGrade.grade
             });
         }
 
@@ -51,6 +51,11 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
                                     accessor: 'Status',
                                     resizable:true
                                 },
+                                {
+                                    Header: strings.TimelinessMaximumGrade,
+                                    accesor: 'TimelinessMaximumGrade',
+                                    resizable:true
+                                },
                                 {         
                                     Header: strings.DaysLate,
                                     accessor: 'DaysLate',
@@ -67,9 +72,9 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
                                     accessor: 'TotalPenalty'
                                 },
                                 {
-                                    Header: strings.Grade,
+                                    Header: strings.TimelinessGrade,
                                     resizable:true,
-                                    accessor: 'Grade'
+                                    accessor: 'TimelinessGrade'
                                 }
                             ]}
                             noDataText={strings.TaskGradeNoData}

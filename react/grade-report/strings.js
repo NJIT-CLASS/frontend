@@ -9,7 +9,7 @@ export default {
     FirstName: 'First Name',
     Total: 'Total',
     CompletenessGrade: 'Completeness Grade',
-    Grade: 'Grade',
+    Grade: 'Current Grade',
     QualityGrade: 'Quality Grade',
     FinalGrade: 'Final Grade',
     Comments: 'Comments',
@@ -25,7 +25,7 @@ export default {
     UserName: 'UserName',
     LastName: "Last Name",
     FirstName:"First Name",
-    AssignmentGrade:"Assignment Grade",
+    AssignmentGrade:"Current Assignment Grade",
     CurrXCreditGrade:"Current Extra Credit Grade",
     NumXCreditTasks:"# Extra Credit Tasks",
     AssignmentGradeNoData:"No grades available for this assignment",
@@ -33,15 +33,20 @@ export default {
     PGRHeader:"Problem Grades Report",
 
     Problem:"Problem",
-    ProblemGrade:'Problem Grade',
+    ProblemGrade:'Current Problem Grade',
     ProblemsPerStudent: 'Original # Problems Per Student',
     WeightWithinAssignment: 'Weight Within Assignment',
-    ScaledGrade: 'Scaled Grade Within Assignment',
+    ScaledGrade: 'Current Scaled Grade Within Assignment',
+    ScaledGradeProblem: "Current Scaled Grade Within Problem",
+
+    ConvertedNumericValue: "Converted Numeric Value",
+    
 
     WeightWithinProblem:'Weight Within Problem',
     ProblemGradeNoData: 'There are no grades for this problem',
     PTTGRHeader:'Problem Task and Timeliness Report',
     TimelinessGrade:'Timeliness Grade',
+    TimelinessMaximumGrade: 'Timeliness Maximum Grade',
 
     Field:'Field',
     Type:'Type',

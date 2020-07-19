@@ -19,21 +19,22 @@ class ProblemGradesReport extends React.Component {
 
 
     render(){
-        //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
         let {strings, PGRGradeData} = this.props;
         let {loaded} = this.state;
-
+        console.log("PGR Grade Data");
         console.log(PGRGradeData);
         let TablePGRGradeData = [];
         for(var workflowID in PGRGradeData){
             let workflowData = PGRGradeData[workflowID];
 
             TablePGRGradeData.push({
-            Problem: (<a href="#" onClick={this.displayProblemTaskAndTimelinessGradeReport.bind(this, workflowData.problemAndTimelinessGrade)}>{workflowData.name}</a>),
+                Problem: (<a href="#" onClick={this.displayProblemTaskAndTimelinessGradeReport.bind(this, workflowData.problemAndTimelinessGrade)}>{workflowData.name}</a>),
                 ProblemGrade: workflowData.workflowGrade,
                 ProblemsPerStudent: workflowData.numberOfSets,
-                Weight: workflowData.weight,
-                ScaledGrade: workflowData.scaledGrade
+                Weight: workflowData.weight + "%",
+                ScaledGrade: (workflowData.workflowGrade * (workflowData.weight/100))/(workflowData.numberOfSets)
+                //ScaledGrade: workflowData.scaledGrade
+                //scaled grade within assignment = current grade *weight within assignment/ original number of problems per student
             });
         }
 

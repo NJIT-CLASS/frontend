@@ -23,6 +23,7 @@ class AssignmentGradeReport extends React.Component {
     }
 
     displayProblemGradeReport(data){
+        console.log("Problem/Workflow Grade Report:");
         console.log(data);
         this.props.displayProblemGradeReport(data);
     }
@@ -47,11 +48,13 @@ class AssignmentGradeReport extends React.Component {
                 LastName:userReport.lastName,
                 FirstName:userReport.firstName,
                 Email:userReport.email,
-                AssignmentGrade: userReport.assignmentGrade ? (<a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport)}>{userReport.assignmentGrade}</a>) : '-',
+                AssignmentGrade: userReport.assignmentGrade ? (<a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport)}>{userReport.assignmentGrade}</a>) : '-',    
                 NumXCreditTasks: userReport.numOfExtraCredit ? Object.keys(userReport.numOfExtraCredit).length : "0"
             });
         }
 
+
+        console.log("AGR Data");
         console.log(AGRData);
         
         return (

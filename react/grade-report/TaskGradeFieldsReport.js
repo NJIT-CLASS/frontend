@@ -68,6 +68,11 @@ class TaskGradeFieldsReport extends React.Component {
                                     accessor: 'Max'
                                 },
                                 {
+                                    Header: strings.ConvertedNumericValue,
+                                    accessor: 'ConvertedNumericValue',
+                                    resizable: true
+                                },
+                                {
                                     Header: strings.WeightWTask,
                                     resizable:true,
                                     accessor: 'WeightWTask'

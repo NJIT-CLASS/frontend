@@ -45,8 +45,8 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
                 Task: taskName,
                 Problem: task.workflowName,
                 Grade: taskID === "timelinessGrade" ? task.taskSimpleGrade : task.taskGrade,
-                WeightWProblem: task.weightInProblem,
-                WeightWAssignment: task.weightInAssignment,
+                WeightWProblem: task.weightInProblem + "%",
+                WeightWAssignment: task.weightInAssignment + "%",
                 ScaledGrade: task.scaledGrade
             });
         }
@@ -79,6 +79,11 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
                                     Header: strings.WeightWithinProblem,
                                     resizable:true,
                                     accessor: 'WeightWProblem'
+                                },
+                                {
+                                    Header: strings.ScaledGradeProblem,
+                                    accessor: 'ScaledGradeProblem',
+                                    resizable: true
                                 },
                                 {
                                     Header: strings.WeightWithinAssignment,

@@ -42,23 +42,62 @@ class GradeReport extends React.Component {
 
     displayAssignmentGradeReport(gradeData){
         console.log(gradeData);
-        this.setState({assignmentGradereport:(<AssignmentGradeReport strings={this.state.Strings} displayProblemGradeReport={this.displayProblemGradeReport} AI_ID={gradeData}></AssignmentGradeReport>)})
+        this.setState({
+            assignmentGradereport:(
+                <AssignmentGradeReport 
+                    strings={this.state.Strings} 
+                    displayProblemGradeReport={this.displayProblemGradeReport} 
+                    AI_ID={gradeData}>
+                </AssignmentGradeReport>
+            )
+        });
     }
 
+    // undisplayAssignmentGradeReport(){
+    //     this.setState({assignmentGradereport: (<div></div>)})
+    // }
+
     displayProblemGradeReport(gradeData){
-        this.setState({problemGradeReport:(<ProblemGradeReport strings={this.state.Strings} PGRGradeData={gradeData} displayProblemTaskAndTimelinessGradeReport={this.displayProblemTaskAndTimelinessGradeReport}></ProblemGradeReport>)})
+        this.setState({
+            problemGradeReport:(
+            <ProblemGradeReport 
+                strings={this.state.Strings} 
+                PGRGradeData={gradeData} 
+                displayProblemTaskAndTimelinessGradeReport={this.displayProblemTaskAndTimelinessGradeReport}>
+            </ProblemGradeReport>
+        )});
     }
 
     displayProblemTaskAndTimelinessGradeReport(gradeData){
-        this.setState({problemTaskAndTimelinessGradeReport:(<ProblemTaskAndTimelinessGradeReport strings={this.state.Strings} PTTGRGradeData={gradeData} displayTaskGradeFields={this.displayTaskGradeFields} displayTimelinessGradeDetails={this.displayTimelinessGradeDetails}></ProblemTaskAndTimelinessGradeReport>)})
+        this.setState({
+            problemTaskAndTimelinessGradeReport:(
+            <ProblemTaskAndTimelinessGradeReport 
+                strings={this.state.Strings} 
+                PTTGRGradeData={gradeData} 
+                displayTaskGradeFields={this.displayTaskGradeFields} 
+                displayTimelinessGradeDetails={this.displayTimelinessGradeDetails}>
+            </ProblemTaskAndTimelinessGradeReport>)
+        });
     }
 
     displayTaskGradeFields(gradeData){
-        this.setState({taskGradeFieldsReport:(<TaskGradeFieldsReport strings={this.state.Strings} TGFRGradeData={gradeData}></TaskGradeFieldsReport>)});
+        this.setState({
+            taskGradeFieldsReport:(
+            <TaskGradeFieldsReport 
+                strings={this.state.Strings} 
+                TGFRGradeData={gradeData}>
+            </TaskGradeFieldsReport>)
+        });
     }
 
     displayTimelinessGradeDetails(gradeData){
-        this.setState({problemTimelinessGradeDetailsReport:(<ProblemTimelinessGradeDetailsReport strings={this.state.Strings} PTGDRGradeData={gradeData}></ProblemTimelinessGradeDetailsReport>)});
+        this.setState({
+            problemTimelinessGradeDetailsReport:(
+            <ProblemTimelinessGradeDetailsReport 
+                strings={this.state.Strings} 
+                PTGDRGradeData={gradeData}>
+            </ProblemTimelinessGradeDetailsReport>)
+        });
     }
 
 
@@ -79,6 +118,7 @@ class GradeReport extends React.Component {
         if(!Strings){
             return (<div></div>);
         }
+        console.log("Problem Grade Report");
         console.log(problemGradeReport);
         //console.log("PAGE under development");
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
