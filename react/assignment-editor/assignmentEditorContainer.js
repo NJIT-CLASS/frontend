@@ -3453,6 +3453,10 @@ class AssignmentEditorContainer extends React.Component {
                                 {this.state.Strings.SubmitReminderMessage}
                             </div>
                             {saveButtonView}
+                            <br />
+                            <br />
+                            <br />
+                            <br />
                         </div>
                     </div>
                 </div>

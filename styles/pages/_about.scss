@@ -1,8 +1,33 @@
-.about{
+.section{
+  min-width: 300px;
+}
+
+.about{ 
   display: inline-flex;
+
+  h2{
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: auto;
+  }
 
   .pl-description{
     min-width: 30%;
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-left: 2.14285714em;
+    }
+    li{
+      position: relative;
+      span{
+        position: absolute;
+        left: -2.14285714em;
+        width: 2.14285714em;
+        top: .14285714em;
+        text-align: center;
+      }
+    }
   }
 
   .developers-section{
@@ -32,6 +57,7 @@
     align-items: flex-start;
     flex-direction: row;
     flex-wrap: wrap;
+    align-content: flex-start;
 
     h2{
       margin: 10px;
@@ -44,7 +70,8 @@
       flex: 1 1 200px;
 
       li{
-        text-align: center;
+        text-align: start;
+        list-style-type: none;
       }
     }
   }
