@@ -38,15 +38,20 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
             if(taskID === "timelinessGrade"){
                 taskName = (<a href="#" onClick={this.displayTimelinessGradeDetails.bind(this, task.timelinessGradeDetails)}>{strings.TimelinessGrade}</a>);
             } else {
-                taskName = (<a href="#" onClick={this.displayTaskGradeFields.bind(this, task.taskGradeFields)}>{task.name}</a>);
+                taskName = (
+                    <a href="#" onClick={this.displayTaskGradeFields.bind(this, task.taskGradeFields)}>
+                        {task.taskInstanceID + ": " + task.name}
+                        </a>
+                    );
             }
 
             TablePTTGRGradeData.push({
-                Task: taskName,
-                Problem: task.workflowName,
+                Task: taskName, 
+                Problem: taskID === "timelinessGrade" ? task.workflowName : task.workflowInstanceID + ": " + task.workflowName,
                 Grade: taskID === "timelinessGrade" ? task.taskSimpleGrade : task.taskGrade,
                 WeightWProblem: task.weightInProblem + "%",
                 WeightWAssignment: task.weightInAssignment + "%",
+                ScaledGradeProblem: (taskID === "timelinessGrade" ? task.taskSimpleGrade : task.taskGrade) * (task.weightInProblem/100),
                 ScaledGrade: task.scaledGrade
             });
         }
