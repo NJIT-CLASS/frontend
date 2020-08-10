@@ -30,7 +30,7 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
                 PenaltyPerDay: timelinessGrade.penalty + "%",
                 TotalPenalty: timelinessGrade.totalPenalty + "%",
                 TimelinessMaximumGrade: timelinessGrade.grade, //grade field likely inaccurate; will be traced and updated later 
-                TimelinessGrade: timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100) * timelinessGrade.grade
+                TimelinessGrade: 100*(timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100) / timelinessGrade.grade)
             });
         }
 
