@@ -28,13 +28,22 @@ class TaskGradeFieldsReport extends React.Component {
         var TableTGFRGradeData = [];
         for(var taskGradeID in finalGradeFields){
             var taskGrade = finalGradeFields[taskGradeID];
+            var convNumGrade;
+            if (taskGrade.type === "Label")
+                convNumGrade = 100;
+            else if (taskGrade.type === "Pass/Fail")
+                convNumGrade = taskGrade.value == "pass" ? 100 : 0;
+            else 
+                convNumGrade = ((taskGrade.value/taskGrade.max) * 100).toFixed(2); 
+
             TableTGFRGradeData.push({
                 Field:taskGrade.name,
                 Type:taskGrade.type,
                 Value:taskGrade.value,
+                ConvertedNumericValue: convNumGrade,
                 Max: taskGrade.max,
                 WeightWTask:taskGrade.weight,
-                ScaledGrade:taskGrade.scaledGrade
+                ScaledGrade:(convNumGrade * (taskGrade.weight/100)).toFixed(2)
             });
         }
 
