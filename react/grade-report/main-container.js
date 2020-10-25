@@ -27,6 +27,8 @@ class GradeReport extends React.Component {
             assignmentExtraCreditTimelinessGradesDetailReport:null
         };
 
+
+
         this.displayAssignmentGradeReport = this.displayAssignmentGradeReport.bind(this);
         this.displayProblemGradeReport = this.displayProblemGradeReport.bind(this);
         this.displayProblemTaskAndTimelinessGradeReport = this.displayProblemTaskAndTimelinessGradeReport.bind(this);
@@ -41,6 +43,7 @@ class GradeReport extends React.Component {
     }
 
     displayAssignmentGradeReport(gradeData){
+        console.log("Grade Data for displayAssignmentGradeReport: ");
         console.log(gradeData);
         this.setState({
             assignmentGradereport:(
@@ -57,7 +60,10 @@ class GradeReport extends React.Component {
     //     this.setState({assignmentGradereport: (<div></div>)})
     // }
 
+
     displayProblemGradeReport(gradeData){
+        console.log("Grade Data for displayProblemGradeReport: ");
+        console.log(gradeData);
         this.setState({
             problemGradeReport:(
             <ProblemGradeReport 
@@ -66,14 +72,16 @@ class GradeReport extends React.Component {
                 displayProblemTaskAndTimelinessGradeReport={this.displayProblemTaskAndTimelinessGradeReport}>
             </ProblemGradeReport>
         )});
+        
     }
 
-    displayProblemTaskAndTimelinessGradeReport(gradeData){
+    displayProblemTaskAndTimelinessGradeReport(gradeData, grade){
         this.setState({
             problemTaskAndTimelinessGradeReport:(
             <ProblemTaskAndTimelinessGradeReport 
                 strings={this.state.Strings} 
                 PTTGRGradeData={gradeData} 
+                workflowGrade = {grade}
                 displayTaskGradeFields={this.displayTaskGradeFields} 
                 displayTimelinessGradeDetails={this.displayTimelinessGradeDetails}>
             </ProblemTaskAndTimelinessGradeReport>)
@@ -118,8 +126,7 @@ class GradeReport extends React.Component {
         if(!Strings){
             return (<div></div>);
         }
-        console.log("Problem Grade Report");
-        console.log(problemGradeReport);
+
         //console.log("PAGE under development");
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
         return (

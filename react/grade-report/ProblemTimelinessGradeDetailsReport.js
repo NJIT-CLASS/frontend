@@ -23,17 +23,19 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
         let tablePTGDRGradeData = [];
         for(var gradeID in PTGDRGradeData){
             var timelinessGrade = PTGDRGradeData[gradeID];
+            console.log(timelinessGrade.grade)
             tablePTGDRGradeData.push({
                 Task: timelinessGrade.name,
+                MaxGrade: timelinessGrade.grade,
                 Status: timelinessGrade.status,
                 DaysLate: timelinessGrade.daysLate,
-                PenaltyPerDay: timelinessGrade.penalty + "%",
-                TotalPenalty: timelinessGrade.totalPenalty + "%",
-                TimelinessMaximumGrade: timelinessGrade.grade, //grade field likely inaccurate; will be traced and updated later 
-                TimelinessGrade: 100*(timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100) / timelinessGrade.grade)
+                PenaltyPerDay: (timelinessGrade.penalty == undefined) ? "-" : timelinessGrade.penalty + "%",
+                TotalPenalty: (timelinessGrade.totalPenalty == undefined) ? "-" : timelinessGrade.totalPenalty + "%", 
+                TimelinessGrade: (timelinessGrade.grade == undefined || timelinessGrade.totalPenalty == undefined) ? "-" : (timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100)).toFixed(2)
             });
         }
 
+        
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{strings.PTGDRGHeader}</h2>
@@ -54,7 +56,7 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
                                 },
                                 {
                                     Header: strings.TimelinessMaximumGrade,
-                                    accesor: 'TimelinessMaximumGrade',
+                                    accessor: 'MaxGrade',
                                     resizable:true
                                 },
                                 {         
@@ -92,4 +94,5 @@ export default ProblemTimelinessGradeDetailsReport;
 
 /*TimelinessMaximumGrade: timelinesss.grade, //grade field likely inaccurate; will be traced and updated later 
                 TimelinessGrade: timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100) * TimelinessMaximumGrade
-*/
+Originally: TimelinessGrade: 100*(timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100) / timelinessGrade.grade)
+                */

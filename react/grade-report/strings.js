@@ -36,7 +36,7 @@ export default {
     ProblemGrade:'Current Problem Grade',
     ProblemsPerStudent: 'Original # Problems Per Student',
     WeightWithinAssignment: 'Weight Within Assignment',
-    ScaledGrade: 'Current Scaled Grade Within Assignment',
+    ScaledGradeAssignment: 'Current Scaled Grade Within Assignment',
     ScaledGradeProblem: "Current Scaled Grade Within Problem",
 
     ConvertedNumericValue: "Converted Numeric Value",
@@ -64,6 +64,7 @@ export default {
     TotalPenalty: 'Total Penalty',
     
 
+    
 
 
 };
