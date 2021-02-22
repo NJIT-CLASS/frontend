@@ -20,6 +20,7 @@ export default {
     InstructorReport: 'Instructor Report',
     Student: 'Student',
     Task: 'Task',
+    TaskGrade: 'Task Grade',
     CombinedWeight: 'Combined Weight',
     WeightedGrade: 'Weighted Grade',
     UserName: 'UserName',
@@ -29,8 +30,16 @@ export default {
     CurrXCreditGrade:"Current Extra Credit Grade",
     NumXCreditTasks:"# Extra Credit Tasks",
     AssignmentGradeNoData:"No grades available for this assignment",
+
     AGRHeader:"Assignment Grades Report",
     PGRHeader:"Problem Grades Report",
+    AECGRHeader: "Assignment Extra Credit Grades Report",    
+    PTTGRHeader:'Problem Task and Timeliness Report',
+    TGFRHeader: 'Task Grades Field Report',
+    PTGDRGHeader: 'Problem Timeliness Grade Details Report',
+    AECTGDRHeader: "Assignment Extra Credit Timeliness Grades Detail Report",
+    AECTRHeader: 'Assignment Extra Credit Tasks Report',
+    ECTGFRHeader: 'Extra Credit Task Grade Fields Report',
 
     Problem:"Problem",
     ProblemGrade:'Current Problem Grade',
@@ -44,7 +53,6 @@ export default {
 
     WeightWithinProblem:'Weight Within Problem',
     ProblemGradeNoData: 'There are no grades for this problem',
-    PTTGRHeader:'Problem Task and Timeliness Report',
     TimelinessGrade:'Timeliness Grade',
     TimelinessMaximumGrade: 'Timeliness Maximum Grade',
 
@@ -55,9 +63,7 @@ export default {
     WeightWTask:'Weight Within Task',
     ScaledGradeTask:'Scaled Grade Within Task',
     TaskGradeNoData:'There are no grades for this task',
-    TGFRHeader: 'Task Grades Field Report',
-    
-    PTGDRGHeader: 'Problem Timeliness Grade Details Report',
+
     Status: 'Status',
     DaysLate: 'Days Late',
     PenaltyPerDay: 'Penalty Per Day',
