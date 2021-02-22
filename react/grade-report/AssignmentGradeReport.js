@@ -17,7 +17,8 @@ class AssignmentGradeReport extends React.Component {
         apiCall.post(`/gradeReport`,{ai_id:this.props.AI_ID},(err,status,body)=>{
             if(status.statusCode === 200){
                 console.log(body);
-                this.setState({GradeReportRoot:body.assignmentGradeReport, loaded:true});
+                this.setState({GradeReportRoot:body.assignmentGradeReport,
+                               loaded:true});
             }
         });
     }
@@ -27,6 +28,14 @@ class AssignmentGradeReport extends React.Component {
         console.log("data");
         console.log(data);
         this.props.displayProblemGradeReport(data);
+    }
+
+    displayAssignmentExtraCreditGradeReport(data){
+        this.props.displayAssignmentExtraCreditGradeReport(data);
+    }
+
+    displayAssignmentExtraCreditTasksReport(data){
+        this.props.displayAssignmentExtraCreditTasksReport(data);
     }
 
     render(){
@@ -141,8 +150,13 @@ class AssignmentGradeReport extends React.Component {
                 LastName:userReport.lastName,
                 FirstName:userReport.firstName,
                 Email:userReport.email,
-                AssignmentGrade: <a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport)}>{assignmentGrade}</a>,    
-                NumXCreditTasks: userReport.numOfExtraCredit ? Object.keys(userReport.numOfExtraCredit).length : "0"
+                AssignmentGrade: <a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport)}>{assignmentGrade}</a>, 
+                CurrXCreditGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, userReport.assignmentExtraCreditReport)}>"ec grade"</a>,
+                NumXCreditTasks: 
+                    <a href="#" onClick={this.displayAssignmentExtraCreditTasksReport.bind(this, userReport.numOfExtraCredit)}> 
+                        {userReport.numOfExtraCredit ? Object.keys(userReport.numOfExtraCredit).length : "0"}
+                    </a>
+                
             });
         }
 
