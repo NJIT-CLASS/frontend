@@ -44,7 +44,7 @@ class TaskGradeFieldsReport extends React.Component {
                 }
 
                 TableTGFRGradeData.push({
-                    Field:taskGrade.name ? taskGrade.name: "Unnamed",
+                    Field:taskGrade.name != null ? taskGrade.name: "Unnamed",
                     Type:taskGrade.type,
                     Value: isNaN(taskGrade.value) ? "-" : taskGrade.value,
                     ConvertedNumericValue: isNaN(convNumGrade) ? "-" : convNumGrade,
