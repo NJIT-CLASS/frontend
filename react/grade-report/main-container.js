@@ -9,6 +9,7 @@ import AssignmentExtraCreditGradesReport from './AssignmentExtraCreditGradesRepo
 import AssignmentExtraCreditTasksReport from './AssignmentExtraCreditTasksReport';
 import AssignmentExtraCreditTimelinessGradesDetailReport from './AssignmentExtraCreditTimelinessGradesDetailReport';
 import SelectAssignment from './SelectAssignment';
+import AssignmentExtraCreditTaskGradeFieldsReport from './AssignmentExtraCreditTaskGradeFieldsReport';
 import strings from './strings';
 
 class GradeReport extends React.Component {
@@ -24,7 +25,8 @@ class GradeReport extends React.Component {
             problemTimelinessGradeDetailsReport:null,
             assignmentExtraCreditGradesReport: null,
             assignmentExtraCreditTasksReport: null,
-            assignmentExtraCreditTimelinessGradesDetailReport:null
+            assignmentExtraCreditTimelinessGradesDetailReport:null,
+            assignmentExtraCreditTaskGradeFieldsReport:null
         };
 
 
@@ -34,6 +36,10 @@ class GradeReport extends React.Component {
         this.displayProblemTaskAndTimelinessGradeReport = this.displayProblemTaskAndTimelinessGradeReport.bind(this);
         this.displayTaskGradeFields = this.displayTaskGradeFields.bind(this);
         this.displayTimelinessGradeDetails = this.displayTimelinessGradeDetails.bind(this);
+        this.displayAssignmentExtraCreditGradeReport = this.displayAssignmentExtraCreditGradeReport.bind(this);
+        this.displayAsgECTimelinessGradesDetailReport = this.displayAsgECTimelinessGradesDetailReport.bind(this);
+        this.displayAssignmentExtraCreditTasksReport = this.displayAssignmentExtraCreditTasksReport.bind(this);
+        this.displayExtraCreditTaskGradeFieldsReport = this.displayExtraCreditTaskGradeFieldsReport.bind(this);
     }
 
     componentDidMount(){
@@ -50,6 +56,8 @@ class GradeReport extends React.Component {
                 <AssignmentGradeReport 
                     strings={this.state.Strings} 
                     displayProblemGradeReport={this.displayProblemGradeReport} 
+                    displayAssignmentExtraCreditGradeReport={this.displayAssignmentExtraCreditGradeReport}
+                    displayAssignmentExtraCreditTasksReport={this.displayAssignmentExtraCreditTasksReport}
                     AI_ID={gradeData}>
                 </AssignmentGradeReport>
             )
@@ -109,6 +117,54 @@ class GradeReport extends React.Component {
     }
 
 
+    /* extra credit displays */
+    displayAssignmentExtraCreditGradeReport(gradeData){
+        this.setState({
+            assignmentExtraCreditGradesReport:(
+                <AssignmentExtraCreditGradesReport 
+                    strings={this.state.Strings}
+                    AECGRData={gradeData}
+                    displayAsgECTimelinessGradesDetailReport={this.displayAsgECTimelinessGradesDetailReport}
+                    displayExtraCreditTaskGradeFieldsReport={this.displayExtraCreditTaskGradeFieldsReport}>
+                </AssignmentExtraCreditGradesReport>
+            )
+        });
+    }
+
+    displayAssignmentExtraCreditTasksReport(gradeData){
+        this.setState({
+            assignmentExtraCreditTasksReport:(
+                <AssignmentExtraCreditTasksReport
+                    strings={this.state.Strings}
+                    AECTRData={gradeData}>
+                </AssignmentExtraCreditTasksReport>
+            )
+        })
+    }
+
+    displayAsgECTimelinessGradesDetailReport(gradeData){
+        this.setState({
+            assignmentExtraCreditTimelinessGradesDetailReport:(
+                <AssignmentExtraCreditTimelinessGradesDetailReport
+                    strings={this.state.Strings}
+                    AECTGDRData={gradeData}>
+                </AssignmentExtraCreditTimelinessGradesDetailReport>
+            )
+        });
+    }
+
+    displayExtraCreditTaskGradeFieldsReport(gradeData){
+        this.setState({
+            assignmentExtraCreditTaskGradeFieldsReport: (
+                <AssignmentExtraCreditTaskGradeFieldsReport
+                    strings={this.state.Strings}
+                    ECTGFRData={gradeData}>
+                </AssignmentExtraCreditTaskGradeFieldsReport>
+            )
+        })
+    }
+
+
 
     render(){
         let {
@@ -120,7 +176,8 @@ class GradeReport extends React.Component {
             problemTimelinessGradeDetailsReport,
             assignmentExtraCreditGradesReport,
             assignmentExtraCreditTasksReport,
-            assignmentExtraCreditTimelinessGradesDetailReport
+            assignmentExtraCreditTimelinessGradesDetailReport,
+            assignmentExtraCreditTaskGradeFieldsReport
         } = this.state;
 
         if(!Strings){
@@ -140,6 +197,7 @@ class GradeReport extends React.Component {
                 {assignmentExtraCreditGradesReport}
                     {assignmentExtraCreditTimelinessGradesDetailReport}
                 {assignmentExtraCreditTasksReport}
+                {assignmentExtraCreditTaskGradeFieldsReport}
             </div>    
         
         );
