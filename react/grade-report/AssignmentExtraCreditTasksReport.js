@@ -15,50 +15,47 @@ class AssignmentExtraCreditTasksReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, GradeData} = this.props;
+        let {strings, AECTRData} = this.props;
+        let TableAECTRData = [];
+
+        //Method (1): uncomment after backend data is passed in correctly
+
+        //Method (2)
+
+
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.TGFRHeader}</h2>
+                <h2 className="title">{strings.AECTRHeader}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
-                            data={TableTGFRGradeData}
+                            data={TableAECTRData}
                             columns={[
                                 {
-                                    Header: strings.Field,
-                                    accessor: 'Field',
+                                    Header: strings.Problem,
+                                    accessor: 'Problem',
                                     resizable:true      
                                 },
                                 {
-                                    Header: strings.Type,
-                                    accessor: 'Type',
+                                    Header: strings.Task,
+                                    accessor: 'Task',
                                     resizable:true
                                 },
                                 {         
-                                    Header: strings.Value,
-                                    accessor: 'Value',
+                                    Header: strings.Status,
+                                    accessor: 'Status',
                                     resizable:true                              
                                 },
                                 {
-                                    Header: strings.Max,
-                                    resizable:true,
-                                    accessor: 'Max'
-                                },
-                                {
-                                    Header: strings.ConvertedNumericValue,
-                                    accessor: 'ConvertedNumericValue',
+                                    Header: strings.TaskGrade,
+                                    accessor: 'TaskGrade',
                                     resizable: true
                                 },
                                 {
-                                    Header: strings.WeightWTask,
+                                    Header: strings.TimelinessGrade,
                                     resizable:true,
-                                    accessor: 'WeightWTask'
-                                },
-                                {
-                                    Header: strings.ScaledGradeTask,
-                                    resizable:true,
-                                    accessor: 'ScaledGrade'
+                                    accessor: 'TimelinessGrade'
                                 }
                             ]}
                             noDataText={strings.TaskGradeNoData}
