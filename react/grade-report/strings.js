@@ -27,8 +27,9 @@ export default {
     LastName: "Last Name",
     FirstName:"First Name",
     AssignmentGrade:"Current Assignment Grade",
-    CurrXCreditGrade:"Current Extra Credit Grade",
-    NumXCreditTasks:"# Extra Credit Tasks",
+    CurrXCreditTaskGrade:"Current Extra Credit Task Grades",
+    CurrXCreditTimeGrade:"Current Extra Credit Timeliness Grades",
+    NumXCreditTasks:"Total Number of Extra Credit Tasks Assigned",
     AssignmentGradeNoData:"No grades available for this assignment",
 
     AGRHeader:"Assignment Grades Report",
