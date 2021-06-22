@@ -1,5 +1,7 @@
 import ReactTable from 'react-table';
 import React, { Component } from 'react';
+import { useTable, useExpanded } from 'react-table'
+
 
 export default (props) => {
     return <ReactTable
