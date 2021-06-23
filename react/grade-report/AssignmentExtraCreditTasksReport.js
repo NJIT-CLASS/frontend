@@ -8,25 +8,48 @@ class AssignmentExtraCreditTasksReport extends React.Component {
         super(props);
 
         this.state = {
+            loaded: false
         };
     }
 
 
-
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, AECTRData} = this.props;
+        let {strings, AECTRData, name, grade} = this.props;
+        console.log("AECTRData");
+        console.log(AECTRData);
         let TableAECTRData = [];
 
-        //Method (1): uncomment after backend data is passed in correctly
+        
+        for (var workflowID in AECTRData){
+            if (!isNaN(workflowID)){
+                let workflowData = AECTRData[workflowID];
+                let status = () => {
+                    if (workflowData.status === "started") return "not complete";
+                    else if (workflowData.status === "not_yet_started") return "not reached";
+                    else return workflowData.status;
+                }
 
-        //Method (2)
+                let taskGrade = () => {
+                    if (isNaN(workflowData.taskGrade)) return "in progress";
+                    else return workflowData.taskGradeInProgress + ": " + workflowData.taskGrade;
+                }
 
+                TableAECTRData.push({
+                    Problem: workflowData.workflowInstanceID + ": " + workflowData.workflowName,
+                    Task: workflowData.name + " (" + workflowData.taskInstanceID + ")",
+                    Status: status(),
+                    TaskGrade: taskGrade(),
+                    TimelinessGrade: workflowData.timelinessGrade
+                });
+            }
+
+        }
 
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.AECTRHeader}</h2>
+                <h2 className="title">{strings.AECTRHeader + ": " + this.props.name}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
@@ -56,6 +79,12 @@ class AssignmentExtraCreditTasksReport extends React.Component {
                                     Header: strings.TimelinessGrade,
                                     resizable:true,
                                     accessor: 'TimelinessGrade'
+                                }
+                            ]}
+                            defaultSorted={[
+                                {
+                                    id: 'Status', 
+                                    desc: false
                                 }
                             ]}
                             noDataText={strings.TaskGradeNoData}

@@ -16,22 +16,28 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, PTGDRGradeData} = this.props;
+        let {strings, /*gradeSummation, reachedTaskCount, adjustedTimelinessGradeFromPTGDR,*/ PTGDRGradeData} = this.props;
         let {loaded} = this.state;
 
         console.log(PTGDRGradeData);
         let tablePTGDRGradeData = [];
         for(var gradeID in PTGDRGradeData){
             var timelinessGrade = PTGDRGradeData[gradeID];
-            console.log(timelinessGrade.grade)
+            let status = () => {
+                if (timelinessGrade.status === "started"){
+                    return "not complete";
+                } else if (timelinessGrade.status === "not reached"){
+                    return "not yet started";
+                } else return timelinessGrade.status;
+            };
             tablePTGDRGradeData.push({
-                Task: timelinessGrade.name,
-                MaxGrade: timelinessGrade.grade,
-                Status: timelinessGrade.status,
-                DaysLate: timelinessGrade.daysLate,
-                PenaltyPerDay: (timelinessGrade.penalty == undefined) ? "-" : timelinessGrade.penalty + "%",
-                TotalPenalty: (timelinessGrade.totalPenalty == undefined) ? "-" : timelinessGrade.totalPenalty + "%", 
-                TimelinessGrade: (timelinessGrade.grade == undefined || timelinessGrade.totalPenalty == undefined) ? "-" : (timelinessGrade.grade * (1 - timelinessGrade.totalPenalty/100)).toFixed(2)
+                Task: gradeID + ": " + timelinessGrade.name,
+                Status: status(),
+                MaxGrade: 100,
+                DaysLate: isNaN(timelinessGrade.daysLate) ? "-" : timelinessGrade.daysLate,
+                PenaltyPerDay: isNaN(timelinessGrade.penalty) ? "-" : timelinessGrade.penalty + "%",
+                TotalPenalty: isNaN(timelinessGrade.totalPenalty) ? "-" : timelinessGrade.totalPenalty + "%", 
+                TimelinessGrade: isNaN(timelinessGrade.grade) ? "-" : timelinessGrade.grade
             });
         }
 

@@ -17,8 +17,8 @@ class AssignmentExtraCreditGradesReport extends React.Component {
         this.props.displayAsgECTimelinessGradesDetailReport(data);
     }
 
-    displayExtraCreditTaskGradeFieldsReport(data){
-        this.props.displayExtraCreditTaskGradeFieldsReport(data);
+    displayExtraCreditTaskGradeFieldsReport(data, numOfTaskGrades, taskID){
+        this.props.displayExtraCreditTaskGradeFieldsReport(data, numOfTaskGrades, taskID);
     }
 
 
@@ -29,7 +29,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, AECGRData} = this.props;
+        let {strings, AECGRData, name, grade} = this.props;
         let {loaded} = this.state;
         let TableAECGRData = [];
         console.log("Assignment Extra Credit Grade Report (AECGRData)");
@@ -37,26 +37,35 @@ class AssignmentExtraCreditGradesReport extends React.Component {
 
         for (var TIID in AECGRData){
             let TI = AECGRData[TIID];
+            let curGrade = () => {
+                if (TI.taskGrade === "not yet complete"){
+                    return "(in progress)";
+                } else {
+                    return TI.taskGradeInProgress + ": " + TI.taskGrade;
+                }
+            };
             if (TI.workflowName === "Entire Assignment" && TI.timelinessGradeDetails != null){
                 TableAECGRData.push({
                     Problem: TI.workflowName,
                     Task: <a href="#" onClick={this.displayAsgECTimelinessGradesDetailReport.bind(this, TI.timelinessGradeDetails)}> 
                         {strings.TimelinessGrade} </a>,
-                    CurrentGrade: ECG.getTimelinessGrade(TI.timelinessGradeDetails),
-                    WeightWProblem: "N/A",
-                    WeightWAssignment: "N/A",
-                    ScaledGradeAssignment: "N/A"
+                    CurrentGrade: TI.grade + (TI.totalTaskCount == 0 ? " (none assigned)" : " (" + TI.reachedTaskCount + " out of " + TI.totalTaskCount + "reached , " + TI.completedTaskCount + " complete)"),
+                    WeightWProblem: "n/a",
+                    ScaledGradeProblem: "n/a",
+                    WeightWAssignment: "n/a",
+                    ScaledGradeAssignment: "n/a"
 
                 });
-            } else {
+            } else if (!isNaN(TIID)){
                 TableAECGRData.push({
                     Problem:  TI.workflowName + " (" + TI.workflowInstanceID + ")",
-                    Task: <a href="#" onClick={this.displayExtraCreditTaskGradeFieldsReport.bind(this, TI.taskGradeFields)}>
+                    Task: <a href="#" onClick={this.displayExtraCreditTaskGradeFieldsReport.bind(this, TI.taskGradeFields, TI.countOfTaskGrades, TI.taskInstanceID)}>
                                 {TI.name + " (" + TI.taskInstanceID + ")"} </a>,
-                    //CurrentGrade: 
-                    WeightWProblem: TI.weightInProblem, 
-                    WeightWAssignment: TI.weightInProblem
-                    //ScaledGradeAssignment:
+                    CurrentGrade: curGrade(),
+                    WeightWProblem: TI.adjustedWeightInProblem + "%", 
+                    ScaledGradeProblem: curGrade() === "(in progress)" ? "(in progress)" : TI.scaledWIGrade + ": " + TI.taskGradeInProgress,
+                    WeightWAssignment: TI.problemWeightInAssignment + "%",
+                    ScaledGradeAssignment: curGrade() === "(in progress)" ? "(in progress)" : TI.scaledGrade + ": " + TI.taskGradeInProgress
     
                 });
             }
@@ -65,7 +74,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
 
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.AECGRHeader}</h2>
+                <h2 className="title">{strings.AECGRHeader + ": " +  this.props.name}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
@@ -90,6 +99,11 @@ class AssignmentExtraCreditGradesReport extends React.Component {
                                     Header: strings.WeightWithinProblem,
                                     resizable:true,
                                     accessor: 'WeightWProblem'
+                                },
+                                {
+                                    Header: strings.ScaledGradeProblem,
+                                    accessor: 'ScaledGradeProblem',
+                                    resizable: true
                                 },
                                 {
                                     Header: strings.WeightWithinAssignment,

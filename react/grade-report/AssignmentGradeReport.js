@@ -23,19 +23,19 @@ class AssignmentGradeReport extends React.Component {
         });
     }
 
-    displayProblemGradeReport(data){
+    displayProblemGradeReport(workflowData, username, userGrade){
         console.log("Problem/Workflow Grade Report:");
         console.log("data");
-        console.log(data);
-        this.props.displayProblemGradeReport(data);
+        console.log(workflowData);
+        this.props.displayProblemGradeReport(workflowData, username, userGrade);
     }
 
-    displayAssignmentExtraCreditGradeReport(data){
-        this.props.displayAssignmentExtraCreditGradeReport(data);
+    displayAssignmentExtraCreditGradeReport(AECGRData, username, userGrade){
+        this.props.displayAssignmentExtraCreditGradeReport(AECGRData, username, userGrade);
     }
 
-    displayAssignmentExtraCreditTasksReport(data){
-        this.props.displayAssignmentExtraCreditTasksReport(data);
+    displayAssignmentExtraCreditTasksReport(AECTRData, username, userGrade){
+        this.props.displayAssignmentExtraCreditTasksReport(AECTRData, username, userGrade);
     }
 
     render(){
@@ -45,119 +45,41 @@ class AssignmentGradeReport extends React.Component {
 
 
         if(!loaded){
-            return (<div></div>);
+            return (<div>Loading...</div>);
         }
         
         let AGRData = [];
         for(var userID in GradeReportRoot){
             let userReport = GradeReportRoot[userID];
+            let username = userReport.lastName + ", " + userReport.firstName;
+            console.log("usereport");
             console.log(userReport);
-            var PGRGradeData = userReport.workflowGradeReport;
-            var sumProblemGrades = 0;
-            for(var workflowID in PGRGradeData){
-                let workflowData = PGRGradeData[workflowID];
-                var taskGradesSum = 0;
-                var statusLabel = "";
-                for(var taskID in workflowData.problemAndTimelinessGrade){
-                    let task = workflowData.problemAndTimelinessGrade[taskID];
-                    
-                    //generating timeliness grade
-                    var sumTimelinessGrade = 0;
-                    var completedTIs = 0;
-                    var allTIs = 0;
-                    if (taskID === "timelinessGrade"){
-                        
-                        var TGD = task.timelinessGradeDetails
-                        for (var ID in TGD){
-                            
-                            if (TGD[ID].totalPenalty != undefined && TGD[ID].penalty != undefined && TGD[ID].grade != undefined){
-                                sumTimelinessGrade += (TGD[ID].grade * (1 - TGD[ID].totalPenalty/100));
-                            }
-                            if (TGD[ID].status === "complete"){
-                                completedTIs++;
-                            }
-                            allTIs++;
-                        }
-                        if (completedTIs != allTIs)
-                            statusLabel = "in progress";
-    
-                        if (task.weightInProblem !== "n/a")
-                            taskGradesSum+=sumTimelinessGrade * task.weightInProblem/100;
-                        
-                    }
-    
-                    
-                    //generating task grade for non-completely graded tasks
-                    else if (taskID !== "timelinessGrade" && task.taskGrade === "not yet complete"){
-                        var calculatedTaskGrade = Number.NEGATIVE_INFINITY;
-                        if (Object.keys(task.taskGradeFields).length === 0) calculatedTaskGrade = "-";
-                        else {
-                            //iterating over task instances present in taskGradeFields
-                            for (var TI in task.taskGradeFields){
-                                var taskInstance = task.taskGradeFields[TI]; 
-                                var sumOfScaledGrades = 0;
-                                var convNumGrade = 0;
-                                //calculating the sum of the scaled grades from each task instance
-                                for (var f in taskInstance){
-                                    var field = taskInstance[f];
-                                    if (field.type === "Label")
-                                        convNumGrade = 100;
-                                    else if (field.type === "Pass/Fail")
-                                        convNumGrade = field.value == "pass" ? 100 : 0;
-                                    else 
-                                        convNumGrade = ((field.value/field.max) * 100).toFixed(2); 
-                                    sumOfScaledGrades+=convNumGrade*field.weight;
-                                }
-                                //storing the grade of the task instance with the highest grade in calculatedTaskGrade
-                                if (sumOfScaledGrades > calculatedTaskGrade)
-                                    calculatedTaskGrade = sumOfScaledGrades;
-                                
-                                if (!isNaN(task.weightInProblem))
-                                    taskGradesSum+=calculatedTaskGrade * task.weightInProblem/100;
-                                
-                                statusLabel = "in progress";
-                                
-                            }
-                        }
-                        
-                        
-                    }
-                    else if (taskID !== "timelinessGrade" && task.taskGrade !== "not yet complete"){
-                        calculatedTaskGrade = task.taskGrade;
-                        //if workflowGrade==null, then include "in progress"
-                        if (workflowData.workflowGrade === "not yet complete"){
-                            statusLabel = "in progress";
-                        }
-                        
-                        if (!isNaN(task.weightInProblem) && !isNaN(calculatedTaskGrade))
-                            taskGradesSum+=calculatedTaskGrade * task.weightInProblem/100;
-                    }
-                }
-    
-                console.log("Sum of problem grades");
-                if (!isNaN(taskGradesSum))
-                    sumProblemGrades+=taskGradesSum; 
-                console.log(sumProblemGrades);
+            let ecReport = userReport.assignmentExtraCreditReport;
+            console.log("ecReport");
+            console.log(ecReport);
+            let numOfECReport = userReport.numOfExtraCredit;
+
+            let numXCreditTasks = numOfECReport == null || numOfECReport.statistics.totalTaskCount == 0 ? "none assigned" : 
+                numOfECReport.statistics.reachedTaskCount + " out of " + numOfECReport.statistics.totalTaskCount + " reached, " + numOfECReport.statistics.completedTaskCount + " complete";
             
+            let curXCreditTaskGrade = ecReport == null ? "none assigned" : 
+                ecReport.extraGradableTaskStatistics.extraInProgress + ": " + ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation;
+
+            let curXCreditTimeGrade = ecReport == null ? "none assigned" :  ecReport.timelinessGrade.grade + " (" + numXCreditTasks + ")";
+            
+                if (!(userReport.lastname == undefined && userReport.firstName == undefined && userReport.email == undefined)){
+                AGRData.push({
+                    LastName:userReport.lastName,
+                    FirstName:userReport.firstName,
+                    Email:userReport.email,
+                    AssignmentGrade: <a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport, username, userReport.assignmentGrade)}>
+                        {userReport.assignmentInProgress + ": " + userReport.assignmentGrade}</a>, 
+                    NumXCreditTasks: <a href="#" onClick={this.displayAssignmentExtraCreditTasksReport.bind(this, numOfECReport, username, numXCreditTasks)}> {numXCreditTasks} </a>,
+                    CurrXCreditTaskGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, ecReport, username, curXCreditTaskGrade)}> {curXCreditTaskGrade} </a>,
+                    CurrXCreditTimeGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, ecReport, username, curXCreditTimeGrade)}> {curXCreditTimeGrade}  </a>
+                  
+                });
             }
-
-            sumProblemGrades = sumProblemGrades.toFixed(2);
-            var assignmentGrade = (statusLabel == "in progress") ? ("(" + statusLabel +  ": " + sumProblemGrades + ")") : sumProblemGrades; 
-            console.log("Assignment Grade"); 
-            console.log(assignmentGrade);
-
-            AGRData.push({
-                LastName:userReport.lastName,
-                FirstName:userReport.firstName,
-                Email:userReport.email,
-                AssignmentGrade: <a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport)}>{assignmentGrade}</a>, 
-                CurrXCreditGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, userReport.assignmentExtraCreditReport)}>"ec grade"</a>,
-                NumXCreditTasks: 
-                    <a href="#" onClick={this.displayAssignmentExtraCreditTasksReport.bind(this, userReport.numOfExtraCredit)}> 
-                        {userReport.numOfExtraCredit ? Object.keys(userReport.numOfExtraCredit).length : "0"}
-                    </a>
-                
-            });
         }
 
 
@@ -193,14 +115,19 @@ class AssignmentGradeReport extends React.Component {
                                     accessor: 'AssignmentGrade'
                                 },
                                 {
-                                    Header: strings.CurrXCreditGrade,
-                                    resizable:true,
-                                    accessor: 'CurrXCreditGrade'
-                                },
-                                {
                                     Header: strings.NumXCreditTasks,
                                     resizable:true,
                                     accessor: 'NumXCreditTasks'
+                                },
+                                {
+                                    Header: strings.CurrXCreditTaskGrade, 
+                                    resizable:true,
+                                    accessor: 'CurrXCreditTaskGrade'
+                                },
+                                {
+                                    Header: strings.CurrXCreditTimeGrade,                                    
+                                    resizable:true,
+                                    accessor: 'CurrXCreditTimeGrade'
                                 }
                             ]}
                             defaultSorted={[

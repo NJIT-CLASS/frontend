@@ -69,38 +69,43 @@ class GradeReport extends React.Component {
     // }
 
 
-    displayProblemGradeReport(gradeData){
+    displayProblemGradeReport(workflowData, user, userGrade){
         console.log("Grade Data for displayProblemGradeReport: ");
-        console.log(gradeData);
+        console.log(workflowData);
         this.setState({
             problemGradeReport:(
             <ProblemGradeReport 
                 strings={this.state.Strings} 
-                PGRGradeData={gradeData} 
+                PGRGradeData={workflowData} 
+                name={user}
+                userGrade={userGrade}
                 displayProblemTaskAndTimelinessGradeReport={this.displayProblemTaskAndTimelinessGradeReport}>
             </ProblemGradeReport>
         )});
         
     }
 
-    displayProblemTaskAndTimelinessGradeReport(gradeData, grade){
+    displayProblemTaskAndTimelinessGradeReport(gradeData, grade, workflowName){
         this.setState({
             problemTaskAndTimelinessGradeReport:(
             <ProblemTaskAndTimelinessGradeReport 
                 strings={this.state.Strings} 
                 PTTGRGradeData={gradeData} 
                 workflowGrade = {grade}
+                workflowName = {workflowName}
                 displayTaskGradeFields={this.displayTaskGradeFields} 
                 displayTimelinessGradeDetails={this.displayTimelinessGradeDetails}>
             </ProblemTaskAndTimelinessGradeReport>)
         });
     }
 
-    displayTaskGradeFields(gradeData){
+    displayTaskGradeFields(gradeData, numOfTaskGrades, taskID){
         this.setState({
             taskGradeFieldsReport:(
             <TaskGradeFieldsReport 
                 strings={this.state.Strings} 
+                numOfTaskGrades={numOfTaskGrades}
+                taskID={taskID}
                 TGFRGradeData={gradeData}>
             </TaskGradeFieldsReport>)
         });
@@ -118,25 +123,29 @@ class GradeReport extends React.Component {
 
 
     /* extra credit displays */
-    displayAssignmentExtraCreditGradeReport(gradeData){
+    displayAssignmentExtraCreditGradeReport(gradeData, username, userGrade){
         this.setState({
             assignmentExtraCreditGradesReport:(
                 <AssignmentExtraCreditGradesReport 
                     strings={this.state.Strings}
                     AECGRData={gradeData}
                     displayAsgECTimelinessGradesDetailReport={this.displayAsgECTimelinessGradesDetailReport}
-                    displayExtraCreditTaskGradeFieldsReport={this.displayExtraCreditTaskGradeFieldsReport}>
+                    displayExtraCreditTaskGradeFieldsReport={this.displayExtraCreditTaskGradeFieldsReport}
+                    name={username}
+                    grade={userGrade}>
                 </AssignmentExtraCreditGradesReport>
             )
         });
     }
 
-    displayAssignmentExtraCreditTasksReport(gradeData){
+    displayAssignmentExtraCreditTasksReport(gradeData, username, userGrade){
         this.setState({
             assignmentExtraCreditTasksReport:(
                 <AssignmentExtraCreditTasksReport
                     strings={this.state.Strings}
-                    AECTRData={gradeData}>
+                    AECTRData={gradeData}
+                    name={username}
+                    grade={userGrade}>
                 </AssignmentExtraCreditTasksReport>
             )
         })
@@ -153,11 +162,13 @@ class GradeReport extends React.Component {
         });
     }
 
-    displayExtraCreditTaskGradeFieldsReport(gradeData){
+    displayExtraCreditTaskGradeFieldsReport(gradeData, numOfTaskGrades, taskID){
         this.setState({
             assignmentExtraCreditTaskGradeFieldsReport: (
                 <AssignmentExtraCreditTaskGradeFieldsReport
                     strings={this.state.Strings}
+                    numOfTaskGrades={numOfTaskGrades}
+                    taskID={taskID}
                     ECTGFRData={gradeData}>
                 </AssignmentExtraCreditTaskGradeFieldsReport>
             )
@@ -190,14 +201,15 @@ class GradeReport extends React.Component {
             <div>
                 <SelectAssignment strings={Strings} UserID={this.props.UserID} displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
                 {assignmentGradereport}
-                {problemGradeReport}
-                    {problemTaskAndTimelinessGradeReport}
-                        {taskGradeFieldsReport}
-                        {problemTimelinessGradeDetailsReport}
-                {assignmentExtraCreditGradesReport}
-                    {assignmentExtraCreditTimelinessGradesDetailReport}
-                {assignmentExtraCreditTasksReport}
-                {assignmentExtraCreditTaskGradeFieldsReport}
+                    {problemGradeReport}
+                        {problemTaskAndTimelinessGradeReport}
+                            {taskGradeFieldsReport}
+                            {problemTimelinessGradeDetailsReport}
+                    {assignmentExtraCreditGradesReport}
+                        {assignmentExtraCreditTaskGradeFieldsReport}
+                        {assignmentExtraCreditTimelinessGradesDetailReport}
+                    {assignmentExtraCreditTasksReport}
+                
             </div>    
         
         );
