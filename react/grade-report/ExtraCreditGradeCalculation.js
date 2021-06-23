@@ -106,3 +106,57 @@ export function getECTaskGrade(){
     //     if (!isNaN(scaledGrade)) scaledGrade = scaledGrade.toFixed(2);
         
 }
+
+//applies to both normal and extra-credit task field report tables
+export function getTaskFieldReport(TGFRGradeData, numOfTaskGrades){
+        var TableTGFRGradeDataFrame = [];
+        var TableTGFRGradeData = [];
+
+        var taskNumber = 1;
+        for(var key in TGFRGradeData){
+            var finalGradeFields = TGFRGradeData[key];
+
+            for(var taskGradeID in finalGradeFields){
+                var taskGrade = finalGradeFields[taskGradeID]; 
+
+                var value = null;
+                var maxValue = null;
+                var convNumGrade = null;
+
+                if (taskGrade.type === "Pass/Fail" || taskGrade.type === "Label" || taskGrade.type === "Rating" || taskGrade.type === "Numeric"){
+                    if (taskGrade.type === "Label"){
+                        value = taskGrade.value;
+                        maxValue = taskGrade.labelMaxValue + " (" + taskGrade.max + ")";  
+                        convNumGrade = taskGrade.convertedNumericValue + " (" + taskGrade.labelPosition + ")";
+
+                    } else if (taskGrade.type === "Pass/Fail"){
+                        value = taskGrade.value;
+                        maxValue = "pass";
+                        convNumGrade = taskGrade.convertedNumericValue;
+                    } else {
+                        value = taskGrade.value;
+                        maxValue = taskGrade.max;
+                        convNumGrade = taskGrade.convertedNumericValue;
+                    }
+                    
+                
+                
+                    TableTGFRGradeData.push({
+                        Field:taskGrade.name != null ? taskGrade.name: "Unnamed",
+                        Type:taskGrade.type,
+                        Value: value,
+                        ConvertedNumericValue: convNumGrade,
+                        Max: maxValue,
+                        WeightWTask: taskGrade.weight,
+                        ScaledGrade: taskGrade.scaledGrade
+                    });
+                }
+                
+
+            }
+            TableTGFRGradeDataFrame.push(TableTGFRGradeData);
+            TableTGFRGradeData = [];
+        }
+        
+        return TableTGFRGradeDataFrame;
+}
