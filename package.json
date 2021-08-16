@@ -5,7 +5,7 @@
   "main": "server.js",
   "engine": "node 5.6.0",
   "scripts": {
-    "start": "gulp",
+    "start": "gulp --host 0.0.0.0",
     "create-route": "gulp create-route",
     "lint": "eslint . --fix",
     "babel-node": "babel-node --plugins transform-flow-strip-types",
