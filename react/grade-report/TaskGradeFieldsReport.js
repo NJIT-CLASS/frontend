@@ -17,7 +17,7 @@ class TaskGradeFieldsReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, numOfTaskGrades, taskID, TGFRGradeData} = this.props;
+        let {strings, numOfTaskGrades, taskID, taskLabel, TGFRGradeData, taskTotalGrade} = this.props;
         let {loaded} = this.state;
         console.log("TGFRGradeData");
         console.log(TGFRGradeData);
@@ -187,6 +187,8 @@ class TaskGradeFieldsReport extends React.Component {
 
         return (
             <MultiTaskGradeTable
+                taskTotalGrade={taskTotalGrade}
+                taskLabel={taskLabel}
                 multiTaskGradeFieldsData={TableTGFRGradeDataFrame}
                 singleTaskGrade={singleTaskGrade}
                 numOfTaskGrades={numOfTaskGrades}
