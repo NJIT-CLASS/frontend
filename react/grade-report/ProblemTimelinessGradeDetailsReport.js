@@ -16,7 +16,7 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, /*gradeSummation, reachedTaskCount, adjustedTimelinessGradeFromPTGDR,*/ PTGDRGradeData} = this.props;
+        let {strings, /*gradeSummation, reachedTaskCount, adjustedTimelinessGradeFromPTGDR,*/ taskWorkflowName, PTGDRGradeData} = this.props;
         let {loaded} = this.state;
 
         console.log(PTGDRGradeData);
@@ -25,13 +25,13 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
             var timelinessGrade = PTGDRGradeData[gradeID];
             let status = () => {
                 if (timelinessGrade.status === "started"){
-                    return "not complete";
-                } else if (timelinessGrade.status === "not reached"){
-                    return "not yet started";
+                    return "started, not complete yet";
+                } else if (timelinessGrade.status === "not_yet_started"){
+                    return "not started yet";
                 } else return timelinessGrade.status;
             };
             tablePTGDRGradeData.push({
-                Task: gradeID + ": " + timelinessGrade.name,
+                Task: timelinessGrade.name + " (#" + gradeID + ")",
                 Status: status(),
                 MaxGrade: 100,
                 DaysLate: isNaN(timelinessGrade.daysLate) ? "-" : timelinessGrade.daysLate,
@@ -44,7 +44,7 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
         
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.PTGDRGHeader}</h2>
+                <h2 className="title">{strings.PTGDRGHeader + ": " + taskWorkflowName}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
