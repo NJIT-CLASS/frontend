@@ -12,12 +12,12 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
         };
     }
 
-    displayTaskGradeFields(data, numOfTaskGrades, taskID){
-        this.props.displayTaskGradeFields(data, numOfTaskGrades, taskID);
+    displayTaskGradeFields(data, numOfTaskGrades, taskID, taskLabel, taskTotalGrade){
+        this.props.displayTaskGradeFields(data, numOfTaskGrades, taskID, taskLabel, taskTotalGrade);
     }
 
-    displayTimelinessGradeDetails(data){
-        this.props.displayTimelinessGradeDetails(data);
+    displayTimelinessGradeDetails(data, taskWorkflowName){
+        this.props.displayTimelinessGradeDetails(data, taskWorkflowName);
     }
 
     
@@ -35,11 +35,11 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
             let task = PTTGRGradeData[taskID];
             let taskName = null;
             if(taskID === "timelinessGrade"){
-                taskName = (<a href="#" onClick={this.displayTimelinessGradeDetails.bind(this, task.timelinessGradeDetails)}>{strings.TimelinessGrade}</a>);
+                taskName = (<a href="#" onClick={this.displayTimelinessGradeDetails.bind(this, task.timelinessGradeDetails, task.workflowName)}>{strings.TimelinessGrade}</a>);
             } else {
                 taskName = (
-                    <a href="#" onClick={this.displayTaskGradeFields.bind(this, task.taskGradeFields, task.countOfTaskGrades, taskID)}>
-                        {task.taskInstanceID + ": " + task.name}
+                    <a href="#" onClick={this.displayTaskGradeFields.bind(this, task.taskGradeFields, task.countOfTaskGrades, taskID, task.name, task.taskGrade)}>
+                        {task.name + " (#" + task.taskInstanceID + ")"}
                         </a>
                     );
             }
@@ -48,7 +48,7 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
             if (!isNaN(taskID)){
                 TablePTTGRGradeData.push({
                     Task: taskName, 
-                    Problem: task.workflowInstanceID + ": " + task.workflowName,
+                    Problem: task.workflowName + " (#" + task.workflowInstanceID + ")",
                     Grade: task.taskGradeInProgress + ": " + task.taskGrade,
                     WeightWProblem: isNaN(task.adjustedWeightInProblem) ? "-" : task.adjustedWeightInProblem + "%",
                     ScaledGradeProblem: isNaN(task.scaledWIGrade) ? "-" : task.taskGradeInProgress + ": " + task.scaledWIGrade, 
@@ -75,7 +75,7 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{strings.PTTGRHeader + ": " + workflowName}</h2>
-                <h4 className="title">{"Total: " + workflowGrade}</h4>
+                <h4 className="title">{"Total (Current Scaled Grade Within Problem): " + workflowGrade}</h4>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
