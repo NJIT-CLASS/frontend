@@ -12,7 +12,7 @@ class MultiTaskGradeTable extends React.Component {
     }
 
     render(){
-        let {strings, multiTaskGradeFieldsData, singleTaskGrade, numOfTaskGrades, extraCreditTaskGrade, taskID} = this.props;
+        let {strings, taskLabel, multiTaskGradeFieldsData, singleTaskGrade, numOfTaskGrades, extraCreditTaskGrade, taskID, taskTotalGrade} = this.props;
 
         let header = "";
         if (extraCreditTaskGrade){
@@ -23,7 +23,8 @@ class MultiTaskGradeTable extends React.Component {
         if (numOfTaskGrades == 0){
             return (
                 <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.TGFRHeader + ": " + taskID}</h2>
+                <h2 className="title">{strings.TGFRHeader + ": " + taskLabel + " (" + taskID + ")"}</h2>
+                <h4 className="title">{"Total (Scaled Grade Within Task): " + taskTotalGrade}</h4>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
@@ -74,7 +75,7 @@ class MultiTaskGradeTable extends React.Component {
 
         else return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.TGFRHeader + ": " + taskID}</h2>
+                <h2 className="title">{strings.TGFRHeader + ": " + taskLabel + " (" + taskID + ")"}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                     {multiTaskGradeFieldsData.map((taskGradeData, index) => {
