@@ -1,7 +1,7 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import TableComponent from '../shared/tableComponent';
-
+//import {CSVLink, CSVDownload} from 'react-csv';
 
 class AssignmentGradeReport extends React.Component {
     constructor(props) {
@@ -49,6 +49,8 @@ class AssignmentGradeReport extends React.Component {
         }
         
         let AGRData = [];
+        let CSVData = [];
+
         for(var userID in GradeReportRoot){
             let userReport = GradeReportRoot[userID];
             let username = userReport.lastName + ", " + userReport.firstName;
@@ -62,26 +64,83 @@ class AssignmentGradeReport extends React.Component {
             let numXCreditTasks = numOfECReport == null || numOfECReport.statistics.totalTaskCount == 0 ? "none assigned" : 
                 numOfECReport.statistics.reachedTaskCount + " out of " + numOfECReport.statistics.totalTaskCount + " reached, " + numOfECReport.statistics.completedTaskCount + " complete";
             
-            let curXCreditTaskGrade = ecReport == null ? "none assigned" : 
-                ecReport.extraGradableTaskStatistics.extraInProgress + ": " + ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation;
-
-            let curXCreditTimeGrade = ecReport == null ? "none assigned" :  ecReport.timelinessGrade.grade + " (" + numXCreditTasks + ")";
+            let curXCreditTaskGrade, curXCreditTaskGradeNum, curXCreditTaskGradeStatus;
+            if (ecReport == null) {
+                curXCreditTaskGrade = "none assigned";
+                curXCreditTaskGradeNum = -1;
+                curXCreditTaskGradeStatus = "n/a";
+            } else if (ecReport.extraGradableTaskStatistics.extraInProgress === "n/a"){
+                curXCreditTaskGrade = ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation + " (none assigned)";
+                curXCreditTaskGradeNum = ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation;
+                curXCreditTaskGradeStatus = "n/a";
+            } else {
+                curXCreditTaskGrade = ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation + " (" + ecReport.extraGradableTaskStatistics.extraInProgress + ")";
+                curXCreditTaskGradeNum = ecReport.extraGradableTaskStatistics.assignmentExtraScaledGradeSummation;
+                curXCreditTaskGradeStatus = ecReport.extraGradableTaskStatistics.extraInProgress;
+            }
             
-                if (!(userReport.lastname == undefined && userReport.firstName == undefined && userReport.email == undefined)){
+            let curXCreditTimeGrade, curXCreditTimeGradeNum, curXCreditTimeGradeStatus;
+            if (ecReport == null || ecReport.timelinessGrade == null) {
+                curXCreditTimeGrade = "none assigned";
+                curXCreditTimeGradeNum = -1;
+                curXCreditTimeGradeStatus = "none assigned";
+            } else {
+                curXCreditTimeGrade = ecReport.timelinessGrade.grade + " (" + ecReport.timelinessGrade.reachedTaskCount + " out of " + ecReport.timelinessGrade.completedTaskCount + " reached, " + ecReport.timelinessGrade.totalTaskCount + " complete)";
+                curXCreditTimeGradeNum = ecReport.timelinessGrade.grade;
+                curXCreditTimeGradeStatus = ecReport.timelinessGrade.reachedTaskCount + " out of " + ecReport.timelinessGrade.completedTaskCount + " reached, " + ecReport.timelinessGrade.totalTaskCount;
+            }
+                        
+            
+            if (!(userReport.lastname == undefined && userReport.firstName == undefined && userReport.email == undefined)){
                 AGRData.push({
                     LastName:userReport.lastName,
                     FirstName:userReport.firstName,
                     Email:userReport.email,
                     AssignmentGrade: <a href="#" onClick={this.displayProblemGradeReport.bind(this, userReport.workflowGradeReport, username, userReport.assignmentGrade)}>
-                        {userReport.assignmentInProgress + ": " + userReport.assignmentGrade}</a>, 
+                        {userReport.assignmentGrade + " (" + userReport.assignmentInProgress + ")"}</a>, 
                     NumXCreditTasks: <a href="#" onClick={this.displayAssignmentExtraCreditTasksReport.bind(this, numOfECReport, username, numXCreditTasks)}> {numXCreditTasks} </a>,
                     CurrXCreditTaskGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, ecReport, username, curXCreditTaskGrade)}> {curXCreditTaskGrade} </a>,
                     CurrXCreditTimeGrade: <a href="#" onClick={this.displayAssignmentExtraCreditGradeReport.bind(this, ecReport, username, curXCreditTimeGrade)}> {curXCreditTimeGrade}  </a>
                   
                 });
+            
+                CSVData.push([
+                    userReport.lastName,
+                    userReport.firstName,
+                    userReport.email,
+                    userReport.assignmentGrade, 
+                    userReport.assignmentInProgress, 
+                    numOfECReport == null || numOfECReport.statistics.totalTaskCount == 0 ? -1 : numOfECReport.statistics.totalTaskCount,
+                    numXCreditTasks,
+                    curXCreditTaskGradeNum,
+                    curXCreditTaskGradeStatus,
+                    curXCreditTimeGradeNum,
+                    curXCreditTimeGradeStatus
+                ]);
+
             }
         }
 
+        let headers = [strings.LastName, 
+                        strings.FirstName,
+                        strings.Email, 
+                        strings.AssignmentGrade,
+                        strings.AssignmentGrade + " Status",
+                        strings.NumXCreditTasks,
+                        strings.NumXCreditTasks + " Status", 
+                        strings.CurrXCreditTaskGrade,
+                        strings.CurrXCreditTaskGrade + " Status",
+                        strings.CurrXCreditTimeGrade,
+                        strings.CurrXCreditTimeGrade + " Status"];
+
+        CSVData.unshift(headers);
+
+        let csvContent = "data:text/tab-separated-values," 
+            + CSVData.map(e => e.join("\t")).join("\n");
+
+        
+        var encodedUri = encodeURI(csvContent);
+        window.open(encodedUri);
 
         console.log("AGR Data");
         console.log(AGRData);
