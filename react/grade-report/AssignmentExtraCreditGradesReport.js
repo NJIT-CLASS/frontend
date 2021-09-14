@@ -49,7 +49,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
                     Problem: TI.workflowName,
                     Task: <a href="#" onClick={this.displayAsgECTimelinessGradesDetailReport.bind(this, TI.timelinessGradeDetails)}> 
                         {strings.TimelinessGrade} </a>,
-                    CurrentGrade: TI.grade + (TI.totalTaskCount == 0 ? " (none assigned)" : " (" + TI.reachedTaskCount + " out of " + TI.totalTaskCount + "reached , " + TI.completedTaskCount + " complete)"),
+                    CurrentGrade: TI.grade + (TI.totalTaskCount == 0 ? " (none assigned)" : " (" + TI.reachedTaskCount + " out of " + TI.totalTaskCount + " reached, " + TI.completedTaskCount + " complete)"),
                     WeightWProblem: "n/a",
                     ScaledGradeProblem: "n/a",
                     WeightWAssignment: "n/a",
