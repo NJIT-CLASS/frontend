@@ -86,9 +86,16 @@ class SelectAssignment extends Component {
 
     }
     
-    //undisplayAssignmentGradeReport(){
-    //    this.props.undisplayAssignmentGradeReport();
-    //}
+    undisplayAssignmentGradeReport(){
+        this.setState({
+            AssignmentID: -1,
+            CourseID: -1,
+            SectionID: -1,
+            SemesterID: -1,
+            WorkflowID: -1
+        });
+        this.props.undisplayAssignmentGradeReport();
+    }
 
     render(){
         //let {Strings, loaded} = this.state;
@@ -103,7 +110,7 @@ class SelectAssignment extends Component {
                    Submit Selection
                 </button>
                     
-                <button  onClick={() => {window.location.reload()}}>
+                <button  onClick={this.undisplayAssignmentGradeReport.bind(this)}>
                    Reset/Select New Assignment
                 </button>
             </ul>

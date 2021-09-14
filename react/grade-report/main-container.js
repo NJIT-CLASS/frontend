@@ -31,6 +31,8 @@ class GradeReport extends React.Component {
 
 
 
+        this.undisplayAssignmentGradeReport = this.undisplayAssignmentGradeReport.bind(this);
+
         this.displayAssignmentGradeReport = this.displayAssignmentGradeReport.bind(this);
         this.displayProblemGradeReport = this.displayProblemGradeReport.bind(this);
         this.displayProblemTaskAndTimelinessGradeReport = this.displayProblemTaskAndTimelinessGradeReport.bind(this);
@@ -48,6 +50,20 @@ class GradeReport extends React.Component {
         });
     }
 
+    undisplayAssignmentGradeReport(){
+        this.setState({
+            assignmentGradereport:null, 
+            problemGradeReport:null,
+            problemTaskAndTimelinessGradeReport:null,
+            taskGradeFieldsReport:null,
+            problemTimelinessGradeDetailsReport:null,
+            assignmentExtraCreditGradesReport: null,
+            assignmentExtraCreditTasksReport: null,
+            assignmentExtraCreditTimelinessGradesDetailReport:null,
+            assignmentExtraCreditTaskGradeFieldsReport:null
+        });
+    }
+
     displayAssignmentGradeReport(gradeData){
         console.log("Grade Data for displayAssignmentGradeReport: ");
         console.log(gradeData);
@@ -58,6 +74,7 @@ class GradeReport extends React.Component {
                     displayProblemGradeReport={this.displayProblemGradeReport} 
                     displayAssignmentExtraCreditGradeReport={this.displayAssignmentExtraCreditGradeReport}
                     displayAssignmentExtraCreditTasksReport={this.displayAssignmentExtraCreditTasksReport}
+                    clearTablesUnderPGR={this.clearTablesUnderPGR}
                     AI_ID={gradeData}>
                 </AssignmentGradeReport>
             )
@@ -72,7 +89,11 @@ class GradeReport extends React.Component {
     displayProblemGradeReport(workflowData, user, userGrade){
         console.log("Grade Data for displayProblemGradeReport: ");
         console.log(workflowData);
+        console.log("Delete from below pgr");
         this.setState({
+            problemTaskAndTimelinessGradeReport:null,
+            taskGradeFieldsReport:null,
+            problemTimelinessGradeDetailsReport:null,
             problemGradeReport:(
             <ProblemGradeReport 
                 strings={this.state.Strings} 
@@ -87,6 +108,8 @@ class GradeReport extends React.Component {
 
     displayProblemTaskAndTimelinessGradeReport(gradeData, grade, workflowName){
         this.setState({
+            taskGradeFieldsReport:null,
+            problemTimelinessGradeDetailsReport:null,
             problemTaskAndTimelinessGradeReport:(
             <ProblemTaskAndTimelinessGradeReport 
                 strings={this.state.Strings} 
@@ -128,6 +151,8 @@ class GradeReport extends React.Component {
     /* extra credit displays */
     displayAssignmentExtraCreditGradeReport(gradeData, username, userGrade){
         this.setState({
+            assignmentExtraCreditTimelinessGradesDetailReport: null,
+            assignmentExtraCreditTaskGradeFieldsReport: null,
             assignmentExtraCreditGradesReport:(
                 <AssignmentExtraCreditGradesReport 
                     strings={this.state.Strings}
@@ -202,7 +227,7 @@ class GradeReport extends React.Component {
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
         return (
             <div>
-                <SelectAssignment strings={Strings} UserID={this.props.UserID} displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
+                <SelectAssignment strings={Strings} UserID={this.props.UserID} undisplayAssignmentGradeReport={this.undisplayAssignmentGradeReport} displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
                 {assignmentGradereport}
                     {problemGradeReport}
                         {problemTaskAndTimelinessGradeReport}
