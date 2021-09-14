@@ -104,7 +104,7 @@ class SelectAssignment extends Component {
                 </button>
                     
                 <button  onClick={() => {window.location.reload()}}>
-                   Return
+                   Reset/Select New Assignment
                 </button>
             </ul>
             
