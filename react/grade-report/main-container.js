@@ -99,23 +99,26 @@ class GradeReport extends React.Component {
         });
     }
 
-    displayTaskGradeFields(gradeData, numOfTaskGrades, taskID){
+    displayTaskGradeFields(gradeData, numOfTaskGrades, taskID, taskLabel, taskTotalGrade){
         this.setState({
             taskGradeFieldsReport:(
             <TaskGradeFieldsReport 
                 strings={this.state.Strings} 
                 numOfTaskGrades={numOfTaskGrades}
                 taskID={taskID}
+                taskLabel={taskLabel}
+                taskTotalGrade={taskTotalGrade}
                 TGFRGradeData={gradeData}>
             </TaskGradeFieldsReport>)
         });
     }
 
-    displayTimelinessGradeDetails(gradeData){
+    displayTimelinessGradeDetails(gradeData, taskWorkflowName){
         this.setState({
             problemTimelinessGradeDetailsReport:(
             <ProblemTimelinessGradeDetailsReport 
                 strings={this.state.Strings} 
+                taskWorkflowName={taskWorkflowName}
                 PTGDRGradeData={gradeData}>
             </ProblemTimelinessGradeDetailsReport>)
         });
