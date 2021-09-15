@@ -22,7 +22,7 @@ export default class CompletedTaskComponent extends Component {
                 // console.log(body)
                 let transformedTaskList = body.CompletedTaskInstances.map(task => {
                     return {
-                        Assignment: task.AssignmentInstance.DisplayName,
+                        Assignment: task.AssignmentInstance.Assignment.Name,
                         TaskID: task.TaskInstanceID,
                         Type: task.TaskActivity.DisplayName,
                         CourseNumber: task.AssignmentInstance.Section.Course.Number,
