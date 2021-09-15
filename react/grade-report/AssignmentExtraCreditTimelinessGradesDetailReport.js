@@ -23,17 +23,19 @@ class AssignmentExtraCreditTimelinessGradesDetailReport extends React.Component 
         console.log(AECTGDRData);
 
         let TableAECTGDRData = [];
+        let timelinessMaxGrade = 100;
 
         for (var TIID in AECTGDRData){
             let TI = AECTGDRData[TIID];
             TableAECTGDRData.push({
-                Problem: TI.workflowName,
+                //Problem: TI.workflowName,
                 Task: TI.name + " (" + TIID + ")",
                 Status: TI.status, 
-                TimelinessMaximumGrade: TI.grade,
-                DaysLate: TI.daysLate,
-                PenaltyPerDay: TI.penalty + "%", 
-                TimelinessGrade: ECG.getTaskTimelinessGradeScaled(TI.status, TI.grade, TI.grade, TI.daysLate, TI.penalty)
+                TimelinessMaximumGrade: timelinessMaxGrade,
+                DaysLate: isNaN(TI.daysLate) ? "-" : TI.daysLate,
+                PenaltyPerDay: isNaN(TI.penalty) ? "-" : TI.penalty +  "%", 
+                TimelinessGrade: isNaN(TI.grade) ? "-" : isNaN(TI.grade)
+                //ECG.getTaskTimelinessGradeScaled(TI.status, TI.grade, timelinessMaxGrade, TI.daysLate, TI.penalty)
             });
         }
 
@@ -49,11 +51,11 @@ class AssignmentExtraCreditTimelinessGradesDetailReport extends React.Component 
                         <TableComponent
                             data={TableAECTGDRData}
                             columns={[
-                                {
-                                    Header: strings.Problem,
-                                    accessor: 'Problem',
-                                    resizable:true      
-                                },
+                                // {
+                                //     Header: strings.Problem,
+                                //     accessor: 'Problem',
+                                //     resizable:true      
+                                // },
                                 {
                                     Header: strings.Task,
                                     accessor: 'Task',
@@ -99,7 +101,7 @@ class AssignmentExtraCreditTimelinessGradesDetailReport extends React.Component 
                                     desc: true
                                 },
                             ]}
-                            noDataText={strings.TaskGradeNoData}
+                            noDataText={"This student has no Extra Credit Timeliness grades."}
                         />
                     </div>
                 </div>
