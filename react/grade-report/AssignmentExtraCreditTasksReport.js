@@ -36,7 +36,7 @@ class AssignmentExtraCreditTasksReport extends React.Component {
                 }
 
                 TableAECTRData.push({
-                    Problem: workflowData.workflowInstanceID + ": " + workflowData.workflowName,
+                    Problem: workflowData.workflowName + " (#" + workflowData.workflowInstanceID + ")",
                     Task: workflowData.name + " (" + workflowData.taskInstanceID + ")",
                     Status: status(),
                     TaskGrade: taskGrade(),
@@ -87,7 +87,7 @@ class AssignmentExtraCreditTasksReport extends React.Component {
                                     desc: false
                                 }
                             ]}
-                            noDataText={strings.TaskGradeNoData}
+                            noDataText={"This student has no Extra Credit tasks."}
                         />
                     </div>
                 </div>
