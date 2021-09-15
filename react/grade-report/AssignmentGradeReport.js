@@ -121,6 +121,8 @@ class AssignmentGradeReport extends React.Component {
             }
         }
 
+        /////////////////////////////////////////
+        /**Creates and downloads a TSV file:**/
         let headers = [strings.LastName, 
                         strings.FirstName,
                         strings.Email, 
@@ -137,10 +139,10 @@ class AssignmentGradeReport extends React.Component {
 
         let csvContent = "data:text/tab-separated-values," 
             + CSVData.map(e => e.join("\t")).join("\n");
-
-        
         var encodedUri = encodeURI(csvContent);
         window.open(encodedUri);
+        /////////////////////////////////////////
+
 
         console.log("AGR Data");
         console.log(AGRData);
