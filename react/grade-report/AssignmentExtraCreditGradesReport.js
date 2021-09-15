@@ -58,7 +58,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
                 });
             } else if (!isNaN(TIID)){
                 TableAECGRData.push({
-                    Problem:  TI.workflowName + " (" + TI.workflowInstanceID + ")",
+                    Problem:  TI.workflowName + " (#" + TI.workflowInstanceID + ")",
                     Task: <a href="#" onClick={this.displayExtraCreditTaskGradeFieldsReport.bind(this, TI.taskGradeFields, TI.countOfTaskGrades, TI.taskInstanceID)}>
                                 {TI.name + " (" + TI.taskInstanceID + ")"} </a>,
                     CurrentGrade: curGrade(),
