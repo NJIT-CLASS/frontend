@@ -44,9 +44,9 @@ class TaskGradeFieldsReport extends React.Component {
                 
                 if (taskGrade.type === "Pass/Fail" || taskGrade.type === "Label" || taskGrade.type === "Rating" || taskGrade.type === "Numeric"){
                     if (taskGrade.type === "Label"){
-                        value = taskGrade.value;
-                        maxValue = taskGrade.labelMaxValue + " (" + taskGrade.max + ")";  
-                        convNumGrade = taskGrade.convertedNumericValue + " (" + taskGrade.labelPosition + ")";
+                        value = taskGrade.value + " (" + taskGrade.labelPosition + " out of " + taskGrade.max + ")";
+                        maxValue = taskGrade.labelMaxValue + " (" + taskGrade.max + " out of " + taskGrade.max + ")";  
+                        convNumGrade = taskGrade.convertedNumericValue /*+ " (" + taskGrade.labelPosition + ")"*/;
 
                     } else if (taskGrade.type === "Pass/Fail"){
                         value = taskGrade.value;
@@ -66,7 +66,7 @@ class TaskGradeFieldsReport extends React.Component {
                         Value: value,
                         ConvertedNumericValue: convNumGrade,
                         Max: maxValue,
-                        WeightWTask: taskGrade.weight,
+                        WeightWTask: "" + taskGrade.weight + "%",
                         ScaledGrade: taskGrade.scaledGrade
                     });
                 }
