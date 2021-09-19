@@ -1,3 +1,4 @@
+import { isNull } from 'lodash';
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import TableComponent from '../shared/tableComponent';
@@ -8,17 +9,30 @@ class AssignmentGradeReport extends React.Component {
         super(props);
 
         this.state = {
-            loaded: false,
-            GradeReportRoot:null
+            GradeReportRoot: null, 
+            loaded: false
         };
     }
 
     componentDidMount(){
-        apiCall.post(`/gradeReport`,{ai_id:this.props.AI_ID},(err,status,body)=>{
-            if(status.statusCode === 200){
-                console.log(body);
-                this.setState({GradeReportRoot:body.assignmentGradeReport,
-                               loaded:true});
+        apiCall.get(`/sectionUserInfo/${this.props.UserID}/${this.props.sectionID}`, (err, res,body) => {
+            let sectionuserId = body.Info.SectionUserID;
+            if (body.Info.Role === "Student"){
+                apiCall.post(`/studentGradeReport`,{ai_id:this.props.AI_ID, sectionUserID:sectionuserId},(err,status,body)=>{
+                    if(status.statusCode === 200){
+                        console.log(body);
+                        this.setState({GradeReportRoot:body.assignmentStudentGradeReport,
+                                       loaded:true});
+                    }
+                });
+            } else if (body.Info.Role === "Instructor"){
+                apiCall.post(`/gradeReport`,{ai_id:this.props.AI_ID},(err,status,body)=>{
+                    if(status.statusCode === 200){
+                        console.log(body);
+                        this.setState({GradeReportRoot:body.assignmentGradeReport,
+                                       loaded:true});
+                    }
+                });
             }
         });
     }
@@ -40,9 +54,9 @@ class AssignmentGradeReport extends React.Component {
 
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings} = this.props;
-        let {loaded, GradeReportRoot} = this.state;
+        let {strings, gradeData} = this.props;
 
+        let {loaded, GradeReportRoot} = this.state;
 
         if(!loaded){
             return (<div>Loading...</div>);
