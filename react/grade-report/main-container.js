@@ -64,9 +64,7 @@ class GradeReport extends React.Component {
         });
     }
 
-    displayAssignmentGradeReport(gradeData){
-        console.log("Grade Data for displayAssignmentGradeReport: ");
-        console.log(gradeData);
+    displayAssignmentGradeReport(AI_ID, sectionID){
         this.setState({
             assignmentGradereport:(
                 <AssignmentGradeReport 
@@ -74,8 +72,9 @@ class GradeReport extends React.Component {
                     displayProblemGradeReport={this.displayProblemGradeReport} 
                     displayAssignmentExtraCreditGradeReport={this.displayAssignmentExtraCreditGradeReport}
                     displayAssignmentExtraCreditTasksReport={this.displayAssignmentExtraCreditTasksReport}
-                    clearTablesUnderPGR={this.clearTablesUnderPGR}
-                    AI_ID={gradeData}>
+                    AI_ID={AI_ID}
+                    sectionID={sectionID}
+                    UserID={this.props.UserID}>
                 </AssignmentGradeReport>
             )
         });

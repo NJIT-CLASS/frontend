@@ -81,10 +81,41 @@ class SelectAssignment extends Component {
     //     });
     // }
 
-    displayAssignmentGradeReport(data){
-        this.props.displayAssignmentGradeReport(data);
 
+    // displayAssignmentGradeReport(GradeReportRoot){
+    //     this.props.displayAssignmentGradeReport(GradeReportRoot);
+    // }
+
+    displayAssignmentGradeReport(AssignmentID, SectionID){
+        this.props.displayAssignmentGradeReport(AssignmentID, SectionID);
     }
+
+    // loadData(AI_ID, section_id){
+    //     let GradeReportRoot = null;
+    //     apiCall.get(`/sectionUserInfo/${this.props.UserID}/${section_id}`, (err, res,body) => {
+    //         console.log(body);
+    //         console.log(body.Info);
+    //         console.log(body.Info.Role);
+    //         let SectionUserID = body.Info.SectionUserID;
+    //         if (body.Info.Role === "Student"){
+    //             apiCall.post(`/studentGradeReport`,{ai_id:AI_ID, sectionUserID:SectionUserID}, 
+    //                 (err,status,body)=>{
+    //                 if(status.statusCode === 200){
+    //                     console.log(body);
+    //                     GradeReportRoot = body.assignmentStudentGradeReport; 
+    //                 }
+    //             });
+    //         } else if (body.Info.Role === "Instructor"){
+    //             apiCall.post(`/gradeReport`,{ai_id:AI_ID},(err,status,body)=>{
+    //                 if(status.statusCode === 200){
+    //                     console.log(body);
+    //                     GradeReportRoot = body.assignmentGradeReport;
+    //                 }
+    //             });
+    //         }
+    //     });
+    //     this.displayAssignmentGradeReport(GradeReportRoot);
+    // }
     
     undisplayAssignmentGradeReport(){
         this.setState({
@@ -106,7 +137,8 @@ class SelectAssignment extends Component {
             
         buttonDisplay = <div className="col-xs-6">
             <ul>
-                <button onClick={this.displayAssignmentGradeReport.bind(this, AssignmentID)}>
+                <button onClick={this.displayAssignmentGradeReport.bind(this, AssignmentID, SectionID)
+                    /*this.loadData.bind(this, AssignmentID, SectionID)*/}>
                    Submit Selection
                 </button>
                     
