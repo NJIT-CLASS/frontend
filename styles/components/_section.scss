@@ -8,23 +8,88 @@
     margin: 3px;
     width: 99vw;
   }
+  position: relative;
+
   a:visited {
     color: #70119F;
   }
-  .title {
-    @media screen and (max-width: $mobile-brk) {
-      padding: 20px 20px;
+
+  .title-download {
+    
+    .title {
+      display: inline-block;
+      word-wrap: break-word;
+      font-size: 22px;
+      padding: 20px 30px 10px 30px;
+      color: #4b4d4e;
+      @media screen and (max-width: $mobile-brk) {
+        position: relative;
+        margin:0 auto;
+        display: block;
+        text-align: center;
+      }
     }
+    .download-button {
+      position: absolute;
+      top: 5px;
+      right: 30px;
+      @media screen and (max-width: $mobile-brk) {
+        top: 0px;
+        right: 0px;
+        position: relative;
+        margin:0 auto;
+        display:block;
+      }
+    }
+
+    @media screen and (max-width: $mobile-brk) {
+      padding: 20px 20px 20px 20px;
+    }
+    
+    border-bottom: 1px solid #e7eaec;
+  }
+
+  .title {
+    display: inline-block;
     word-wrap: break-word;
     border-bottom: 1px solid #e7eaec;
     font-size: 22px;
-    font-weight: 500px;
-    padding: 20px 30px 20px 30px;
+    padding: 20px 30px 10px 30px;
     color: #4b4d4e;
+    @media screen and (max-width: $mobile-brk) {
+      position: relative;
+      margin:0 auto;
+      display: block;
+      text-align: center;
+    }
+  }
+
+  .subtitle {
+    word-wrap: break-word;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 30px 5px 30px;
+    border-bottom: 1px solid #e7eaec;
+    color: #272829;
+    @media screen and (max-width: $mobile-brk) {
+      position: relative;
+      margin:0 auto;
+      display: block;
+      text-align: center;
+    }
   }
   p {
     max-width: 400px;
   }
+
+  .multi-task {
+    color: #272829;
+    border: 1px solid green;
+    font-weight: 500;
+    padding: 5px 0px 5px;
+    text-align: center;
+  }
+
   .section-content {
     @media screen and (max-width: $mobile-brk) {
       padding: 12px 20px;
