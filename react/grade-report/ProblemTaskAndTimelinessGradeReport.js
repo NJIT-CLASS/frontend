@@ -75,7 +75,7 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{strings.PTTGRHeader + ": " + workflowName}</h2>
-                <h4 className="title">{"Total (Current Scaled Grade Within Problem): " + workflowGrade}</h4>
+                <h2 className="subtitle">{"Total (Current Scaled Grade Within Problem): " + workflowGrade}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent

@@ -64,7 +64,7 @@ class GradeReport extends React.Component {
         });
     }
 
-    displayAssignmentGradeReport(AI_ID, sectionID){
+    displayAssignmentGradeReport(AI_ID, sectionID, assignmentIdentifier){
         this.setState({
             assignmentGradereport:(
                 <AssignmentGradeReport 
@@ -74,6 +74,7 @@ class GradeReport extends React.Component {
                     displayAssignmentExtraCreditTasksReport={this.displayAssignmentExtraCreditTasksReport}
                     AI_ID={AI_ID}
                     sectionID={sectionID}
+                    assignmentIdentifier={assignmentIdentifier}
                     UserID={this.props.UserID}>
                 </AssignmentGradeReport>
             )
@@ -226,7 +227,9 @@ class GradeReport extends React.Component {
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
         return (
             <div>
-                <SelectAssignment strings={Strings} UserID={this.props.UserID} undisplayAssignmentGradeReport={this.undisplayAssignmentGradeReport} displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
+                <SelectAssignment strings={Strings} UserID={this.props.UserID} 
+                undisplayAssignmentGradeReport={this.undisplayAssignmentGradeReport} 
+                displayAssignmentGradeReport={this.displayAssignmentGradeReport}></SelectAssignment>
                 {assignmentGradereport}
                     {problemGradeReport}
                         {problemTaskAndTimelinessGradeReport}

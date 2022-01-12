@@ -45,7 +45,7 @@ class ProblemGradesReport extends React.Component {
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">{strings.PGRHeader + ": " + name}</h2>
-                <h3 className="title">{"Total (Current Scaled Grade Within Assignment): " + userGrade}</h3>
+                <h2 className="subtitle">{"Total (Current Scaled Grade Within Assignment): " + userGrade}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent

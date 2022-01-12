@@ -18,13 +18,18 @@ class MultiTaskGradeTable extends React.Component {
         if (extraCreditTaskGrade){
             header = "Extra Credit ";
         }
+
+        let multiTaskClassName = 'multi-task';
+        if (singleTaskGrade){
+            multiTaskClassName = '';
+        }
         
         console.log("number of task grades: " + numOfTaskGrades);
         if (numOfTaskGrades == 0){
             return (
                 <div className="section card-2 sectionTable">
                 <h2 className="title">{strings.TGFRHeader + ": " + taskLabel + " (" + taskID + ")"}</h2>
-                <h4 className="title">{"Total (Scaled Grade Within Task): " + taskTotalGrade}</h4>
+                <h2 className="subtitle">{"Total (Scaled Grade Within Task): " + taskTotalGrade}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
@@ -78,50 +83,51 @@ class MultiTaskGradeTable extends React.Component {
                 <h2 className="title">{strings.TGFRHeader + ": " + taskLabel + " (" + taskID + ")"}</h2>
                 <div className="section-content">
                     <div className="col-xs-6">
-                    {multiTaskGradeFieldsData.map((taskGradeData, index) => {
+                        {multiTaskGradeFieldsData.map((taskGradeData, index) => {
                             return (
-                            <div key={index}>
-                            <div><b><h3>{singleTaskGrade ? "" : header + "Grading Task #" + (index + 1)}</h3></b></div>  <TableComponent
-                            data={taskGradeData}
-                            columns={[
-                                {
-                                    Header: strings.Field,
-                                    accessor: 'Field',
-                                    resizable:true      
-                                },
-                                {
-                                    Header: strings.Type,
-                                    accessor: 'Type',
-                                    resizable:true
-                                },
-                                {         
-                                    Header: strings.Value,
-                                    accessor: 'Value',
-                                    resizable:true                              
-                                },
-                                {
-                                    Header: strings.Max,
-                                    resizable:true,
-                                    accessor: 'Max'
-                                },
-                                {
-                                    Header: strings.ConvertedNumericValue,
-                                    accessor: 'ConvertedNumericValue',
-                                    resizable: true
-                                },
-                                {
-                                    Header: strings.WeightWTask,
-                                    resizable:true,
-                                    accessor: 'WeightWTask'
-                                },
-                                {
-                                    Header: strings.ScaledGradeTask,
-                                    resizable:true,
-                                    accessor: 'ScaledGrade'
-                                }
-                            ]}
-                            noDataText={strings.TaskGradeNoData}
-                        /></div>);
+                                <div key={index}>
+                                    <h3 className={multiTaskClassName}>{singleTaskGrade ? "" : header + "Grading Task #" + (index + 1)}</h3>
+                                    <TableComponent
+                                        data={taskGradeData}
+                                        columns={[
+                                            {
+                                                Header: strings.Field,
+                                                accessor: 'Field',
+                                                resizable:true      
+                                            },
+                                            {
+                                                Header: strings.Type,
+                                                accessor: 'Type',
+                                                resizable:true
+                                            },
+                                            {         
+                                                Header: strings.Value,
+                                                accessor: 'Value',
+                                                resizable:true                              
+                                            },
+                                            {
+                                                Header: strings.Max,
+                                                resizable:true,
+                                                accessor: 'Max'
+                                            },
+                                            {
+                                                Header: strings.ConvertedNumericValue,
+                                                accessor: 'ConvertedNumericValue',
+                                                resizable: true
+                                            },
+                                            {
+                                                Header: strings.WeightWTask,
+                                                resizable:true,
+                                                accessor: 'WeightWTask'
+                                            },
+                                            {
+                                                Header: strings.ScaledGradeTask,
+                                                resizable:true,
+                                                accessor: 'ScaledGrade'
+                                            }
+                                        ]}
+                                        noDataText={strings.TaskGradeNoData}
+                                    /></div>);
                         })}
                     </div>
                 </div>
