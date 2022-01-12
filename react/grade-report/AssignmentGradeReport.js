@@ -52,9 +52,31 @@ class AssignmentGradeReport extends React.Component {
         this.props.displayAssignmentExtraCreditTasksReport(AECTRData, username, userGrade);
     }
 
+    download(filename, fileContent) {
+        filename = filename + ".tsv";
+    
+        var blob = new Blob([fileContent], { type: 'text/tab-separated-values' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            var link = document.createElement('a');
+            if (link.download !== undefined) { // feature detection
+                // Browsers that support HTML5 download attribute
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    
+    }
+
     render(){
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, gradeData} = this.props;
+        let {strings, assignmentIdentifier} = this.props;
 
         let {loaded, GradeReportRoot} = this.state;
 
@@ -151,10 +173,12 @@ class AssignmentGradeReport extends React.Component {
 
         CSVData.unshift(headers);
 
-        let csvContent = "data:text/tab-separated-values," 
-            + CSVData.map(e => e.join("\t")).join("\n");
-        var encodedUri = encodeURI(csvContent);
-        window.open(encodedUri);
+        // let csvContent = "data:text/tab-separated-values," 
+        //     + CSVData.map(e => e.join("\t")).join("\n");
+        let csvContent = CSVData.map(e => e.join("\t")).join("\n");
+        // let csvContent = CSVData;
+        // var encodedUri = encodeURI(csvContent);
+        // window.open(encodedUri);
         /////////////////////////////////////////
 
 
@@ -163,7 +187,13 @@ class AssignmentGradeReport extends React.Component {
         
         return (
             <div className="section card-2 sectionTable">
-                <h2 className="title">{strings.AGRHeader}</h2>
+                <div className="title-download">
+                    <h2 className="title">{strings.AGRHeader}</h2>
+                    <button className="download-button" 
+                        onClick={this.download.bind(this, this.props.assignmentIdentifier, csvContent)}>
+                            Download
+                    </button>
+                </div>
                 <div className="section-content">
                     <div className="col-xs-6">
                         <TableComponent
