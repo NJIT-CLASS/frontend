@@ -5,6 +5,7 @@ import CourseSelectComponent from '../everyones-work/courseSelect';
 import SectionSelectComponent from '../everyones-work/sectionSelect';
 import AssignmentSelectComponent from '../everyones-work/assignmentSelect';
 import SemesterSelectComponent from '../everyones-work/semesterSelect';
+import Axios from 'axios';
 
 
 class SelectAssignment extends Component {
@@ -86,8 +87,34 @@ class SelectAssignment extends Component {
     //     this.props.displayAssignmentGradeReport(GradeReportRoot);
     // }
 
-    displayAssignmentGradeReport(AssignmentID, SectionID){
-        this.props.displayAssignmentGradeReport(AssignmentID, SectionID);
+
+    async displayAssignmentGradeReport(AssignmentID, SectionID){
+        let currentdate = new Date(); 
+        let datetime = `${(currentdate.getMonth()+1)}`.padStart(2, '0') + ''
+                + `${currentdate.getDate()}`.padStart(2, '0') + ''
+                + currentdate.getFullYear() + ''
+                + `${currentdate.getHours()}`.padStart(2, '0') + ''
+                + `${currentdate.getMinutes()}`.padStart(2, '0') + ''
+                + `${currentdate.getSeconds()}`.padStart(2, '0');
+        let a = ''; //assignment identifier
+        a = 
+            (await apiCall.getAsync(`/course/getSection/${this.state.SectionID}`)).data.result.Name + '_' +
+            (await apiCall.getAsync(`/semester/${this.state.SemesterID}`)).data.Semester.Name + '_' +
+            (await apiCall.getAsync(`/course/${this.state.CourseID}`)).data.Course.Name + '_' +
+            (await apiCall.getAsync(`/getAssignmentRecord/${this.state.AssignmentID}`)).data.Info.Assignment.DisplayName;
+
+        console.log(a);
+        this.props.displayAssignmentGradeReport(AssignmentID, SectionID, a);
+        // apiCall.get(`/course/getSection/${this.state.SectionID}`, (err,status,body)=>{
+        //     apiCall.get(`/semester/${this.state.SemesterID}`, (err,status,body)=>{
+        //         apiCall.get(`/getAssignmentRecord/${this.state.AssignmentID}`, (err,status,body)=>{
+        //             a += body.Info.Course.Name + '_' + body.Info.Assignment.DisplayName;
+        //             this.props.displayAssignmentGradeReport(AssignmentID, SectionID, a);
+        //         });
+        //         a += body.Semester.Name + '_';
+        //     });
+        //     a += datetime + '_' + body.result.Name + '_';
+        // });
     }
 
     // loadData(AI_ID, section_id){
@@ -132,23 +159,19 @@ class SelectAssignment extends Component {
         //let {Strings, loaded} = this.state;
         let {AssignmentID, CourseID, SemesterID, SectionID, Strings} = this.state;
         let buttonDisplay = null;
-        let buttonClicked = false;
         if (AssignmentID!=-1){
-            
-        buttonDisplay = <div className="col-xs-6">
-            <ul>
+            buttonDisplay = <div className="row">
                 <button onClick={this.displayAssignmentGradeReport.bind(this, AssignmentID, SectionID)
                     /*this.loadData.bind(this, AssignmentID, SectionID)*/}>
-                   Submit Selection
+                Submit Selection
                 </button>
                     
                 <button  onClick={this.undisplayAssignmentGradeReport.bind(this)}>
-                   Reset/Select New Assignment
+                Reset/Select New Assignment
                 </button>
-            </ul>
             
 
-        </div>
+            </div>
         
         }
 
