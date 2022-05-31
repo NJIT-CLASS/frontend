@@ -37,7 +37,7 @@ class AssignmentExtraCreditTasksReport extends React.Component {
 
                 TableAECTRData.push({
                     Problem: workflowData.workflowName + " (#" + workflowData.workflowInstanceID + ")",
-                    Task: workflowData.name + " (" + workflowData.taskInstanceID + ")",
+                    Task: workflowData.name + " (#s" + workflowData.taskInstanceID + ")",
                     Status: status(),
                     TaskGrade: taskGrade(),
                     TimelinessGrade: workflowData.timelinessGrade

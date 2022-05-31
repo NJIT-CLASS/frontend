@@ -60,7 +60,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
                 TableAECGRData.push({
                     Problem:  TI.workflowName + " (#" + TI.workflowInstanceID + ")",
                     Task: <a href="#" onClick={this.displayExtraCreditTaskGradeFieldsReport.bind(this, TI.taskGradeFields, TI.countOfTaskGrades, TI.taskInstanceID)}>
-                                {TI.name + " (" + TI.taskInstanceID + ")"} </a>,
+                                {TI.name + " (#" + TI.taskInstanceID + ")"} </a>,
                     CurrentGrade: curGrade(),
                     WeightWProblem: TI.adjustedWeightInProblem + "%", 
                     ScaledGradeProblem: curGrade() === "(in progress)" ? "(in progress)" : TI.scaledWIGrade + ": " + TI.taskGradeInProgress,

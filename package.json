@@ -20,7 +20,7 @@
     "babel-code-frame": "^6.26.0",
     "bleach": "^0.3.0",
     "body-parser": "^1.18.3",
-    "connect-redis": "^3.3.3",
+    "connect-redis": "^3.4.2",
     "cookie-parser": "^1.4.3",
     "crypto-js": "^3.1.8",
     "csv-parse": "^2.5.0",

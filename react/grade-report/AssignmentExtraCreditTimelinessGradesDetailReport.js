@@ -29,12 +29,12 @@ class AssignmentExtraCreditTimelinessGradesDetailReport extends React.Component 
             let TI = AECTGDRData[TIID];
             TableAECTGDRData.push({
                 //Problem: TI.workflowName,
-                Task: TI.name + " (" + TIID + ")",
+                Task: TI.name + " (#" + TIID + ")",
                 Status: TI.status, 
                 TimelinessMaximumGrade: timelinessMaxGrade,
                 DaysLate: isNaN(TI.daysLate) ? "-" : TI.daysLate,
                 PenaltyPerDay: isNaN(TI.penalty) ? "-" : TI.penalty +  "%", 
-                TimelinessGrade: isNaN(TI.grade) ? "-" : isNaN(TI.grade)
+                TimelinessGrade: isNaN(TI.grade) ? "-" : TI.grade
                 //ECG.getTaskTimelinessGradeScaled(TI.status, TI.grade, timelinessMaxGrade, TI.daysLate, TI.penalty)
             });
         }
