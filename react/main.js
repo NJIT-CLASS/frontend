@@ -21,7 +21,8 @@ import QuickAssignmentReport from './quick-assignment-report/main-container';
 import AboutContainer from './about/about-container';
 import ForgotPasswordContainer from './forgot-password/forgot-password-container';
 import SectionsContainer from './sections/sections-container';
-import UserGradeReportContainer from './grade-report/main-container';
+import InstructorGradeReportContainer from './instructor-grade-report/main-container';
+import StudentGradeReportContainer from './student-grade-report/main-container';
 import VolunteerPoolContainer from './volunteer-pool/volunteer-pool-container';
 import UserManagementContainer from './user-management/main-container';
 import EveryonesWorkMain from './everyones-work/main-container';
@@ -67,105 +68,108 @@ const hasInstructorPrivilege = reactElem.dataset.hasInstructorPrivilege === 'tru
 
 let componentForCurrentPage = null;
 switch (currentPage) {
-case 'dashboard-container':
-    componentForCurrentPage =<DashboardMain UserID={userId}  __={translationFunction}/>;
-    break;
-case 'add-user-container':
-    componentForCurrentPage = <AddUserContainer userId={userId} userType={userType} __={translationFunction}/>;
-    break;
+    case 'dashboard-container':
+        componentForCurrentPage = <DashboardMain UserID={userId} __={translationFunction} />;
+        break;
+    case 'add-user-container':
+        componentForCurrentPage = <AddUserContainer userId={userId} userType={userType} __={translationFunction} />;
+        break;
 
-case 'translation-container':
-    const translationApp = (
-        <ClassPageContainer>
-            <TranslationContainer />
-        </ClassPageContainer>
-    );
-    componentForCurrentPage = translationApp;
-    break;
-case 'template-container':
-    const taskId = reactElem.dataset.taskId;
-    const isAdmin = reactElem.dataset.isAdmin;
-    const visitorId = reactElem.dataset.visitorId;
-    componentForCurrentPage =
-        <TemplateContainer
-            SectionID={sectionId}
+    case 'translation-container':
+        const translationApp = (
+            <ClassPageContainer>
+                <TranslationContainer />
+            </ClassPageContainer>
+        );
+        componentForCurrentPage = translationApp;
+        break;
+    case 'template-container':
+        const taskId = reactElem.dataset.taskId;
+        const isAdmin = reactElem.dataset.isAdmin;
+        const visitorId = reactElem.dataset.visitorId;
+        componentForCurrentPage =
+            <TemplateContainer
+                SectionID={sectionId}
+                CourseID={courseId}
+                UserID={userId}
+                TaskID={taskId}
+                UserType={userType}
+                Admin={isAdmin}
+                VisitorID={visitorId}
+                __={translationFunction}
+            />;
+        break;
+
+    case 'assignment-editor-container':
+        const partialAssignmentId = reactElem.dataset.partialAssignmentId;
+        componentForCurrentPage = <AssignmentEditorContainer UserID={userId}
             CourseID={courseId}
-            UserID={userId}
-            TaskID={taskId}
-            UserType={userType}
-            Admin={isAdmin}
-            VisitorID={visitorId}
-            __={translationFunction}
-        />;
-    break;
+            AssignmentID={assignmentId}
+            PartialAssignmentID={partialAssignmentId}
+            __={translationFunction} />;
+        break;
 
-case 'assignment-editor-container':
-    const partialAssignmentId = reactElem.dataset.partialAssignmentId;
-    componentForCurrentPage = <AssignmentEditorContainer UserID={userId} 
-        CourseID={courseId} 
-        AssignmentID={assignmentId} 
-        PartialAssignmentID={partialAssignmentId}
-        __={translationFunction} />;
-    break;
+    case 'assign-to-section-container':
+        componentForCurrentPage = <AssignToSectionContainer UserID={userId} AssignmentID={assignmentId} CourseID={courseId} __={translationFunction} />;
+        break;
 
-case 'assign-to-section-container':
-    componentForCurrentPage = <AssignToSectionContainer UserID={userId} AssignmentID = {assignmentId} CourseID={courseId}  __={translationFunction}/>;
-    break;
+    case 'testing-container':
+        componentForCurrentPage = <TestingGroundContainer />;
+        break;
 
-case 'testing-container':
-    componentForCurrentPage =<TestingGroundContainer />;
-    break;
+    case 'assignment-record-container':
+        componentForCurrentPage = <QuickAssignmentReport hasInstructorPrivilege={hasInstructorPrivilege} UserID={userId} AssignmentID={assignmentId} __={translationFunction} />;
+        break;
 
-case 'assignment-record-container':
-    componentForCurrentPage = <QuickAssignmentReport hasInstructorPrivilege={hasInstructorPrivilege} UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
-    break;
+    case 'course-section-management':
+        componentForCurrentPage = <CourseSectionManagement UserID={userId} __={translationFunction} />;
+        break;
 
-case 'course-section-management':
-    componentForCurrentPage = <CourseSectionManagement UserID={userId} __={translationFunction} />;
-    break;
-
-case 'account':
-    componentForCurrentPage = <AccountManagement UserID={userId}  __={translationFunction} />;
-    break;
-case 'about':
-    componentForCurrentPage = <AboutContainer />;
-    break;
-case 'forgot-password':
-    componentForCurrentPage = <ForgotPasswordContainer />;
-    break;
-case 'sections':
-    componentForCurrentPage = <SectionsContainer  UserID={userId}/>;
-    break;
-case 'user-grade-report':
-    componentForCurrentPage =  <UserGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
-    break;
-case 'volunteer-pool':
-    componentForCurrentPage = <VolunteerPoolContainer  UserID={userId} CourseID={courseId} SectionID={sectionId} />;
-    break;
-case 'user-management':
-    componentForCurrentPage = <UserManagementContainer UserID={userId} __={translationFunction} />;
-    break;
-case 'everyones-work':
-    componentForCurrentPage = <MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction}/>;
-    break;
-case 'reallocation-container':
-    componentForCurrentPage = <Reallocation UserID={userId} />;
-    break;
-case 'section':
-    componentForCurrentPage = <SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />;
-    break;
-case 'assignment-status-table':
-    componentForCurrentPage = <AssignmentStatusTable UserID={userId}  __={translationFunction} />;
-    break; 
-case 'database-maintenance':
-    componentForCurrentPage = <DatabaseMaintenance UserID={userId}  __={translationFunction} />;
-    break; 
-case 'course-page':
-    componentForCurrentPage = <CoursePage UserID={userId} CourseID={courseId} Role={userType}  __={translationFunction}/>
-    break;
-case 'assignments-page':
-    componentForCurrentPage = <Assignments UserID={userId}  __={translationFunction}/>
-//>>INSERTCASE
+    case 'account':
+        componentForCurrentPage = <AccountManagement UserID={userId} __={translationFunction} />;
+        break;
+    case 'about':
+        componentForCurrentPage = <AboutContainer />;
+        break;
+    case 'forgot-password':
+        componentForCurrentPage = <ForgotPasswordContainer />;
+        break;
+    case 'sections':
+        componentForCurrentPage = <SectionsContainer UserID={userId} />;
+        break;
+    case 'instructor-grade-report':
+        componentForCurrentPage = <InstructorGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction} />;
+        break;
+    case 'student-grade-report':
+        componentForCurrentPage = <StudentGradeReportContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction} />;
+        break;
+    case 'volunteer-pool':
+        componentForCurrentPage = <VolunteerPoolContainer UserID={userId} CourseID={courseId} SectionID={sectionId} />;
+        break;
+    case 'user-management':
+        componentForCurrentPage = <UserManagementContainer UserID={userId} __={translationFunction} />;
+        break;
+    case 'everyones-work':
+        componentForCurrentPage = <MainPageContainer UserID={userId} AssignmentID={assignmentId} __={translationFunction} />;
+        break;
+    case 'reallocation-container':
+        componentForCurrentPage = <Reallocation UserID={userId} />;
+        break;
+    case 'section':
+        componentForCurrentPage = <SectionPage UserID={userId} SectionID={sectionId} __={translationFunction} />;
+        break;
+    case 'assignment-status-table':
+        componentForCurrentPage = <AssignmentStatusTable UserID={userId} __={translationFunction} />;
+        break;
+    case 'database-maintenance':
+        componentForCurrentPage = <DatabaseMaintenance UserID={userId} __={translationFunction} />;
+        break;
+    case 'course-page':
+        componentForCurrentPage = <CoursePage UserID={userId} CourseID={courseId} Role={userType} __={translationFunction} />;
+        break;
+    case 'assignments-page':
+        componentForCurrentPage = <Assignments UserID={userId} __={translationFunction} />;
+    //>>INSERTCASE
 
 
 }
@@ -174,4 +178,4 @@ case 'assignments-page':
 //     {componentForCurrentPage}
 // </ErrorComponent>;
 
-ReactDOM.render(componentForCurrentPage,reactElem);
+ReactDOM.render(componentForCurrentPage, reactElem);

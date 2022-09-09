@@ -64,6 +64,20 @@
     }
   }
 
+  .assignmentDescriptor {
+    word-wrap: break-word;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 5px 30px 5px 30px;
+    color: #5c5e5f;
+    @media screen and (max-width: $mobile-brk) {
+      position: relative;
+      margin:0 auto;
+      display: block;
+      text-align: center;
+    }
+  }
+
   .subtitle {
     word-wrap: break-word;
     font-size: 16px;
@@ -71,6 +85,21 @@
     padding: 5px 30px 5px 30px;
     border-bottom: 1px solid #e7eaec;
     color: #272829;
+    @media screen and (max-width: $mobile-brk) {
+      position: relative;
+      margin:0 auto;
+      display: block;
+      text-align: center;
+    }
+  }
+
+  .subsubtitle {
+    word-wrap: break-word;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 5px 30px 5px 30px;
+    border-bottom: 1px solid #e7eaec;
+    color: #484a4c;
     @media screen and (max-width: $mobile-brk) {
       position: relative;
       margin:0 auto;

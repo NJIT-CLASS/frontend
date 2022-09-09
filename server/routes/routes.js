@@ -5,7 +5,8 @@ const pages = [
     'dashboard',
     'assignments-page',
     'everyones-work',
-    'assignment-final-grades',
+    'instructor-assignment-grade-report',
+    'student-assignment-grade-report',
 
     'account',
     'about',

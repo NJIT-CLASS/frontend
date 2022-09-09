@@ -86,7 +86,7 @@ class MultiTaskGradeTable extends React.Component {
                         {multiTaskGradeFieldsData.map((taskGradeData, index) => {
                             return (
                                 <div key={index}>
-                                    <h3 className={multiTaskClassName}>{singleTaskGrade ? "" : header + "Grading Task #" + (index + 1)}</h3>
+                                    <h3 className={multiTaskClassName}>{singleTaskGrade ? "" : header + "Grader #" + (index + 1)}</h3>
                                     <TableComponent
                                         data={taskGradeData}
                                         columns={[

@@ -25,13 +25,13 @@ export default class PendingTaskComponent extends Component {
                 let transformedTaskList = body.PendingTaskInstances.map(task => {
 
                     // console.log(task);
-                    var code = "";
+                    var code = '';
 
                     if(task.TaskActivity.MustCompleteThisFirst){
-                        code += " #1 ";
+                        code += ' #1 ';
                     }
-                    if(task.Status.indexOf("late") !== -1){
-                        code += " ! ";
+                    if(task.Status.indexOf('late') !== -1){
+                        code += ' ! ';
                     }
                     
                     return {
@@ -97,8 +97,8 @@ export default class PendingTaskComponent extends Component {
     }
 
     makeCode({ original, row, value }){
-        if(value.indexOf("#1") !== -1){
-            return <div style={{position:"relative"}}><div style={{color:"orange",display:"inline-block"}}>#1 </div><div style={{display:"inline-block"}} className="task-late">{value.substring(value.indexOf("#1")+3,value.length)}</div></div>;
+        if(value.indexOf('#1') !== -1){
+            return <div style={{position:'relative'}}><div style={{color:'orange',display:'inline-block'}}>#1 </div><div style={{display:'inline-block'}} className="task-late">{value.substring(value.indexOf('#1')+3,value.length)}</div></div>;
         }
 
         if (original.Status[3] === 'late') {
@@ -111,16 +111,16 @@ export default class PendingTaskComponent extends Component {
         let {PendingTasks, PendingTasksData} = this.state;
 
         const codeHeader = (
-        <span>
-            {Strings.CodeHeader} 
-            <Tooltip 
-                ID='Tooltip'
-                // style={{ float: 'bottom' }}
-                multiline={true}
-                place="bottom"
-                Text={Strings.CodeTooltipExplaination}
-            />
-        </span>)
+            <span>
+                {Strings.CodeHeader} 
+                <Tooltip 
+                    ID='Tooltip'
+                    // style={{ float: 'bottom' }}
+                    multiline={true}
+                    place="bottom"
+                    Text={Strings.CodeTooltipExplaination}
+                />
+            </span>);
         
         return (
             <div className="section card-2 sectionTable">
