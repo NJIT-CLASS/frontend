@@ -14,15 +14,15 @@ class ProblemGradesReport extends React.Component {
 
     displayProblemTaskAndTimelinessGradeReport(data, workflowGrade, workflowName) {
         this.props.displayProblemTaskAndTimelinessGradeReport(data, workflowGrade, workflowName);
+
     }
-
-
 
     render() {
         let { strings, name, userGrade, PGRGradeData, oneWorkflow, tableSubheader } = this.props;
 
-        console.log("usergrade " + userGrade);
-        console.log("PGR Grade Data");
+        console.log('usergrade ' + userGrade);
+        console.log('PGR Grade Data');
+        console.log('oneWorkflow: ', oneWorkflow);
         console.log(PGRGradeData);
         let TablePGRGradeData = [];
         for (var workflowID in PGRGradeData) {
@@ -30,25 +30,31 @@ class ProblemGradesReport extends React.Component {
 
             if (workflowData != null && workflowData.name != null) {
                 let wfInfo = workflowData.problemAndTimelinessGrade;
-                let problemGrade = wfInfo.waStatistics == null ? "-" : wfInfo.waStatistics.waScaledGradeSummation; //wa or assignmentScaledGradeSummation?
+                let problemGrade = wfInfo.waStatistics == null ? '-' : wfInfo.waStatistics.waScaledGradeSummation; //wa or assignmentScaledGradeSummation?
                 let drillDown = this.displayProblemTaskAndTimelinessGradeReport.bind(this, workflowData.problemAndTimelinessGrade, problemGrade, workflowData.name);
 
                 if (oneWorkflow) {
-                    this.displayProblemTaskAndTimelinessGradeReport.bind(
-                        this,
+                    this.displayProblemTaskAndTimelinessGradeReport.bind(this,
                         workflowData.problemAndTimelinessGrade,
                         problemGrade,
-                        workflowData.name
-                    );
+                        workflowData.name)();
+                    // var link = document.createElement('a');
+                    // link.setAttribute('href', '#');
+                    // link.setAttribute('onClick', );
+                    // link.style.visibility = 'hidden';
+                    // document.body.appendChild(link);
+                    // console.log(link);
+                    // link.click();
+                    // document.body.removeChild(link);
                     return null;
                 }
 
                 TablePGRGradeData.push({
                     Problem: (<a href="#" onClick={drillDown}>{workflowData.name}</a>),
-                    ProblemGrade: <a href="#" onClick={drillDown}>{wfInfo.waStatistics == null ? "-" : wfInfo.waStatistics.waInProgress + ": " + wfInfo.waStatistics.waScaledGradeSummation}</a>,
+                    ProblemGrade: <a href="#" onClick={drillDown}>{wfInfo.waStatistics == null ? '-' : wfInfo.waStatistics.waInProgress + ': ' + wfInfo.waStatistics.waScaledGradeSummation}</a>,
                     ProblemsPerStudent: workflowData.numberOfSets,
-                    Weight: workflowData.weight + "%",
-                    ScaledGrade: wfInfo.waStatistics == null ? "-" : wfInfo.waStatistics.waInProgress + ": " + wfInfo.waStatistics.assignmentScaledGradeSummation
+                    Weight: workflowData.weight + '%',
+                    ScaledGrade: wfInfo.waStatistics == null ? '-' : wfInfo.waStatistics.waInProgress + ': ' + wfInfo.waStatistics.assignmentScaledGradeSummation
                     //ScaledGrade: workflowData.scaledGrade
                     //scaled grade within assignment = current grade *weight within assignment/ original number of problems per student
                 });

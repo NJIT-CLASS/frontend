@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import apiCall from '../shared/apiCall';
-import EveryonesWorkContainer from '../everyones-work/everyonesWorkContainer';
-import CourseSelectComponent from '../everyones-work/courseSelect';
-import SectionSelectComponent from '../everyones-work/sectionSelect';
-import AssignmentSelectComponent from '../everyones-work/assignmentSelect';
-import SemesterSelectComponent from '../everyones-work/semesterSelect';
+import CourseSelectComponent from './SelectComponents/courseSelect';
+import SectionSelectComponent from './SelectComponents/sectionSelect';
+import AssignmentSelectComponent from './SelectComponents/assignmentSelect';
+import SemesterSelectComponent from './SelectComponents/semesterSelect';
 import Axios from 'axios';
 
 
@@ -23,10 +22,10 @@ class SelectAssignment extends Component {
                 Semester: 'Semester',
                 Assignment: 'Assignment',
                 Section: 'Section'
-            }, 
-            loaded:false
+            },
+            loaded: false
         };
-    
+
         this.selectAssignment = this.selectAssignment.bind(this);
         this.selectCourse = this.selectCourse.bind(this);
         this.selectSection = this.selectSection.bind(this);
@@ -39,25 +38,25 @@ class SelectAssignment extends Component {
             this.setState({Strings: newStrings});
         });
     }*/
-    
-    selectCourse(e){
+
+    selectCourse(e) {
         this.setState({
             CourseID: e.value
         });
     }
 
-    selectSection(e){
+    selectSection(e) {
         this.setState({
             SectionID: e.value
         });
     }
 
-    selectAssignment(e){
+    selectAssignment(e) {
         this.setState({
             AssignmentID: e.value
         });
     }
-    selectSemester(e){
+    selectSemester(e) {
         this.setState({
             SemesterID: e.value
         });
@@ -88,18 +87,18 @@ class SelectAssignment extends Component {
     // }
 
 
-    async displayAssignmentGradeReport(AssignmentID, SectionID){
-        let currentdate = new Date(); 
-        let datetime = `${(currentdate.getMonth()+1)}`.padStart(2, '0') + ''
-                + `${currentdate.getDate()}`.padStart(2, '0') + ''
-                + currentdate.getFullYear() + ''
-                + `${currentdate.getHours()}`.padStart(2, '0') + ''
-                + `${currentdate.getMinutes()}`.padStart(2, '0') + ''
-                + `${currentdate.getSeconds()}`.padStart(2, '0');
+    async displayAssignmentGradeReport(AssignmentID, SectionID) {
+        let currentdate = new Date();
+        let datetime = `${(currentdate.getMonth() + 1)}`.padStart(2, '0') + ''
+            + `${currentdate.getDate()}`.padStart(2, '0') + ''
+            + currentdate.getFullYear() + ''
+            + `${currentdate.getHours()}`.padStart(2, '0') + ''
+            + `${currentdate.getMinutes()}`.padStart(2, '0') + ''
+            + `${currentdate.getSeconds()}`.padStart(2, '0');
         let assignmentIdentifier = ''; //assignment identifier
         let nameData = (await apiCall.getAsync(`/generalUser/${this.props.UserID}`));
         console.log(nameData);
-        assignmentIdentifier = nameData.data.User.FirstName + ' ' + nameData.data.User.LastName + '_' + 
+        assignmentIdentifier = nameData.data.User.FirstName + ' ' + nameData.data.User.LastName + '_' +
             (await apiCall.getAsync(`/course/getSection/${this.state.SectionID}`)).data.result.Name + '_' +
             (await apiCall.getAsync(`/semester/${this.state.SemesterID}`)).data.Semester.Name + '_' +
             (await apiCall.getAsync(`/course/${this.state.CourseID}`)).data.Course.Name + '_' +
@@ -145,8 +144,8 @@ class SelectAssignment extends Component {
     //     });
     //     this.displayAssignmentGradeReport(GradeReportRoot);
     // }
-    
-    undisplayAssignmentGradeReport(){
+
+    undisplayAssignmentGradeReport() {
         this.setState({
             AssignmentID: -1,
             CourseID: -1,
@@ -157,35 +156,35 @@ class SelectAssignment extends Component {
         this.props.undisplayAssignmentGradeReport();
     }
 
-    render(){
+    render() {
         //let {Strings, loaded} = this.state;
-        let {AssignmentID, CourseID, SemesterID, SectionID, Strings} = this.state;
+        let { AssignmentID, CourseID, SemesterID, SectionID, Strings } = this.state;
         let buttonDisplay = null;
-        if (AssignmentID!=-1){
+        if (AssignmentID != -1) {
             buttonDisplay = <div className="row">
                 <button onClick={this.displayAssignmentGradeReport.bind(this, AssignmentID, SectionID)
                     /*this.loadData.bind(this, AssignmentID, SectionID)*/}>
-                Submit Selection
+                    Submit Selection
                 </button>
-                    
-                <button  onClick={this.undisplayAssignmentGradeReport.bind(this)}>
-                Reset/Select New Assignment
+
+                <button onClick={this.undisplayAssignmentGradeReport.bind(this)}>
+                    Reset/Select New Assignment
                 </button>
-            
+
 
             </div>
-        
+
         }
 
-        
+
 
         return (
             <div className="section card-2 sectionTable">
                 <h2 className="title">Choose an assignment</h2>
                 <div className="section-content">
-                    
-                <div className = "col-xs-6">
-                        <SemesterSelectComponent selectSemester={this.selectSemester} 
+
+                    <div className="col-xs-6">
+                        <SemesterSelectComponent selectSemester={this.selectSemester}
                             SemesterID={SemesterID}
                             Strings={Strings}
                         />
@@ -193,8 +192,9 @@ class SelectAssignment extends Component {
                             UserID={this.props.UserID}
                             Strings={Strings}
                             CourseID={CourseID}
+                            SemesterID={SemesterID}
                         />
-                        <SectionSelectComponent selectSection={this.selectSection} 
+                        <SectionSelectComponent selectSection={this.selectSection}
                             UserID={this.props.UserID}
                             CourseID={CourseID}
                             SectionID={SectionID}
@@ -205,9 +205,9 @@ class SelectAssignment extends Component {
                             SectionID={SectionID}
                             AssignmentID={AssignmentID}
                             Strings={Strings}
-                        />                   
-                    </div> 
-                    {buttonDisplay}             
+                        />
+                    </div>
+                    {buttonDisplay}
 
                 </div>
             </div>
