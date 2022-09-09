@@ -186,6 +186,7 @@ class SelectAssignment extends Component {
                     <div className="col-xs-6">
                         <SemesterSelectComponent selectSemester={this.selectSemester}
                             SemesterID={SemesterID}
+                            UserID={this.props.UserID}
                             Strings={Strings}
                         />
                         <CourseSelectComponent selectCourse={this.selectCourse}

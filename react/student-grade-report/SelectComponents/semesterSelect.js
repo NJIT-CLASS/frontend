@@ -22,8 +22,8 @@ class SemesterSelectComponent extends Component {
     }
 
     getSemesterList(props) {
-        apiCall.get('/semester', (err, res, bod) => {
-            let SemestersArray = bod.Semesters.map(function (Semester) {
+        apiCall.get(`/studentSemesters/${props.UserID}`, (err, res, bod) => {
+            let SemestersArray = bod.semesters.map(function (Semester) {
                 return ({ value: Semester.SemesterID, label: Semester.Name });
             });
             this.setState({
