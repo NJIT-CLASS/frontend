@@ -9,15 +9,41 @@ class ProblemGradesReport extends React.Component {
         super(props);
 
         this.state = {
+            scrolledTo: false
         };
-    }
 
+        this.myRef = React.createRef();
+
+    }
+    // async scroll() {
+    //     console.log('scrolling');
+    //     await this.myRef.current.scrollIntoView({ behavior: 'smooth' })();
+    // }
     displayProblemTaskAndTimelinessGradeReport(data, workflowGrade, workflowName) {
         this.props.displayProblemTaskAndTimelinessGradeReport(data, workflowGrade, workflowName);
 
     }
 
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+    }
+
     render() {
+
+        console.log('myRef: ' + this.myRef);
+        // if (this.myRef.current != null && !this.state.scrolledTo) {
+        //     this.scroll.bind(this)();
+        // }
+
         let { strings, name, userGrade, PGRGradeData, oneWorkflow, tableSubheader } = this.props;
 
         console.log('usergrade ' + userGrade);
@@ -68,7 +94,7 @@ class ProblemGradesReport extends React.Component {
         });
 
         return (
-            <div className="section card-2 sectionTable">
+            <div ref={this.myRef} className="section card-2 sectionTable">
                 <h2 className="assignmentDescriptor">{tableSubheader}</h2>
                 {Utility.titleWithTooltip(strings.PGRHeader + ': ' + name, strings.PGRTooltip)}
                 <h2 className="subtitle">{'Total (Current Scaled Grade Within Assignment): ' + userGrade}</h2>

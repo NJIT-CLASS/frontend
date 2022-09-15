@@ -14,9 +14,11 @@ class AssignmentGradeReport extends React.Component {
             GradeReportRoot: null,
             loaded: false
         };
+
+        this.myRef = React.createRef();
     }
 
-    componentDidMount() {
+    componentWillMount() {
         apiCall.get(`/sectionUserInfo/${this.props.UserID}/${this.props.sectionID}`, (err, res, body) => {
             let sectionuserId = body.Info.SectionUserID;
             apiCall.post('/studentGradeReport', { ai_id: this.props.AI_ID, sectionUserID: sectionuserId }, (err, status, body) => {
@@ -29,7 +31,23 @@ class AssignmentGradeReport extends React.Component {
                 }
             });
         });
+
     }
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+    }
+
+
+
 
     displayProblemGradeReport(workflowData, username, userGrade, oneWorkflow) {
         console.log('Problem/Workflow Grade Report:');
@@ -262,34 +280,45 @@ class AssignmentGradeReport extends React.Component {
             accessor: 'NumXCreditTasks'
         }];
         return (
-            <div className="section card-2 sectionTable">
-                <div className="title-download">
-                    <h2 className="assignmentDescriptor">{tableSubheader}</h2>
-                    {Utility.titleWithTooltip(strings.AGRHeader, strings.AGRTooltip)}
-                    <button className="download-button"
-                        onClick={this.download.bind(this, this.props.assignmentIdentifier, csvContent)}>
-                        Download
-                    </button>
+            <div ref={this.myRef}>
+                <div className="section card-2 sectionTable">
+                    <h2 className='subtitle-highlighted'>
+                        {strings.ExpandTableColumnsDirections}
+                    </h2>
                 </div>
-                <div className="section-content">
-                    <div className="col-xs-6">
-                        <TableComponent
-                            data={AGRData}
-                            columns={cols}
-                            defaultSorted={[
-                                {
-                                    id: 'LastName',
-                                    desc: true
-                                }
-                            ]}
-                            noDataText={strings.AssignmentGradeNoData}
-                        />
+
+                <div className="section card-2 sectionTable">
+                    <div className="title-download">
+                        <h2 className="assignmentDescriptor">{tableSubheader}</h2>
+                        {Utility.titleWithTooltip(strings.AGRHeader, strings.AGRTooltip)}
+                        <button className="download-button"
+                            onClick={this.download.bind(this, this.props.assignmentIdentifier, csvContent)}>
+                            Download
+                        </button>
+                    </div>
+                    <div className="section-content">
+                        <div className="col-xs-6">
+                            <TableComponent
+                                data={AGRData}
+                                columns={cols}
+                                defaultSorted={[
+                                    {
+                                        id: 'LastName',
+                                        desc: true
+                                    }
+                                ]}
+                                noDataText={strings.AssignmentGradeNoData}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
+
         );
 
     }
 }
+
+
 
 export default AssignmentGradeReport;

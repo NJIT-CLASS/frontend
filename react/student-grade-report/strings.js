@@ -70,6 +70,9 @@ const strings = {
     PenaltyPerDay: 'Penalty Per Day',
     TotalPenalty: 'Total Penalty',
 
+    ExpandTableColumnsDirections: 'In order to expand the table columns (and thereby expand the table), click and drag on the edge of the column header you wish to expand. If the column is already wide enough to fit the data, widening the column further may initially not appear to widen the table, but if you continue to expand the column, the table will eventually widen (and you can left/right scroll across the page).',
+
+
 
     /**************************  Table tool tips: **************************/
     AGRTooltip: 'This is the top level table for your assignment grade.  Click within table for details.',

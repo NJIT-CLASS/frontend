@@ -11,35 +11,53 @@ class AssignmentExtraCreditTaskGradeFieldsReport extends React.Component {
 
         this.state = {
         };
+
+        this.myRef = React.createRef();
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
     }
 
 
 
-    render(){
+    render() {
         //return (<div>The full grade report page is under development and will be ready in late Spring 2019.   You can see the grades for individual tasks from the "All Assignments Status" page.  Look for your submission, and then you can see the grades further along its problem thread.</div>);
-        let {strings, numOfTaskGrades, taskID, ECTGFRData, tableSubheader} = this.props;
+        let { strings, numOfTaskGrades, taskID, ECTGFRData, tableSubheader } = this.props;
 
         console.log("ECTGFRData");
         console.log(ECTGFRData);
 
         let singleTaskGrade = (numOfTaskGrades == 1);
         let TableECTGFRDataFrame = ECG.getTaskFieldReport(ECTGFRData, numOfTaskGrades);
-            
+
 
 
 
         return (
-            <MultiTaskGradeTable
-                multiTaskGradeFieldsData={TableECTGFRDataFrame}
-                singleTaskGrade={singleTaskGrade}
-                numOfTaskGrades={numOfTaskGrades}
-                extraCrediTaskGrade={true}
-                taskID={taskID}
-                tableSubheader={tableSubheader}
-                strings={strings}>
-            </MultiTaskGradeTable>
+            <div ref={this.myRef}>
+                <MultiTaskGradeTable
+                    multiTaskGradeFieldsData={TableECTGFRDataFrame}
+                    singleTaskGrade={singleTaskGrade}
+                    numOfTaskGrades={numOfTaskGrades}
+                    extraCrediTaskGrade={true}
+                    taskID={taskID}
+                    tableSubheader={tableSubheader}
+                    strings={strings}>
+                </MultiTaskGradeTable>
+            </div>
+
         );
-    
+
     }
 }
 

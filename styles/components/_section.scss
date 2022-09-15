@@ -4,10 +4,12 @@
   overflow: visible;
   margin: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
   @media screen and (max-width: $mobile-brk) {
     margin: 3px;
     width: 99vw;
   }
+
   position: relative;
 
   a:visited {
@@ -15,37 +17,40 @@
   }
 
   .title-download {
-    
+
     .title {
       display: inline-block;
       word-wrap: break-word;
       font-size: 22px;
       padding: 20px 30px 10px 30px;
       color: #4b4d4e;
+
       @media screen and (max-width: $mobile-brk) {
         position: relative;
-        margin:0 auto;
+        margin: 0 auto;
         display: block;
         text-align: center;
       }
     }
+
     .download-button {
       position: absolute;
       top: 5px;
       right: 30px;
+
       @media screen and (max-width: $mobile-brk) {
         top: 0px;
         right: 0px;
         position: relative;
-        margin:0 auto;
-        display:block;
+        margin: 0 auto;
+        display: block;
       }
     }
 
     @media screen and (max-width: $mobile-brk) {
       padding: 20px 20px 20px 20px;
     }
-    
+
     border-bottom: 1px solid #e7eaec;
   }
 
@@ -56,9 +61,10 @@
     font-size: 22px;
     padding: 20px 30px 10px 30px;
     color: #4b4d4e;
+
     @media screen and (max-width: $mobile-brk) {
       position: relative;
-      margin:0 auto;
+      margin: 0 auto;
       display: block;
       text-align: center;
     }
@@ -70,9 +76,10 @@
     font-weight: 800;
     padding: 5px 30px 5px 30px;
     color: #5c5e5f;
+
     @media screen and (max-width: $mobile-brk) {
       position: relative;
-      margin:0 auto;
+      margin: 0 auto;
       display: block;
       text-align: center;
     }
@@ -85,12 +92,32 @@
     padding: 5px 30px 5px 30px;
     border-bottom: 1px solid #e7eaec;
     color: #272829;
+
     @media screen and (max-width: $mobile-brk) {
       position: relative;
-      margin:0 auto;
+      margin: 0 auto;
       display: block;
       text-align: center;
     }
+  }
+
+  .subtitle-highlighted {
+    word-wrap: break-word;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 30px 5px 30px;
+    border-bottom: 1px solid #e7eaec;
+    color: #272829;
+    background-color: yellow;
+    text-align: center;
+
+    @media screen and (max-width: $mobile-brk) {
+      position: relative;
+      margin: 0 auto;
+      display: block;
+      text-align: center;
+    }
+
   }
 
   .subsubtitle {
@@ -100,13 +127,15 @@
     padding: 5px 30px 5px 30px;
     border-bottom: 1px solid #e7eaec;
     color: #484a4c;
+
     @media screen and (max-width: $mobile-brk) {
       position: relative;
-      margin:0 auto;
+      margin: 0 auto;
       display: block;
       text-align: center;
     }
   }
+
   p {
     max-width: 400px;
   }
@@ -123,40 +152,49 @@
     @media screen and (max-width: $mobile-brk) {
       padding: 12px 20px;
     }
+
     padding: 20px 30px;
     align-items: center;
   }
+
   .section-header {
     padding: 10px 30px;
     overflow: hidden;
   }
+
   .field-content {
     padding-left: 20px;
   }
+
   .section-button-area {
     text-align: right;
   }
+
   .list-subheader {
     padding: 0;
     font-size: 20px;
   }
+
   .list-subheader:not(:first-child) {
     margin-top: 20px;
   }
+
   .list-faded-subheader {
     padding: 5px 5px;
     color: #878787;
   }
+
   .list-group-item {
     margin: 0 auto;
     width: 100%;
   }
 
-  .list-group{
+  .list-group {
     margin: 0;
-    padding:0;
+    padding: 0;
   }
-  .item-hover:hover{
+
+  .item-hover:hover {
     background-color: #e6e6e6;
   }
 
@@ -165,6 +203,7 @@
       width: calc(100vw - 40px);
       padding: 15px 20px;
     }
+
     letter-spacing: 0.4px;
     display: flex;
     font-size: 16px;
@@ -174,12 +213,15 @@
     box-sizing: border-box;
     border-bottom: 1px solid #EFF3F5;
     padding: 15px 15px;
+
     .right {
       margin-left: auto;
+
       &.small {
         font-size: 13px;
       }
     }
+
     .thin {
       input {
         padding: 2px;
@@ -187,10 +229,10 @@
     }
   }
 
-  ol{
+  ol {
     list-style: decimal;
 
-    li{
+    li {
       border: none;
       display: list-item;
       margin-left: 30px;

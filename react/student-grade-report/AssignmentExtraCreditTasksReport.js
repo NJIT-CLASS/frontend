@@ -11,7 +11,23 @@ class AssignmentExtraCreditTasksReport extends React.Component {
         this.state = {
             loaded: false
         };
+
+        this.myRef = React.createRef();
     }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+    }
+
 
 
     render() {
@@ -49,7 +65,7 @@ class AssignmentExtraCreditTasksReport extends React.Component {
 
 
         return (
-            <div className="section card-2 sectionTable">
+            <div ref={this.myRef} className="section card-2 sectionTable">
                 <h2 className="assignmentDescriptor">{tableSubheader}</h2>
                 {Utility.titleWithTooltip(strings.AECTRHeader + ': ' + this.props.name, strings.AECTRTooltip)}
                 <div className="section-content">

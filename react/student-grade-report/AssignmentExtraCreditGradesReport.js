@@ -12,6 +12,8 @@ class AssignmentExtraCreditGradesReport extends React.Component {
         this.state = {
             loaded: false
         };
+
+        this.myRef = React.createRef();
     }
 
     displayAsgECTimelinessGradesDetailReport(timelinessGrade, data) {
@@ -22,6 +24,18 @@ class AssignmentExtraCreditGradesReport extends React.Component {
         this.props.displayExtraCreditTaskGradeFieldsReport(data, numOfTaskGrades, taskID);
     }
 
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+    }
 
 
 
@@ -175,7 +189,7 @@ class AssignmentExtraCreditGradesReport extends React.Component {
             ];
 
         return (
-            <div className="section card-2 sectionTable" >
+            <div ref={this.myRef} className="section card-2 sectionTable" >
                 <h2 className="assignmentDescriptor">{tableSubheader}</h2>
                 {Utility.titleWithTooltip(strings.AECGRHeader + ': ' + this.props.name, strings.AECGRTooltip)}
                 <div className="section-content">

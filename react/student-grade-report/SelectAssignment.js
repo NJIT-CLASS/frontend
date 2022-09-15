@@ -98,6 +98,7 @@ class SelectAssignment extends Component {
         let assignmentIdentifier = ''; //assignment identifier
         let nameData = (await apiCall.getAsync(`/generalUser/${this.props.UserID}`));
         console.log(nameData);
+        //SETS DOWNLOAD FILE NAME
         assignmentIdentifier = nameData.data.User.FirstName + ' ' + nameData.data.User.LastName + '_' +
             (await apiCall.getAsync(`/course/getSection/${this.state.SectionID}`)).data.result.Name + '_' +
             (await apiCall.getAsync(`/semester/${this.state.SemesterID}`)).data.Semester.Name + '_' +

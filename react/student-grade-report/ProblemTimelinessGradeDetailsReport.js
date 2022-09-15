@@ -11,6 +11,21 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
         this.state = {
             loaded: false
         };
+
+        this.myRef = React.createRef();
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
     }
 
 
@@ -44,7 +59,7 @@ class ProblemTimelinessGradeDetailsReport extends React.Component {
 
 
         return (
-            <div className="section card-2 sectionTable">
+            <div ref={this.myRef} className="section card-2 sectionTable">
                 <h2 className="assignmentDescriptor">{tableSubheader}</h2>
                 {Utility.titleWithTooltip(strings.PTGDRHeader + ': ' + taskWorkflowName, strings.PTGDRTooltip)}
                 <div className="section-content">

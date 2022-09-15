@@ -11,6 +11,21 @@ class TaskGradeFieldsReport extends React.Component {
         this.state = {
             loaded: false
         };
+
+        this.myRef = React.createRef();
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
     }
 
 
@@ -192,16 +207,19 @@ class TaskGradeFieldsReport extends React.Component {
         // );
 
         return (
-            <MultiTaskGradeTable
-                taskTotalGrade={taskTotalGrade}
-                taskLabel={taskLabel}
-                multiTaskGradeFieldsData={TableTGFRGradeDataFrame}
-                numOfTaskGrades={numOfTaskGrades}
-                extraCrediTaskGrade={false}
-                taskID={taskID}
-                tableSubheader={tableSubheader}
-                strings={strings} >
-            </MultiTaskGradeTable>
+            <div ref={this.myRef}>
+                <MultiTaskGradeTable
+                    taskTotalGrade={taskTotalGrade}
+                    taskLabel={taskLabel}
+                    multiTaskGradeFieldsData={TableTGFRGradeDataFrame}
+                    numOfTaskGrades={numOfTaskGrades}
+                    extraCrediTaskGrade={false}
+                    taskID={taskID}
+                    tableSubheader={tableSubheader}
+                    strings={strings} >
+                </MultiTaskGradeTable>
+            </div>
+
         );
 
     }

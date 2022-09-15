@@ -70,7 +70,7 @@ class MultiTaskGradeTable extends React.Component {
             return (
                 <div className="section card-2 sectionTable">
                     <h2 className="assignmentDescriptor">{tableSubheader}</h2>
-                    {Utility.titleWithTooltip(strings.TGFRHeader + ': ' + taskLabel + ' (' + taskID + ')', strings.TGFRHeaderTooltip)}
+                    {Utility.titleWithTooltip(strings.TGFRHeader + ': ' + taskLabel + ' (' + taskID + ')', strings.TFGRTooltip)}
                     <h2 className="subtitle">{'Total (Scaled Grade Within Task): ' + taskTotalGrade}</h2>
                     <div className="section-content">
                         <div className="col-xs-6">

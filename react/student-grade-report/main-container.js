@@ -108,7 +108,6 @@ class GradeReport extends React.Component {
                 </ProblemGradeReport>
             )
         });
-
     }
 
     displayProblemTaskAndTimelinessGradeReport(gradeData, grade, workflowName) {

@@ -11,6 +11,8 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
         this.state = {
             loaded: false
         };
+
+        this.myRef = React.createRef();
     }
 
     displayTaskGradeFields(data, numOfTaskGrades, taskID, taskLabel, taskTotalGrade) {
@@ -19,6 +21,20 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
 
     displayTimelinessGradeDetails(data, taskWorkflowName) {
         this.props.displayTimelinessGradeDetails(data, taskWorkflowName);
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
+    }
+
+    componentWillReceiveProps() {
+        setTimeout(() => {
+            this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })();
+        }, 0);
+
     }
 
 
@@ -171,7 +187,7 @@ class ProblemTaskAndTimelinessGradeReport extends React.Component {
 
 
         return (
-            <div className="section card-2 sectionTable">
+            <div ref={this.myRef} className="section card-2 sectionTable">
                 <h2 className="assignmentDescriptor">{tableSubheader}</h2>
                 {Utility.titleWithTooltip(strings.PTTGRHeader + ': ' + workflowName, strings.PTTGRTooltip)}
                 <h2 className="subtitle">{'Total (Current Scaled Grade Within Problem): ' + workflowGrade}</h2>
