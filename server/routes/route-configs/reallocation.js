@@ -13,5 +13,5 @@ module.exports = {
         loggedOut: false
     },
     icon: 'exchange',
-    sidebar: true
+    sidebar: false
 };

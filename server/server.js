@@ -19,6 +19,8 @@ const languageService = require('./server-middleware/language-service');
 const routes = require('./routes/routes');
 const consts = require('./utils/constants');
 const react_consts = require('./utils/react_constants');
+import { getSystemErrorMap } from 'util';
+import logger from '../../backend - node v14.17.5/Workflow/Logger';
 import {uploadFiles} from './server-middleware/file-upload';
 import { canRoleAccess, ROLES } from './utils/react_constants';
 const loginGetRoute = require('./routes/route-handlers/login').get;
@@ -261,29 +263,38 @@ app.use((req, res, next) => {
 
             currentRoute.title = __(currentRoute.title);
 
-            if(canRoleAccess(req.App.user.role, currentRoute.access.role)){
+            console.log(`Loading page permissions for page 
+            ${currentRoute.title} with role 
+                ${req.App.user.role} and type ${req.App.user.type}`);
+
+            if (req.App.user.role === 'Participant' && currentRoute.access.students) {
                 sidebarNavItems.push(currentRoute);
-                continue;
+            } else if (req.App.user.role === 'Teacher' && currentRoute.access.instructors) {
+                sidebarNavItems.push(currentRoute);
+            } else if (req.App.user.role === 'Admin' && currentRoute.access.admins) {
+                sidebarNavItems.push(currentRoute);
             }
 
-            if (req.App.user.type === 'student') {
-                if (currentRoute.access.students) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else if (
-                req.App.user.type == 'teacher' &&
-            	req.App.user.admin == 0
-            ) {
-                if (currentRoute.access.instructors) {
-                    sidebarNavItems.push(currentRoute);
-                } else {
-                    continue;
-                }
-            } else {
-                sidebarNavItems.push(currentRoute);
-            }
+            // if(canRoleAccess(req.App.user.role, currentRoute.access.role)){
+            //     sidebarNavItems.push(currentRoute);
+            // } else {
+            //     if (req.App.user.type === 'student' &&
+            //         currentRoute.access.students) {
+            //         sidebarNavItems.push(currentRoute);
+            //     }
+            //     else if (
+            //         req.App.user.type == 'teacher' &&
+            //         req.App.user.admin == 0 &&
+            //         currentRoute.access.instructors) {
+            //         sidebarNavItems.push(currentRoute);
+            //     } 
+            //     else {
+            //         sidebarNavItems.push(currentRoute);
+            //     }
+            // }
+
+            
+
         }
 
         options.sidebarNavItems = sidebarNavItems;
@@ -321,7 +332,7 @@ for (const route of loggedOutRoutes) {
                                     options.languageOptions = req.App.langOptions;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
-                                        options.title = `${route.title} | CLASS Learning System`;
+                                        options.title = `${route.title} | PL System`;
                                     }
     
                                     // set the page header to be the route title if the pageHeader is not set
@@ -656,12 +667,16 @@ for (const route of loggedInRoutes) {
                                     options.admin = route.access.admins;
                                     // if the render doesn't set the title then set it by the route
                                     if (!('title' in options)) {
-                                        options.title = `${route.title} | CLASS Learning System`;
+                                        options.title = `${route.title} | PL System`;
                                     }
     
                                     // set the page header to be the route title if the pageHeader is not set
                                     if (!('pageHeader' in options)) {
                                         options.pageHeader = route.title;
+                                    }
+
+                                    if(route.route == '/dashboard'){
+                                        options.expanded = true;
                                     }
     
                                     // pass masquerading info to template

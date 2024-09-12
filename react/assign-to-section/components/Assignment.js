@@ -36,7 +36,7 @@ class Assignment extends React.Component {
     render(){
         let CalendarView =  null;
         let strings = this.props.Strings;
-        var yesterday = Datetime.moment();
+        var yesterday = Datetime.moment().subtract( 1, 'day' );
         var valid = function( current ){  //this function is used in Datetime to block out days before and including today
             return current.isAfter( yesterday );
         };
@@ -58,19 +58,20 @@ class Assignment extends React.Component {
         if(this.props.Assignment.StartLater)
         {
             CalendarView =
-    (
-        <div style={{display: 'block', height: '400px'}}>
-            <Datetime
-                open={true}
-                defaultValue={moment().add(3, 'days').format('MM/DD/YYYY')+(' 11:59 PM')}
-                renderDay={this.renderDay}
-                renderMonth={this.renderMonth}
-                renderYear={this.renderYear}
-                isValidDate={ valid }
-                onChange={this.props.onChangeCalendarAssignment.bind(this)}
-            />
-        </div>
-    );
+            (
+                <div style={{display: 'block', height: '400px'}}>
+                    <p style={{color:"red"}}>{!this.props.Assignment.ValidDate ? "Invalid Date" : null}</p>
+                    <Datetime
+                        open={true}
+                        defaultValue={moment().add(3, 'days').format('MM/DD/YYYY')+(' 11:59 PM')}
+                        renderDay={this.renderDay}
+                        renderMonth={this.renderMonth}
+                        renderYear={this.renderYear}
+                        isValidDate={ valid }
+                        onChange={this.props.onChangeCalendarAssignment.bind(this)}
+                    />
+                </div>
+            );
         }
         let checkBoxList = <div>{strings.NoSectionsAvailable}</div>;
 
@@ -116,7 +117,7 @@ class Assignment extends React.Component {
                             </tr>
 
                             <tr className="children">
-                                <td className="children">
+                                <td className="children" style={{width: "fit-content"}}>
                                     <input type="radio" checked={this.props.Assignment.StartNow} onChange={this.props.onChangeStartNowAssignment.bind(this)}
                                         name="Days" value="Days">
                                     </input>

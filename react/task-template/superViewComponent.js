@@ -14,7 +14,7 @@ import { TASK_TYPES } from '../../server/utils/react_constants'; // contains con
 class SuperViewComponent extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
             ShowContent: false,
             ShowRubric: false,
@@ -29,11 +29,13 @@ class SuperViewComponent extends React.Component {
     }
 
     toggleContent() {
-        const bool = !this.state.ShowContent;
+        // const bool = !this.state.ShowContent;
 
-        this.setState({
-            ShowContent: bool,
-        });
+        // this.setState({
+        //     ShowContent: bool,
+        // });
+        this.props.toggleTaskContent(this.props.TaskID);
+
     }
 
     toggleRubric() {
@@ -72,12 +74,22 @@ class SuperViewComponent extends React.Component {
     }
 
     render() {
+
+        let showContent = null;
+        let elementID = this.props.IsLastTask ? 'latestTaskForm' : '';
+        console.log(elementID);
+        try{
+            showContent = this.props.TaskContentFlags[this.props.TaskID];
+        } catch(e){
+            showContent = true;
+        }
+        
         if(this.props.Status.includes('cancelled')){
             return <div></div>;
         }
 
         if(this.props.Status.includes('bypassed')){
-            return (<div key={this.props.index + 2001} className="section card-2" >
+            return (<div key={this.props.index + 2001} className="section card-2" id={elementID} >
                 <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
                     {this.props.ComponentTitle}
                 </h2>
@@ -90,7 +102,7 @@ class SuperViewComponent extends React.Component {
 
         if(this.props.TaskActivity.Type === TASK_TYPES.NEEDS_CONSOLIDATION){
             if(this.props.TaskData.FinalGrade != null){
-                return <div key={this.props.index + 2001} className="section card-2" >
+                return <div key={this.props.index + 2001} className="section card-2" id={elementID}>
                     <h2 key={this.props.index + 2002} className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} >
                         <span>{this.props.Strings.ConsolidateFinalGrade}: {this.props.TaskData.FinalGrade}</span>
                     </h2>
@@ -113,7 +125,7 @@ class SuperViewComponent extends React.Component {
         }
         /*
         if (!this.state.ShowContent) { // if the title is clicked on, this will be false and the content won't be shown
-            return (<div key={this.props.index + 2001}className="section card-2" >
+            return (<div key={this.props.index + 2001}className="section card-2" id={elementID}>
                 <h2 key={this.props.index + 2002}className={'title collapsable-header' + (this.props.TaskOwner == this.props.VisitorID ? ' visitors-task' : '')} onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
                     <span className="fa fa-angle-down" style={{float: 'right'}}></span>
 
@@ -251,7 +263,7 @@ class SuperViewComponent extends React.Component {
         }, this);
 
         content = (
-            <div key={this.props.index + 2003} className="section-content" style={{display: this.state.ShowContent? 'block' : 'none'}}>
+            <div key={this.props.index + 2003} className="section-content" style={{display: showContent? 'block' : 'none'}}>
                 {TA_instructions}
                 {TA_rubric}
                 <FileManagerComponent TaskID={this.props.TaskID}
@@ -263,11 +275,11 @@ class SuperViewComponent extends React.Component {
             </div>);
 
         return (
-            <div key={this.props.index + 2001} className="section card-2" style={{marginLeft: this.props.margin}}>
+            <div key={this.props.index + 2001} className="section card-2" id={elementID} style={{marginLeft: this.props.margin}}>
                 {!this.props.oneBox &&
             (<div>
                 <h2 key={this.props.index + 2002} className="title" onClick={this.toggleContent.bind(this)}>{this.props.ComponentTitle}
-                    <span className={this.state.ShowContent ? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
+                    <span className={ showContent? 'fa fa-angle-up' : 'fa fa-angle-down'} style={{float: 'right'}}></span></h2>
                 <CommentInfoComponent
                     TargetID = {this.props.TaskID}
                     Target = {'TaskInstance'}
@@ -282,7 +294,7 @@ class SuperViewComponent extends React.Component {
 }
 
 SuperViewComponent.propTypes = {
-    TaskActivityFields: PropTypes.object.isRequired,
+    TaskActivityFields: PropTypes.array.isRequired,
     TaskData: PropTypes.object.isRequired,
     Strings: PropTypes.object.isRequired,
     ComponentTitle: PropTypes.string.isRequired,

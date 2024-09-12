@@ -657,7 +657,11 @@ class TaskDetailsComponent extends React.Component {
                         <label>
                             <Radio value />{strings.StartAfterPriorTaskEndsBy}</label>
                     </RadioGroup>
-                    <NumberField label={strings.Days} value={this.props.TaskActivityData.TA_start_delay} min={0} max={60} onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_start_delay', this.props.index, this.props.workflowIndex)} />
+                    <NumberField label={strings.Days}
+                     value={this.props.TaskActivityData.TA_start_delay} 
+                     min={0} max={60} 
+                     onChange={this.props.callTaskFunction.bind(this, 'changeNumericData', 'TA_start_delay', this.props.index, this.props.workflowIndex)} 
+                     />
                 </div>
 
             );
@@ -701,7 +705,7 @@ class TaskDetailsComponent extends React.Component {
                     <div className="inner">
                         <label>
                             {strings.WhatIfLate}</label>
-                        <Tooltip Text={strings.TaskWhatIfLateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-what-if-late-tooltip`} />
+                        <Tooltip Text={strings.TaskWhatHappensIfLateMessage} ID={`w${this.props.workflowIndex}-T${this.props.index}-what-if-late-tooltip`} />
 
                         <Select options={onLateValues} onChange={this.props.callTaskFunction.bind(this, 'changeDropdownData', 'TA_what_if_late', this.props.index, this.props.workflowIndex)} value={this.props.TaskActivityData.TA_what_if_late} clearable={false} searchable={false} autoBlur />
                     </div>
@@ -1093,7 +1097,7 @@ class TaskDetailsComponent extends React.Component {
 
             if(taskCreatedList.length > 0){
                 followOnAssessmentTaskView =  <div className="section-divider">
-                    <div className="subheading">{strings.AssessmentFollowOnHeader}</div>
+                    {/* <div className="subheading">{strings.AssessmentFollowOnHeader}</div> */}
                     {allowFollowOnAssessment}
                 </div>;
             }
@@ -1164,7 +1168,11 @@ class TaskDetailsComponent extends React.Component {
         let fieldDistWeights = this.mapFieldDistToOptions();
         let fieldDistView = null;
         if(fieldDistWeights.length > 1){
-            fieldDistView = <ul>
+            fieldDistView = 
+            
+            <div>
+            <h3 className="subheading">{strings.FieldWeights}</h3>
+            <ul>
                 {
                     fieldDistWeights.map((fieldObject) => {
                         return <li className="thin-number-field" key={'workflowWeight' + fieldObject.id}>
@@ -1176,7 +1184,8 @@ class TaskDetailsComponent extends React.Component {
                         </li>;
                     })
                 }
-            </ul>;
+            </ul>
+            </div>;
         }
 
         if(this.state.ShowUserFields){

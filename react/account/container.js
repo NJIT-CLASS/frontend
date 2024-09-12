@@ -1,9 +1,11 @@
 import React from 'react';
+import ToggleVolunteerComponent from './toggleVolunteerComponent';
 import apiCall from '../shared/apiCall';
 import PasswordField from '../shared/passwordField';
 import Dropzone from 'react-dropzone';
 import FileUpload from '../shared/fileUpload';
 import MyCommentsComponent from './myCommentsComponent.js';
+import StudentVolunteerComponent from './studentVolunteerComponent.js';
 
 import Tooltip from '../shared/tooltip';
 
@@ -342,23 +344,23 @@ class Container extends React.Component {
             email = [
                 <tr key={1}>
                     <td> {this.strings.loginEmail} </td>
-                    <td>{this.state.login_email}</td> 
+                    <td>{this.state.login_email}</td>
                 </tr>,
                 <tr key={2}>
                     <td> {this.strings.notificationEmail} </td>
-                    <td>{this.state.notification_email}</td> 
+                    <td>{this.state.notification_email}</td>
                 </tr>
             ];
         } else {
             email = (
                 <tr>
                     <td>
-                        {this.strings.email} 
+                        {this.strings.email}
                         <Tooltip
                             Text={this.strings.accountEmailTooltip}
                             ID={'acoount_email_tooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.login_email} </td>
                 </tr>
             );
@@ -370,12 +372,12 @@ class Container extends React.Component {
             this.state.alias != null
                 ? <tr>
                     <td>
-                        {this.strings.alias} 
+                        {this.strings.alias}
                         <Tooltip
                             Text={this.strings.aliasTooltip}
                             ID={'aliasTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.alias} </td>
                 </tr>
                 : null;
@@ -383,12 +385,12 @@ class Container extends React.Component {
             this.state.phone != null
                 ? <tr>
                     <td>
-                        {this.strings.phoneNumber} 
+                        {this.strings.phoneNumber}
                         <Tooltip
                             Text={this.strings.phoneNumberTooltip}
                             ID={'phoneNumberTooltip1'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.phone} </td>
                 </tr>
                 : null;
@@ -397,12 +399,12 @@ class Container extends React.Component {
             this.state.official_first_name != null
                 ? <tr>
                     <td>
-                        {this.strings.officialFirstName} 
+                        {this.strings.officialFirstName}
                         <Tooltip
                             Text={this.strings.officialFirstNameTooltip}
                             ID={'officialFirstNameTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.official_first_name} </td>
                 </tr>
                 : null;
@@ -411,12 +413,12 @@ class Container extends React.Component {
             this.state.official_last_name != null
                 ? <tr>
                     <td>
-                        {this.strings.officialLastName} 
+                        {this.strings.officialLastName}
                         <Tooltip
                             Text={this.strings.officialLastNameTooltip}
                             ID={'officialLastNameTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.official_last_name} </td>
                 </tr>
                 : null;
@@ -425,12 +427,12 @@ class Container extends React.Component {
             this.state.preferred_first_name != null
                 ? <tr>
                     <td>
-                        {this.strings.firstName} 
+                        {this.strings.firstName}
                         <Tooltip
                             Text={this.strings.firstNameTooltip}
                             ID={'firstNameTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.preferred_first_name} </td>
                 </tr>
                 : null;
@@ -439,44 +441,44 @@ class Container extends React.Component {
             this.state.preferred_last_name != null
                 ? <tr>
                     <td>
-                        {this.strings.lastName} 
+                        {this.strings.lastName}
                         <Tooltip
                             Text={this.strings.lastNameTooltip}
                             ID={'lastNameTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.preferred_last_name} </td>
                 </tr>
                 : null;
         let instructor = (
             <tr>
                 <td>
-                    {this.strings.instructor} 
+                    {this.strings.instructor}
                     <Tooltip
                         Text={this.strings.instructorTooltip}
                         ID={'instructorTooltip'}
                     />
-                </td> 
+                </td>
                 <td>
                     {this.state.instructor
                         ? this.strings.yes
-                        : this.strings.no} 
+                        : this.strings.no}
                 </td>
             </tr>
         );
         let admin = (
             <tr>
                 <td>
-                    {this.strings.admin} 
+                    {this.strings.admin}
                     <Tooltip
                         Text={this.strings.adminTooltip}
                         ID={'adminTooltip'}
                     />
-                </td> 
+                </td>
                 <td>
                     {this.state.admin
                         ? this.strings.yes
-                        : this.strings.no} 
+                        : this.strings.no}
                 </td>
             </tr>
         );
@@ -484,12 +486,12 @@ class Container extends React.Component {
             this.state.timezone != null
                 ? <tr>
                     <td>
-                        {this.strings.timezone} 
+                        {this.strings.timezone}
                         <Tooltip
                             Text={this.strings.timeTooltip}
                             ID={'timeTooltip'}
                         />
-                    </td> 
+                    </td>
                     <td> {this.state.timezone} </td>
                 </tr>
                 : null;
@@ -499,27 +501,27 @@ class Container extends React.Component {
         let accountView = (
             <div className="card account-table">
                 <h2 className="title">
-                    {name == '' ? this.strings.account : name} 
-                </h2> 
+                    {name == '' ? this.strings.account : name}
+                </h2>
                 {/*
                 <button type="button" onClick={this.editAccount.bind(this)}>
-                    {this.strings.edit} 
-                </button> 
+                    {this.strings.edit}
+                </button>
                 <button type="button" onClick={this.changePassword.bind(this)}>
                     {this.strings.changePassword} 
-                </button> 
+                </button>
                 */}
-                
+
                 <div className="card-content">
                     <table>
                         <tbody>
-                            {email}{official_first_name} 
-                            {official_last_name}{preferred_first_name} 
-                            {preferred_last_name}{alias}{phone}{instructor} 
+                            {email}{official_first_name}
+                            {official_last_name}{preferred_first_name}
+                            {preferred_last_name}{alias}{phone}{instructor}
                             {admin}{time}
                         </tbody>
                     </table>
-                </div> 
+                </div>
             </div>
         );
         // push error list into error message (formatted in red with icon)
@@ -528,13 +530,13 @@ class Container extends React.Component {
             let error_list = this.state.errors.map((error, index) => {
                 return (
                     <p key={index}>
-                        {error} 
+                        {error}
                     </p>
                 );
             });
             errors = (
                 <div className={'error form-error'}>
-                    <i className={'fa fa-exclamation-circle'}> </i> {error_list} 
+                    <i className={'fa fa-exclamation-circle'}> </i> {error_list}
                 </div>
             );
         }
@@ -542,18 +544,18 @@ class Container extends React.Component {
         // photo upload Dropzone components are not functional
         let accountEdit = (
             <div className="card account-table">
-                <h2 className="title"> {this.strings.editAccount} </h2> 
+                <h2 className="title"> {this.strings.editAccount} </h2>
                 <button type="button" onClick={this.update.bind(this)}>
-                    {this.strings.save} 
-                </button> 
+                    {this.strings.save}
+                </button>
                 <button type="button" onClick={this.cancel.bind(this)}>
-                    {this.strings.cancel} 
-                </button> 
+                    {this.strings.cancel}
+                </button>
                 <form
                     className="card-content"
                     onSubmit={this.onSubmit.bind(this)}
                 >
-                    {errors} <label> {this.strings.firstName} </label> 
+                    {errors} <label> {this.strings.firstName} </label>
                     <input
                         type="text"
                         value={
@@ -563,9 +565,9 @@ class Container extends React.Component {
                         }
                         onChange={this.changeFirstName.bind(this)}
                     >
-                         
-                    </input> 
-                    <label> {this.strings.lastName} </label> 
+
+                    </input>
+                    <label> {this.strings.lastName} </label>
                     <input
                         type="text"
                         value={
@@ -575,9 +577,9 @@ class Container extends React.Component {
                         }
                         onChange={this.changeLastName.bind(this)}
                     >
-                         
-                    </input> 
-                    <label> {this.strings.alias} </label> 
+
+                    </input>
+                    <label> {this.strings.alias} </label>
                     <input
                         type="text"
                         value={
@@ -587,9 +589,9 @@ class Container extends React.Component {
                         }
                         onChange={this.changeAlias.bind(this)}
                     >
-                         
-                    </input> 
-                    <label> {this.strings.notificationEmail} </label> 
+
+                    </input>
+                    <label> {this.strings.notificationEmail} </label>
                     <input
                         type="text"
                         value={
@@ -599,9 +601,9 @@ class Container extends React.Component {
                         }
                         onChange={this.changeNotificationEmail.bind(this)}
                     >
-                         
-                    </input> 
-                    <label> {this.strings.phoneNumber} </label> 
+
+                    </input>
+                    <label> {this.strings.phoneNumber} </label>
                     <input
                         type="text"
                         value={
@@ -612,9 +614,9 @@ class Container extends React.Component {
                         onChange={this.changePhone.bind(this)}
                         placeholder="(###) ###-####"
                     >
-                         
-                    </input> 
-                    <label> {this.strings.profilePicture} </label> 
+
+                    </input>
+                    <label> {this.strings.profilePicture} </label>
                     <FileUpload
                         View="dropzone"
                         endpoint={'/api/file/upload/profile-picture'}
@@ -623,11 +625,11 @@ class Container extends React.Component {
                         }}
                         Strings={this.strings}
                     />
-                    <label> {this.strings.avatar} </label> 
+                    <label> {this.strings.avatar} </label>
                     <Dropzone accept="image/*">
-                        {this.strings.upload} 
-                    </Dropzone> 
-                </form> 
+                        {this.strings.upload}
+                    </Dropzone>
+                </form>
             </div>
         );
         // format password change errors
@@ -635,8 +637,8 @@ class Container extends React.Component {
         if (this.state.password_error) {
             password_error = (
                 <div className={'error form-error'}>
-                    <i className={'fa fa-exclamation-circle'}> </i> 
-                    <p> {this.state.password_error} </p> 
+                    <i className={'fa fa-exclamation-circle'}> </i>
+                    <p> {this.state.password_error} </p>
                 </div>
             );
         }
@@ -647,43 +649,43 @@ class Container extends React.Component {
             passwordChange = (
                 <div className="card">
                     <h2 className="title">
-                        {this.strings.changePassword} 
-                    </h2> 
+                        {this.strings.changePassword}
+                    </h2>
                     <button
                         type="button"
                         onClick={this.updatePassword.bind(this)}
                     >
-                        {this.strings.save} 
-                    </button> 
+                        {this.strings.save}
+                    </button>
                     <button type="button" onClick={this.cancel.bind(this)}>
-                        {this.strings.cancel} 
-                    </button> 
+                        {this.strings.cancel}
+                    </button>
                     <form
                         className="card-content"
                         onSubmit={this.onSubmit.bind(this)}
                     >
-                        {password_error} 
-                        <label> {this.strings.currentPassword} </label> 
+                        {password_error}
+                        <label> {this.strings.currentPassword} </label>
                         <input
                             type="password"
                             onChange={this.changeCurrentPassword.bind(this)}
                         >
-                             
-                        </input> 
-                        <label> {this.strings.newPassword} </label> 
+
+                        </input>
+                        <label> {this.strings.newPassword} </label>
                         <PasswordField
                             value={this.state.new_password}
                             onChange={this.changeNewMeterPassword.bind(this)}
                             Strings={this.strings}
-                        /> 
-                        <label> {this.strings.confirmPassword} </label> 
+                        />
+                        <label> {this.strings.confirmPassword} </label>
                         <input
                             type="password"
                             onChange={this.changeConfirmPassword.bind(this)}
                         >
-                             
-                        </input> 
-                    </form> 
+
+                        </input>
+                    </form>
                 </div>
             );
         }
@@ -691,6 +693,11 @@ class Container extends React.Component {
             <div>
                 <div className="inline-view">{ this.state.editing ? accountEdit : accountView }</div>
                 { passwordChange }
+                <h2 className="title">My Volunteering</h2>
+                <StudentVolunteerComponent
+                    UserID={this.state.id}
+                />
+                <h2 className="title">My Comments, Ratings, and Flags</h2>
                 <MyCommentsComponent
                     UserID={this.state.id}
                 />

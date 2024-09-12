@@ -10,8 +10,9 @@ module.exports = {
         instructors: true,
         students: true,
         role: ROLES.GUEST,
-        loggedOut: true
+        loggedOut: false
     },
-    icon: 'files-o',
+    icon: 'info-circle',
     sidebar: true
 };
+ 

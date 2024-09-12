@@ -47,9 +47,10 @@ class SectionPageContainer extends Component {
             </div>;
         
         }
+        console.log(Students);
         return <div>
             <div className="page-header">
-                <h2>{SectionInfo.Course.Number} - {SectionInfo.Course.Name} - {SectionInfo.Name}</h2><br/>
+                <h2>{SectionInfo.Course.Number} - {SectionInfo.Course.Name} - {SectionInfo.Name} - {SectionInfo.Semester.Name}</h2><br/>
                 <div className="description">{SectionInfo.Description}</div>
             </div>
             <div className="user-view">
@@ -87,7 +88,7 @@ class SectionPageContainer extends Component {
                     <h2 className="title">{Strings.OngoingAssignments}</h2>
                     <ul className="list-group">
                         { 
-                            OngoingAssignments.map( assignment => <li className="list-group-item" key={assignment.AssignmentInstanceID}><a href={`/assignment-record/${assignment.AssignmentInstanceID}`}>{assignment.Assignment.DisplayName}</a></li>)
+                            OngoingAssignments.map( assignment => <li className="list-group-item" key={assignment.AssignmentInstanceID}><a href={`/assignment-record/${assignment.AssignmentInstanceID}`}>{assignment.DisplayName}</a></li>)
                         }
                     </ul>
                 </div>

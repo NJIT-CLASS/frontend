@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/database-manage',
-    title: 'Database Maintenance',
+    title: 'Archive/Delete',
     routeHandler: handler,
     access: {
         admins: true,
@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.ADMIN,
         loggedOut: false
     },
-    icon: 'database',
+    icon: 'archive',
     sidebar: true
 };

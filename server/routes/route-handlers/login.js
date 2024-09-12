@@ -20,7 +20,7 @@ exports.get = (req, res) => {
             return res.render('home',{
                 returnUrl: req.query.url,
                 layout:'logged_out',
-                title: 'Login | CLASS Learning System'
+                title: 'Login | PL System'
             });
         });
     }  else {
@@ -28,14 +28,14 @@ exports.get = (req, res) => {
             return res.render('home',{
                 returnUrl: req.query.url,
                 layout:'logged_out',
-                title: 'Login | CLASS Learning System'
+                title: 'Login | PL System'
             });
         }
         else {
             return res.render('home',{
                 returnUrl: req.query.url,
                 layout:'logged_out',
-                title: 'Login | CLASS Learning System'
+                title: 'Login | PL System'
             });
         }
     }
@@ -56,7 +56,7 @@ exports.post = (req, res) => {
                 serverError: true,
                 returnUrl: req.body.url,
                 layout:'logged_out',
-                title: 'Login | CLASS Learning System'
+                title: 'Login | PL System'
                 
                 
             });
@@ -80,7 +80,7 @@ exports.post = (req, res) => {
                         timeout: body.Timeout,
                         returnUrl: req.body.url,
                         layout:'logged_out',
-                        title: 'Login | CLASS Learning System'
+                        title: 'Login | PL System'
                         
                         
                     });
@@ -89,7 +89,7 @@ exports.post = (req, res) => {
                     credentialsError: true,
                     returnUrl: req.body.url,
                     layout:'logged_out',
-                    title: 'Login | CLASS Learning System'
+                    title: 'Login | PL System'
                     
                     
                 });
@@ -99,7 +99,7 @@ exports.post = (req, res) => {
                     credentialsError: true,
                     returnUrl: req.body.url,
                     layout:'logged_out',
-                    title: 'Login | CLASS Learning System'
+                    title: 'Login | PL System'
                     
                     
                     

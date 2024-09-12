@@ -48,7 +48,12 @@ const strings = {
         The users will be shuffled to ensure that they all have an even number of tasks assigned to them.
         You can only remove problem threads without any completed tasks.
         It is most efficent to remove multiple problem threads at once instead of doing this individually.</p>`,
-    NumberOfSetsTooltip: 'This is the number of problems of this type that each student creates/solves. All of them are included among the problem threads below.'
+    NumberOfSetsTooltip: 'This is the number of problems of this type that each student creates/solves. All of them are included among the problem threads below.',
+    DescriptionTooltip: 
+        `These are all the problem threads in which you have a task.  
+        You can view some of the completed tasks by clicking on them, 
+        though some may not be accessible until the problem thread has been entirely completed, 
+        or ready for you to finish one of its later tasks.`
 };
 
 export default strings;

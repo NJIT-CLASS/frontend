@@ -2,7 +2,7 @@ import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
 import Datetime from 'react-datetime';
-
+import Tooltip from '../shared/tooltip';
 
 class SemesterManager extends React.Component {
     constructor(props){
@@ -197,7 +197,8 @@ class SemesterManager extends React.Component {
 		);
 
 		// render semester creation form
-		// update the date fields for easier date entry (perhaps with a react module)
+        // update the date fields for easier date entry (perhaps with a react module)
+        console.log(this.props.strings);
         let create = (
 			<div className='card'>
 				<h2 className='title'>{this.props.strings.newSemester}</h2>
@@ -206,7 +207,7 @@ class SemesterManager extends React.Component {
         <button type='button' onClick={this.save.bind(this)}>{this.props.strings.save}</button>
 
 				<form className='card-content' onSubmit={this.onSubmit.bind(this)}>
-					<label>{this.props.strings.name}</label>
+					<div style={{position:"relative"}}><label style={{width:"25%",display:"inline-block"}}>{this.props.strings.newSemesterName}</label><Tooltip style={{display:"inline-block"}} Text={this.props.strings.newSemesterToolTip} ID={'new_semester_name_tooltip'} /></div>
 					<input type='text' onChange={this.changeName.bind(this)}></input>
 					<label>{this.props.strings.startDate}</label>
           <Datetime

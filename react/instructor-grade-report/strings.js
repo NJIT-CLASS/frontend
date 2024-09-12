@@ -1,0 +1,77 @@
+export default {
+    AssignmentGrades: 'Assignment Grades',
+    Assignment: 'Assignment',
+    StudentInformation: 'Student Information',
+    RegularTasks: 'Regular Tasks',
+    ExtraCreditTasks: 'Extra Credit Tasks',
+    Email: 'Email',
+    LastName: 'Last Name',
+    FirstName: 'First Name',
+    Total: 'Total',
+    CompletenessGrade: 'Completeness Grade',
+    Grade: 'Current Grade',
+    QualityGrade: 'Quality Grade',
+    FinalGrade: 'Final Grade',
+    Comments: 'Comments',
+    ECCompletenessGrade: 'Extra Credit Completeness Grade',
+    ECQualtiyGrade: 'Extra Credit Qualtiy Grade',
+    ECGrade: 'Extra Credit Grade',
+    ECComments: 'Extra Credit Comments',
+    InstructorReport: 'Instructor Report',
+    Student: 'Student',
+    Task: 'Task',
+    TaskGrade: 'Task Grade',
+    CombinedWeight: 'Combined Weight',
+    WeightedGrade: 'Weighted Grade',
+    UserName: 'UserName',
+    LastName: "Last Name",
+    FirstName:"First Name",
+    AssignmentGrade:"Current Assignment Grade",
+    CurrXCreditTaskGrade:"Current Extra Credit Task Grades",
+    CurrXCreditTimeGrade:"Current Extra Credit Timeliness Grades",
+    NumXCreditTasks:"Total Number of Extra Credit Tasks Assigned",
+    AssignmentGradeNoData:"No grades available for this assignment",
+
+    AGRHeader:"Assignment Grades Report",
+    PGRHeader:"Problem Grades Report",
+    AECGRHeader: "Assignment Extra Credit Grades Report",    
+    PTTGRHeader:'Problem Task and Timeliness Report',
+    TGFRHeader: 'Task Grades Field Report',
+    PTGDRGHeader: 'Problem Timeliness Grade Details Report',
+    AECTGDRHeader: "Assignment Extra Credit Timeliness Grades Detail Report",
+    AECTRHeader: 'Assignment Extra Credit Tasks Report',
+    ECTGFRHeader: 'Extra Credit Task Grade Fields Report',
+
+    Problem:"Problem",
+    ProblemGrade:'Current Problem Grade',
+    ProblemsPerStudent: 'Original # Problems Per Student',
+    WeightWithinAssignment: 'Weight Within Assignment',
+    ScaledGradeAssignment: 'Current Scaled Grade Within Assignment',
+    ScaledGradeProblem: "Current Scaled Grade Within Problem",
+
+    ConvertedNumericValue: "Converted Numeric Value",
+    
+
+    WeightWithinProblem:'Weight Within Problem',
+    ProblemGradeNoData: 'There are no grades for this problem',
+    TimelinessGrade:'Timeliness Grade',
+    TimelinessMaximumGrade: 'Timeliness Maximum Grade',
+
+    Field:'Field',
+    Type:'Type',
+    Value:'Value',
+    Max:'Max',
+    WeightWTask:'Weight Within Task',
+    ScaledGradeTask:'Scaled Grade Within Task',
+    TaskGradeNoData:'There are no grades for this task',
+
+    Status: 'Status',
+    DaysLate: 'Days Late',
+    PenaltyPerDay: 'Penalty Per Day',
+    TotalPenalty: 'Total Penalty',
+    
+
+    
+
+
+};

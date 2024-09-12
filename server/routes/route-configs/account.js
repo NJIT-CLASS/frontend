@@ -3,7 +3,7 @@ import {ROLES} from '../../utils/react_constants';
 
 module.exports = {
     route: '/account',
-    title: 'Account',
+    title: 'My Profile',
     routeHandler: handler,
     access: {
         admins: true,
@@ -12,6 +12,6 @@ module.exports = {
         role: ROLES.GUEST,
         loggedOut: false
     },
-    icon: 'user',
+    icon: 'user-circle',
     sidebar: true
 };

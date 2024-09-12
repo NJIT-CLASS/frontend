@@ -19,6 +19,7 @@ import confirmModal from './confirmModal';
 import HeaderComponent from './headerComponent';
 import {TASK_TYPES, TASK_TYPES_TEXT} from '../../server/utils/react_constants';
 import Strings from './assignmentEditorStrings';
+import { debug } from 'util';
 
 class AssignmentEditorContainer extends React.Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class AssignmentEditorContainer extends React.Component {
             Loaded: false,
             Courses: null,
             Semesters: null,
+            SubmitInProgress: false,
             CourseSelected: {
                 Name: '',
                 Number: ''
@@ -249,6 +251,7 @@ class AssignmentEditorContainer extends React.Component {
                 number_of_fields: 1,
                 field_titles: [strings.Field],
                 field_distribution: {},
+                //CHANGE 10/5/19
                 0: cloneDeep(this.defaultFields)
             }
         });
@@ -820,7 +823,7 @@ class AssignmentEditorContainer extends React.Component {
           C. Send to DB.
         */
 
-        if(this.state.SubmitSuccess === true){
+        if(this.state.SubmitSuccess === true || this.state.SubmitInProgress === true){
             return;
         }
 
@@ -913,8 +916,10 @@ class AssignmentEditorContainer extends React.Component {
                         if(isNaN(k)){ //check if field is not number
                             return;
                         }
-                        if(!task.TA_fields[k].default_refers_to[0]){
-                            task.TA_fields[k].default_refers_to[0] = mapping[task.TA_fields[k].default_refers_to[0]];
+                        var field = task.TA_fields[k];
+                        
+                        if(field.default_refers_to[0] !== null){
+                            field.default_refers_to[0] = mapping[field.default_refers_to[0]];
                         }
                     });
                     
@@ -989,8 +994,9 @@ class AssignmentEditorContainer extends React.Component {
         }, this);
 
 
-        console.log(sendData);
-
+        this.setState({
+            SubmitInProgress: true
+        });
 
         const options = {
             assignment: sendData,
@@ -1008,13 +1014,18 @@ class AssignmentEditorContainer extends React.Component {
                 this.setState({
                     InfoMessage: this.state.Strings.SubmitSuccessMessage,
                     InfoMessageType: 'success',
-                    SubmitButtonShow: false});
+                    SubmitButtonShow: false,
+                    SubmitInProgress: false
+                
+                });
             } else {
                 
                 showMessage(this.state.Strings.ErrorMessage);
                 this.setState({
                     InfoMessage: this.state.Strings.ErrorMessage,
-                    InfoMessageType: 'error'
+                    InfoMessageType: 'error',
+                    SubmitInProgress: false
+
                 });
             }
 
@@ -1802,9 +1813,13 @@ class AssignmentEditorContainer extends React.Component {
 
         let linkedIndex = this.getParentID(root, workflowData, taskIndex);
         let linkedFields = JSON.parse(JSON.stringify((workflowData[linkedIndex].TA_fields)));
+        console.log("linkedFields");
+        console.log(linkedFields);
         let linkedNumberOfFields = workflowData[linkedIndex].TA_fields.number_of_fields;
         let linkedFieldDistribution = workflowData[taskIndex].TA_fields.field_distribution;
-        
+        console.log("linkedFieldDistrubtion");
+        console.log(linkedFieldDistribution);
+        console.log(linkedFieldDistribution.length);
         let oldFields = JSON.parse(JSON.stringify((workflowData[taskIndex].TA_fields)));
         let oldNumberOfFields = workflowData[taskIndex].TA_fields.number_of_fields;
         let oldFieldTitles = workflowData[taskIndex].TA_fields.field_titles;
@@ -1819,6 +1834,8 @@ class AssignmentEditorContainer extends React.Component {
             }
 
             let copiedField = linkedFields[j];
+            //console.log("copiedField");
+            //console.log(copiedField);
             if(workflowData[taskIndex].TA_type === TASK_TYPES.EDIT){
                 //If an edit task, set default content of linked fields to point to linked task
                 if(copiedField.default_content[0] === ''  && copiedField.default_refers_to[0] === null){
@@ -1828,7 +1845,13 @@ class AssignmentEditorContainer extends React.Component {
             }
 
             workflowData[taskIndex].TA_fields[finalFieldCounter] = copiedField;
-            workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = linkedFields[j];
+            //changed linkedFields[j] to linkedFields.field_distribution
+            workflowData[taskIndex].TA_fields.field_distribution[finalFieldCounter] = linkedFields.field_distribution;
+            
+            console.log("linkedFields[j]");
+            console.log(linkedFields[j]);
+            console.log("workflow task");
+            console.log(workflowData[taskIndex]);
             finalFieldCounter += 1;
         });
 
@@ -1854,7 +1877,11 @@ class AssignmentEditorContainer extends React.Component {
 
         workflowData[taskIndex].TA_fields.number_of_fields = oldNumberOfFields + linkedNumberOfFields;
         workflowData[taskIndex].TA_fields.field_titles = [...linkedFields.field_titles, ...oldFieldTitles];
-
+        workflowData[taskIndex].TA_fields.field_distribution = linkedFields.field_distribution;
+        console.log("linkedField\'s field_distribution");
+        console.log(linkedFields.field_distribution);
+        console.log("old field distribution");
+        console.log(oldFieldDistribution); 
         return workflowData;
     }
 
@@ -1895,7 +1922,7 @@ class AssignmentEditorContainer extends React.Component {
                 }
 
                 defaultRefersTo = null;
-            })
+            });
         }, this);
 
         if(stateData != null){
@@ -3187,6 +3214,8 @@ class AssignmentEditorContainer extends React.Component {
         let count = this.state.WorkflowDetails[workflowIndex].Workflow.length;
         for (var i = 0; i < count; i++) {
             if(this.state.WorkflowDetails[workflowIndex].Workflow[i].TA_simple_grade !== 'none'){
+                debugger;
+                
                 return true;
             }
         }
@@ -3241,12 +3270,14 @@ class AssignmentEditorContainer extends React.Component {
     }
 
     getFinalGradeTasksArray(workflowIndex, stateData = this.state.WorkflowDetails) { //gets a list of all the tasks that will be accounted for in grading distribution
+        let x = this;
         let newArray = new Array();
         let assessmentTypes = [TASK_TYPES.GRADE_PROBLEM];
         stateData[workflowIndex].Workflow.forEach(function(task, index) {
             if (Object.keys(task).length > 0) {
                 if (assessmentTypes.includes(task.TA_type)) {
-                    newArray.push(index);
+                    let parentIndex = x.getParentIndex(index, workflowIndex, stateData);
+                    newArray.push(parentIndex);
                 }
             }
         });
@@ -3280,46 +3311,14 @@ class AssignmentEditorContainer extends React.Component {
 
     render() {
         let infoMessage = null;
-        let submitButtonView = (
+        let submitButtonView = this.state.SubmitInProgress ? <div></div> : (
             <button  type="button" onClick={this.onSubmit.bind(this)}>
                 <i className="fa fa-check"></i>{this.state.Strings.Submit}
             </button>
         );
         let saveButtonView = (<button onClick={this.onSave.bind(this)}>Save</button>);
 
-        // if(this.state.SaveSuccess){
-        //     infoMessage = (
-        //       <span onClick={() => {
-        //           this.setState({SubmitSuccess: false});
-        //       }} className="small-info-message">
-        //       <span className="success-message">
-        //         {this.state.Strings.SaveSuccessMessage}
-        //       </span>
-        //       </span>
-        //   );
-        // }
-        //
-        // if (this.state.SubmitSuccess) {
-        //     infoMessage = (
-        //         <span onClick={() => {
-        //             this.setState({SubmitSuccess: false});
-        //         }} className="small-info-message">
-        //         <span className="success-message">
-        //           {this.state.Strings.SubmitSuccessMessage}
-        //         </span>
-        //         </span>
-        //     );
-        //
-        // }
-        // if (this.state.SubmitError && !this.state.SubmitSuccess) {
-        //     infoMessage = (
-        //         <span onClick={() => {
-        //             this.setState({SubmitError: false});
-        //         }} className="small-info-message">
-        //         <div className="error-message">{this.state.Strings.ErrorMessage}</div>
-        //         </span>
-        //     );
-        // }
+        
 
         if(this.state.InfoMessage !== ''){
             infoMessage = (
@@ -3454,6 +3453,10 @@ class AssignmentEditorContainer extends React.Component {
                                 {this.state.Strings.SubmitReminderMessage}
                             </div>
                             {saveButtonView}
+                            <br />
+                            <br />
+                            <br />
+                            <br />
                         </div>
                     </div>
                 </div>

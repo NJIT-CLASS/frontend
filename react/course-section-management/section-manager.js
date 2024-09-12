@@ -1,6 +1,7 @@
 import React from 'react';
 import apiCall from '../shared/apiCall';
 import Select from 'react-select';
+import TableComponent from '../shared/tableComponent';
 
 class SectionManager extends React.Component {
     constructor(props){

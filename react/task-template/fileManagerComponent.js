@@ -33,7 +33,8 @@ class FileManagerComponent extends Component {
                 return;
             }
             let filesArr = typeof body.Files == 'string' ? JSON.parse(body.Files) : body.Files;
-            filesArr = filesArr.map(file => {
+            filesArr = filesArr.filter(file => {return file !== null}).map(file => {
+
                 let newFileInfo = JSON.parse(file.Info);
                 return {
                     FileID: file.FileID,
@@ -42,6 +43,7 @@ class FileManagerComponent extends Component {
                     mime: newFileInfo.mimetype
                 };
             });
+            console.log(filesArr);
             this.setState({
                 Files: filesArr,
                 Refreshing: false

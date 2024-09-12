@@ -207645,7 +207645,7 @@ var _sectionsContainer = require('./sections/sections-container');
 
 var _sectionsContainer2 = _interopRequireDefault(_sectionsContainer);
 
-var _userGradeReportContainer = require('./grade-report/user-grade-report-container');
+var _userGradeReportContainer = require('./instructor-grade-report/user-grade-report-container');
 
 var _userGradeReportContainer2 = _interopRequireDefault(_userGradeReportContainer);
 

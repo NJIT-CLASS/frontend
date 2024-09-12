@@ -3,15 +3,25 @@ const pages = [
     'login',
     'logout',
     'dashboard',
-    'my-account',
+    'assignments-page',
+    'everyones-work',
+    'instructor-assignment-grade-report',
+    'student-assignment-grade-report',
+
+    'account',
+    'about',
+    'about-loggedout',
     'course-section-management',
-    'create-assignment',
     'assignment-editor',
+    'user-management',
+    'create-assignment',
+    'translation-manager',
+    'database-maintenance',
+
     //'administrator',
     'add-user',
     'settings',
-    'account',
-    'translation-manager',
+    'my-account',
     'reset-password',
     'confirm-password-reset',
     'course-page',
@@ -23,16 +33,13 @@ const pages = [
     'task-status-table',
     'onboarding',
     'initial-password-change',
-    'assignment-final-grades',
     'volunteer-pool',
     'section',
-    'user-management',
-    'everyones-work',
     'reallocation',
-    'about',
     'section',
     //'assignment-status-table',
-    'database-maintenance'
+
+
 ];
 
 var pageConfigs = [];

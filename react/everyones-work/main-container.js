@@ -37,6 +37,7 @@ class MainPageContainer extends Component {
             this.setState({Strings: newStrings});
         });
     }
+    
     selectCourse(e){
         this.setState({
             CourseID: e.value

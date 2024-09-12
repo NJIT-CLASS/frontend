@@ -14,5 +14,5 @@ module.exports = {
 
     },
     icon: 'user-plus',
-    sidebar: true
+    sidebar: false
 };
